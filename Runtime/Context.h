@@ -1,0 +1,91 @@
+#pragma once
+
+#include <vector>
+#include <stack>
+
+#include <boost/atomic.hpp>
+
+#include "Data.h"
+
+namespace FPTL {
+namespace Runtime {
+
+//---------------------------------------------------------------------------------------------
+class EvaluatorUnit;
+class FSchemeNode;
+
+// Контекст выполняения.
+struct SExecutionContext
+{
+	// Указатель на схему.
+	FSchemeNode * Scheme;
+
+	// Указатель на дочерний контекст.
+	SExecutionContext * Parent;
+
+	// Флаг готовности задания.
+	boost::atomic<size_t> Ready;
+
+	// Стек для работы с кортежами.
+	std::vector<DataValue> stack;
+
+	// Положение кортежа аргументов.
+	int argPos;
+
+	// Теущая арность операции.
+	int arity;
+
+	// Список выделенной памяти.
+	std::list<void *> allocatedMemory;
+
+	// Объем памяти, выделенной до сборки мусора.
+	int numCollected;
+
+	SExecutionContext();
+
+	// Методы работы с данными.
+	const DataValue & getArg(int index) const;
+	void push(const DataValue & aData);
+	void advance();
+	void unwind(int aArgPosOld, int aArity, int aPos);
+
+	// Управление памятью в куче.
+	void * alloc(size_t aSize);
+	int collect();
+	void tryCollect();
+
+	// Запуск выполнения.
+	void run(EvaluatorUnit * aEvaluatorUnit);
+
+	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
+	SExecutionContext * fork(FSchemeNode * aFirstNode);
+
+	// Прерывает выполнение, сохраняя текущий контекст.
+	void yield();
+
+	// Статические версии функций для вызова из JIT-скомпелированного кода.
+
+	/*static SExecutionContext * doFork(SExecutionContext * aCtx, FSchemeNode * aFirstNode, DataElement * volatile * aResult)
+	{
+		return aCtx->fork(aFirstNode, aResult);
+	}
+
+	static void doYield(SExecutionContext * aCtx)
+	{
+		aCtx->yield();
+	}*/
+
+private:
+
+	EvaluatorUnit * mEvaluatorUnit;
+};
+
+// Интерфейс объектов с автоматическим управлением памятью.
+class Collectable
+{
+public:
+	virtual void mark(std::stack<Collectable *> & aMarkStack) = 0;
+};
+
+} // Runtime
+} // FPTL

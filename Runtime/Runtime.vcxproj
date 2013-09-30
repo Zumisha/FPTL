@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{69D57EAD-F1A4-475D-9AF6-38950E12D608}</ProjectGuid>
+    <RootNamespace>Runtime</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fptl</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fptl</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\External\AsmJit\AsmJit\Build;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc_minimal-debug.lib; AsmJitd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(BOOST_PATH)\</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>..\External\gc\gc-7.2\release;..\External\AsmJit\AsmJit\Build;$(BOOST_PATH)\stage\lib;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;AsmJit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:12000000 %(AdditionalOptions)</AdditionalOptions>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Parser\AST.cpp" />
+    <ClCompile Include="..\Parser\Generated\Flex\FlexScanner.cpp" />
+    <ClCompile Include="..\Parser\Nodes.cpp" />
+    <ClCompile Include="..\Parser\NodeVisitor.cpp" />
+    <ClCompile Include="..\Parser\Generated\Parser.tab.cc" />
+    <ClCompile Include="..\Parser\Semantic.cpp" />
+    <ClCompile Include="..\Parser\Support.cpp" />
+    <ClCompile Include="..\Parser\Tokenizer.cpp" />
+    <ClCompile Include="..\Parser\TypeCheck.cpp" />
+    <ClCompile Include="CodeGenerator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="ConstructorGenerator.cpp" />
+    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="DataTypes\String.cpp" />
+    <ClCompile Include="FScheme.cpp" />
+    <ClCompile Include="FSchemeGenerator.cpp" />
+    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Run.cpp" />
+    <ClCompile Include="StandartLibrary.cpp" />
+    <ClCompile Include="Types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
+    <ClInclude Include="..\Parser\Types.h" />
+    <ClInclude Include="CodeGenerator.h" />
+    <ClInclude Include="ConstructorGenerator.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="Data.h" />
+    <ClInclude Include="FScheme.h" />
+    <ClInclude Include="FSchemeGenerator.h" />
+    <ClInclude Include="FSchemeVisitor.h" />
+    <ClInclude Include="Functions.h" />
+    <ClInclude Include="Run.h" />
+    <ClInclude Include="StandartLibrary.h" />
+    <ClInclude Include="String.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="..\Parser\AST.h" />
+    <ClInclude Include="..\Parser\FlexTokenizer.h" />
+    <ClInclude Include="..\Parser\Ident.h" />
+    <ClInclude Include="..\Parser\Nodes.h" />
+    <ClInclude Include="..\Parser\NodeVisitor.h" />
+    <ClInclude Include="..\Parser\SemanticCheck.h" />
+    <ClInclude Include="..\Parser\Support.h" />
+    <ClInclude Include="..\Parser\Tokenizer.h" />
+    <ClInclude Include="WorkStealingQueue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Parser\parser.yy" />
+    <None Include="..\Parser\tokenizer.flex" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

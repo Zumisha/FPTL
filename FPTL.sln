@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Runtime", "Runtime\Runtime.vcxproj", "{69D57EAD-F1A4-475D-9AF6-38950E12D608}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsmJit", "External\AsmJit\AsmJit\AsmJit.vcxproj", "{902EB27E-91D6-42DB-BCE8-5BDBCD5E59B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{69D57EAD-F1A4-475D-9AF6-38950E12D608}.Debug|Win32.ActiveCfg = Debug|Win32
+		{69D57EAD-F1A4-475D-9AF6-38950E12D608}.Debug|Win32.Build.0 = Debug|Win32
+		{69D57EAD-F1A4-475D-9AF6-38950E12D608}.Release|Win32.ActiveCfg = Release|Win32
+		{69D57EAD-F1A4-475D-9AF6-38950E12D608}.Release|Win32.Build.0 = Release|Win32
+		{902EB27E-91D6-42DB-BCE8-5BDBCD5E59B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{902EB27E-91D6-42DB-BCE8-5BDBCD5E59B9}.Debug|Win32.Build.0 = Debug|Win32
+		{902EB27E-91D6-42DB-BCE8-5BDBCD5E59B9}.Release|Win32.ActiveCfg = Release|Win32
+		{902EB27E-91D6-42DB-BCE8-5BDBCD5E59B9}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
