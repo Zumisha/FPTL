@@ -86,9 +86,6 @@
     <ClCompile Include="CodeGenerator.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
-    <ClCompile Include="..\Parser\TypeCheck.cpp">
-      <Filter>Source Files\Parser</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\AST.h">
@@ -150,9 +147,6 @@
     </ClInclude>
     <ClInclude Include="CodeGenerator.h">
       <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Parser\Types.h">
-      <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="Context.h">
       <Filter>Header Files\Runtime</Filter>

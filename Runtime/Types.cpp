@@ -1,7 +1,6 @@
 #include <cassert>
 #include "Types.h"
 #include "Data.h"
-#include <gc_cpp.h>
 #include "Functions.h"
 
 #include <boost/functional/hash.hpp>

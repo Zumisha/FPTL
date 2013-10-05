@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <ext/hash_map>
+#include <unordered_map>
 #include <vector>
 #include <algorithm>
 
@@ -11,7 +11,7 @@ namespace Parser {
 struct TypeInfo
 {
 	std::string name;
-	std::hash_map<std::string, TypeInfo> parameters;
+	std::unordered_map<std::string, TypeInfo> parameters;
 
 	TypeInfo(const std::string & aName) : name(aName)
 	{}

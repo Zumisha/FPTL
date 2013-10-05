@@ -115,7 +115,7 @@ void Support::registerKeyword( const std::string & aName, int aId )
 //
 int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 {
-	stdext::hash_map<std::string,int>::iterator pos = mNameTable.find( aName );
+	std::unordered_map<std::string,int>::iterator pos = mNameTable.find( aName );
 	if( pos != mNameTable.end() )
 	{
 		aIdent.Ptr = &pos->first;

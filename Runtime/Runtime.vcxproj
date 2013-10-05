@@ -110,7 +110,6 @@
     <ClCompile Include="..\Parser\Semantic.cpp" />
     <ClCompile Include="..\Parser\Support.cpp" />
     <ClCompile Include="..\Parser\Tokenizer.cpp" />
-    <ClCompile Include="..\Parser\TypeCheck.cpp" />
     <ClCompile Include="CodeGenerator.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -128,7 +127,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
-    <ClInclude Include="..\Parser\Types.h" />
     <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="ConstructorGenerator.h" />
     <ClInclude Include="Context.h" />

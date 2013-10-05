@@ -2,7 +2,7 @@
 #define IDENT_H
 
 #include <string>
-#include <ext/hash_map>
+#include <unordered_map>
 
 namespace FPTL {
 namespace Parser {

@@ -16,12 +16,12 @@
 #include <vector>
 #include <algorithm>
 #include <ostream>
-#include <ext/hash_map>
+#include <unordered_map>
 #include <boost/bind.hpp>
 
 namespace FPTL { namespace Runtime {
 
-typedef std::hash_map<std::string, struct TypeInfo *> TParametersMap;
+typedef std::unordered_map<std::string, struct TypeInfo *> TParametersMap;
 
 //------------------------------------------------------------------------------------------
 // Информация о типе. Не требует сборки мусора, т.к. каждая структура храниться в TypeInfoRegistry.
@@ -29,7 +29,7 @@ struct TypeInfo
 {
 	std::string TypeName;
 
-	std::hash_map<std::string, TypeInfo> Parameters;
+	std::unordered_map<std::string, TypeInfo> Parameters;
 
 	TypeInfo()
 	{}

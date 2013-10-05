@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <list>
-#include <ext/hash_set>
+#include <unordered_set>
+#include <unordered_map>
 #include "Ident.h"
 #include "NodeVisitor.h"
 
@@ -106,8 +107,8 @@ namespace FPTL
 
 		std::list<ErrorMessage> mErrorList;
 
-		std::hash_map<std::string, int> mNameTable;
-		std::hash_set<std::string> mConstantTable;
+		std::unordered_map<std::string, int> mNameTable;
+		std::unordered_set<std::string> mConstantTable;
 
 		bool mWasError;
 
