@@ -185,8 +185,9 @@ FunctionNode * FunctionNode::copy() const
 
 DefinitionNode * FunctionNode::getDefinition(Ident aName) const
 {
-	for each (DefinitionNode * def in *mDefinitions)
+	for (ListNode::iterator it = mDefinitions->begin(); it != mDefinitions->end(); ++it)
 	{
+		auto def = static_cast<DefinitionNode *>(*it);
 		if (def->getDefinitionName() == aName)
 		{
 			return def;
