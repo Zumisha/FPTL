@@ -192,7 +192,7 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 Ident Tokenizer::getErrorIdent() const
 {
 	static std::string nullStr;
-	Ident ident = { mCol, mLine, &nullStr };
+	Ident ident = { static_cast<short>(mCol), static_cast<short>(mLine), &nullStr };
 	return ident;
 }
 

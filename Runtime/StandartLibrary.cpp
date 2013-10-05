@@ -6,7 +6,7 @@
 
 #include "FScheme.h"
 #include "StandartLibrary.h"
-#include "Parser/BuildInFunctionNames.h"
+#include "../Parser/BuildInFunctionNames.h"
 #include "String.h"
 
 namespace FPTL {

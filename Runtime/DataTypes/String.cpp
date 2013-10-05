@@ -190,7 +190,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, const std::string & aD
 
 DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 {
-	auto & val = DataBuilders::createVal(StringOps::get());
+	auto val = DataBuilders::createVal(StringOps::get());
 
 	StringData * data = new (aCtx.alloc(sizeof(StringData) + aSize)) StringData();
 	StringValue * str = new (aCtx.alloc(sizeof(StringValue))) StringValue();
@@ -209,7 +209,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, const StringValue * aO
 	str->begin = aBegin;
 	str->end = aEnd;
 
-	auto & val = DataBuilders::createVal(StringOps::get());
+	auto val = DataBuilders::createVal(StringOps::get());
 	val.mString = str;
 	return val;
 }

@@ -51,6 +51,7 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
+typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -58,6 +59,7 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
+#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -88,15 +90,12 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
-#endif /* ! C99 */
-
 #endif /* ! FLEXINT_H */
 
 /* begin standard C++ headers. */
 #include <iostream> 
 #include <errno.h>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
 /* end standard C++ headers. */
 
@@ -154,15 +153,7 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k.
- * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
- * Ditto for the __ia64__ case accordingly.
- */
-#define YY_BUF_SIZE 32768
-#else
 #define YY_BUF_SIZE 16384
-#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -174,7 +165,12 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
-extern int yyleng;
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
+extern yy_size_t yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
@@ -198,11 +194,6 @@ extern int yyleng;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
@@ -221,7 +212,7 @@ struct yy_buffer_state
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	int yy_n_chars;
+	yy_size_t yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -335,7 +326,7 @@ int yyFlexLexer::yylex()
  */
 #define YY_DO_BEFORE_ACTION \
 	(yytext_ptr) = yy_bp; \
-	yyleng = (size_t) (yy_cp - yy_bp); \
+	yyleng = (yy_size_t) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
@@ -500,16 +491,16 @@ static yyconst flex_int16_t yy_chk[287] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "tokenizer.flex"
+#line 1 "../../tokenizer.flex"
 /* ќписание сканнера дл€ генерации с использованием flex. */
 #define YY_NO_UNISTD_H 1
-#line 10 "tokenizer.flex"
+#line 10 "../../tokenizer.flex"
 
 #include "../../FlexTokenizer.h"
 #include "../../Support.h"
 #include "../../Nodes.h"
 
-#line 513 "FlexScanner.cpp"
+#line 504 "FlexScanner.cpp"
 
 #define INITIAL 0
 
@@ -539,12 +530,7 @@ static int yy_flex_strlen (yyconst char * );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#ifdef __ia64__
-/* On IA-64, the buffer size is 16k, not 8k */
-#define YY_READ_BUF_SIZE 16384
-#else
 #define YY_READ_BUF_SIZE 8192
-#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -614,10 +600,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 31 "tokenizer.flex"
+#line 31 "../../tokenizer.flex"
 
 
-#line 621 "FlexScanner.cpp"
+#line 607 "FlexScanner.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -702,18 +688,18 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 33 "tokenizer.flex"
+#line 33 "../../tokenizer.flex"
 { return processCommentBlock(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 35 "tokenizer.flex"
+#line 35 "../../tokenizer.flex"
 { return '\n'; }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 36 "tokenizer.flex"
+#line 36 "../../tokenizer.flex"
 {
 									mCol = 0;
 									mLine++;
@@ -722,17 +708,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 42 "tokenizer.flex"
+#line 42 "../../tokenizer.flex"
 { return processIdentifier(); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 44 "tokenizer.flex"
+#line 44 "../../tokenizer.flex"
 { return processIdentifier(); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "tokenizer.flex"
+#line 46 "../../tokenizer.flex"
 {
 									mVal->scNode = formDecimalConstant();
 									return BisonParser::token::NUMBER;
@@ -740,7 +726,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 51 "tokenizer.flex"
+#line 51 "../../tokenizer.flex"
 {
                                     mVal->scNode = formLongLongConstant();
 									return BisonParser::token::NUMBER;
@@ -748,7 +734,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 56 "tokenizer.flex"
+#line 56 "../../tokenizer.flex"
 {
 									mVal->scNode = formFPConstant( false );
 									return BisonParser::token::REALNUMBER;
@@ -756,7 +742,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 61 "tokenizer.flex"
+#line 61 "../../tokenizer.flex"
 {
 									mVal->scNode = formFPConstant( true );
 									return BisonParser::token::REALNUMBER;
@@ -764,7 +750,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 66 "tokenizer.flex"
+#line 66 "../../tokenizer.flex"
 {
 									mVal->scNode = formStringConstant();
 									return BisonParser::token::STRING;
@@ -772,27 +758,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 72 "tokenizer.flex"
+#line 72 "../../tokenizer.flex"
 { return BisonParser::token::T_UNION; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "tokenizer.flex"
+#line 73 "../../tokenizer.flex"
 { return BisonParser::token::T_FARROW; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 74 "tokenizer.flex"
+#line 74 "../../tokenizer.flex"
 { return BisonParser::token::T_TARROW; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 76 "tokenizer.flex"
+#line 76 "../../tokenizer.flex"
 { return *YYText(); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "tokenizer.flex"
+#line 78 "../../tokenizer.flex"
 {
 									Ident errSymb = { static_cast<short>(mCol), static_cast<short>(mLine), 0 };
 									mSupport->newIdent( YYText(), 0, errSymb );
@@ -801,10 +787,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 83 "tokenizer.flex"
+#line 83 "../../tokenizer.flex"
 ECHO;
 	YY_BREAK
-#line 808 "FlexScanner.cpp"
+#line 794 "FlexScanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -992,9 +978,9 @@ void yyFlexLexer::switch_streams( std::istream* new_in, std::ostream* new_out )
 }
 
 #ifdef YY_INTERACTIVE
-int yyFlexLexer::LexerInput( char* buf, int /* max_size */ )
+size_t yyFlexLexer::LexerInput( char* buf, size_t /* max_size */ )
 #else
-int yyFlexLexer::LexerInput( char* buf, int max_size )
+size_t yyFlexLexer::LexerInput( char* buf, size_t max_size )
 #endif
 {
 	if ( yyin->eof() || yyin->fail() )
@@ -1021,7 +1007,7 @@ int yyFlexLexer::LexerInput( char* buf, int max_size )
 #endif
 }
 
-void yyFlexLexer::LexerOutput( const char* buf, int size )
+void yyFlexLexer::LexerOutput( const char* buf, size_t size )
 {
 	(void) yyout->write( buf, size );
 }
@@ -1079,7 +1065,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 	else
 		{
-			int num_to_read =
+			yy_size_t num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
@@ -1093,7 +1079,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 			if ( b->yy_is_our_buffer )
 				{
-				int new_size = b->yy_buf_size * 2;
+				yy_size_t new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1124,7 +1110,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		/* Read in more data. */
 		YY_INPUT( (&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-			(yy_n_chars), (size_t) num_to_read );
+			(yy_n_chars), num_to_read );
 
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
 		}
@@ -1234,7 +1220,7 @@ int yyFlexLexer::yy_get_next_buffer()
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register int number_to_move = (yy_n_chars) + 2;
+		register yy_size_t number_to_move = (yy_n_chars) + 2;
 		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
 		register char *source =
@@ -1277,7 +1263,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
 		else
 			{ /* need more input */
-			int offset = (yy_c_buf_p) - (yytext_ptr);
+			yy_size_t offset = (yy_c_buf_p) - (yytext_ptr);
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1301,7 +1287,7 @@ int yyFlexLexer::yy_get_next_buffer()
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(  ) )
-						return EOF;
+						return 0;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
 						YY_NEW_FILE;
@@ -1549,7 +1535,7 @@ void yyFlexLexer::yypop_buffer_state (void)
  */
 void yyFlexLexer::yyensure_buffer_stack(void)
 {
-	int num_to_alloc;
+	yy_size_t num_to_alloc;
     
 	if (!(yy_buffer_stack)) {
 
@@ -1704,4 +1690,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 83 "tokenizer.flex"
+#line 83 "../../tokenizer.flex"
