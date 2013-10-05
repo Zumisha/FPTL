@@ -1,7 +1,7 @@
 #include <assert.h>
 
 #include <iostream>
-#include <hash_set>
+#include <unordered_set>
 #include <boost/timer.hpp>
 
 #include "Run.h"
@@ -101,7 +101,7 @@ void * SExecutionContext::alloc(size_t aSize)
 int SExecutionContext::collect()
 {
 	std::stack<Collectable *> markStack;
-	std::hash_set<void *> marked;
+	std::unordered_set<void *> marked;
 
 	// Помечаем корни.
 	for (auto i = stack.begin(); i < stack.end(); ++i)

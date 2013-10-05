@@ -375,8 +375,10 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 	std::vector<Parser::ASTNode *> toProcess;
 
 	// Создаем узлы схемы для каждого рекурсивного функционального уравнения и функции без параметров.
-	for each (Parser::ASTNode * aDef in *definitions)
+	for (Parser::ListNode::iterator it = definitions->begin(); it != definitions->end(); ++it)
 	{
+		Parser::ASTNode * aDef = *it;
+
 		if (aDef->getType() == Parser::ASTNode::FunctionBlock)
 		{
 			Parser::FunctionNode * function = static_cast<Parser::FunctionNode *>(aDef);
@@ -407,10 +409,10 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 		}
 	}
 
-	for each(Parser::ASTNode * aDef in toProcess)
+	std::for_each(toProcess.begin(), toProcess.end(), [this](Parser::ASTNode * aDef)
 	{
 		process(aDef);
-	}
+	});
 }
 
 //-----------------------------------------------------------------------------

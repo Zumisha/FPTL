@@ -81,7 +81,7 @@ void ConstructorGenerator::visit(Parser::DefinitionNode * aDefinition)
 			: new EmptyConstructor(constructorName, dataName);
 
 		// ƒобавл€ем новый конструктор в список.
-		mConstructors.insert(std::make_pair(constructorName, constructor));
+		mConstructors.insert(std::make_pair(constructorName, std::shared_ptr<Constructor>(constructor)));
 
 		mTypeTuple.clear();
 	}
