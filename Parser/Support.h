@@ -2,7 +2,8 @@
 #define SUPPORT_H
 
 #include <vector>
-#include <hash_set>
+#include <list>
+#include <ext/hash_set>
 #include "Ident.h"
 #include "NodeVisitor.h"
 
@@ -105,8 +106,8 @@ namespace FPTL
 
 		std::list<ErrorMessage> mErrorList;
 
-		stdext::hash_map<std::string, int> mNameTable;
-		stdext::hash_set<std::string> mConstantTable;
+		std::hash_map<std::string, int> mNameTable;
+		std::hash_set<std::string> mConstantTable;
 
 		bool mWasError;
 

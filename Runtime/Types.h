@@ -12,11 +12,11 @@
 // ≈сли “ в реестре не содержитс€, то производитс€ полна€ типова€ проверка, и он либо добавл€етс€ в реестр, либо генерируетс€ исключение.
 //
 
-#include "Parser/Nodes.h"
+#include "../Parser/Nodes.h"
 #include <vector>
 #include <algorithm>
 #include <ostream>
-#include <hash_map>
+#include <ext/hash_map>
 #include <boost/bind.hpp>
 
 namespace FPTL { namespace Runtime {
