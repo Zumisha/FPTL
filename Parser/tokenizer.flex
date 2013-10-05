@@ -76,7 +76,7 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 [\(\)\.\,\:\;\[\]\{\}\<\>\~\$\#\*\=\+\~\@\%]	{ return *YYText(); }
 
 .								{
-									Ident errSymb = { mCol, mLine, 0 };
+									Ident errSymb = { static_cast<short>(mCol), static_cast<short>(mLine), 0 };
 									mSupport->newIdent( YYText(), 0, errSymb );
 									mSupport->semanticError( ErrTypes::IllegalCharacter, errSymb );
 								}

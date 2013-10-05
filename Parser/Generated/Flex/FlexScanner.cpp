@@ -500,10 +500,10 @@ static yyconst flex_int16_t yy_chk[287] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 1 "tokenizer.flex"
 /* ќписание сканнера дл€ генерации с использованием flex. */
 #define YY_NO_UNISTD_H 1
-#line 10 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 10 "tokenizer.flex"
 
 #include "../../FlexTokenizer.h"
 #include "../../Support.h"
@@ -614,7 +614,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 31 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 31 "tokenizer.flex"
 
 
 #line 621 "FlexScanner.cpp"
@@ -702,18 +702,18 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 33 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 33 "tokenizer.flex"
 { return processCommentBlock(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 35 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 35 "tokenizer.flex"
 { return '\n'; }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 36 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 36 "tokenizer.flex"
 {
 									mCol = 0;
 									mLine++;
@@ -722,17 +722,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 42 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 42 "tokenizer.flex"
 { return processIdentifier(); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 44 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 44 "tokenizer.flex"
 { return processIdentifier(); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 46 "tokenizer.flex"
 {
 									mVal->scNode = formDecimalConstant();
 									return BisonParser::token::NUMBER;
@@ -740,7 +740,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 51 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 51 "tokenizer.flex"
 {
                                     mVal->scNode = formLongLongConstant();
 									return BisonParser::token::NUMBER;
@@ -748,7 +748,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 56 "tokenizer.flex"
 {
 									mVal->scNode = formFPConstant( false );
 									return BisonParser::token::REALNUMBER;
@@ -756,7 +756,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 61 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 61 "tokenizer.flex"
 {
 									mVal->scNode = formFPConstant( true );
 									return BisonParser::token::REALNUMBER;
@@ -764,7 +764,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 66 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 66 "tokenizer.flex"
 {
 									mVal->scNode = formStringConstant();
 									return BisonParser::token::STRING;
@@ -772,36 +772,36 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 72 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 72 "tokenizer.flex"
 { return BisonParser::token::T_UNION; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 73 "tokenizer.flex"
 { return BisonParser::token::T_FARROW; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 74 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 74 "tokenizer.flex"
 { return BisonParser::token::T_TARROW; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 76 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 76 "tokenizer.flex"
 { return *YYText(); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 78 "tokenizer.flex"
 {
-									Ident errSymb = { mCol, mLine, 0 };
+									Ident errSymb = { static_cast<short>(mCol), static_cast<short>(mLine), 0 };
 									mSupport->newIdent( YYText(), 0, errSymb );
 									mSupport->semanticError( ErrTypes::IllegalCharacter, errSymb );
 								}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 83 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 83 "tokenizer.flex"
 ECHO;
 	YY_BREAK
 #line 808 "FlexScanner.cpp"
@@ -1704,4 +1704,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 83 "e:\\FPTL1\\Src\\Interpreter\\Parser\\tokenizer.flex"
+#line 83 "tokenizer.flex"
