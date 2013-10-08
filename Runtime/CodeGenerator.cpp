@@ -1,4 +1,4 @@
-#include <cstddef>
+ï»¿#include <cstddef>
 
 #include "CodeGenerator.h"
 #include "FScheme.h"
@@ -12,7 +12,7 @@ CodeGenerationVisitor::~CodeGenerationVisitor()
 
 void CodeGenerationVisitor::visit(const FFunctionNode * aNode)
 {
-	// Ãåíåðèðóåì âûçîâ ôóíêöèè.
+	// Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ Ð²Ñ‹Ð·Ð¾Ð² Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸.
 	AsmJit::GPVar node(mCompiler.newGP());
 	mCompiler.mov(node, (sysint_t)aNode);
 
@@ -28,7 +28,7 @@ void CodeGenerationVisitor::visit(const FParallelNode * aNode)
 
 	if (aNode->left()->isLong() && aNode->right()->isLong())
 	{
-		// Ïîðîæäàåì ëåâóþ ïîäçàäà÷ó.
+		// ÐŸÐ¾Ñ€Ð¾Ð¶Ð´Ð°ÐµÐ¼ Ð»ÐµÐ²ÑƒÑŽ Ð¿Ð¾Ð´Ð·Ð°Ð´Ð°Ñ‡Ñƒ.
 		AsmJit::GPVar leftResultVar(mCompiler.newGP());
 		mCompiler.mov(leftResultVar, AsmJit::Imm(0));
 
@@ -50,7 +50,7 @@ void CodeGenerationVisitor::visit(const FParallelNode * aNode)
 			context->setReturn(fork);
 		}
 
-		// Ïîðîæäàåì ïðàâóþ ïîäçàäà÷ó.
+		// ÐŸÐ¾Ñ€Ð¾Ð¶Ð´Ð°ÐµÐ¼ Ð¿Ñ€Ð°Ð²ÑƒÑŽ Ð¿Ð¾Ð´Ð·Ð°Ð´Ð°Ñ‡Ñƒ.
 		AsmJit::GPVar rightResultVar(mCompiler.newGP());
 		mCompiler.mov(rightResultVar, AsmJit::Imm(0));
 
@@ -72,7 +72,7 @@ void CodeGenerationVisitor::visit(const FParallelNode * aNode)
 			context->setReturn(fork);
 		}
 
-		// Ñîçäàåì öèêë îæèäàíèÿ ðåçóëüòàòà.
+		// Ð¡Ð¾Ð·Ð´Ð°ÐµÐ¼ Ñ†Ð¸ÐºÐ» Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð°.
 		AsmJit::Label repeat = mCompiler.newLabel();
 		AsmJit::Label exitLoop = mCompiler.newLabel();
 		AsmJit::Label loop = mCompiler.newLabel();
@@ -85,7 +85,7 @@ void CodeGenerationVisitor::visit(const FParallelNode * aNode)
 
 		mCompiler.bind(loop);
 
-		// Âûçûâàåì yield.
+		// Ð’Ñ‹Ð·Ñ‹Ð²Ð°ÐµÐ¼ yield.
 		auto context = mCompiler.call(&SExecutionContext::doYield);
 		context->setPrototype(AsmJit::CALL_CONV_DEFAULT, AsmJit::FunctionBuilder1<AsmJit::Void, SExecutionContext *>());
 		context->setArgument(0, mCompiler.argGP(0));
@@ -94,7 +94,7 @@ void CodeGenerationVisitor::visit(const FParallelNode * aNode)
 
 		mCompiler.bind(exitLoop);
 
-		// Cêëåèâàåì ðåçóëüòàò.
+		// CÐºÐ»ÐµÐ¸Ð²Ð°ÐµÐ¼ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚.
 		AsmJit::GPVar right(mCompiler.newGP());
 		mCompiler.mov(right, AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset));
 
@@ -113,20 +113,20 @@ void CodeGenerationVisitor::visit(const FParallelNode * aNode)
 		AsmJit::GPVar input(mCompiler.newGP());
 		mCompiler.mov(input, AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset));
 
-		// Âû÷èñëÿåì ëåâûé îïåðàíä.
+		// Ð’Ñ‹Ñ‡Ð¸ÑÐ»ÑÐµÐ¼ Ð»ÐµÐ²Ñ‹Ð¹ Ð¾Ð¿ÐµÑ€Ð°Ð½Ð´.
 		aNode->left()->accept(this);
 
 		AsmJit::GPVar left(mCompiler.newGP());
 		mCompiler.mov(left, AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset));
 		mCompiler.mov(AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset), input);
 
-		// Âû÷èñëÿåì ïðàâûé îïåðàíä.
+		// Ð’Ñ‹Ñ‡Ð¸ÑÐ»ÑÐµÐ¼ Ð¿Ñ€Ð°Ð²Ñ‹Ð¹ Ð¾Ð¿ÐµÑ€Ð°Ð½Ð´.
 		aNode->right()->accept(this);
 
 		AsmJit::GPVar right(mCompiler.newGP());
 		mCompiler.mov(right, AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset));
 
-		// Ñêëåèâàåì ðåçóëüòàò.
+		// Ð¡ÐºÐ»ÐµÐ¸Ð²Ð°ÐµÐ¼ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚.
 		AsmJit::ECall * context = mCompiler.call(&DataElement::concat);
 		context->setPrototype(AsmJit::CALL_CONV_DEFAULT, AsmJit::FunctionBuilder2<DataElement *, DataElement *, DataElement *>());
 		context->setArgument(0, left);
@@ -148,18 +148,18 @@ void CodeGenerationVisitor::visit(const FConditionNode * aNode)
 {
 	const sysint_t dataOffset = offsetof(SExecutionContext, Data);
 
-	// Çàïîìèíàåì âõîäíûå äàííûå.
+	// Ð—Ð°Ð¿Ð¾Ð¼Ð¸Ð½Ð°ÐµÐ¼ Ð²Ñ…Ð¾Ð´Ð½Ñ‹Ðµ Ð´Ð°Ð½Ð½Ñ‹Ðµ.
 	AsmJit::GPVar input(mCompiler.newGP());
 	mCompiler.mov(input, AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset));
 
-	// Ãåíåðèðóåì êîä, âû÷èñëÿþùèé óñëîâíèå.
+	// Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ ÐºÐ¾Ð´, Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÑÑŽÑ‰Ð¸Ð¹ ÑƒÑÐ»Ð¾Ð²Ð½Ð¸Ðµ.
 	aNode->condition()->accept(this);
 
-	// Ïîëó÷àåì óêàçàòåëü íà âû÷èñëåííûé ðåçóëüòàò.
+	// ÐŸÐ¾Ð»ÑƒÑ‡Ð°ÐµÐ¼ ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ Ð½Ð° Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð½Ñ‹Ð¹ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚.
 	AsmJit::GPVar cond(mCompiler.newGP());
 	mCompiler.mov(cond, AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset));
 
-	// Âîññòàíàâëÿåì óêàçàòåëü íà âõîäíûå äàííûå.
+	// Ð’Ð¾ÑÑÑ‚Ð°Ð½Ð°Ð²Ð»ÑÐµÐ¼ ÑƒÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒ Ð½Ð° Ð²Ñ…Ð¾Ð´Ð½Ñ‹Ðµ Ð´Ð°Ð½Ð½Ñ‹Ðµ.
 	mCompiler.mov(AsmJit::sysint_ptr(mCompiler.argGP(0), dataOffset), input);
 
 	AsmJit::Label falseBranch = mCompiler.newLabel();
@@ -174,7 +174,7 @@ void CodeGenerationVisitor::visit(const FConditionNode * aNode)
 
 	mCompiler.je(falseBranch);
 
-	// Ãåíåðèðóåì then-âåòêó.
+	// Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ then-Ð²ÐµÑ‚ÐºÑƒ.
 	aNode->trueBranch()->accept(this);
 
 	AsmJit::Label end = mCompiler.newLabel();
@@ -182,7 +182,7 @@ void CodeGenerationVisitor::visit(const FConditionNode * aNode)
 
 	mCompiler.bind(falseBranch);
 
-	// Ãåíåðèðóåì else-âåòêó.
+	// Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ else-Ð²ÐµÑ‚ÐºÑƒ.
 	aNode->falseBranch()->accept(this);
 
 	mCompiler.bind(end);
@@ -190,7 +190,7 @@ void CodeGenerationVisitor::visit(const FConditionNode * aNode)
 
 void CodeGenerationVisitor::visit(const FScheme * aScheme)
 {
-	// Ãåíåðèðóåì âûçîâ ôóíêöèè, ïðîèçâîäÿùåé âûïîëíåíèå êîäà ñõåìû.
+	// Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ Ð²Ñ‹Ð·Ð¾Ð² Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸, Ð¿Ñ€Ð¾Ð¸Ð·Ð²Ð¾Ð´ÑÑ‰ÐµÐ¹ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð´Ð° ÑÑ…ÐµÐ¼Ñ‹.
 	AsmJit::GPVar address(mCompiler.newGP());
 	mCompiler.mov(address, AsmJit::Imm((sysint_t)aScheme->firstNode()));
 
@@ -205,7 +205,7 @@ void * CodeGenerationVisitor::generateCode(const FSchemeNode * aSchemeNode)
 
 	generator.mCompiler.newFunction(AsmJit::CALL_CONV_DEFAULT, AsmJit::FunctionBuilder1<AsmJit::Void, SExecutionContext *>());
 
-	// Ãåíåðèðóåì êîä ñõåìû.
+	// Ð“ÐµÐ½ÐµÑ€Ð¸Ñ€ÑƒÐµÐ¼ ÐºÐ¾Ð´ ÑÑ…ÐµÐ¼Ñ‹.
 	aSchemeNode->accept(&generator);
 
 	generator.mCompiler.endFunction();
@@ -220,11 +220,11 @@ FSchemeNode::TCompiledProc FSchemeNode::createJITStub()
 
 	compiler.newFunction(AsmJit::CALL_CONV_DEFAULT, AsmJit::FunctionBuilder1<AsmJit::Void, SExecutionContext *>());
 
-	// Êýøèðóåì this.
+	// ÐšÑÑˆÐ¸Ñ€ÑƒÐµÐ¼ this.
 	AsmJit::GPVar node(compiler.newGP());
 	compiler.mov(node, AsmJit::Imm((sysint_t)this));
 
-	// Êîìïèëèðóåì êîä.
+	// ÐšÐ¾Ð¼Ð¿Ð¸Ð»Ð¸Ñ€ÑƒÐµÐ¼ ÐºÐ¾Ð´.
 	AsmJit::GPVar proc(compiler.newGP());
 
 	CodeGenerationVisitor generator;
@@ -234,10 +234,10 @@ FSchemeNode::TCompiledProc FSchemeNode::createJITStub()
 	generate->setArgument(0, node);
 	generate->setReturn(proc);
 
-	// Ïîäìåíÿåì àäðåñ íà ñêîìïèëèðîâàííûé êîä.
+	// ÐŸÐ¾Ð´Ð¼ÐµÐ½ÑÐµÐ¼ Ð°Ð´Ñ€ÐµÑ Ð½Ð° ÑÐºÐ¾Ð¼Ð¿Ð¸Ð»Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ ÐºÐ¾Ð´.
 	compiler.mov(AsmJit::sysint_ptr(node, offsetof(FSchemeNode, mCompiledProc)), proc);
 
-	// Çàïóñêàåì åãî.
+	// Ð—Ð°Ð¿ÑƒÑÐºÐ°ÐµÐ¼ ÐµÐ³Ð¾.
 	AsmJit::ECall * call = compiler.call(proc);
 	call->setPrototype(AsmJit::CALL_CONV_DEFAULT, AsmJit::FunctionBuilder1<AsmJit::Void, SExecutionContext *>());
 	call->setArgument(0, compiler.argGP(0));

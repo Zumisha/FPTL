@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <list>
 #include <string>
@@ -10,7 +10,7 @@
 namespace FPTL { namespace Runtime {
 
 //-------------------------------------------------------------------------------
-// TODO: сделать отдельный интерфейс конструктора.
+// TODO: СЃРґРµР»Р°С‚СЊ РѕС‚РґРµР»СЊРЅС‹Р№ РёРЅС‚РµСЂС„РµР№СЃ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°.
 class Constructor
 {
 public:
@@ -28,15 +28,15 @@ protected:
 	std::string mConstructorName;
 	std::string mTypeName;
 
-	// Эталонный тип.
+	// Р­С‚Р°Р»РѕРЅРЅС‹Р№ С‚РёРї.
 	TTypeList mReferenceType;
 
-	// Создаваемый тип данных.
+	// РЎРѕР·РґР°РІР°РµРјС‹Р№ С‚РёРї РґР°РЅРЅС‹С….
 	TypeInfo mTargetType;
 };
 
 //-------------------------------------------------------------------------------
-// Конструктор без параметров.
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Р±РµР· РїР°СЂР°РјРµС‚СЂРѕРІ.
 class EmptyConstructor : public Constructor
 {
 public:
@@ -54,7 +54,7 @@ typedef std::function<void (SExecutionContext &)> TFunction;
 
 
 //-------------------------------------------------------------------------------
-// Библиотека функций.
+// Р‘РёР±Р»РёРѕС‚РµРєР° С„СѓРЅРєС†РёР№.
 class FunctionLibrary
 {
 public:

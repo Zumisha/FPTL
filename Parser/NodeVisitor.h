@@ -1,4 +1,4 @@
-#ifndef NODEVISITOR_H
+п»ї#ifndef NODEVISITOR_H
 #define NODEVISITOR_H
 
 namespace FPTL { namespace Parser {
@@ -22,8 +22,8 @@ public:
 	virtual ~NodeVisitor() {}
 
 	//
-	// Группа методов, вызываемых при входе в конкртеный узел, до обхода его дочерних узлов.
-	// Решение об обходе дочерних узлов принимается на основе возвращаемого значения (если true, то обход производится).
+	// Р“СЂСѓРїРїР° РјРµС‚РѕРґРѕРІ, РІС‹Р·С‹РІР°РµРјС‹С… РїСЂРё РІС…РѕРґРµ РІ РєРѕРЅРєСЂС‚РµРЅС‹Р№ СѓР·РµР», РґРѕ РѕР±С…РѕРґР° РµРіРѕ РґРѕС‡РµСЂРЅРёС… СѓР·Р»РѕРІ.
+	// Р РµС€РµРЅРёРµ РѕР± РѕР±С…РѕРґРµ РґРѕС‡РµСЂРЅРёС… СѓР·Р»РѕРІ РїСЂРёРЅРёРјР°РµС‚СЃСЏ РЅР° РѕСЃРЅРѕРІРµ РІРѕР·РІСЂР°С‰Р°РµРјРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ (РµСЃР»Рё true, С‚Рѕ РѕР±С…РѕРґ РїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ).
 	//
 	virtual void visit(ListNode * aNode);
 	virtual void visit(NameRefNode * aNameRefNode);
@@ -36,7 +36,7 @@ public:
 	virtual void visit(ExpressionNode * aExpressionNode);
 	virtual void visit(ConstantNode * aConstantNode);
 
-	// Начинает обход дерева.
+	// РќР°С‡РёРЅР°РµС‚ РѕР±С…РѕРґ РґРµСЂРµРІР°.
 	void process(ASTNode * aNode );
 };
 

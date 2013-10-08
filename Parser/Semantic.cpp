@@ -1,7 +1,7 @@
-#include "SemanticCheck.h"
+п»ї#include "SemanticCheck.h"
 #include "boost/bind.hpp"
 
-// Semantic.cpp - реализация класса для семантической проверки структуры программы.
+// Semantic.cpp - СЂРµР°Р»РёР·Р°С†РёСЏ РєР»Р°СЃСЃР° РґР»СЏ СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕР№ РїСЂРѕРІРµСЂРєРё СЃС‚СЂСѓРєС‚СѓСЂС‹ РїСЂРѕРіСЂР°РјРјС‹.
 
 namespace FPTL { namespace Parser {
 
@@ -33,13 +33,13 @@ void NamesChecker::visit( FunctionNode * aFunctionNode )
 
 	NodeVisitor::visit(aFunctionNode);
 
-	// Проверяем наличие главного уравнения.
+	// РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ РіР»Р°РІРЅРѕРіРѕ СѓСЂР°РІРЅРµРЅРёСЏ.
 	if (!aFunctionNode->getDefinition(aFunctionNode->getFuncName()))
 	{
 		mSupport->semanticError(ErrTypes::MissingMainDefinition, aFunctionNode->getFuncName());
 	}
 
-	// Выполняем проверку имен.
+	// Р’С‹РїРѕР»РЅСЏРµРј РїСЂРѕРІРµСЂРєСѓ РёРјРµРЅ.
 	checkNames();
 	popContext();
 }
@@ -56,7 +56,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 		case ASTNode::InputVarDefinition:
 			if (mContext.insertName( aDefinitionNode->getDefinitionName(),aDefinitionNode ) == false)
 			{
-				// Повторное определение.
+				// РџРѕРІС‚РѕСЂРЅРѕРµ РѕРїСЂРµРґРµР»РµРЅРёРµ.
 				mSupport->semanticError( ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName() );
 			}
 			break;
@@ -129,7 +129,7 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 
 	std::vector<STermDescriptor> undefinedTerms;
 
-	// Сначала ищем в локальном пространстве имен.
+	// РЎРЅР°С‡Р°Р»Р° РёС‰РµРј РІ Р»РѕРєР°Р»СЊРЅРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ РёРјРµРЅ.
 	std::map<Ident,ASTNode*>::iterator pos = mContext.DefinitionsList.find( aTermDesc.TermName );
 
 	if( pos != mContext.DefinitionsList.end() )
@@ -138,7 +138,7 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 	}
 	else
 	{
-		// Затем ищем в глобальном пространстве имен.
+		// Р—Р°С‚РµРј РёС‰РµРј РІ РіР»РѕР±Р°Р»СЊРЅРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ РёРјРµРЅ.
 		if( !mContextStack.empty() )
 		{
 			pos = mContextStack[0].DefinitionsList.find( aTermDesc.TermName );
@@ -179,7 +179,7 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 	}
 	else
 	{
-		// TODO: выводить число требуемых и фактических параметров.
+		// TODO: РІС‹РІРѕРґРёС‚СЊ С‡РёСЃР»Рѕ С‚СЂРµР±СѓРµРјС‹С… Рё С„Р°РєС‚РёС‡РµСЃРєРёС… РїР°СЂР°РјРµС‚СЂРѕРІ.
 		mSupport->semanticError( ErrTypes::InvalidNumberOfParameters, aTermDesc.TermName );
 	}
 }

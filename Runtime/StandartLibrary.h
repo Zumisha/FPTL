@@ -1,4 +1,4 @@
-// Встроенные функции.
+п»ї// Р’СЃС‚СЂРѕРµРЅРЅС‹Рµ С„СѓРЅРєС†РёРё.
 
 #ifndef STANDART_LIBRARY_H
 #define STANDART_LIBRARY_H

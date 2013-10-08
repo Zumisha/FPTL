@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "Context.h"
 
@@ -22,7 +22,7 @@ struct StringValue : public Collectable
 };
 
 //-----------------------------------------------------------------------------
-// Класс для создания строк.
+// РљР»Р°СЃСЃ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРє.
 class StringBuilder
 {
 public:

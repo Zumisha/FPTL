@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <stack>
 #include <sstream>
@@ -14,13 +14,13 @@ class Ops;
 struct ADTValue;
 struct StringValue;
 
-// Variant для представления всех типов данных, кроме неопределенного значения.
+// Variant РґР»СЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РІСЃРµС… С‚РёРїРѕРІ РґР°РЅРЅС‹С…, РєСЂРѕРјРµ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ.
 class DataValue
 {
 	friend class DataBuilders;
 
 public:
-	// Конструктор по умолчани. Создает значение типа "неопределенность".
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРё. РЎРѕР·РґР°РµС‚ Р·РЅР°С‡РµРЅРёРµ С‚РёРїР° "РЅРµРѕРїСЂРµРґРµР»РµРЅРЅРѕСЃС‚СЊ".
 	DataValue();
 
 	const Ops * getOps() const;
@@ -30,7 +30,7 @@ protected:
 
 	const Ops * mOps;
 
-// Доступ к информационной части открыт для удобства.
+// Р”РѕСЃС‚СѓРї Рє РёРЅС„РѕСЂРјР°С†РёРѕРЅРЅРѕР№ С‡Р°СЃС‚Рё РѕС‚РєСЂС‹С‚ РґР»СЏ СѓРґРѕР±СЃС‚РІР°.
 public:
 	union
 	{
@@ -41,7 +41,7 @@ public:
 	};
 };
 
-// Неопределенное значение.
+// РќРµРѕРїСЂРµРґРµР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ.
 class UndefinedValue : public DataValue
 {
 	friend class DataBuilders;
@@ -51,24 +51,24 @@ class UndefinedValue : public DataValue
 	{}
 };
 
-// Интерфейс классов операций над типами данных
+// РРЅС‚РµСЂС„РµР№СЃ РєР»Р°СЃСЃРѕРІ РѕРїРµСЂР°С†РёР№ РЅР°Рґ С‚РёРїР°РјРё РґР°РЅРЅС‹С…
 class Ops
 {
 public:
 	virtual TypeInfo * getType(const DataValue & aVal) const = 0;
 	
-	// Добавлять сюда методы по мере добавления новых типов.
+	// Р”РѕР±Р°РІР»СЏС‚СЊ СЃСЋРґР° РјРµС‚РѕРґС‹ РїРѕ РјРµСЂРµ РґРѕР±Р°РІР»РµРЅРёСЏ РЅРѕРІС‹С… С‚РёРїРѕРІ.
 	virtual Ops * combine(const Ops * aOther) const = 0;
 	virtual Ops * withOps(class IntegerOps const * aOps) const = 0;
 	virtual Ops * withOps(class BooleanOps const * aOps) const = 0;
 	virtual Ops * withOps(class DoubleOps const * aOps) const = 0;
 
-	// Преобразование типов.
+	// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ.
 	virtual int toInt(const DataValue & aVal) const = 0;
 	virtual double toDouble(const DataValue & aVal) const = 0;
 	virtual StringValue * toString(const DataValue & aVal) const = 0;
 
-	// Арифметические функции.
+	// РђСЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ С„СѓРЅРєС†РёРё.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const = 0;
@@ -76,19 +76,19 @@ public:
 	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 	virtual DataValue abs(const DataValue & aArg) const = 0;
 
-	// Функции сравнения.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 
-	// Метод для определения достижимых обхектов при сборке мусора.
+	// РњРµС‚РѕРґ РґР»СЏ РѕРїСЂРµРґРµР»РµРЅРёСЏ РґРѕСЃС‚РёР¶РёРјС‹С… РѕР±С…РµРєС‚РѕРІ РїСЂРё СЃР±РѕСЂРєРµ РјСѓСЃРѕСЂР°.
 	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const = 0;
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const = 0;
 };
 
-// Конструкторы типов данных.
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂС‹ С‚РёРїРѕРІ РґР°РЅРЅС‹С….
 class DataBuilders
 {
 public:

@@ -1,4 +1,4 @@
-#include <assert.h>
+п»ї#include <assert.h>
 
 #include <iostream>
 #include <unordered_set>
@@ -30,13 +30,13 @@ SExecutionContext * SExecutionContext::fork(FSchemeNode * aScheme)
 	fork->Scheme = aScheme;
 	fork->Parent = this;
 
-	// Копируем стек.
+	// РљРѕРїРёСЂСѓРµРј СЃС‚РµРє.
 	for (int i = argPos; i < stack.size(); i++)
 	{
 		fork->stack.push_back(stack.at(i));
 	}
 	
-	// Добавляем в очередь новое задание.
+	// Р”РѕР±Р°РІР»СЏРµРј РІ РѕС‡РµСЂРµРґСЊ РЅРѕРІРѕРµ Р·Р°РґР°РЅРёРµ.
 	mEvaluatorUnit->addJob(fork);
 
 	return fork;
@@ -47,12 +47,12 @@ void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 	assert(!mEvaluatorUnit);
 	mEvaluatorUnit = aEvaluatorUnit;
 
-	// Для отключения JIT.
+	// Р”Р»СЏ РѕС‚РєР»СЋС‡РµРЅРёСЏ JIT.
 	Scheme->execute(*this);
 
 	//Scheme->mCompiledProc(this);
 
-	// Сообщаем о готовности задания.
+	// РЎРѕРѕР±С‰Р°РµРј Рѕ РіРѕС‚РѕРІРЅРѕСЃС‚Рё Р·Р°РґР°РЅРёСЏ.
 	Ready.store(1, boost::memory_order_release);
 }
 
@@ -103,24 +103,24 @@ int SExecutionContext::collect()
 	std::stack<Collectable *> markStack;
 	std::unordered_set<void *> marked;
 
-	// Помечаем корни.
+	// РџРѕРјРµС‡Р°РµРј РєРѕСЂРЅРё.
 	for (auto i = stack.begin(); i < stack.end(); ++i)
 	{
 		i->getOps()->mark(*i, markStack);
 	}
 
-	// Помечаем транзитивное замыкание.
+	// РџРѕРјРµС‡Р°РµРј С‚СЂР°РЅР·РёС‚РёРІРЅРѕРµ Р·Р°РјС‹РєР°РЅРёРµ.
 	while (!markStack.empty())
 	{
 		auto ptr = markStack.top();
 		markStack.pop();
 
-		// Циклических ссылок нет.
+		// Р¦РёРєР»РёС‡РµСЃРєРёС… СЃСЃС‹Р»РѕРє РЅРµС‚.
 		marked.insert(ptr);
 		ptr->mark(markStack);
 	}
 
-	// Освобождаем непомеченную память.
+	// РћСЃРІРѕР±РѕР¶РґР°РµРј РЅРµРїРѕРјРµС‡РµРЅРЅСѓСЋ РїР°РјСЏС‚СЊ.
 	std::list<void *> sweeped;
 
 	int numCollected = 0;
@@ -190,7 +190,7 @@ void EvaluatorUnit::evaluateScheme()
 		schedule();
 	}
 
-	// Выводим статистику.
+	// Р’С‹РІРѕРґРёРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ.
 	std::stringstream ss;
 	ss << "\nJobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed;
 	std::cout << ss.str();
@@ -198,7 +198,7 @@ void EvaluatorUnit::evaluateScheme()
 
 void EvaluatorUnit::schedule()
 {
-	// Берем задание из своей очереди.
+	// Р‘РµСЂРµРј Р·Р°РґР°РЅРёРµ РёР· СЃРІРѕРµР№ РѕС‡РµСЂРµРґРё.
 	SExecutionContext * context = 0;
 		
 	if (mJobQueue.pop(context))
@@ -208,7 +208,7 @@ void EvaluatorUnit::schedule()
 		return;
 	}
 
-	// Если это не удалось, берем у кого-нибудь другого.
+	// Р•СЃР»Рё СЌС‚Рѕ РЅРµ СѓРґР°Р»РѕСЃСЊ, Р±РµСЂРµРј Сѓ РєРѕРіРѕ-РЅРёР±СѓРґСЊ РґСЂСѓРіРѕРіРѕ.
 	context = mEvaluator->findJob(this);
 	
 	if (context)
@@ -255,13 +255,13 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 	int evaluatorUnits = aNumEvaluators;
 
-	// Создаем юниты выполнения.
+	// РЎРѕР·РґР°РµРј СЋРЅРёС‚С‹ РІС‹РїРѕР»РЅРµРЅРёСЏ.
 	for (int i = 0; i < evaluatorUnits; i++)
 	{
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
 
-	// Создаем задание и назначем его первому вычислителю.
+	// РЎРѕР·РґР°РµРј Р·Р°РґР°РЅРёРµ Рё РЅР°Р·РЅР°С‡РµРј РµРіРѕ РїРµСЂРІРѕРјСѓ РІС‹С‡РёСЃР»РёС‚РµР»СЋ.
 
 	SExecutionContext * context = new SExecutionContext();
 
@@ -282,7 +282,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 			//aScheme->mCompiledProc(context);
 			aScheme->execute(aCtx);
 
-			// TEST: собираем всю память.
+			// TEST: СЃРѕР±РёСЂР°РµРј РІСЃСЋ РїР°РјСЏС‚СЊ.
 			//aCtx.collect();
 
 			stop();
@@ -296,18 +296,18 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 	mEvaluatorUnits[0]->addJob(context);
 
-	// Создаем потоки.
+	// РЎРѕР·РґР°РµРј РїРѕС‚РѕРєРё.
 	for (int i = 0; i < evaluatorUnits; i++)
 	{
 		mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
 	}
 
-	// Ждем завершения вычислений.
+	// Р–РґРµРј Р·Р°РІРµСЂС€РµРЅРёСЏ РІС‹С‡РёСЃР»РµРЅРёР№.
 	mThreadGroup.join_all();
 
 	int stop = 0;
 
-	// TODO: освобождаем всю память, выделенную под скомпилированный в рантайме код.
+	// TODO: РѕСЃРІРѕР±РѕР¶РґР°РµРј РІСЃСЋ РїР°РјСЏС‚СЊ, РІС‹РґРµР»РµРЅРЅСѓСЋ РїРѕРґ СЃРєРѕРјРїРёР»РёСЂРѕРІР°РЅРЅС‹Р№ РІ СЂР°РЅС‚Р°Р№РјРµ РєРѕРґ.
 }
 
 //-----------------------------------------------------------------------------

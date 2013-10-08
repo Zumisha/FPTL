@@ -1,4 +1,4 @@
-// CodeGenerator.h - JIT-генерация кода по функциональной схеме.
+п»ї// CodeGenerator.h - JIT-РіРµРЅРµСЂР°С†РёСЏ РєРѕРґР° РїРѕ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕР№ СЃС…РµРјРµ.
 
 #ifndef CODEGENERATOR_H
 #define CODEGENERATOR_H

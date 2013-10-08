@@ -68,7 +68,7 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\External\AsmJit\AsmJit\Build;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal-debug.lib; AsmJitd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>

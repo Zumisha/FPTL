@@ -1,4 +1,4 @@
-#ifndef SEMANTIC_CHECK_H
+ï»¿#ifndef SEMANTIC_CHECK_H
 #define SEMANTIC_CHECK_H
 
 #include <map>
@@ -12,7 +12,7 @@ namespace FPTL {
 namespace Parser {
 
 //
-// NamesChecker. Ïðîâåðÿåò áûëî ëè èñïîëüçóåìîå èìÿ îïðåäåëåíî â òåêóùåì êîíòåêñòå (äàííîå, ôóíêöèÿ).
+// NamesChecker. ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÑ‚ Ð±Ñ‹Ð»Ð¾ Ð»Ð¸ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÐ¼Ð¾Ðµ Ð¸Ð¼Ñ Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð¾ Ð² Ñ‚ÐµÐºÑƒÑ‰ÐµÐ¼ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚Ðµ (Ð´Ð°Ð½Ð½Ð¾Ðµ, Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ).
 //
 class NamesChecker : public NodeVisitor
 {
@@ -65,7 +65,7 @@ private:
 };
 
 //
-// Íàõîäèò ðåêóðñèâíûå òèïîâûå óðàâíåíèÿ, âûñòàâëÿåò èì íåíóëåâîé öèêëè÷åñêèé èíäåêñ.
+// ÐÐ°Ñ…Ð¾Ð´Ð¸Ñ‚ Ñ€ÐµÐºÑƒÑ€ÑÐ¸Ð²Ð½Ñ‹Ðµ Ñ‚Ð¸Ð¿Ð¾Ð²Ñ‹Ðµ ÑƒÑ€Ð°Ð²Ð½ÐµÐ½Ð¸Ñ, Ð²Ñ‹ÑÑ‚Ð°Ð²Ð»ÑÐµÑ‚ Ð¸Ð¼ Ð½ÐµÐ½ÑƒÐ»ÐµÐ²Ð¾Ð¹ Ñ†Ð¸ÐºÐ»Ð¸Ñ‡ÐµÑÐºÐ¸Ð¹ Ð¸Ð½Ð´ÐµÐºÑ.
 //
 class RecursionFinder : public NodeVisitor
 {
@@ -90,7 +90,7 @@ public:
 		{
 			ASTNode * target = aNameRefNode->getTarget();
 
-			// Îòëàâëèâàåì ðåêóðñèþ.
+			// ÐžÑ‚Ð»Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ Ñ€ÐµÐºÑƒÑ€ÑÐ¸ÑŽ.
 			if (std::find(mTestDefinitions.begin(), mTestDefinitions.end(), aNameRefNode->getName() ) != mTestDefinitions.end())
 			{
 				target->increaseCyclicIndex();
@@ -103,7 +103,7 @@ public:
 
 		if (aNameRefNode->getType() == ASTNode::FuncObjectWithParameters)
 		{
-			// Èùåì ðåêóðñèþ ñðåäè ôóíêöèîíàëüíûõ ïàðàìåòðîâ.
+			// Ð˜Ñ‰ÐµÐ¼ Ñ€ÐµÐºÑƒÑ€ÑÐ¸ÑŽ ÑÑ€ÐµÐ´Ð¸ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ñ… Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð².
 			process(aNameRefNode->getParameters());
 		}
 	}

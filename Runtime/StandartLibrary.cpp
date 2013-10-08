@@ -1,4 +1,4 @@
-#include <cstdlib>
+п»ї#include <cstdlib>
 #include <iostream>
 #include <regex>
 #include <fstream>
@@ -16,7 +16,7 @@ namespace {
 
 void id(SExecutionContext & aCtx)
 {
-	// Копируем данные аргументы от начала фрейма.
+	// РљРѕРїРёСЂСѓРµРј РґР°РЅРЅС‹Рµ Р°СЂРіСѓРјРµРЅС‚С‹ РѕС‚ РЅР°С‡Р°Р»Р° С„СЂРµР№РјР°.
 	auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
 
 	for (int i = 0; i < numArgs; ++i)
@@ -125,7 +125,7 @@ void greaterOrEqual(SExecutionContext & aCtx)
 	);
 }
 
-// Генерирует случайное вещественное число в диапазоне от 0 до 1.
+// Р“РµРЅРµСЂРёСЂСѓРµС‚ СЃР»СѓС‡Р°Р№РЅРѕРµ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРµ С‡РёСЃР»Рѕ РІ РґРёР°РїР°Р·РѕРЅРµ РѕС‚ 0 РґРѕ 1.
 void rand(SExecutionContext & aCtx)
 {
 	aCtx.push(DataBuilders::createDouble((double)std::rand() / RAND_MAX));
@@ -233,7 +233,7 @@ void printType(SExecutionContext & aCtx)
 	}
 }
 
-// Преобразование в строку.
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РІ СЃС‚СЂРѕРєСѓ.
 void toString(SExecutionContext & aCtx)
 {
 	std::stringstream sstream;
@@ -244,7 +244,7 @@ void toString(SExecutionContext & aCtx)
 	aCtx.push(StringBuilder::create(aCtx, sstream.str()));
 }
 
-// Преобразование в вещественное число.
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РІ РІРµС‰РµСЃС‚РІРµРЅРЅРѕРµ С‡РёСЃР»Рѕ.
 void toInteger(SExecutionContext & aCtx)
 {
 	auto & arg = aCtx.getArg(0);
@@ -252,7 +252,7 @@ void toInteger(SExecutionContext & aCtx)
 	aCtx.push(DataBuilders::createInt(arg.getOps()->toInt(arg)));
 }
 
-// Преобразование в целое число.
+// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РІ С†РµР»РѕРµ С‡РёСЃР»Рѕ.
 void toDouble(SExecutionContext & aCtx)
 {
 	auto & arg = aCtx.getArg(0);
@@ -260,7 +260,7 @@ void toDouble(SExecutionContext & aCtx)
 	aCtx.push(DataBuilders::createDouble(arg.getOps()->toDouble(arg)));
 }
 
-// Конкатенация строк.
+// РљРѕРЅРєР°С‚РµРЅР°С†РёСЏ СЃС‚СЂРѕРє.
 void concat(SExecutionContext & aCtx)
 {
 	auto & lhs = aCtx.getArg(0);
@@ -280,7 +280,7 @@ void concat(SExecutionContext & aCtx)
 	aCtx.push(val);
 }
 
-// Длина строки.
+// Р”Р»РёРЅР° СЃС‚СЂРѕРєРё.
 void length(SExecutionContext & aCtx)
 {
 	auto & arg = aCtx.getArg(0);
@@ -289,7 +289,7 @@ void length(SExecutionContext & aCtx)
 	aCtx.push(DataBuilders::createInt(str->length()));
 }
 
-// Поиск по регулярному выражению.
+// РџРѕРёСЃРє РїРѕ СЂРµРіСѓР»СЏСЂРЅРѕРјСѓ РІС‹СЂР°Р¶РµРЅРёСЋ.
 void search(SExecutionContext & aCtx)
 {
 	auto & arg0 = aCtx.getArg(0);
@@ -317,7 +317,7 @@ void search(SExecutionContext & aCtx)
 	}
 }
 
-// Проверка соответсвия по регулярному выражению.
+// РџСЂРѕРІРµСЂРєР° СЃРѕРѕС‚РІРµС‚СЃРІРёСЏ РїРѕ СЂРµРіСѓР»СЏСЂРЅРѕРјСѓ РІС‹СЂР°Р¶РµРЅРёСЋ.
 void match(SExecutionContext & aCtx)
 {
 	auto & arg0 = aCtx.getArg(0);
@@ -344,7 +344,7 @@ void match(SExecutionContext & aCtx)
 	}
 }
 
-// Замена по регулярному выражению.
+// Р—Р°РјРµРЅР° РїРѕ СЂРµРіСѓР»СЏСЂРЅРѕРјСѓ РІС‹СЂР°Р¶РµРЅРёСЋ.
 void replace(SExecutionContext & aCtx)
 {
 	auto & arg0 = aCtx.getArg(0);
@@ -363,7 +363,7 @@ void replace(SExecutionContext & aCtx)
 	aCtx.push(StringBuilder::create(aCtx, result));
 }
 
-// Выделение лексемы с начала строки.
+// Р’С‹РґРµР»РµРЅРёРµ Р»РµРєСЃРµРјС‹ СЃ РЅР°С‡Р°Р»Р° СЃС‚СЂРѕРєРё.
 void getToken(SExecutionContext & aCtx)
 {
 	auto & arg0 = aCtx.getArg(0);
@@ -390,10 +390,10 @@ void getToken(SExecutionContext & aCtx)
 	}
 }
 
-// Чтение содержимого файла.
+// Р§С‚РµРЅРёРµ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р°.
 void readFile(SExecutionContext & aCtx)
 {
-	// Проверяем имя файла.
+	// РџСЂРѕРІРµСЂСЏРµРј РёРјСЏ С„Р°Р№Р»Р°.
 	auto & arg = aCtx.getArg(0);
 
 	auto fileName = arg.getOps()->toString(arg);
@@ -402,16 +402,16 @@ void readFile(SExecutionContext & aCtx)
 	input.exceptions(std::ios::failbit | std::ios::badbit);
 	input.open(fileName->str(), std::ios::binary);
 
-	// Вычисляем размер файла.
+	// Р’С‹С‡РёСЃР»СЏРµРј СЂР°Р·РјРµСЂ С„Р°Р№Р»Р°.
 	auto begin = input.tellg();
 	input.seekg(0, std::ios::end);
 	auto size = input.tellg() - begin;
 	input.seekg(0, std::ios::beg);
 
-	// Резервируем память под файл.
+	// Р РµР·РµСЂРІРёСЂСѓРµРј РїР°РјСЏС‚СЊ РїРѕРґ С„Р°Р№Р».
 	auto val = StringBuilder::create(aCtx, size);
 
-	// Читаем данные.
+	// Р§РёС‚Р°РµРј РґР°РЅРЅС‹Рµ.
 	std::copy(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>(), val.mString->getChars());
 
 	aCtx.push(val);
@@ -423,7 +423,7 @@ StandartLibrary::StandartLibrary() : FunctionLibrary("StdLib")
 {
 	addFunction(FPTL::Parser::BuildInFunctions::Id, &id);
 
-	// Арифметические операции.
+	// РђСЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё.
 	addFunction(FPTL::Parser::BuildInFunctions::Add, &add);
 	addFunction(FPTL::Parser::BuildInFunctions::Subtract, &sub);
 	addFunction(FPTL::Parser::BuildInFunctions::Multiply, &mul);
@@ -437,7 +437,7 @@ StandartLibrary::StandartLibrary() : FunctionLibrary("StdLib")
 	addFunction(FPTL::Parser::BuildInFunctions::NotEqual, &notEqual);
 	addFunction(FPTL::Parser::BuildInFunctions::Abs, &abs);
 
-	// Трансцендентные функции.
+	// РўСЂР°РЅСЃС†РµРЅРґРµРЅС‚РЅС‹Рµ С„СѓРЅРєС†РёРё.
 	addFunction(FPTL::Parser::BuildInFunctions::Rand, &rand);
 	addFunction(FPTL::Parser::BuildInFunctions::Sqrt, &sqrt);
 	addFunction(FPTL::Parser::BuildInFunctions::Sin, &sin);
@@ -454,12 +454,12 @@ StandartLibrary::StandartLibrary() : FunctionLibrary("StdLib")
 	addFunction(FPTL::Parser::BuildInFunctions::Print, &print);
 	addFunction(FPTL::Parser::BuildInFunctions::PrintType, &printType);
 
-	// Преобразование типов.
+	// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ.
 	addFunction(FPTL::Parser::BuildInFunctions::toString, &toString);
 	addFunction(FPTL::Parser::BuildInFunctions::toInt, &toInteger);
 	addFunction(FPTL::Parser::BuildInFunctions::toReal, &toDouble);
 
-	// Работа со строками.
+	// Р Р°Р±РѕС‚Р° СЃРѕ СЃС‚СЂРѕРєР°РјРё.
 	addFunction(FPTL::Parser::BuildInFunctions::Cat, &concat);
 	addFunction(FPTL::Parser::BuildInFunctions::Length, &length);
 	addFunction(FPTL::Parser::BuildInFunctions::Search, &search);

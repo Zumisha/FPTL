@@ -1,4 +1,4 @@
-/// Создание функциональных схем по AST-дереву.
+п»ї/// РЎРѕР·РґР°РЅРёРµ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹С… СЃС…РµРј РїРѕ AST-РґРµСЂРµРІСѓ.
 
 #ifndef FSCHEME_GENERATOR_H
 #define FSCHEME_GENERATOR_H
@@ -17,7 +17,7 @@ namespace Runtime {
 class ConstructorGenerator;
 
 //
-// Генератор функциональных схем по АСТ-дереву. На вход должно предоставляться только семантически корректное дерево.
+// Р“РµРЅРµСЂР°С‚РѕСЂ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹С… СЃС…РµРј РїРѕ РђРЎРў-РґРµСЂРµРІСѓ. РќР° РІС…РѕРґ РґРѕР»Р¶РЅРѕ РїСЂРµРґРѕСЃС‚Р°РІР»СЏС‚СЊСЃСЏ С‚РѕР»СЊРєРѕ СЃРµРјР°РЅС‚РёС‡РµСЃРєРё РєРѕСЂСЂРµРєС‚РЅРѕРµ РґРµСЂРµРІРѕ.
 //
 class FSchemeGenerator : public Parser::NodeVisitor
 {
@@ -33,10 +33,10 @@ public:
 	virtual void visit(Parser::ExpressionNode * aExpressionNode);
 	virtual void visit(Parser::ConstantNode * aConstantNode);
 
-	// Запуск генерации функциональной схемы.
+	// Р—Р°РїСѓСЃРє РіРµРЅРµСЂР°С†РёРё С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕР№ СЃС…РµРјС‹.
 	void generateFScheme();
 
-	// Получение результата.
+	// РџРѕР»СѓС‡РµРЅРёРµ СЂРµР·СѓР»СЊС‚Р°С‚Р°.
 	FSchemeNode * getFScheme();
 	FSchemeNode * getSchemeInput();
 

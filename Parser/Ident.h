@@ -1,4 +1,4 @@
-#ifndef IDENT_H
+п»ї#ifndef IDENT_H
 #define IDENT_H
 
 #include <string>
@@ -7,7 +7,7 @@
 namespace FPTL {
 namespace Parser {
 
-	// Указатель на запись в таблице имен.
+	// РЈРєР°Р·Р°С‚РµР»СЊ РЅР° Р·Р°РїРёСЃСЊ РІ С‚Р°Р±Р»РёС†Рµ РёРјРµРЅ.
 	struct Ident
 	{
 		short Col;

@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <fstream>
 #include <iterator>
 #include <cstdlib>
@@ -40,7 +40,7 @@ void run( int aArgc, char ** aArgv )
 
 		support.getErrorList( std::cout );
 
-		// Генерируем внутренне представление.
+		// Р“РµРЅРµСЂРёСЂСѓРµРј РІРЅСѓС‚СЂРµРЅРЅРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ.
 		if (astRoot)
 		{
 			Runtime::FSchemeGenerator schemeGenerator;

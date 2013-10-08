@@ -1,4 +1,4 @@
-#include <cassert>
+п»ї#include <cassert>
 
 #include "Functions.h"
 
@@ -6,7 +6,7 @@ namespace FPTL {
 namespace Runtime {
 
 //-------------------------------------------------------------------------------
-// Внутреннее представление абстрактного типа данных (boxed tuple).
+// Р’РЅСѓС‚СЂРµРЅРЅРµРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ Р°Р±СЃС‚СЂР°РєС‚РЅРѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С… (boxed tuple).
 struct ADTValue : public Collectable
 {
 	const TypeInfo * type;
@@ -28,7 +28,7 @@ struct ADTValue : public Collectable
 	}
 };
 
-// Операции с абстрактным типом данных.
+// РћРїРµСЂР°С†РёРё СЃ Р°Р±СЃС‚СЂР°РєС‚РЅС‹Рј С‚РёРїРѕРј РґР°РЅРЅС‹С….
 class ADTOps : public Ops
 {
 	ADTOps()
@@ -46,7 +46,7 @@ public:
 		return (TypeInfo *)aVal.mADT->type;
 	}
 	
-	// Добавлять сюда методы по мере добавления новых типов.
+	// Р”РѕР±Р°РІР»СЏС‚СЊ СЃСЋРґР° РјРµС‚РѕРґС‹ РїРѕ РјРµСЂРµ РґРѕР±Р°РІР»РµРЅРёСЏ РЅРѕРІС‹С… С‚РёРїРѕРІ.
 	virtual Ops * combine(const Ops * aOther) const
 	{
 		throw invalidOperation();
@@ -67,7 +67,7 @@ public:
 		throw invalidOperation();
 	}
 
-	// Преобразование типов.
+	// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ.
 	virtual int toInt(const DataValue & aVal) const
 	{
 		throw invalidOperation();
@@ -83,7 +83,7 @@ public:
 		throw invalidOperation();
 	}
 
-	// Арифметические функции.
+	// РђСЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ С„СѓРЅРєС†РёРё.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		throw invalidOperation();
@@ -114,10 +114,10 @@ public:
 		throw invalidOperation();
 	}
 
-	// Функции сравнения.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
-		// TODO: возможно эту функцию можно определить.
+		// TODO: РІРѕР·РјРѕР¶РЅРѕ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РјРѕР¶РЅРѕ РѕРїСЂРµРґРµР»РёС‚СЊ.
 		throw invalidOperation();
 	}
 
@@ -136,7 +136,7 @@ public:
 		aMarkStack.push(aVal.mADT);
 	}
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		auto val = aVal.mADT;
@@ -187,7 +187,7 @@ Constructor::~Constructor()
 //-------------------------------------------------------------------------------
 void Constructor::execConstructor(SExecutionContext & aCtx) const
 {
-	// Проверяем соответсвие типов входного кортежа сигнатуре конструктора.
+	// РџСЂРѕРІРµСЂСЏРµРј СЃРѕРѕС‚РІРµС‚СЃРІРёРµ С‚РёРїРѕРІ РІС…РѕРґРЅРѕРіРѕ РєРѕСЂС‚РµР¶Р° СЃРёРіРЅР°С‚СѓСЂРµ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°.
 	try
 	{
 		int argNum = 0;
@@ -208,7 +208,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 			adtValue->values.push_back(arg);
 		}
 
-		// С типами все ок, cоздаем абстрактный тип данных.
+		// РЎ С‚РёРїР°РјРё РІСЃРµ РѕРє, cРѕР·РґР°РµРј Р°Р±СЃС‚СЂР°РєС‚РЅС‹Р№ С‚РёРї РґР°РЅРЅС‹С….
 		adtValue->ctor = this;
 		adtValue->type = &mTargetType;
 
@@ -223,7 +223,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 //-------------------------------------------------------------------------------
 void Constructor::execDestructor(SExecutionContext & aCtx) const
 {
-	// Проверяем что значение было создано именно этим деструктором.
+	// РџСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ Р·РЅР°С‡РµРЅРёРµ Р±С‹Р»Рѕ СЃРѕР·РґР°РЅРѕ РёРјРµРЅРЅРѕ СЌС‚РёРј РґРµСЃС‚СЂСѓРєС‚РѕСЂРѕРј.
 	auto & arg = aCtx.getArg(0);
 
 	if (arg.getOps() == ADTOps::get())
@@ -232,7 +232,7 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 
 		if (ADT->ctor == this)
 		{
-			// Разворачиваем кортеж.
+			// Р Р°Р·РІРѕСЂР°С‡РёРІР°РµРј РєРѕСЂС‚РµР¶.
 			for (int i = 0; i < ADT->values.size(); ++i)
 			{
 				aCtx.push(ADT->values[i]);
@@ -242,7 +242,7 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 		}
 	}
 
-	// Добавляем UndefinedValue.
+	// Р”РѕР±Р°РІР»СЏРµРј UndefinedValue.
 	aCtx.push(DataBuilders::createUndefinedValue());
 }
 
@@ -257,7 +257,7 @@ EmptyConstructor::EmptyConstructor(const std::string & aConstructorName, const s
 //-------------------------------------------------------------------------------
 void EmptyConstructor::execConstructor(SExecutionContext & aCtx) const
 {
-	// TODO: не нужно.
+	// TODO: РЅРµ РЅСѓР¶РЅРѕ.
 	Constructor::execConstructor(aCtx);
 }
 
@@ -280,9 +280,9 @@ TFunction FunctionLibrary::getFunction(const std::string & aFunctionName) const
 	}
 	else
 	{
-		//assert(false); // Функция не найдена в библиотеке.
+		//assert(false); // Р¤СѓРЅРєС†РёСЏ РЅРµ РЅР°Р№РґРµРЅР° РІ Р±РёР±Р»РёРѕС‚РµРєРµ.
 
-		// Возвращаем "пустышку".
+		// Р’РѕР·РІСЂР°С‰Р°РµРј "РїСѓСЃС‚С‹С€РєСѓ".
 		return [](SExecutionContext & aCtx) {
 			aCtx.push(DataBuilders::createUndefinedValue());
 		};

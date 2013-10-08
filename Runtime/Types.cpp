@@ -1,4 +1,4 @@
-#include <cassert>
+ï»¿#include <cassert>
 #include "Types.h"
 #include "Data.h"
 #include "Functions.h"
@@ -11,8 +11,8 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 {
 	if (aRef->TypeName[0] == '\'')
 	{
-		// Òèïîâîé ïàðàìåòð ìîæåò áûòü çàìåíåí ëþáûì òèïîì.
-		// Ïðîâåðÿåì, ÷òîáû îäèí è òîò æå òèïîâîé ïàðàìåòð íå áûë àññîöèèðîâàí ñ ðàçíûìè òèïàìè.
+		// Ð¢Ð¸Ð¿Ð¾Ð²Ð¾Ð¹ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€ Ð¼Ð¾Ð¶ÐµÑ‚ Ð±Ñ‹Ñ‚ÑŒ Ð·Ð°Ð¼ÐµÐ½ÐµÐ½ Ð»ÑŽÐ±Ñ‹Ð¼ Ñ‚Ð¸Ð¿Ð¾Ð¼.
+		// ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¾Ð´Ð¸Ð½ Ð¸ Ñ‚Ð¾Ñ‚ Ð¶Ðµ Ñ‚Ð¸Ð¿Ð¾Ð²Ð¾Ð¹ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€ Ð½Ðµ Ð±Ñ‹Ð» Ð°ÑÑÐ¾Ñ†Ð¸Ð¸Ñ€Ð¾Ð²Ð°Ð½ Ñ Ñ€Ð°Ð·Ð½Ñ‹Ð¼Ð¸ Ñ‚Ð¸Ð¿Ð°Ð¼Ð¸.
 
 		TParametersMap::iterator it = aParametersMap.find(aRef->TypeName);
 
@@ -36,11 +36,11 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 		{
 			if (aTypeInfo->Parameters.empty())
 			{
-				// Òèï íå èìååò ïàðàìåòðîâ èëè áûë ñîçäàí ïóñòûì êîíñòðóêòîðîì.
+				// Ð¢Ð¸Ð¿ Ð½Ðµ Ð¸Ð¼ÐµÐµÑ‚ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² Ð¸Ð»Ð¸ Ð±Ñ‹Ð» ÑÐ¾Ð·Ð´Ð°Ð½ Ð¿ÑƒÑÑ‚Ñ‹Ð¼ ÐºÐ¾Ð½ÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€Ð¾Ð¼.
 				return true;
 			}
 
-			// Ïðîèçâîäèì ïðîâåðêó ïàðàìåòðîâ, åñëè îíè åñòü.
+			// ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´Ð¸Ð¼ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð², ÐµÑÐ»Ð¸ Ð¾Ð½Ð¸ ÐµÑÑ‚ÑŒ.
 			for (auto it = aRef->Parameters.begin(); it != aRef->Parameters.end(); ++it)
 			{
 				if (!matchType(&aTypeInfo->Parameters.at(it->first), &it->second, aParametersMap))

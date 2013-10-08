@@ -1,4 +1,4 @@
-#include <cassert>
+п»ї#include <cassert>
 
 #include "Support.h"
 #include "Generated/Parser.tab.hh"
@@ -32,18 +32,18 @@ void Support::semanticError( ErrTypes::ErrType aErr, Ident aIdent )
 }
 
 //
-// InitializeIdentTable - регистрируем основные лексемы: ключевые слова, имена типов и т.п.
+// InitializeIdentTable - СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј РѕСЃРЅРѕРІРЅС‹Рµ Р»РµРєСЃРµРјС‹: РєР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°, РёРјРµРЅР° С‚РёРїРѕРІ Рё С‚.Рї.
 //
 void Support::initializeKeywordTable( void )
 {
-	// Типы данных.
+	// РўРёРїС‹ РґР°РЅРЅС‹С….
 	registerKeyword("int", BisonParser::token::T_TINT);
 	registerKeyword("uint", BisonParser::token::T_TUINT);
-	registerKeyword("float", BisonParser::token::T_TDOUBLE); // float не реализован.
+	registerKeyword("float", BisonParser::token::T_TDOUBLE); // float РЅРµ СЂРµР°Р»РёР·РѕРІР°РЅ.
 	registerKeyword("double", BisonParser::token::T_TDOUBLE);
 	registerKeyword("string", BisonParser::token::T_TSTRING);
 
-	// Ключевые слова.
+	// РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°.
 	registerKeyword("Functional program", BisonParser::token::T_FUNCTIONAL_PROGRAM);
 	registerKeyword("Functional Program", BisonParser::token::T_FUNCTIONAL_PROGRAM);
 	registerKeyword("Data", BisonParser::token::T_DATA);
@@ -55,7 +55,7 @@ void Support::initializeKeywordTable( void )
 	registerKeyword("true", BisonParser::token::T_TRUE);
 	registerKeyword("false", BisonParser::token::T_FALSE);
 
-	// Встроенные функции.
+	// Р’СЃС‚СЂРѕРµРЅРЅС‹Рµ С„СѓРЅРєС†РёРё.
 	auto regBF = [&](const char * aName)
 	{
 		registerKeyword(aName, BisonParser::token::BFNAME);
@@ -111,7 +111,7 @@ void Support::registerKeyword( const std::string & aName, int aId )
 }
 
 //
-// lookForIdent - поиск идентификатора в таблице имен.
+// lookForIdent - РїРѕРёСЃРє РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РІ С‚Р°Р±Р»РёС†Рµ РёРјРµРЅ.
 //
 int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 {
@@ -125,7 +125,7 @@ int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 }
 
 //
-// newIdent - добавление идентификатора в таблицу имен.
+// newIdent - РґРѕР±Р°РІР»РµРЅРёРµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂР° РІ С‚Р°Р±Р»РёС†Сѓ РёРјРµРЅ.
 //
 void Support::newIdent( const std::string & aName, int aId, Ident & aIdent )
 {
@@ -208,7 +208,7 @@ extern bool checkTypes(ASTNode * aNode);
 //-------------------------------------------------------------------------------------------
 ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
 {
-	// Сбрасываем состояние.
+	// РЎР±СЂР°СЃС‹РІР°РµРј СЃРѕСЃС‚РѕСЏРЅРёРµ.
 	mIdentStack.clear();
 	mNameTable.clear();
 	mConstantTable.clear();
@@ -247,7 +247,7 @@ ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
 		return 0;
 	}
 
-	// Проверка типов.
+	// РџСЂРѕРІРµСЂРєР° С‚РёРїРѕРІ.
 	/*FunctionalProgram * fp = dynamic_cast<FunctionalProgram *>(root);
 
 	checkTypes(fp->getScheme());*/

@@ -1,4 +1,4 @@
-%defines
+п»ї%defines
 %define namespace "FPTL::Parser"
 %define parser_class_name "BisonParser"
 
@@ -23,7 +23,7 @@
 	} // FPTL
 }
 
-/* Параметр парсера - вспомогательный класс для хранения полученной информации. */
+/* РџР°СЂР°РјРµС‚СЂ РїР°СЂСЃРµСЂР° - РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РїРѕР»СѓС‡РµРЅРЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё. */
 %parse-param { Support * pSupport }
 %parse-param { Tokenizer * aTokenizer }
 %parse-param { ASTNode* & mASTRoot }
@@ -31,7 +31,7 @@
 %lex-param { Tokenizer * aTokenizer }
 
 
-/* Варианты типов узлов АСТ. */
+/* Р’Р°СЂРёР°РЅС‚С‹ С‚РёРїРѕРІ СѓР·Р»РѕРІ РђРЎРў. */
 
 %union
 {
@@ -59,7 +59,7 @@
 
 } <scNode> <scList> <scApp> <scFun> <scDef> <scName>
 
-/* Идентификаторы. */
+/* РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹. */
 
 %token <scIdent> NAME
 %token <scIdent> FUNNAME
@@ -75,7 +75,7 @@
 %token <scNode> STRING
 
 
-/* Ключевые слова. */
+/* РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°. */
 
 %token <scToken> T_FUNCTIONAL_PROGRAM
 %token <scToken> T_IMPORT
@@ -99,13 +99,13 @@
 %token <scToken> T_ARGET
 %token <scToken> T_ID
 
-/* Cимволы. */
+/* CРёРјРІРѕР»С‹. */
 
 %token <scToken> T_UNION
 %token <scToken> T_FARROW
 %token <scToken> T_TARROW
 
-/* Типы порождаемых конструкций для правил. */
+/* РўРёРїС‹ РїРѕСЂРѕР¶РґР°РµРјС‹С… РєРѕРЅСЃС‚СЂСѓРєС†РёР№ РґР»СЏ РїСЂР°РІРёР». */
 
 %type <scNode> FunctionalProgram
 
@@ -171,7 +171,7 @@
 %type <scNode>  Value
 %type <scNode>  ValueConstructor
 
-/* Правила. */
+/* РџСЂР°РІРёР»Р°. */
 
 %%
 FunctionalProgram
@@ -179,7 +179,7 @@ FunctionalProgram
 		{
 			mASTRoot = new FunctionalProgram( $1, $2, $3 );
 			
-			// Возвращаем 0, иначе все дерево будет "срублено" деструктором парсера.
+			// Р’РѕР·РІСЂР°С‰Р°РµРј 0, РёРЅР°С‡Рµ РІСЃРµ РґРµСЂРµРІРѕ Р±СѓРґРµС‚ "СЃСЂСѓР±Р»РµРЅРѕ" РґРµСЃС‚СЂСѓРєС‚РѕСЂРѕРј РїР°СЂСЃРµСЂР°.
 			$$ = 0;
 		}
 	| Scheme Application
@@ -189,7 +189,7 @@ FunctionalProgram
 		}
 	;
 		
-/* Синтаксис описания блоков данных */
+/* РЎРёРЅС‚Р°РєСЃРёСЃ РѕРїРёСЃР°РЅРёСЏ Р±Р»РѕРєРѕРІ РґР°РЅРЅС‹С… */
 
 DataTypeDefinitionsBlocks
 	: DataTypeDefinitionsBlock
@@ -383,7 +383,7 @@ TypeParameter : TYPEPARAMNAME;
 
 ConstructorName : CONSNAME;
 	
-/* Правила описания схемы. */
+/* РџСЂР°РІРёР»Р° РѕРїРёСЃР°РЅРёСЏ СЃС…РµРјС‹. */
 
 Scheme
 	: SchemeBegin '{' DefinitionsList '}'

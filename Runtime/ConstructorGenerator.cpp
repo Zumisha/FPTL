@@ -1,4 +1,4 @@
-#include <iterator>
+п»ї#include <iterator>
 
 #include "../Parser/Nodes.h"
 #include "ConstructorGenerator.h"
@@ -40,12 +40,12 @@ void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
 			break;
 		}
 
-		// Пользовательский тип с параметрами.
+		// РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ С‚РёРї СЃ РїР°СЂР°РјРµС‚СЂР°РјРё.
 		case Parser::ASTNode::Template:
 		{
 			TypeInfo newType(aNameReference->getName().getStr());
 			
-			// Добавляем параметры.
+			// Р”РѕР±Р°РІР»СЏРµРј РїР°СЂР°РјРµС‚СЂС‹.
 			int i = 0;
 
 			Parser::DataNode * data = static_cast<Parser::DataNode *>(aNameReference->getTarget());
@@ -80,7 +80,7 @@ void ConstructorGenerator::visit(Parser::DefinitionNode * aDefinition)
 		Constructor * constructor = !mTypeTuple.empty() ? new Constructor(constructorName, dataName, mTypeTuple)
 			: new EmptyConstructor(constructorName, dataName);
 
-		// Добавляем новый конструктор в список.
+		// Р”РѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РІ СЃРїРёСЃРѕРє.
 		mConstructors.insert(std::make_pair(constructorName, std::shared_ptr<Constructor>(constructor)));
 
 		mTypeTuple.clear();

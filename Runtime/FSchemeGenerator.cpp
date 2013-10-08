@@ -1,4 +1,4 @@
-#include <cassert>
+п»ї#include <cassert>
 
 #include <boost/lexical_cast.hpp>
 
@@ -14,7 +14,7 @@ namespace Runtime {
 namespace BFNames = Parser::BuildInFunctions;
 
 //-----------------------------------------------------------------------------
-// TODO: эти 2 функции больше не нужны.
+// TODO: СЌС‚Рё 2 С„СѓРЅРєС†РёРё Р±РѕР»СЊС€Рµ РЅРµ РЅСѓР¶РЅС‹.
 template <typename F>
 FFunctionNode * FSchemeGenerator::newFunctionNode(const F &aFunction)
 {
@@ -64,7 +64,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 
 	switch (aNode->getType())
 	{
-		// Целочисленная константа.
+		// Р¦РµР»РѕС‡РёСЃР»РµРЅРЅР°СЏ РєРѕРЅСЃС‚Р°РЅС‚Р°.
 		case Parser::ASTNode::IntConstant:
 		{
 			long constant = std::atoi(aNode->getConstant().getStr().c_str());
@@ -78,7 +78,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 			break;
 		}
 
-		// Динное целое.
+		// Р”РёРЅРЅРѕРµ С†РµР»РѕРµ.
 		case Parser::ASTNode::LongLongConstant:
 		{
 			auto value = boost::lexical_cast<long long int>(aNode->getConstant().getStr());
@@ -92,7 +92,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 			break;
 		}
 
-		// Вещественная константа.
+		// Р’РµС‰РµСЃС‚РІРµРЅРЅР°СЏ РєРѕРЅСЃС‚Р°РЅС‚Р°.
 		case Parser::ASTNode::FloatConstant:
 		case Parser::ASTNode::DoubleConstant:
 		{
@@ -108,7 +108,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 			break;
 		}
 
-		// Строковая константа.
+		// РЎС‚СЂРѕРєРѕРІР°СЏ РєРѕРЅСЃС‚Р°РЅС‚Р°.
 		case Parser::ASTNode::StringConstant:
 		{
 			std::string str = aNode->getConstant().getStr();
@@ -122,10 +122,10 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 			break;
 		}
 
-		// Выбор элемента из кортежа.
+		// Р’С‹Р±РѕСЂ СЌР»РµРјРµРЅС‚Р° РёР· РєРѕСЂС‚РµР¶Р°.
 		case Parser::ASTNode::TupleElemNumber:
 		{
-			// TODO: проверка номера.
+			// TODO: РїСЂРѕРІРµСЂРєР° РЅРѕРјРµСЂР°.
 			int elemNumber = std::atoi(aNode->getConstant().getStr().c_str()) - 1;
 			assert(elemNumber >= 0);
 
@@ -139,7 +139,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 			break;
 		}
 
-		// Булевские константы.
+		// Р‘СѓР»РµРІСЃРєРёРµ РєРѕРЅСЃС‚Р°РЅС‚С‹.
 
 		case Parser::ASTNode::TrueValue:
 		{
@@ -267,8 +267,8 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 			FSchemeNode * first = mNodeStack.top();
 			mNodeStack.pop();
 
-			// Трансформируем дерево, чтобы оно ветвилось только в левую сторону, 
-			// чтобы при выполнении за каждым advance шел unwind.
+			// РўСЂР°РЅСЃС„РѕСЂРјРёСЂСѓРµРј РґРµСЂРµРІРѕ, С‡С‚РѕР±С‹ РѕРЅРѕ РІРµС‚РІРёР»РѕСЃСЊ С‚РѕР»СЊРєРѕ РІ Р»РµРІСѓСЋ СЃС‚РѕСЂРѕРЅСѓ, 
+			// С‡С‚РѕР±С‹ РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р° РєР°Р¶РґС‹Рј advance С€РµР» unwind.
 			auto seqNode = dynamic_cast<FSequentialNode *>(second);
 
 			if (seqNode)
@@ -303,12 +303,12 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 //-----------------------------------------------------------------------------
 void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName)
 {
-	// Проверяем, на кого ссылается имя терма.
+	// РџСЂРѕРІРµСЂСЏРµРј, РЅР° РєРѕРіРѕ СЃСЃС‹Р»Р°РµС‚СЃСЏ РёРјСЏ С‚РµСЂРјР°.
 	Parser::ASTNode * target = aFuncTermName->getTarget();
 
 	if (target->getType() == Parser::ASTNode::Definition)
 	{
-		// Делаем подстановку нерекурсивного уравнения.
+		// Р”РµР»Р°РµРј РїРѕРґСЃС‚Р°РЅРѕРІРєСѓ РЅРµСЂРµРєСѓСЂСЃРёРІРЅРѕРіРѕ СѓСЂР°РІРЅРµРЅРёСЏ.
 		if (!target->isRecursive())
 		{
 			target = static_cast<Parser::DefinitionNode *>(target)->getDefinition();
@@ -320,10 +320,10 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 
 	if (aFuncTermName->getType() == Parser::ASTNode::FuncObjectWithParameters)
 	{
-		// Создаем новую функциональную схему с параметрами.
+		// РЎРѕР·РґР°РµРј РЅРѕРІСѓСЋ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅСѓСЋ СЃС…РµРјСѓ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё.
 		mDefinitionsStack.push(mDefinitions);
 
-		// Добавляем в текущий лексический контекст функциональные параметры.
+		// Р”РѕР±Р°РІР»СЏРµРј РІ С‚РµРєСѓС‰РёР№ Р»РµРєСЃРёС‡РµСЃРєРёР№ РєРѕРЅС‚РµРєСЃС‚ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹.
 		Parser::ListNode * parameters = static_cast<Parser::FunctionNode *>(target)->getFormalParameters();
 
 		for (auto formalParam = parameters->rbegin(); formalParam != parameters->rend(); ++formalParam)
@@ -335,16 +335,16 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 
 			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);
 
-			// Здесь нельзя делать insert(), т.к. значения параметров должны переопределяться каждый раз при заходе во вложенную функцию.
+			// Р—РґРµСЃСЊ РЅРµР»СЊР·СЏ РґРµР»Р°С‚СЊ insert(), С‚.Рє. Р·РЅР°С‡РµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РґРѕР»Р¶РЅС‹ РїРµСЂРµРѕРїСЂРµРґРµР»СЏС‚СЊСЃСЏ РєР°Р¶РґС‹Р№ СЂР°Р· РїСЂРё Р·Р°С…РѕРґРµ РІРѕ РІР»РѕР¶РµРЅРЅСѓСЋ С„СѓРЅРєС†РёСЋ.
 			mDefinitions[formalParamName->getName().getStr()] = delegateScheme;
 		}
 
-		// Генерируем схему для функции.
-		// TODO: target может быть функцией для встроенной библиотеки.
-		// в этом случае необходимо передать ей все функциональные параметры в виде функций Fi: aCtx -> void
+		// Р“РµРЅРµСЂРёСЂСѓРµРј СЃС…РµРјСѓ РґР»СЏ С„СѓРЅРєС†РёРё.
+		// TODO: target РјРѕР¶РµС‚ Р±С‹С‚СЊ С„СѓРЅРєС†РёРµР№ РґР»СЏ РІСЃС‚СЂРѕРµРЅРЅРѕР№ Р±РёР±Р»РёРѕС‚РµРєРё.
+		// РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РїРµСЂРµРґР°С‚СЊ РµР№ РІСЃРµ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РІ РІРёРґРµ С„СѓРЅРєС†РёР№ Fi: aCtx -> void
 		process(target);
 
-		// Подставляем сгенерированную схему.
+		// РџРѕРґСЃС‚Р°РІР»СЏРµРј СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅСѓСЋ СЃС…РµРјСѓ.
 		mNodeStack.push(mDefinitions[aFuncTermName->getName().getStr()]);
 
 		mDefinitions = mDefinitionsStack.top();
@@ -361,7 +361,7 @@ void FSchemeGenerator::processBuildInFunction(Parser::NameRefNode * aFunctionNam
 {
 	Parser::Ident name = aFunctionNameNode->getName();
 	
-	// Ищем функцию в библиотеке.
+	// РС‰РµРј С„СѓРЅРєС†РёСЋ РІ Р±РёР±Р»РёРѕС‚РµРєРµ.
 	auto function = newFunctionNode(mLibrary->getFunction(name.getStr()), name);
 
 	mNodeStack.push(function);
@@ -374,7 +374,7 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 
 	std::vector<Parser::ASTNode *> toProcess;
 
-	// Создаем узлы схемы для каждого рекурсивного функционального уравнения и функции без параметров.
+	// РЎРѕР·РґР°РµРј СѓР·Р»С‹ СЃС…РµРјС‹ РґР»СЏ РєР°Р¶РґРѕРіРѕ СЂРµРєСѓСЂСЃРёРІРЅРѕРіРѕ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕРіРѕ СѓСЂР°РІРЅРµРЅРёСЏ Рё С„СѓРЅРєС†РёРё Р±РµР· РїР°СЂР°РјРµС‚СЂРѕРІ.
 	for (Parser::ListNode::iterator it = definitions->begin(); it != definitions->end(); ++it)
 	{
 		Parser::ASTNode * aDef = *it;
@@ -385,7 +385,7 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 
 			if (!function->getFormalParameters())
 			{
-				// Генерируем схемы для внутренних функций.
+				// Р“РµРЅРµСЂРёСЂСѓРµРј СЃС…РµРјС‹ РґР»СЏ РІРЅСѓС‚СЂРµРЅРЅРёС… С„СѓРЅРєС†РёР№.
 				mDefinitionsStack.push(mDefinitions);
 				mDefinitions.clear();
 
@@ -418,18 +418,18 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 //-----------------------------------------------------------------------------
 void FSchemeGenerator::visit(Parser::FunctionalProgram * aFuncProgram)
 {
-	// Обрабатываем блоки данных.
+	// РћР±СЂР°Р±Р°С‚С‹РІР°РµРј Р±Р»РѕРєРё РґР°РЅРЅС‹С….
 	if (aFuncProgram->getDataDefinitions())
 	{
 		mConstructorGenerator->process(aFuncProgram->getDataDefinitions());
 	}
 
-	// Обрабатываем только схему.
+	// РћР±СЂР°Р±Р°С‚С‹РІР°РµРј С‚РѕР»СЊРєРѕ СЃС…РµРјСѓ.
 	process(aFuncProgram->getScheme());
 
 	mScheme = mDefinitions[aFuncProgram->getScheme()->getFuncName().getStr()];
 
-	// Обрабатываем входные данные секции Application.
+	// РћР±СЂР°Р±Р°С‚С‹РІР°РµРј РІС…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ СЃРµРєС†РёРё Application.
 	if (aFuncProgram->getApplication()->getSchemeParameters())
 	{
 		process(aFuncProgram->getApplication()->getSchemeParameters());

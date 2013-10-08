@@ -1,4 +1,4 @@
-#ifndef FLEXTOKENIZER_H
+п»ї#ifndef FLEXTOKENIZER_H
 #define FLEXTOKENIZER_H
 
 #include <string>
@@ -12,8 +12,8 @@ namespace Parser {
 	class ConstantNode;
 
 	/*
-	 * Tokenizer - обертка над flex.
-	 * Выделяет лексему из входной строки.
+	 * Tokenizer - РѕР±РµСЂС‚РєР° РЅР°Рґ flex.
+	 * Р’С‹РґРµР»СЏРµС‚ Р»РµРєСЃРµРјСѓ РёР· РІС…РѕРґРЅРѕР№ СЃС‚СЂРѕРєРё.
 	 */
 	class Tokenizer : private yyFlexLexer
 	{
@@ -27,7 +27,7 @@ namespace Parser {
 
 		int yylex( void );
 
-		// Вспомогательные методы, вызываемые из yylex.
+		// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹, РІС‹Р·С‹РІР°РµРјС‹Рµ РёР· yylex.
 
 		ConstantNode * formDecimalConstant();
 		ConstantNode * formLongLongConstant();
@@ -43,7 +43,7 @@ namespace Parser {
 		Support * mSupport;
 		BisonParser::semantic_type * mVal;
 
-		// Переменные позиционирования внутри исходного файла.
+		// РџРµСЂРµРјРµРЅРЅС‹Рµ РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёСЏ РІРЅСѓС‚СЂРё РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°.
 		size_t mLine;
 		size_t mCol;
 		size_t mPrevTokenLine;

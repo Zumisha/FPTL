@@ -1,4 +1,4 @@
-
+п»ї
 #include "../Data.h"
 #include "../String.h"
 
@@ -48,7 +48,7 @@ public:
 		return &info;
 	}
 
-	// Преобразование типов.
+	// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ.
 	virtual int toInt(const DataValue & aVal) const
 	{
 		throw invalidOperation("toInt");
@@ -64,7 +64,7 @@ public:
 		return aVal.mString;
 	}
 
-	// Арифметические функции.
+	// РђСЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ С„СѓРЅРєС†РёРё.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		throw invalidOperation("add");
@@ -95,7 +95,7 @@ public:
 		throw invalidOperation("abs");
 	}
 
-	// Функции сравнения.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		auto lhs = aLhs.mString;
@@ -128,7 +128,7 @@ public:
 		aMarkStack.push(aVal.mString);
 	}
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		auto str = aVal.mString;

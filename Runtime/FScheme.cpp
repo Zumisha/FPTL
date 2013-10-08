@@ -1,4 +1,4 @@
-#include "FScheme.h"
+п»ї#include "FScheme.h"
 #include "FSchemeVisitor.h"
 
 #include <iostream>
@@ -6,9 +6,9 @@
 
 namespace FPTL { namespace Runtime {
 
-// execute-методы в узлах схемы были нужны для старой версии реализации вычислений.
-// В новой версии для каждого узла генерируется код во время компиляции.
-// Сгенерированный код полностью дублирует соответсвующий код методов execute.
+// execute-РјРµС‚РѕРґС‹ РІ СѓР·Р»Р°С… СЃС…РµРјС‹ Р±С‹Р»Рё РЅСѓР¶РЅС‹ РґР»СЏ СЃС‚Р°СЂРѕР№ РІРµСЂСЃРёРё СЂРµР°Р»РёР·Р°С†РёРё РІС‹С‡РёСЃР»РµРЅРёР№.
+// Р’ РЅРѕРІРѕР№ РІРµСЂСЃРёРё РґР»СЏ РєР°Р¶РґРѕРіРѕ СѓР·Р»Р° РіРµРЅРµСЂРёСЂСѓРµС‚СЃСЏ РєРѕРґ РІРѕ РІСЂРµРјСЏ РєРѕРјРїРёР»СЏС†РёРё.
+// РЎРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Р№ РєРѕРґ РїРѕР»РЅРѕСЃС‚СЊСЋ РґСѓР±Р»РёСЂСѓРµС‚ СЃРѕРѕС‚РІРµС‚СЃРІСѓСЋС‰РёР№ РєРѕРґ РјРµС‚РѕРґРѕРІ execute.
 
 //-----------------------------------------------------------------------------------
 FSchemeNode::FSchemeNode(bool aIsLong) : mIsLong(aIsLong)
@@ -26,7 +26,7 @@ FSequentialNode::FSequentialNode(FSchemeNode * aFirst, FSchemeNode * aSecond)
 
 void FSequentialNode::execute(SExecutionContext & aCtx) const
 {
-	// Запоминаем предыдущие параметры.
+	// Р—Р°РїРѕРјРёРЅР°РµРј РїСЂРµРґС‹РґСѓС‰РёРµ РїР°СЂР°РјРµС‚СЂС‹.
 	int arity = aCtx.arity;
 	int argPos = aCtx.argPos;
 	int size = aCtx.stack.size();
@@ -34,12 +34,12 @@ void FSequentialNode::execute(SExecutionContext & aCtx) const
 
 	mFirst->execute(aCtx);
 
-	// Продвигаемся к новому фрейму на стеке.
+	// РџСЂРѕРґРІРёРіР°РµРјСЃСЏ Рє РЅРѕРІРѕРјСѓ С„СЂРµР№РјСѓ РЅР° СЃС‚РµРєРµ.
 	aCtx.advance();
 
 	mSecond->execute(aCtx);
 
-	// Сворачиваем стек.
+	// РЎРІРѕСЂР°С‡РёРІР°РµРј СЃС‚РµРє.
 	aCtx.unwind(argPos, arity, size);
 }
 
@@ -57,7 +57,7 @@ FConditionNode::FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBran
 {
 	if (!mFalseBranch)
 	{
-		// Если в условной конструкции отсутсвует явно ветка else, считаем что она возвращает UndefinedValue.
+		// Р•СЃР»Рё РІ СѓСЃР»РѕРІРЅРѕР№ РєРѕРЅСЃС‚СЂСѓРєС†РёРё РѕС‚СЃСѓС‚СЃРІСѓРµС‚ СЏРІРЅРѕ РІРµС‚РєР° else, СЃС‡РёС‚Р°РµРј С‡С‚Рѕ РѕРЅР° РІРѕР·РІСЂР°С‰Р°РµС‚ UndefinedValue.
 		mFalseBranch = new FFunctionNode([](SExecutionContext & aCtx) { 
 			aCtx.push(DataBuilders::createUndefinedValue());
 		});
@@ -71,10 +71,10 @@ void FConditionNode::execute(SExecutionContext & aCtx) const
 
 	int arity = aCtx.arity;
 
-	// Вычисление условия.
+	// Р’С‹С‡РёСЃР»РµРЅРёРµ СѓСЃР»РѕРІРёСЏ.
 	mCondition->execute(aCtx);
 
-	// Запоминаем на верху стека 1 аргумент - результат вычисления предиката.
+	// Р—Р°РїРѕРјРёРЅР°РµРј РЅР° РІРµСЂС…Сѓ СЃС‚РµРєР° 1 Р°СЂРіСѓРјРµРЅС‚ - СЂРµР·СѓР»СЊС‚Р°С‚ РІС‹С‡РёСЃР»РµРЅРёСЏ РїСЂРµРґРёРєР°С‚Р°.
 	DataValue cond = aCtx.stack.back();
 	bool isUndefined = false;
 
@@ -83,7 +83,7 @@ void FConditionNode::execute(SExecutionContext & aCtx) const
 	{
 		DataValue & arg = aCtx.stack.back();
 		
-		// Проверяем, содержится ли в кортеже неопределенное значение w для реализации семантики w*a = a*w = w.
+		// РџСЂРѕРІРµСЂСЏРµРј, СЃРѕРґРµСЂР¶РёС‚СЃСЏ Р»Рё РІ РєРѕСЂС‚РµР¶Рµ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ w РґР»СЏ СЂРµР°Р»РёР·Р°С†РёРё СЃРµРјР°РЅС‚РёРєРё w*a = a*w = w.
 		if (arg.getOps() == undefined.getOps())
 		{
 			isUndefined = true;
@@ -94,7 +94,7 @@ void FConditionNode::execute(SExecutionContext & aCtx) const
 
 	aCtx.arity = arity;
 
-	// Проверка условия.
+	// РџСЂРѕРІРµСЂРєР° СѓСЃР»РѕРІРёСЏ.
 	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
 	{
 		mFalseBranch->execute(aCtx);
@@ -120,7 +120,7 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 {
 	if (mLeft->isLong() && mRight->isLong())
 	{
-		// Параллельное выполнение.
+		// РџР°СЂР°Р»Р»РµР»СЊРЅРѕРµ РІС‹РїРѕР»РЅРµРЅРёРµ.
 		SExecutionContext * fork = aCtx.fork(mRight);
 
 		mLeft->execute(aCtx);
@@ -130,13 +130,13 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 			aCtx.yield();
 		}
 
-		// Копируем результат.
+		// РљРѕРїРёСЂСѓРµРј СЂРµР·СѓР»СЊС‚Р°С‚.
 		for (int i = 0; i < fork->arity; ++i)
 		{
 			aCtx.push(fork->stack.at(fork->stack.size() - fork->arity + i));
 		}
 
-		// Обновляем список выделенной памяти.
+		// РћР±РЅРѕРІР»СЏРµРј СЃРїРёСЃРѕРє РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё.
 		aCtx.allocatedMemory.splice(aCtx.allocatedMemory.end(), fork->allocatedMemory);
 
 		// TEST
@@ -146,7 +146,7 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 	}
 	else
 	{
-		// Последовательное выполнение.
+		// РџРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕРµ РІС‹РїРѕР»РЅРµРЅРёРµ.
 		mLeft->execute(aCtx);
 
 		mRight->execute(aCtx);
@@ -196,11 +196,11 @@ void FFunctionNode::call(const FFunctionNode * aNode, SExecutionContext * aCtx)
 		std::stringstream error;
 		error << "Runtime error in function '" << aNode->mName << "' line: " << aNode->mLine << " column: " <<aNode->mColumn << ": " << e.what() << std::endl;
 		
-		// TODO: выводить дамп последнего кортежа, к которому применялась операция (printType).
+		// TODO: РІС‹РІРѕРґРёС‚СЊ РґР°РјРї РїРѕСЃР»РµРґРЅРµРіРѕ РєРѕСЂС‚РµР¶Р°, Рє РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРјРµРЅСЏР»Р°СЃСЊ РѕРїРµСЂР°С†РёСЏ (printType).
 
 		std::cerr << error.str();
 
-		// Добавить на стек неорпделенность.
+		// Р”РѕР±Р°РІРёС‚СЊ РЅР° СЃС‚РµРє РЅРµРѕСЂРїРґРµР»РµРЅРЅРѕСЃС‚СЊ.
 		aCtx->push(DataBuilders::createUndefinedValue());
 	}
 }

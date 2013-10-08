@@ -1,4 +1,4 @@
-#ifndef CONSTRUCTOR_GENERATOR_H
+п»ї#ifndef CONSTRUCTOR_GENERATOR_H
 #define CONSTRUCTOR_GENERATOR_H
 
 #include <string>
@@ -28,7 +28,7 @@ private:
 
 	Parser::DataNode * mCurrentData;
 
-	// Сгенерированные эталонные типы для конструкторов.
+	// РЎРіРµРЅРµСЂРёСЂРѕРІР°РЅРЅС‹Рµ СЌС‚Р°Р»РѕРЅРЅС‹Рµ С‚РёРїС‹ РґР»СЏ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРѕРІ.
 	std::map<std::string, std::shared_ptr<Constructor>> mConstructors;
 
 	TTypeList mTypeTuple;

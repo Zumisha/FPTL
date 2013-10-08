@@ -1,4 +1,4 @@
-#ifndef SUPPORT_H
+п»ї#ifndef SUPPORT_H
 #define SUPPORT_H
 
 #include <vector>
@@ -14,7 +14,7 @@ namespace FPTL
 	{
 
 	/*
-	 * Идентификаторы кодов синтаксических и семантических ошибок.
+	 * РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РєРѕРґРѕРІ СЃРёРЅС‚Р°РєСЃРёС‡РµСЃРєРёС… Рё СЃРµРјР°РЅС‚РёС‡РµСЃРєРёС… РѕС€РёР±РѕРє.
 	 */
 	namespace ErrTypes
 	{
@@ -56,8 +56,8 @@ namespace FPTL
 	};
 
 	/*
-	 * Сообщение об ошибке: код ошибки, идентификатор,
-	 * таблица соотв формальных/фактических типовых параметров.
+	 * РЎРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ: РєРѕРґ РѕС€РёР±РєРё, РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ,
+	 * С‚Р°Р±Р»РёС†Р° СЃРѕРѕС‚РІ С„РѕСЂРјР°Р»СЊРЅС‹С…/С„Р°РєС‚РёС‡РµСЃРєРёС… С‚РёРїРѕРІС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ.
 	 */
 	class ErrorMessage
 	{
@@ -70,7 +70,7 @@ namespace FPTL
 	};
 
 	/*
-	 * Support - реализует сбор и хранение семантической информации.
+	 * Support - СЂРµР°Р»РёР·СѓРµС‚ СЃР±РѕСЂ Рё С…СЂР°РЅРµРЅРёРµ СЃРµРјР°РЅС‚РёС‡РµСЃРєРѕР№ РёРЅС„РѕСЂРјР°С†РёРё.
 	 */
 	class Support
 	{
@@ -79,14 +79,14 @@ namespace FPTL
 		Support();
 		~Support();
 
-		// Методы обработки ошибок.
+		// РњРµС‚РѕРґС‹ РѕР±СЂР°Р±РѕС‚РєРё РѕС€РёР±РѕРє.
 
 		void               semanticError( ErrTypes::ErrType aErr, Ident aIdent );
 
 		const char *       getErrorString( ErrTypes::ErrType aErr ) const;
 		void               getErrorList( std::ostream & aOutStream );
 
-		// Методы для работы с таблицей имен.
+		// РњРµС‚РѕРґС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С‚Р°Р±Р»РёС†РµР№ РёРјРµРЅ.
 
 		void		       initializeKeywordTable( void );
 		void		       registerKeyword( const std::string & aName, int aId );
@@ -95,10 +95,10 @@ namespace FPTL
 
 		Ident              newConstant( const std::string & aConstant, int aLine, int aCol );
 
-		// Проводит синтксический разбор, семантическую проверку и возвращает AST-дерево.
+		// РџСЂРѕРІРѕРґРёС‚ СЃРёРЅС‚РєСЃРёС‡РµСЃРєРёР№ СЂР°Р·Р±РѕСЂ, СЃРµРјР°РЅС‚РёС‡РµСЃРєСѓСЋ РїСЂРѕРІРµСЂРєСѓ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ AST-РґРµСЂРµРІРѕ.
 		ASTNode *          getInternalForm( class Tokenizer * aTokenizer );
 
-		// Вспомогательные методы для парсера.
+		// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹ РґР»СЏ РїР°СЂСЃРµСЂР°.
 		void               pushIdent( const Ident & aIdent );
 		void               popIdent();
 		Ident              getTopIdent() const;

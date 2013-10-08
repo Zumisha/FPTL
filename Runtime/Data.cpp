@@ -1,4 +1,4 @@
-#include <cassert>
+п»ї#include <cassert>
 
 #include "Data.h"
 #include "Functions.h"
@@ -26,7 +26,7 @@ DataValue::DataValue(const Ops * aOps)
 class BaseOps : public Ops
 {
 public:
-	// Базисные функции.
+	// Р‘Р°Р·РёСЃРЅС‹Рµ С„СѓРЅРєС†РёРё.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return invalidOperation();
@@ -57,7 +57,7 @@ public:
 		return invalidOperation();
 	}
 
-	// Функции сравнения.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return invalidOperation();
@@ -73,7 +73,7 @@ public:
 		return invalidOperation();
 	}
 
-	// Функции преобразования.
+	// Р¤СѓРЅРєС†РёРё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ.
 	virtual int toInt(const DataValue & aVal) const
 	{
 		invalidOperation();
@@ -107,7 +107,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-// Классы операций над типами данных.
+// РљР»Р°СЃСЃС‹ РѕРїРµСЂР°С†РёР№ РЅР°Рґ С‚РёРїР°РјРё РґР°РЅРЅС‹С….
 class IntegerOps : public BaseOps
 {
 	IntegerOps()
@@ -138,7 +138,7 @@ public:
 
 	virtual Ops * withOps(const DoubleOps * aOps) const
 	{
-		// FIXME: сделать возвращаемое значение const.
+		// FIXME: СЃРґРµР»Р°С‚СЊ РІРѕР·РІСЂР°С‰Р°РµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ const.
 		return (Ops *)aOps;
 	}
 
@@ -148,7 +148,7 @@ public:
 		return &info;
 	}
 
-	// Преобразования типов.
+	// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ С‚РёРїРѕРІ.
 	virtual int toInt(const DataValue & aVal) const
 	{
 		return aVal.mIntVal;
@@ -159,7 +159,7 @@ public:
 		return (double)aVal.mIntVal;
 	}
 
-	// Базисные функции.
+	// Р‘Р°Р·РёСЃРЅС‹Рµ С„СѓРЅРєС†РёРё.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return DataBuilders::createInt(aLhs.mIntVal + aRhs.getOps()->toInt(aRhs));
@@ -177,13 +177,13 @@ public:
 
 	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const
 	{
-		// TODO: деление на 0.
+		// TODO: РґРµР»РµРЅРёРµ РЅР° 0.
 		return DataBuilders::createInt(aLhs.mIntVal / aRhs.getOps()->toInt(aRhs));
 	}
 
 	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const
 	{
-		// TODO: деление на 0.
+		// TODO: РґРµР»РµРЅРёРµ РЅР° 0.
 		return DataBuilders::createInt(aLhs.mIntVal % aRhs.getOps()->toInt(aRhs));
 	}
 
@@ -192,7 +192,7 @@ public:
 		return DataBuilders::createInt(std::abs(aArg.mIntVal));
 	}
 
-	// Функции сравнения.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return DataBuilders::createBoolean(aLhs.mIntVal == aRhs.getOps()->toInt(aRhs));
@@ -208,7 +208,7 @@ public:
 		return DataBuilders::createBoolean(aLhs.mIntVal > aRhs.getOps()->toInt(aRhs));
 	}
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		aStream << aVal.mIntVal;
@@ -254,7 +254,7 @@ public:
 		return &info;
 	}
 
-	// Функции преобразования.
+	// Р¤СѓРЅРєС†РёРё РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ.
 	virtual int toInt(const DataValue & aVal) const
 	{
 		return (int)aVal.mDoubleVal;
@@ -265,7 +265,7 @@ public:
 		return aVal.mDoubleVal;
 	}
 
-	// Базисные функции.
+	// Р‘Р°Р·РёСЃРЅС‹Рµ С„СѓРЅРєС†РёРё.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) + aRhs.getOps()->toDouble(aRhs));
@@ -296,7 +296,7 @@ public:
 		return DataBuilders::createDouble(std::abs(aArg.mDoubleVal));
 	}
 
-	// Функции сравнения.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) == aRhs.getOps()->toDouble(aRhs));
@@ -312,7 +312,7 @@ public:
 		return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) > aRhs.getOps()->toDouble(aRhs));
 	}
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		aStream << aVal.mDoubleVal;
@@ -359,13 +359,13 @@ public:
 		return &info;
 	}
 
-	// Функции сравнения. Оба аргумента обязаны быть типа boolean.
+	// Р¤СѓРЅРєС†РёРё СЃСЂР°РІРЅРµРЅРёСЏ. РћР±Р° Р°СЂРіСѓРјРµРЅС‚Р° РѕР±СЏР·Р°РЅС‹ Р±С‹С‚СЊ С‚РёРїР° boolean.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return DataBuilders::createBoolean(aLhs.mIntVal == aRhs.mIntVal);
 	}
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		aStream << (aVal.mIntVal ? "true" : "false");
@@ -410,13 +410,13 @@ public:
 		return &info;
 	}
 
-	// Функция сравнения со значением true определена.
+	// Р¤СѓРЅРєС†РёСЏ СЃСЂР°РІРЅРµРЅРёСЏ СЃРѕ Р·РЅР°С‡РµРЅРёРµРј true РѕРїСЂРµРґРµР»РµРЅР°.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{
 		return DataBuilders::createBoolean(false);
 	}
 
-	// Вывод в поток.
+	// Р’С‹РІРѕРґ РІ РїРѕС‚РѕРє.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		aStream << "undefined";
@@ -469,7 +469,7 @@ int doTest()
 	auto v1 = DataBuilders::createInt(10);
 	auto v2 = DataBuilders::createInt(20);
 
-	// Тест целочисленных операций.
+	// РўРµСЃС‚ С†РµР»РѕС‡РёСЃР»РµРЅРЅС‹С… РѕРїРµСЂР°С†РёР№.
 	assert(v1.getOps());
 
 	assert(v1.getOps()->add(v1, v2).mIntVal == 30);
@@ -484,7 +484,7 @@ int doTest()
 	assert(v1.getOps()->less(v1, v2).mIntVal);
 	assert(v2.getOps()->greater(v2, v1).mIntVal);
 
-	// Тест операций с плавающей точкой.
+	// РўРµСЃС‚ РѕРїРµСЂР°С†РёР№ СЃ РїР»Р°РІР°СЋС‰РµР№ С‚РѕС‡РєРѕР№.
 	auto v3 = DataBuilders::createDouble(10.0);
 	auto v4 = DataBuilders::createDouble(20.0);
 
@@ -502,7 +502,7 @@ int doTest()
 
 	assert(v3.getOps()->abs(DataBuilders::createDouble(-10.0)).mDoubleVal >= 0);
 
-	// Тест смешанных операций.
+	// РўРµСЃС‚ СЃРјРµС€Р°РЅРЅС‹С… РѕРїРµСЂР°С†РёР№.
 	assert(v1.getOps()->combine(v4.getOps())->add(v1, v4).mDoubleVal == 30.0);
 	assert(v1.getOps()->combine(v4.getOps())->sub(v1, v4).mDoubleVal == -10.0);
 	assert(v4.getOps()->combine(v1.getOps())->mul(v1, v4).mDoubleVal == 200.0);
@@ -513,7 +513,7 @@ int doTest()
 	assert(v1.getOps()->combine(v4.getOps())->less(v1, v4).mIntVal);
 	assert(v4.getOps()->combine(v1.getOps())->greater(v4, v1).mIntVal);
 
-	// Тест значение "неопределенность".
+	// РўРµСЃС‚ Р·РЅР°С‡РµРЅРёРµ "РЅРµРѕРїСЂРµРґРµР»РµРЅРЅРѕСЃС‚СЊ".
 	auto uv = DataBuilders::createUndefinedValue();
 	assert(!uv.getOps()->equal(uv, DataBuilders::createBoolean(true)).mIntVal);
 	assert(!uv.getOps()->equal(uv, DataBuilders::createBoolean(false)).mIntVal);

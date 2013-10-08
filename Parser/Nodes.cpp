@@ -1,4 +1,4 @@
-#include <cassert>
+﻿#include <cassert>
 #include <boost/bind.hpp>
 #include "Support.h"
 #include "Nodes.h"

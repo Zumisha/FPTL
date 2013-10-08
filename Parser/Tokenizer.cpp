@@ -1,4 +1,4 @@
-#include <string>
+п»ї#include <string>
 #include <cassert>
 #include <cmath>
 #include <regex>
@@ -26,7 +26,7 @@ Tokenizer::Tokenizer( const std::string & aInputString )
 //-------------------------------------------------------------------------------------------
 ConstantNode * Tokenizer::formDecimalConstant()
 {
-	// Проверяем диапазон.
+	// РџСЂРѕРІРµСЂСЏРµРј РґРёР°РїР°Р·РѕРЅ.
 	try
 	{
 		boost::lexical_cast<int>(YYText());
@@ -47,7 +47,7 @@ ConstantNode * Tokenizer::formLongLongConstant()
 
 	std::regex_search(YYText(), match, rx); 
 
-	// Проверяем диапазон.
+	// РџСЂРѕРІРµСЂСЏРµРј РґРёР°РїР°Р·РѕРЅ.
 	try
 	{
 		boost::lexical_cast<long long int>(match[1]);
@@ -65,7 +65,7 @@ ConstantNode * Tokenizer::formFPConstant( bool aForceFloat )
 {
 	std::string str = YYText();
 
-	// Проверяем константу.
+	// РџСЂРѕРІРµСЂСЏРµРј РєРѕРЅСЃС‚Р°РЅС‚Сѓ.
 	try
 	{
 		boost::lexical_cast<double>(str);
@@ -89,7 +89,7 @@ ConstantNode * Tokenizer::formStringConstant(void)
 	std::string str = YYText();
 	str = std::string( str.begin() + str.find_first_of('\"') + 1, str.begin() + str.find_last_of('\"') );
 
-	// Заменяем escape-символы.
+	// Р—Р°РјРµРЅСЏРµРј escape-СЃРёРјРІРѕР»С‹.
 
 	str = std::regex_replace(str, std::regex("\\\\\\\\"), std::string("\\"));
 	str = std::regex_replace(str, std::regex("[\\\\][a]"), std::string("\a"));
@@ -107,8 +107,8 @@ ConstantNode * Tokenizer::formStringConstant(void)
 //-------------------------------------------------------------------------------------------
 int Tokenizer::processCommentBlock(void)
 {
-	// Обрабатываем многострочные комментарии.
-	// Проще так, чем через flex.
+	// РћР±СЂР°Р±Р°С‚С‹РІР°РµРј РјРЅРѕРіРѕСЃС‚СЂРѕС‡РЅС‹Рµ РєРѕРјРјРµРЅС‚Р°СЂРёРё.
+	// РџСЂРѕС‰Рµ С‚Р°Рє, С‡РµРј С‡РµСЂРµР· flex.
 	char ch;
 	do
 	{
@@ -165,7 +165,7 @@ int Tokenizer::processIdentifier(void)
 }
 
 //-------------------------------------------------------------------------------------------
-// getToken - получение лексемы.
+// getToken - РїРѕР»СѓС‡РµРЅРёРµ Р»РµРєСЃРµРјС‹.
 BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, Support * aSupport )
 {
 	mSupport = aSupport;
@@ -198,7 +198,7 @@ Ident Tokenizer::getErrorIdent() const
 
 
 //-------------------------------------------------------------------------------------------
-// yylex - интерфейс лексера для yacc.
+// yylex - РёРЅС‚РµСЂС„РµР№СЃ Р»РµРєСЃРµСЂР° РґР»СЏ yacc.
 int yylex( BisonParser::semantic_type * aVal, Support * aSupport, Tokenizer * aTokenizer )
 {
 	return aTokenizer->getToken( aVal, aSupport );

@@ -1,4 +1,4 @@
-// Имена встроенных функций.
+п»ї// РРјРµРЅР° РІСЃС‚СЂРѕРµРЅРЅС‹С… С„СѓРЅРєС†РёР№.
 
 #ifndef BUILDINFUNCTIONNAMES_H
 #define BUILDINFUNCTIONNAMES_H
@@ -9,7 +9,7 @@ namespace FPTL
 	{
 		namespace BuildInFunctions
 		{
-			// Базовые функции.
+			// Р‘Р°Р·РѕРІС‹Рµ С„СѓРЅРєС†РёРё.
 			const char Id[]             = "id";
 			const char Add[]            = "add";
 			const char Subtract[]       = "sub";
@@ -23,7 +23,7 @@ namespace FPTL
 			const char GreaterOrEqual[] = "gequal";
 			const char LessOrEqual[]    = "lequal";
 
-			// Матемитические функции.
+			// РњР°С‚РµРјРёС‚РёС‡РµСЃРєРёРµ С„СѓРЅРєС†РёРё.
 			const char Sqrt[]           = "sqrt";
 			const char Sin[]            = "sin";
 			const char Cos[]            = "cos";
@@ -37,7 +37,7 @@ namespace FPTL
 			const char Pi[]             = "pi";
 			const char E[]              = "E";
 
-			// Функции работы со строками.
+			// Р¤СѓРЅРєС†РёРё СЂР°Р±РѕС‚С‹ СЃРѕ СЃС‚СЂРѕРєР°РјРё.
 			const char Cat[]            = "cat";
 			const char Search[]         = "search";
 			const char Match[]          = "match";
@@ -45,18 +45,18 @@ namespace FPTL
 			const char GetToken[]       = "getToken";
 			const char Length[]         = "length";
 			
-			// Другие функции.
+			// Р”СЂСѓРіРёРµ С„СѓРЅРєС†РёРё.
 			const char Rand[]           = "rand";
 			const char Print[]          = "print";
 			const char PrintType[]      = "printType";
 
-			// Преобразования типов.
+			// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёСЏ С‚РёРїРѕРІ.
 			const char toString[]       = "toString";
 			const char toInt[]          = "toInt";
 			const char toReal[]         = "toReal";
 			const char toLongInt[]      = "toLongInt";
 
-			// Операции с файлами.
+			// РћРїРµСЂР°С†РёРё СЃ С„Р°Р№Р»Р°РјРё.
 			const char readFile[]       = "readFile";
 		}
 	}
