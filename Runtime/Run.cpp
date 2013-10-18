@@ -185,10 +185,22 @@ SExecutionContext * EvaluatorUnit::stealJob()
 
 void EvaluatorUnit::evaluateScheme()
 {
-	while (!boost::this_thread::interruption_requested())
+	while (true)
 	{
-		schedule();
+        try
+        {
+            boost::this_thread::interruption_point();
+        
+            schedule();
+        }
+        catch (boost::thread_interrupted)
+        {
+            break;
+        }
 	}
+    
+    static boost::mutex outputMutex;
+    boost::lock_guard<boost::mutex> guard(outputMutex);
 
 	// Выводим статистику.
 	std::stringstream ss;
@@ -225,6 +237,8 @@ SchemeEvaluator::SchemeEvaluator()
 
 void SchemeEvaluator::stop()
 {
+    boost::lock_guard<boost::mutex> guard(mStopMutex);
+    
 	mThreadGroup.interrupt_all();
 }
 
@@ -295,12 +309,17 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 	context->Scheme = &startNode;
 
 	mEvaluatorUnits[0]->addJob(context);
+    
+    // Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
+    mStopMutex.lock();
 
 	// Создаем потоки.
 	for (int i = 0; i < evaluatorUnits; i++)
 	{
 		mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
 	}
+    
+    mStopMutex.unlock();
 
 	// Ждем завершения вычислений.
 	mThreadGroup.join_all();

@@ -30,13 +30,14 @@ Scheme Fact
 	//@ = ("12345678" * "1..").getToken.print;
 	//@ = "Test.txt".readFile.print;
 
-	//@ = 33.Fib;
+	@ = 33.Fib;
 
 	//@ = (10.toString * " 2").cat.print;
 
 	//@ = ((1*1).equal -> true, false).print;
 
-	@ = (1 * "abc").add;
+	//@ = 1.print;
+	//@ = (1 * "abc").add;
 	//@ = 50000.RandomList(-999999,999999).QSort;
 
 	//@ = (10 * c_nil).c_cons.Sum;

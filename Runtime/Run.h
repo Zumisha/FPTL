@@ -61,6 +61,7 @@ public:
 private:
 	std::vector<EvaluatorUnit *> mEvaluatorUnits;
 	boost::thread_group mThreadGroup;
+    boost::mutex mStopMutex;
 };
 
 }} // FPTL::Runtime
