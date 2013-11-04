@@ -68,27 +68,15 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		case Parser::ASTNode::IntConstant:
 		{
 			long constant = std::atoi(aNode->getConstant().getStr().c_str());
-
-			auto F = [constant](SExecutionContext & aCtx)
-				{ 
-					aCtx.push(DataBuilders::createInt(constant));
-				};
-
-			node = newFunctionNode(F, name);
+			node = new FConstantNode(TypeInfo("integer"), DataBuilders::createInt(constant), name.Line, name.Col);
 			break;
 		}
 
-		// Динное целое.
+		// Динное целое. НАТИВНО НЕ ПОДДЕРЖИВАЕТСЯ.
 		case Parser::ASTNode::LongLongConstant:
 		{
-			auto value = boost::lexical_cast<long long int>(aNode->getConstant().getStr());
-
-			auto F = [value](SExecutionContext & aCtx)
-			{
-				assert(false);
-			};
-
-			node = newFunctionNode(F, name);
+			auto value = boost::lexical_cast<double>(aNode->getConstant().getStr());
+			node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(value), name.Line, name.Col);
 			break;
 		}
 
@@ -97,14 +85,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		case Parser::ASTNode::DoubleConstant:
 		{
 			double constant = std::atof(aNode->getConstant().getStr().c_str());
-
-			auto F = [constant](SExecutionContext & aCtx)
-				{
-					aCtx.push(DataBuilders::createDouble(constant));
-				};
-
-			node = newFunctionNode(F, name);
-
+			node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(constant), name.Line, name.Col);
 			break;
 		}
 
@@ -112,52 +93,26 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		case Parser::ASTNode::StringConstant:
 		{
 			std::string str = aNode->getConstant().getStr();
-
-			node = newFunctionNode([str](SExecutionContext & aCtx)
-				{
-					aCtx.push(StringBuilder::create(aCtx, str));
-				},
-				name
-			);
+			node = new FStringConstant(str, name.Line, name.Col);
 			break;
 		}
 
 		// Выбор элемента из кортежа.
 		case Parser::ASTNode::TupleElemNumber:
-		{
-			// TODO: проверка номера.
+		{			
 			int elemNumber = std::atoi(aNode->getConstant().getStr().c_str()) - 1;
 			assert(elemNumber >= 0);
 
-			node = newFunctionNode([elemNumber](SExecutionContext & aCtx)
-				{
-					aCtx.push(aCtx.getArg(elemNumber));
-				},
-				name
-			);
-
+			node = new FTakeNode(elemNumber, name.Line, name.Col);
 			break;
 		}
 
 		// Булевские константы.
 
 		case Parser::ASTNode::TrueValue:
-		{
-			node = new FFunctionNode([](SExecutionContext & aCtx) {
-					aCtx.push(DataBuilders::createBoolean(true));
-				}
-			);
-			break;
-		}
-
 		case Parser::ASTNode::FalseValue:
-		{
-			node = new FFunctionNode([](SExecutionContext & aCtx) { 
-					aCtx.push(DataBuilders::createBoolean(false));
-				}
-			);
+			node = new FConstantNode(TypeInfo("boolean"), DataBuilders::createBoolean(aNode->getType() == Parser::ASTNode::TrueValue), name.Line, name.Col);
 			break;
-		}
 
 		default:
 			assert(false);

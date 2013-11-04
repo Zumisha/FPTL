@@ -19,7 +19,7 @@ struct SExecutionContext;
 
 //---------------------------------------------------------------------------------------------
 // Абстрактный узел функциональный схемы.
-class FSchemeNode //: public gc
+class FSchemeNode
 {
 public:
 
@@ -142,6 +142,64 @@ private:
 	FSchemeNode * mCondition;
 	FSchemeNode * mTrueBranch;
 	FSchemeNode * mFalseBranch;
+};
+
+//---------------------------------------------------------------------------------------------
+class FTakeNode : public FSchemeNode
+{
+public:
+	FTakeNode(int aIndex, short aLine, short aCol)
+		: FSchemeNode(false), 
+		mIndex(aIndex),
+		mLine(aLine),
+		mCol(aCol)
+	{}
+
+	virtual void execute(SExecutionContext & aCtx) const;
+
+	virtual void accept(FSchemeVisitor * aVisitor) const;
+
+private:
+	int mIndex;
+
+	short mLine;
+	short mCol;
+};
+
+//---------------------------------------------------------------------------------------------
+class FConstantNode : public FSchemeNode
+{
+public:
+	FConstantNode(const TypeInfo & aType, const DataValue & aData, short aLine, short aCol)
+		: FSchemeNode(false),
+		mData(aData),
+		mType(aType),
+		mLine(aLine),
+		mCol(aCol)
+	{}
+
+	virtual void execute(SExecutionContext & aCtx) const;
+
+	virtual void accept(FSchemeVisitor * aVisitor) const;
+
+	TypeInfo getType() const { return mType; }
+
+private:
+	DataValue mData;
+	TypeInfo mType;
+	short mLine;
+	short mCol;
+};
+
+class FStringConstant : public FConstantNode
+{
+public:
+	FStringConstant(const std::string & aStr, short aLine, short aCol);
+
+	virtual void execute(SExecutionContext & aCtx) const;
+
+private:
+	std::string mStr;
 };
 
 //---------------------------------------------------------------------------------------------

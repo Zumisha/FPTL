@@ -1,5 +1,6 @@
 ﻿#include "FScheme.h"
 #include "FSchemeVisitor.h"
+#include "String.h"
 
 #include <iostream>
 #include <cassert>
@@ -203,6 +204,41 @@ void FFunctionNode::call(const FFunctionNode * aNode, SExecutionContext * aCtx)
 		// Добавить на стек неорпделенность.
 		aCtx->push(DataBuilders::createUndefinedValue());
 	}
+}
+
+//-----------------------------------------------------------------------------------
+void FTakeNode::execute(SExecutionContext & aCtx) const
+{
+	aCtx.push(aCtx.getArg(mIndex));
+}
+
+void FTakeNode::accept(FSchemeVisitor * aVisitor) const
+{
+	// Not implemented.
+	assert(false);
+}
+
+//-----------------------------------------------------------------------------------
+void FConstantNode::execute(SExecutionContext & aCtx) const
+{
+	aCtx.push(mData);
+}
+
+void FConstantNode::accept(FSchemeVisitor * aVisitor) const
+{
+	// Not implemented.
+	assert(false);
+}
+
+FStringConstant::FStringConstant(const std::string & aStr, short aLine, short aCol)
+	: FConstantNode(TypeInfo("string"), DataValue(), aLine, aCol),
+	mStr(aStr)
+{
+}
+
+void FStringConstant::execute(SExecutionContext & aCtx) const
+{
+	aCtx.push(StringBuilder::create(aCtx, mStr));
 }
 
 }} // FPTL::Runtime
