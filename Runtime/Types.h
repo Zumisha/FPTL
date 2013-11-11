@@ -48,6 +48,16 @@ struct TypeInfo
 
 	// Вывод типовой информации.
 	friend std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo);
+
+	void addParameter(const std::string & aName, const TypeInfo & aParam)
+	{
+		Parameters.insert(std::make_pair(aName, aParam));
+	}
+
+	TypeInfo getParameter(const std::string & aName)
+	{
+		return Parameters.at(aName);
+	}
 };
 
 typedef std::vector<TypeInfo> TTypeList;

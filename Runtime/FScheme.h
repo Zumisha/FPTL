@@ -22,7 +22,6 @@ struct SExecutionContext;
 class FSchemeNode
 {
 public:
-
 	FSchemeNode(bool aIsLong);
 	virtual ~FSchemeNode() {}
 
@@ -50,7 +49,6 @@ public:
 class FParallelNode : public FSchemeNode
 {
 public:
-
 	FParallelNode(FSchemeNode * aLeft, FSchemeNode * aRight);
 
 	virtual void execute(SExecutionContext & aCtx) const;
@@ -72,7 +70,6 @@ private:
 class FFunctionNode : public FSchemeNode
 {
 public:
-
 	template <typename F>
 	FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction)
 	{}
@@ -81,7 +78,7 @@ public:
 	FFunctionNode(const F & aFunction, const std::string & aName, short aLine, short aCol)
 		: FSchemeNode(false),
 		  mFunction(aFunction),
-		  mName(aName.c_str()),
+		  mName(aName),
 		  mColumn(aCol),
 		  mLine(aLine)
 	{}
@@ -92,12 +89,15 @@ public:
 
 	static void call(const FFunctionNode * aNode, SExecutionContext * aCtx);
 
-private:
+	std::string name() const { return mName; }
+	int col() const { return mColumn; }
+	int line() const { return mLine; }
 
+private:
 	std::function<void(SExecutionContext &)> mFunction;
 
 	// Имя функции и позиция в тексте программы.
-	std::basic_string<char>  mName;
+	std::string mName;
 	short mLine;
 	short mColumn;
 };
@@ -106,7 +106,6 @@ private:
 class FSequentialNode : public FSchemeNode
 {
 public:
-
 	FSequentialNode(FSchemeNode * aFirst, FSchemeNode * aSecond);
 
 	virtual void execute(SExecutionContext & aCtx) const;
@@ -117,7 +116,6 @@ public:
 	FSchemeNode * second() const { return mSecond; }
 
 private:
-
 	FSchemeNode * mFirst;
 	FSchemeNode * mSecond;
 };
@@ -159,6 +157,10 @@ public:
 
 	virtual void accept(FSchemeVisitor * aVisitor) const;
 
+	int index() const { return mIndex; }
+	int col() const { return mCol; }
+	int line() const { return mLine; }
+
 private:
 	int mIndex;
 
@@ -182,7 +184,7 @@ public:
 
 	virtual void accept(FSchemeVisitor * aVisitor) const;
 
-	TypeInfo getType() const { return mType; }
+	TypeInfo type() const { return mType; }
 
 private:
 	DataValue mData;
@@ -207,7 +209,6 @@ private:
 class FScheme : public FSchemeNode
 {
 public:
-
 	FScheme(FSchemeNode * aFirstNode);
 
 	virtual void execute(SExecutionContext & aCtx) const;

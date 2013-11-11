@@ -22,7 +22,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
@@ -50,7 +50,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(PYTHON_PATH)\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -67,7 +67,7 @@
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\External\AsmJit\AsmJit\Build;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\External\AsmJit\AsmJit\Build;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -121,6 +121,7 @@
     <ClCompile Include="FSchemeGenerator.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PythonInterop.cpp" />
     <ClCompile Include="Run.cpp" />
     <ClCompile Include="StandartLibrary.cpp" />
     <ClCompile Include="Types.cpp" />
