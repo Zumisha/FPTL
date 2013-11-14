@@ -87,11 +87,56 @@ public:
 	}
 };
 
+// Вспомогательные функции.
+namespace
+{
+
+void setType(Runtime::FSchemeNode * aNode, list aTypeList)
+{
+}
+
+dict getTypeParameters(const Runtime::TypeInfo & aTypeInfo)
+{
+	dict parameters;
+
+	for (auto it = aTypeInfo.Parameters.begin(); it != aTypeInfo.Parameters.end(); ++it)
+	{
+		parameters[it->first] = it->second;
+	}
+
+	return parameters;
+}
+
+Runtime::TypeInfo createTypeInfo(const std::string & aName, const dict & aParameters)
+{
+	Runtime::TypeInfo info(aName);
+
+	list keys = aParameters.keys();
+
+	for (int i = 0; i < len(keys); ++i)
+	{
+		extract<std::string> key(keys[i]);
+		extract<Runtime::TypeInfo> value(aParameters[keys[i]]);
+
+		if (key.check() && value.check())
+		{
+			info.Parameters.insert(std::pair<std::string, Runtime::TypeInfo>(key, value));
+		}
+	}
+
+	return info;
+}
+
+}
+
 BOOST_PYTHON_MODULE(fptl)
 {
 	// Типы данных.
 	class_<Runtime::TypeInfo>("TypeInfo")
 		.def_readonly("type_name", &Runtime::TypeInfo::TypeName);
+
+	def("createTypeInfo", &createTypeInfo);
+	def("getTypeParameters", &getTypeParameters);
 
 	// Функциональная схема.
 	class_<FSchemeNodeWrapper, boost::noncopyable>("FSchemeNode", no_init);
