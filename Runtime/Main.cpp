@@ -12,13 +12,13 @@
 namespace FPTL {
 namespace Parser {
 
-void run( int aArgc, char ** aArgv )
+void run(int aArgc, char ** aArgv)
 {
-	for( int argId = 1; argId < aArgc; argId += 2 )
+	for (int argId = 1; argId < aArgc; argId += 2)
 	{
-		std::ifstream inpFile( aArgv[argId] );
+		std::ifstream inpFile(aArgv[argId]);
 
-		if( !inpFile.good() )
+		if (!inpFile.good())
 		{
 			std::cout << "Unable to open file : " << aArgv[argId] << "\n";
 			continue;
@@ -27,18 +27,18 @@ void run( int aArgc, char ** aArgv )
 		std::cout << "Running program: " << aArgv[argId] << " on " << aArgv[argId + 1] << " processors...\n";
 
 		std::string inputStr;
-		std::copy( std::istreambuf_iterator<char>(inpFile), std::istreambuf_iterator<char>(), std::back_inserter(inputStr) );
+		std::copy(std::istreambuf_iterator<char>(inpFile), std::istreambuf_iterator<char>(), std::back_inserter(inputStr));
 
 		Support support;
-		Tokenizer tokenizer( inputStr );
-		ASTNode * astRoot = support.getInternalForm( &tokenizer );
+		Tokenizer tokenizer(inputStr);
+		ASTNode * astRoot = support.getInternalForm(&tokenizer);
 
-		if( astRoot )
+		if (astRoot)
 		{
 			std::cout << "No syntax errors found.\n";
 		}
 
-		support.getErrorList( std::cout );
+		support.getErrorList(std::cout);
 
 		// Генерируем внутренне представление.
 		if (astRoot)
@@ -59,7 +59,7 @@ void run( int aArgc, char ** aArgv )
 
 }}
 
-int main( int argc, char ** argv )
+int main(int argc, char ** argv)
 {
 	if (argc < 2)
 	{

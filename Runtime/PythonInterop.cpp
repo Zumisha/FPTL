@@ -1,4 +1,4 @@
-#define BOOST_PYTHON_STATIC_LIB
+п»ї#define BOOST_PYTHON_STATIC_LIB
 #include <boost/python.hpp>
 
 #include <memory>
@@ -37,7 +37,7 @@ public:
 			return false;
 		}
 
-		// Генерируем внутренне представление.		
+		// Р“РµРЅРµСЂРёСЂСѓРµРј РІРЅСѓС‚СЂРµРЅРЅРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ.		
 		mSchemeGenerator.process(mAstRoot.get());
 
 		return true;
@@ -74,7 +74,7 @@ private:
 	std::string mText;
 };
 
-// Обертка для абстрактного класса.
+// РћР±РµСЂС‚РєР° РґР»СЏ Р°Р±СЃС‚СЂР°РєС‚РЅРѕРіРѕ РєР»Р°СЃСЃР°.
 class FSchemeNodeWrapper : public Runtime::FSchemeNode, public wrapper<Runtime::FSchemeNode>
 {
 public:
@@ -87,12 +87,13 @@ public:
 	}
 };
 
-// Вспомогательные функции.
+// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё.
 namespace
 {
 
 void setType(Runtime::FSchemeNode * aNode, list aTypeList)
 {
+	// TODO:
 }
 
 dict getTypeParameters(const Runtime::TypeInfo & aTypeInfo)
@@ -131,14 +132,15 @@ Runtime::TypeInfo createTypeInfo(const std::string & aName, const dict & aParame
 
 BOOST_PYTHON_MODULE(fptl)
 {
-	// Типы данных.
+	// РўРёРїС‹ РґР°РЅРЅС‹С….
 	class_<Runtime::TypeInfo>("TypeInfo")
 		.def_readonly("type_name", &Runtime::TypeInfo::TypeName);
 
 	def("createTypeInfo", &createTypeInfo);
 	def("getTypeParameters", &getTypeParameters);
+	def("setType", &setType);
 
-	// Функциональная схема.
+	// Р¤СѓРЅРєС†РёРѕРЅР°Р»СЊРЅР°СЏ СЃС…РµРјР°.
 	class_<FSchemeNodeWrapper, boost::noncopyable>("FSchemeNode", no_init);
 
 	class_<Runtime::FSequentialNode, bases<Runtime::FSchemeNode>>("FSequentialNode", no_init)
@@ -170,7 +172,7 @@ BOOST_PYTHON_MODULE(fptl)
 	class_<Runtime::FScheme, bases<Runtime::FSchemeNode>>("FScheme", no_init)
 		.def("scheme", &Runtime::FScheme::firstNode, return_internal_reference<>());
 
-	// Управление интерпретатором.
+	// РЈРїСЂР°РІР»РµРЅРёРµ РёРЅС‚РµСЂРїСЂРµС‚Р°С‚РѕСЂРѕРј.
 	class_<FunctionalProgram, boost::noncopyable>("FunctionalProgram", init<std::string>())
 		.def("translate", &FunctionalProgram::translate)
 		.def("execute", &FunctionalProgram::execute)
