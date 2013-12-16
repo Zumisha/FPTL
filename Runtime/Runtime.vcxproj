@@ -83,7 +83,7 @@
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\External\AsmJit\AsmJit\Build;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -112,7 +112,7 @@
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\External\AsmJit\AsmJit\Build;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -140,7 +140,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>..\External\gc\gc-7.2\release;..\External\AsmJit\AsmJit\Build;$(BOOST_PATH)\stage\lib;E:\FPTL1\Src\NewData\External\gperftools-2.0\vsprojects\libtcmalloc_minimal\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\External\AsmJit\AsmJit\Build;$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:12000000 %(AdditionalOptions)</AdditionalOptions>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
@@ -167,7 +167,9 @@
     <ClCompile Include="FSchemeGenerator.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="PythonInterop.cpp" />
+    <ClCompile Include="PythonInterop.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Run.cpp" />
     <ClCompile Include="StandartLibrary.cpp" />
     <ClCompile Include="Types.cpp" />
