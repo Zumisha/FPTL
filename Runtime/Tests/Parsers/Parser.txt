@@ -11,7 +11,7 @@ Data Tag {
 }
 
 Scheme Parser {
-	@ = id.Tag.print;
+	@ = Tag.[2].print;
 	
 	Tag = Seq(Token("<"), Seq(Ident, Seq(AttrList, Token(">"), Action0), Action1), Action2);
 	Action0 = [1];
@@ -40,7 +40,7 @@ Scheme Parser {
 	}
 	
 	Fun Token[ch] {
-		@ = ([1]*ch).getToken.([2]*[1]);
+		@ = ([1]*ch).getToken.(id -> ([2]*[1]));
 	}
 }
 

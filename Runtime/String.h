@@ -17,6 +17,7 @@ struct StringValue : public Collectable
 	virtual void mark(std::stack<Collectable *> & aMarkStack);
 
 	char * getChars() const;
+	char * contents() const;
 	int length() const;
 	std::string str() const;
 };

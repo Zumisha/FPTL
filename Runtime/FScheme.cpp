@@ -165,6 +165,13 @@ FScheme::FScheme(FSchemeNode * aFirstNode)
 {
 }
 
+void FScheme::setFirstNode(FSchemeNode * aFirstNode)
+{ 
+	mFirstNode = aFirstNode;
+
+	//optimizeTailCall();
+}
+
 void FScheme::execute(SExecutionContext & aCtx) const
 {
 	mFirstNode->execute(aCtx);
@@ -173,6 +180,64 @@ void FScheme::execute(SExecutionContext & aCtx) const
 void FScheme::accept(FSchemeVisitor * aVisitor) const
 {
 	aVisitor->visit(this);
+}
+
+void FScheme::optimizeTailCall()
+{
+	// Пытаемся произвести оптимизацию хвостового вызова.
+	auto cond = dynamic_cast<FConditionNode *>(mFirstNode);
+	if (cond)
+	{
+		auto falseBr = cond->falseBranch();
+		auto seq = dynamic_cast<FSequentialNode *>(falseBr);
+		if (seq)
+		{
+			if (seq->second() == this)
+			{
+				auto cont = seq->first();
+				auto exit = cond->trueBranch();
+
+				auto trueBranch = new FConstantNode(TypeInfo("boolean"), DataBuilders::createBoolean(true), -1, -1);
+				auto falseBranch = new FConstantNode(TypeInfo("boolean"), DataBuilders::createBoolean(false), -1, -1);
+				auto optimizedCond = new FConditionNode(cond->condition(), trueBranch, falseBranch);
+
+				// Производим оптимизацию.
+				mFirstNode = new FFunctionNode([=](SExecutionContext & aCtx)
+				{
+					// Копируем входные данные.
+					auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
+					auto pos = aCtx.stack.size();
+
+					for (int i = 0; i < numArgs; ++i)
+					{
+						aCtx.push(aCtx.getArg(i));
+					}
+
+					for ( ; ; )
+					{
+						// Вычисляем условие.
+						optimizedCond->execute(aCtx);
+
+						// Проверяем условие.
+						DataValue & condRes = aCtx.stack.back();
+						aCtx.stack.pop_back();
+						aCtx.arity--;
+
+						if (condRes.mIntVal)
+						{
+							exit->execute(aCtx);
+							break;
+						}
+
+						cont->execute(aCtx);
+
+						// Не даем стеку разрастаться.
+						aCtx.unwind(pos, -aCtx.arity, pos); 
+					}
+				});
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------

@@ -5,6 +5,8 @@
 #include <cstring>
 #include <cassert>
 
+#include <boost/lexical_cast.hpp>
+
 namespace FPTL {
 namespace Runtime {
 
@@ -51,12 +53,12 @@ public:
 	// Преобразование типов.
 	virtual int toInt(const DataValue & aVal) const
 	{
-		throw invalidOperation("toInt");
+		return boost::lexical_cast<int>(aVal.mString->str());
 	}
 
 	virtual double toDouble(const DataValue & aVal) const
 	{
-		throw invalidOperation("toDouble");
+		return boost::lexical_cast<double>(aVal.mString->str());
 	}
 
 	virtual StringValue * toString(const DataValue & aVal) const
@@ -160,6 +162,11 @@ struct StringData : public Collectable
 char * StringValue::getChars() const
 {
 	return data->value + begin;
+}
+
+char * StringValue::contents() const
+{
+	return data->value;
 }
 
 int StringValue::length() const

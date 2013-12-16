@@ -306,8 +306,7 @@ void search(SExecutionContext & aCtx)
 		for (unsigned i = 0; i < rx.mark_count(); i++)
 		{
 			auto & m = match[i+1];
-
-			auto val = StringBuilder::create(aCtx, src, m.first - src->getChars(), m.second - src->getChars());
+			auto val = StringBuilder::create(aCtx, src, m.first - src->contents(), m.second - src->contents());
 			aCtx.push(val);
 		}
 	}
@@ -334,7 +333,7 @@ void match(SExecutionContext & aCtx)
 		for (unsigned i = 0; i < rx.mark_count(); i++)
 		{
 			auto & m = match[i+1];
-			auto val = StringBuilder::create(aCtx, src, m.first - src->getChars(), m.second - src->getChars());
+			auto val = StringBuilder::create(aCtx, src, m.first - src->contents(), m.second - src->contents());
 			aCtx.push(val);
 		}
 	}
@@ -378,10 +377,10 @@ void getToken(SExecutionContext & aCtx)
 
 	if (std::regex_search((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
 	{
-		auto prefix = StringBuilder::create(aCtx, src, match[1].first - src->getChars(), match[1].second - src->getChars());
+		auto prefix = StringBuilder::create(aCtx, src, match[1].first - src->contents(), match[1].second - src->contents());
 		aCtx.push(prefix);
 
-		auto suffix = StringBuilder::create(aCtx, src, match.suffix().first - src->getChars(), match.suffix().second - src->getChars());
+		auto suffix = StringBuilder::create(aCtx, src, match.suffix().first - src->contents(), match.suffix().second - src->contents());
 		aCtx.push(suffix);
 	}
 	else

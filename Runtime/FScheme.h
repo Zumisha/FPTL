@@ -215,11 +215,12 @@ public:
 
 	virtual void accept(FSchemeVisitor * aVisitor) const;
 
-	void setFirstNode(FSchemeNode * aFirstNode) { mFirstNode = aFirstNode; }
+	void setFirstNode(FSchemeNode * aFirstNode);
 
 	FSchemeNode * firstNode() const { return mFirstNode; }
 
 private:
+	void optimizeTailCall();
 
 	FSchemeNode * mFirstNode;
 };

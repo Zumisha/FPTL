@@ -1,0 +1,6 @@
+Scheme Convert
+{
+    @ = (("10".toInt*10).equal * ("0.5".toReal*0.5).equal).print;
+}
+Application
+% Convert

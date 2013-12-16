@@ -1,0 +1,19 @@
+Data List['t]
+{
+	List = c_nil ++ 't * List['t].c_cons;
+}
+
+Scheme Tokenize
+{
+	// Разбиение строки на лексемы с последующим формированием списка лексем.
+
+	Split = ([1]*"[\\s]*([\\w]+)([\\w|\\s]*)").match;
+
+        DoTokenize = Split.(id -> ([1] * [2].DoTokenize).c_cons,
+                                  c_nil);
+
+	@ = DoTokenize.print;
+}
+
+Application
+% Tokenize("  f aa bbb cccc   ")
