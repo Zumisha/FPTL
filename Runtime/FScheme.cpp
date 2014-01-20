@@ -165,11 +165,39 @@ FScheme::FScheme(FSchemeNode * aFirstNode)
 {
 }
 
+FScheme::FScheme(FSchemeNode * aFirstNode, const std::string & aName)
+	: FSchemeNode(true), mFirstNode(aFirstNode), mName(aName)
+{
+}
+
 void FScheme::setFirstNode(FSchemeNode * aFirstNode)
 { 
 	mFirstNode = aFirstNode;
 
 	//optimizeTailCall();
+}
+
+void FScheme::setDefinitions(const std::map<std::string, FSchemeNode *> & aDefinitions)
+{
+	mDefinitions = aDefinitions;
+}
+
+std::vector<std::string> FScheme::definitions() const
+{
+	std::vector<std::string> defs;
+
+	std::for_each(mDefinitions.begin(), mDefinitions.end(), [&defs](const std::pair<std::string, FSchemeNode *> & elem)
+		{
+			defs.push_back(elem.first);
+		}
+	);
+
+	return defs;
+}
+
+FSchemeNode * FScheme::definition(const std::string & aName) const
+{
+	return mDefinitions.at(aName);
 }
 
 void FScheme::execute(SExecutionContext & aCtx) const

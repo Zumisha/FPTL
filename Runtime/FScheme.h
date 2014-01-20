@@ -210,19 +210,27 @@ class FScheme : public FSchemeNode
 {
 public:
 	FScheme(FSchemeNode * aFirstNode);
+	FScheme(FSchemeNode * aFirstNode, const std::string & aName);
 
 	virtual void execute(SExecutionContext & aCtx) const;
 
 	virtual void accept(FSchemeVisitor * aVisitor) const;
 
 	void setFirstNode(FSchemeNode * aFirstNode);
+	void setDefinitions(const std::map<std::string, FSchemeNode *> & aDefinitions);
 
 	FSchemeNode * firstNode() const { return mFirstNode; }
+	std::string name() const { return mName; }
+
+	std::vector<std::string> definitions() const;
+	FSchemeNode * definition(const std::string & aName) const;
 
 private:
 	void optimizeTailCall();
 
 	FSchemeNode * mFirstNode;
+	std::string mName;
+	std::map<std::string, FSchemeNode *> mDefinitions;
 };
 
 } // Runtime

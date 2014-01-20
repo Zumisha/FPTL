@@ -277,6 +277,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 	{
 		// Создаем новую функциональную схему с параметрами.
 		mDefinitionsStack.push(mDefinitions);
+		mDefinitions.clear();
 
 		// Добавляем в текущий лексический контекст функциональные параметры.
 		Parser::ListNode * parameters = static_cast<Parser::FunctionNode *>(target)->getFormalParameters();
@@ -358,16 +359,29 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 
 			if (definition->isRecursive() || definition->getDefinitionName() == aFunctionNode->getFuncName())
 			{
-				mDefinitions.insert(std::make_pair(definition->getDefinitionName().getStr(), new FScheme(0)));
+				auto name = definition->getDefinitionName().getStr();
+				mDefinitions.insert(std::make_pair(name, new FScheme(nullptr, name)));
 				toProcess.push_back(aDef);
 			}
 		}
 	}
 
 	std::for_each(toProcess.begin(), toProcess.end(), [this](Parser::ASTNode * aDef)
-	{
-		process(aDef);
-	});
+		{
+			process(aDef);
+		}
+	);
+
+	// Сохраняеи список определений.
+
+	std::map<std::string, FSchemeNode *> definitionMap;
+	std::for_each(mDefinitions.begin(), mDefinitions.end(), [&](const std::pair<std::string, FScheme *> & elem) -> void
+		{
+			definitionMap.insert(std::make_pair(elem.first, elem.second));
+		}
+	);
+
+	mDefinitions.at(aFunctionNode->getFuncName().getStr())->setDefinitions(definitionMap);
 }
 
 //-----------------------------------------------------------------------------

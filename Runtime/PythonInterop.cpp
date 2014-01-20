@@ -1,5 +1,6 @@
 ﻿#define BOOST_PYTHON_STATIC_LIB
 #include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 #include <memory>
 
@@ -64,6 +65,11 @@ public:
 	Runtime::FSchemeNode * getData()
 	{
 		return mSchemeGenerator.getSchemeInput();
+	}
+
+	dict getConsructors() const
+	{
+		// TODO:
 	}
 
 private:
@@ -140,6 +146,9 @@ BOOST_PYTHON_MODULE(fptl)
 	def("getTypeParameters", &getTypeParameters);
 	def("setType", &setType);
 
+	class_<std::vector<std::string>>("StringArray")
+		.def(vector_indexing_suite<std::vector<std::string>>());
+
 	// Функциональная схема.
 	class_<FSchemeNodeWrapper, boost::noncopyable>("FSchemeNode", no_init);
 
@@ -170,7 +179,10 @@ BOOST_PYTHON_MODULE(fptl)
 		.def("line", &Runtime::FTakeNode::line);
 
 	class_<Runtime::FScheme, bases<Runtime::FSchemeNode>>("FScheme", no_init)
-		.def("scheme", &Runtime::FScheme::firstNode, return_internal_reference<>());
+		.def("scheme", &Runtime::FScheme::firstNode, return_internal_reference<>())
+		.def("name", &Runtime::FScheme::name)
+		.def("definitions", &Runtime::FScheme::definitions)
+		.def("definition", &Runtime::FScheme::definition, return_internal_reference<>());
 
 	// Управление интерпретатором.
 	class_<FunctionalProgram, boost::noncopyable>("FunctionalProgram", init<std::string>())
