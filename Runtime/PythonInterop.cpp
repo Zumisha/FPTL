@@ -142,9 +142,9 @@ BOOST_PYTHON_MODULE(fptl)
 	class_<Runtime::TypeInfo>("TypeInfo")
 		.def_readonly("type_name", &Runtime::TypeInfo::TypeName);
 
-	def("createTypeInfo", &createTypeInfo);
-	def("getTypeParameters", &getTypeParameters);
-	def("setType", &setType);
+	def("create_type_info", &createTypeInfo);
+	def("get_type_parameters", &getTypeParameters);
+	def("set_type", &setType);
 
 	class_<std::vector<std::string>>("StringArray")
 		.def(vector_indexing_suite<std::vector<std::string>>());
@@ -162,8 +162,8 @@ BOOST_PYTHON_MODULE(fptl)
 
 	class_<Runtime::FConditionNode, bases<Runtime::FSchemeNode>>("FConditionNode", no_init)
 		.def("condition", &Runtime::FConditionNode::condition, return_internal_reference<>())
-		.def("then", &Runtime::FConditionNode::trueBranch, return_internal_reference<>())
-		.def("else", &Runtime::FConditionNode::falseBranch, return_internal_reference<>());
+		.def("then_branch", &Runtime::FConditionNode::trueBranch, return_internal_reference<>())
+		.def("else_branch", &Runtime::FConditionNode::falseBranch, return_internal_reference<>());
 
 	class_<Runtime::FFunctionNode, bases<Runtime::FSchemeNode>>("FFunctionNode", no_init)
 		.def("name", &Runtime::FFunctionNode::name)
