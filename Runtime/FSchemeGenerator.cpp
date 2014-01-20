@@ -56,6 +56,12 @@ FSchemeNode * FSchemeGenerator::getSchemeInput()
 }
 
 //-----------------------------------------------------------------------------
+ConstructorGenerator * FSchemeGenerator::getConstructorGenerator() const
+{
+	return mConstructorGenerator;
+}
+
+//-----------------------------------------------------------------------------
 void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 {
 	FSchemeNode * node = 0;

@@ -6,6 +6,7 @@
 
 #include "FScheme.h"
 #include "FSchemeGenerator.h"
+#include "ConstructorGenerator.h"
 #include "Run.h"
 #include "../Parser/Support.h"
 #include "../Parser/Tokenizer.h"
@@ -67,9 +68,31 @@ public:
 		return mSchemeGenerator.getSchemeInput();
 	}
 
-	dict getConsructors() const
+	dict getConstructors() const
 	{
-		// TODO:
+		// Составляем список конструкторов с информацией о типах.
+		dict constructorMap;
+
+		auto ctorGenerator = mSchemeGenerator.getConstructorGenerator();
+		auto ctors = ctorGenerator->constructors();
+
+		std::for_each(ctors.begin(), ctors.end(), [&](const std::string & name) -> void
+			{
+				auto ctor = ctorGenerator->getConstructor(name);
+				
+				list ctorSignature;
+				ctorSignature.append(ctor->targetType());
+				
+				for (int i = 0; i < ctor->type().size(); ++i)
+				{
+					ctorSignature.append(ctor->type()[i]);
+				}
+
+				constructorMap[name] = ctorSignature;
+			}
+		);
+
+		return constructorMap;
 	}
 
 private:
@@ -189,7 +212,8 @@ BOOST_PYTHON_MODULE(fptl)
 		.def("translate", &FunctionalProgram::translate)
 		.def("execute", &FunctionalProgram::execute)
 		.def("scheme", &FunctionalProgram::getScheme, return_internal_reference<>())
-		.def("data", &FunctionalProgram::getData, return_internal_reference<>());
+		.def("data", &FunctionalProgram::getData, return_internal_reference<>())
+		.def("constructors", &FunctionalProgram::getConstructors);
 }
 
 

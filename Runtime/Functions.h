@@ -22,6 +22,8 @@ public:
 	virtual void execDestructor(SExecutionContext & aCtx) const;
 
 	std::string name() const { return mConstructorName; }
+	TTypeList type() const { return mReferenceType; }
+	TypeInfo targetType() const { return mTargetType; }
 
 protected:
 

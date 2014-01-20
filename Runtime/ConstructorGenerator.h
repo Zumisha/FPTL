@@ -23,6 +23,7 @@ public:
 	virtual void visit(Parser::DefinitionNode * aDefinition);
 
 	Constructor * getConstructor(const std::string & aConstructorName) const;
+	std::vector<std::string> constructors() const;
 
 private:
 

@@ -40,6 +40,8 @@ public:
 	FSchemeNode * getFScheme();
 	FSchemeNode * getSchemeInput();
 
+	ConstructorGenerator * getConstructorGenerator() const;
+
 private:
 
 	void processBuildInFunction(Parser::NameRefNode * aFunctionName);
