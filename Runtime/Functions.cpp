@@ -26,6 +26,11 @@ struct ADTValue : public Collectable
 			i->getOps()->mark(*i, aMarkStack);
 		}
 	}
+
+	virtual size_t size() const
+	{
+		return sizeof(*this);
+	}
 };
 
 // Операции с абстрактным типом данных.

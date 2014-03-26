@@ -147,14 +147,21 @@ private:
 
 struct StringData : public Collectable
 {
-	char * value;
+	char * const value;
+	const size_t length;
 
-	StringData() 
-		: value((char *)(this) + sizeof(StringData))
+	StringData(size_t aLength) 
+		: value((char *)(this) + sizeof(StringData)),
+		length(aLength)
 	{}
 
 	virtual void mark(std::stack<Collectable *> & aMarkStack)
 	{}
+
+	virtual size_t size() const
+	{
+		return sizeof(*this) + length * sizeof(*value);
+	}
 };
 
 //-----------------------------------------------------------------------------
@@ -179,6 +186,11 @@ void StringValue::mark(std::stack<Collectable *> & aMarkStack)
 	aMarkStack.push(data);
 }
 
+size_t StringValue::size() const
+{
+	return sizeof(*this);
+}
+
 std::string StringValue::str() const
 {
 	return std::string(data->value + begin, data->value + end);
@@ -199,7 +211,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 
-	StringData * data = new (aCtx.alloc(sizeof(StringData) + aSize)) StringData();
+	StringData * data = new (aCtx.alloc(sizeof(StringData) + aSize)) StringData(aSize);
 	StringValue * str = new (aCtx.alloc(sizeof(StringValue))) StringValue();
 	str->begin = 0;
 	str->end = aSize;

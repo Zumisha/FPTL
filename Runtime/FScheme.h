@@ -37,7 +37,7 @@ private:
 	/// Создает заглушку, которая запускает JIT-компилятор, если код для узла не был сгенерирован.
 	TCompiledProc createJITStub();
 
-private:
+protected:
 	bool mIsLong;
 
 public:

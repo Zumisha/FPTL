@@ -18,8 +18,9 @@ SExecutionContext::SExecutionContext()
 	mEvaluatorUnit(0),
 	arity(0),
 	argPos(0),
-	numCollected(std::numeric_limits<int>::max()),
-	Ready(0)
+	numAllocated(0),
+	Ready(0),
+	prevAllocated(0)
 {
 	stack.reserve(10);
 }
@@ -95,6 +96,7 @@ void * SExecutionContext::alloc(size_t aSize)
 {
 	void * ptr = operator new (aSize);
 	allocatedMemory.push_front(ptr);
+	numAllocated += aSize;
 	return ptr;
 }
 
@@ -109,6 +111,8 @@ int SExecutionContext::collect()
 		i->getOps()->mark(*i, markStack);
 	}
 
+	size_t aliveSize = 0;
+
 	// Помечаем транзитивное замыкание.
 	while (!markStack.empty())
 	{
@@ -116,42 +120,49 @@ int SExecutionContext::collect()
 		markStack.pop();
 
 		// Циклических ссылок нет.
-		marked.insert(ptr);
+		if (marked.insert(ptr).second)
+		{
+			aliveSize += ptr->size();
+		}
+
 		ptr->mark(markStack);
 	}
 
 	// Освобождаем непомеченную память.
-	std::list<void *> sweeped;
-
-	int numCollected = 0;
+	std::list<void *> alive;
 
 	for (auto i = allocatedMemory.begin(); i != allocatedMemory.end(); ++i)
 	{
 		if (marked.find(*i) != marked.end())
 		{
-			sweeped.push_back(*i);
+			alive.push_back(*i);
 		}
 		else
 		{
 			delete *i;
-			++numCollected;
 		}
 	}
 
-	allocatedMemory.swap(sweeped);
-	return numCollected;
+	allocatedMemory.swap(alive);
+	numAllocated = aliveSize;
+
+	return aliveSize;
 }
 
 void SExecutionContext::tryCollect()
 {
-	int allocated = allocatedMemory.size();
-
-	if (allocated > 100000)
+	if (numAllocated - prevAllocated > (1 << 18))
 	{
-		if (float(numCollected / allocated) > 0.75)
+		prevAllocated = numAllocated;
+
+		collect();
+
+		if (numAllocated > prevAllocated)
 		{
-			numCollected = collect();
+			std::cout << "err: ";
 		}
+
+		std::cout << numAllocated << "/" << prevAllocated << "\n";
 	}
 }
 
@@ -297,7 +308,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 			aScheme->execute(aCtx);
 
 			// TEST: собираем всю память.
-			//aCtx.collect();
+			aCtx.collect();
 
 			stop();
 

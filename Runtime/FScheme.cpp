@@ -139,6 +139,7 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 
 		// Обновляем список выделенной памяти.
 		aCtx.allocatedMemory.splice(aCtx.allocatedMemory.end(), fork->allocatedMemory);
+		aCtx.numAllocated += fork->numAllocated;
 
 		// TEST
 		//aCtx.tryCollect();
@@ -161,7 +162,7 @@ void FParallelNode::accept(FSchemeVisitor * aVisitor) const
 
 //-----------------------------------------------------------------------------------
 FScheme::FScheme(FSchemeNode * aFirstNode)
-	: FSchemeNode(true), mFirstNode(aFirstNode)
+	: FSchemeNode(aFirstNode->isLong()), mFirstNode(aFirstNode)
 {
 }
 
@@ -173,6 +174,7 @@ FScheme::FScheme(FSchemeNode * aFirstNode, const std::string & aName)
 void FScheme::setFirstNode(FSchemeNode * aFirstNode)
 { 
 	mFirstNode = aFirstNode;
+	mIsLong = aFirstNode->isLong();
 
 	//optimizeTailCall();
 }

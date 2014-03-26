@@ -165,5 +165,6 @@
     <None Include="..\Parser\tokenizer.flex">
       <Filter>Grammar rules</Filter>
     </None>
+    <None Include="Bugs.txt" />
   </ItemGroup>
 </Project>

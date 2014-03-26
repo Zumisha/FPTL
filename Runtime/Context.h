@@ -39,7 +39,8 @@ struct SExecutionContext
 	std::list<void *> allocatedMemory;
 
 	// Объем памяти, выделенной до сборки мусора.
-	int numCollected;
+	size_t numAllocated;
+	size_t prevAllocated;
 
 	SExecutionContext();
 
@@ -85,6 +86,7 @@ class Collectable
 {
 public:
 	virtual void mark(std::stack<Collectable *> & aMarkStack) = 0;
+	virtual size_t size() const = 0;
 };
 
 } // Runtime

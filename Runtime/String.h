@@ -15,6 +15,7 @@ struct StringValue : public Collectable
 	int end;
 
 	virtual void mark(std::stack<Collectable *> & aMarkStack);
+	virtual size_t size() const;
 
 	char * getChars() const;
 	char * contents() const;
