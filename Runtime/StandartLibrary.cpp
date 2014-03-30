@@ -17,9 +17,7 @@ namespace {
 void id(SExecutionContext & aCtx)
 {
 	// Копируем данные аргументы от начала фрейма.
-	auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
-
-	for (int i = 0; i < numArgs; ++i)
+	for (int i = 0; i < aCtx.argNum; ++i)
 	{
 		aCtx.push(aCtx.getArg(i));
 	}

@@ -31,6 +31,8 @@ void FSequentialNode::execute(SExecutionContext & aCtx) const
 	int arity = aCtx.arity;
 	int argPos = aCtx.argPos;
 	int size = aCtx.stack.size();
+	int argNum = aCtx.argNum;
+
 	aCtx.arity = 0;
 
 	mFirst->execute(aCtx);
@@ -42,6 +44,7 @@ void FSequentialNode::execute(SExecutionContext & aCtx) const
 
 	// Сворачиваем стек.
 	aCtx.unwind(argPos, arity, size);
+	aCtx.argNum = argNum;
 }
 
 void FSequentialNode::accept(FSchemeVisitor * aVisitor) const

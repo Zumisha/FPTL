@@ -35,6 +35,9 @@ struct SExecutionContext
 	// Теущая арность операции.
 	int arity;
 
+	// Количество аргументов во входном кортеже.
+	int argNum;
+
 	// Список выделенной памяти.
 	std::list<void *> allocatedMemory;
 

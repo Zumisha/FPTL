@@ -20,7 +20,8 @@ SExecutionContext::SExecutionContext()
 	argPos(0),
 	numAllocated(0),
 	Ready(0),
-	prevAllocated(0)
+	prevAllocated(0),
+	argNum(0)
 {
 	stack.reserve(10);
 }
@@ -76,6 +77,7 @@ void SExecutionContext::push(const DataValue & aData)
 void SExecutionContext::advance()
 {
 	argPos = stack.size() - arity;
+	argNum = arity;
 	arity = 0;
 }
 
