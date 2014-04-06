@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <ostream>
 #include <unordered_map>
+#include <map>
 #include <boost/bind.hpp>
 
 namespace FPTL { namespace Runtime {
@@ -19,7 +20,7 @@ struct TypeInfo
 {
 	std::string TypeName;
 
-	std::unordered_map<std::string, TypeInfo> Parameters;
+	std::map<std::string, TypeInfo> Parameters;
 
 	TypeInfo()
 	{}

@@ -1,6 +1,7 @@
 ﻿#include <cassert>
 
 #include "Functions.h"
+#include <stdexcept>
 
 namespace FPTL {
 namespace Runtime {

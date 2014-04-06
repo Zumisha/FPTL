@@ -1,6 +1,6 @@
 ﻿#include <cstdlib>
 #include <iostream>
-#include <regex>
+#include <boost/regex.hpp>
 #include <fstream>
 #include <iterator>
 
@@ -8,6 +8,7 @@
 #include "StandartLibrary.h"
 #include "../Parser/BuildInFunctionNames.h"
 #include "String.h"
+#include <cstring>
 
 namespace FPTL {
 namespace Runtime {
@@ -296,10 +297,10 @@ void search(SExecutionContext & aCtx)
 	auto src = arg0.getOps()->toString(arg0);
 	auto regEx = arg1.getOps()->toString(arg1);
 
-	std::regex rx(regEx->str());
-	std::cmatch match;
+	boost::regex rx(regEx->str());
+	boost::cmatch match;
 
-	if (std::regex_search((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
+	if (boost::regex_search((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
 	{		
 		for (unsigned i = 0; i < rx.mark_count(); i++)
 		{
@@ -323,10 +324,10 @@ void match(SExecutionContext & aCtx)
 	auto src = arg0.getOps()->toString(arg0);
 	auto regEx = arg1.getOps()->toString(arg1);
 
-	std::regex rx(regEx->str());
-	std::cmatch match;
+	boost::regex rx(regEx->str());
+	boost::cmatch match;
 
-	if (std::regex_match((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
+	if (boost::regex_match((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
 	{
 		for (unsigned i = 0; i < rx.mark_count(); i++)
 		{
@@ -353,9 +354,9 @@ void replace(SExecutionContext & aCtx)
 	auto pattern = arg1.getOps()->toString(arg1);
 	auto format  = arg2.getOps()->toString(arg2);
 
-	std::regex rx(pattern->str());
+	boost::regex rx(pattern->str());
 
-	std::string result = std::regex_replace(src->str(), rx, format->str());
+	std::string result = boost::regex_replace(src->str(), rx, format->str());
 
 	aCtx.push(StringBuilder::create(aCtx, result));
 }
@@ -369,11 +370,11 @@ void getToken(SExecutionContext & aCtx)
 	auto src = arg0.getOps()->toString(arg0);
 	auto pattern = arg1.getOps()->toString(arg1);
 
-	std::regex rx("^(?:\\s*)(" + pattern->str() + ")");
+	boost::regex rx("^(?:\\s*)(" + pattern->str() + ")");
 
-	std::cmatch match;
+	boost::cmatch match;
 
-	if (std::regex_search((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
+	if (boost::regex_search((const char *)src->getChars(), (const char *)(src->getChars() + src->length()), match, rx))
 	{
 		auto prefix = StringBuilder::create(aCtx, src, match[1].first - src->contents(), match[1].second - src->contents());
 		aCtx.push(prefix);

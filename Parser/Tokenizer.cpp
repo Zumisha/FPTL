@@ -1,7 +1,7 @@
 ﻿#include <string>
 #include <cassert>
 #include <cmath>
-#include <regex>
+#include <boost/regex.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -42,10 +42,10 @@ ConstantNode * Tokenizer::formDecimalConstant()
 //-------------------------------------------------------------------------------------------
 ConstantNode * Tokenizer::formLongLongConstant()
 {
-	std::regex rx("(\\d+)[Ll][Ll]");
-	std::cmatch match;
+	boost::regex rx("(\\d+)[Ll][Ll]");
+	boost::cmatch match;
 
-	std::regex_search(YYText(), match, rx); 
+	boost::regex_search(YYText(), match, rx); 
 
 	// Проверяем диапазон.
 	try
@@ -91,15 +91,15 @@ ConstantNode * Tokenizer::formStringConstant(void)
 
 	// Заменяем escape-символы.
 
-	str = std::regex_replace(str, std::regex("\\\\\\\\"), std::string("\\"));
-	str = std::regex_replace(str, std::regex("[\\\\][a]"), std::string("\a"));
-	str = std::regex_replace(str, std::regex("[\\\\][b]"), std::string("\b"));
-	str = std::regex_replace(str, std::regex("[\\\\][f]"), std::string("\f"));
-	str = std::regex_replace(str, std::regex("[\\\\][n]"), std::string("\n"));
-	str = std::regex_replace(str, std::regex("[\\\\][r]"), std::string("\r"));
-	str = std::regex_replace(str, std::regex("[\\\\][t]"), std::string("\t"));
-	str = std::regex_replace(str, std::regex("[\\\\][v]"), std::string("\v"));
-	str = std::regex_replace(str, std::regex("[\\\\]\""), std::string("\""));
+	str = boost::regex_replace(str, boost::regex("\\\\\\\\"), std::string("\\"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][a]"), std::string("\a"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][b]"), std::string("\b"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][f]"), std::string("\f"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][n]"), std::string("\n"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][r]"), std::string("\r"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][t]"), std::string("\t"));
+	str = boost::regex_replace(str, boost::regex("[\\\\][v]"), std::string("\v"));
+	str = boost::regex_replace(str, boost::regex("[\\\\]\""), std::string("\""));
 
 	return new ConstantNode( ASTNode::StringConstant, mSupport->newConstant( str, mLine, mCol ));
 }
