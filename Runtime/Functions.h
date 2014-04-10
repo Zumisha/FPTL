@@ -15,7 +15,11 @@ class Constructor
 {
 public:
 
-	Constructor(const std::string & aConstructorName, const std::string & aTypeName, const TTypeList & aRefType);
+	Constructor(const std::string & aConstructorName,
+		const std::string & aTypeName,
+		const TTypeList & aRefType,
+		const std::vector<std::string> & aParameters
+	);
 	virtual ~Constructor();
 
 	virtual void execConstructor(SExecutionContext & aCtx) const;

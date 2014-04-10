@@ -31,18 +31,8 @@ public:
 
 	bool isLong() const { return mIsLong; }
 
-	typedef void (*TCompiledProc)(SExecutionContext * aCtx);
-
-private:
-	/// Создает заглушку, которая запускает JIT-компилятор, если код для узла не был сгенерирован.
-	TCompiledProc createJITStub();
-
 protected:
 	bool mIsLong;
-
-public:
-	/// Скомпилированная в рантайме версия execute.
-	TCompiledProc mCompiledProc;
 };
 
 //---------------------------------------------------------------------------------------------
