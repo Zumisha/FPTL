@@ -34,6 +34,9 @@ private:
 
 	TTypeList mTypeTuple;
 	std::stack<TTypeList> mStack;
+
+	// Типовые параметры для типа, определяемого конструкторами.
+	std::vector<std::string> mTypeParameters;
 };
 
 }} // FPTL::Runtime

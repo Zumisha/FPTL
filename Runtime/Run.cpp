@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <unordered_set>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 
 #include "Run.h"
 #include "FScheme.h"
@@ -51,8 +51,6 @@ void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 
 	// Для отключения JIT.
 	Scheme->execute(*this);
-
-	//Scheme->mCompiledProc(this);
 
 	// Сообщаем о готовности задания.
 	Ready.store(1, boost::memory_order_release);
@@ -298,23 +296,21 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 		{
 			if (aInput)
 			{
-				//aInput->mCompiledProc(context);
 				aInput->execute(aCtx);
 			}
 
 			aCtx.advance();
 
-			boost::timer timer;
+			boost::timer::cpu_timer timer;
 
-			//aScheme->mCompiledProc(context);
 			aScheme->execute(aCtx);
-
-			// TEST: собираем всю память.
-			aCtx.collect();
 
 			stop();
 
-			std::cout << "\nTime : " << timer.elapsed() << "\n\n";
+			std::cout << "\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
+
+			// TEST: собираем всю память.
+			//aCtx.collect();
 		}
 	);
 	///

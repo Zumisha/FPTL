@@ -17,6 +17,8 @@ void ConstructorGenerator::visit(Parser::DataNode * aData)
 	mCurrentData = aData;
 
 	NodeVisitor::visit(aData);
+
+	mTypeParameters.clear();
 }
 
 //-------------------------------------------------------------------------------------------
@@ -77,13 +79,17 @@ void ConstructorGenerator::visit(Parser::DefinitionNode * aDefinition)
 		std::string dataName = mCurrentData->getDataName().getStr();
 		std::string constructorName = aDefinition->getDefinitionName().getStr();
 
-		Constructor * constructor = !mTypeTuple.empty() ? new Constructor(constructorName, dataName, mTypeTuple)
+		Constructor * constructor = !mTypeTuple.empty() ? new Constructor(constructorName, dataName, mTypeTuple, mTypeParameters)
 			: new EmptyConstructor(constructorName, dataName);
 
 		// Добавляем новый конструктор в список.
 		mConstructors.insert(std::make_pair(constructorName, std::shared_ptr<Constructor>(constructor)));
 
 		mTypeTuple.clear();
+	}
+	else if (aDefinition->getType() == Parser::ASTNode::TypeParameterDefinition)
+	{
+		mTypeParameters.push_back(aDefinition->getDefinitionName().getStr());
 	}
 }
 

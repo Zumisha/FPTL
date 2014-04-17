@@ -177,12 +177,17 @@ private:
 };
 
 //-------------------------------------------------------------------------------
-Constructor::Constructor(const std::string & aConstructorName, const std::string & aTypeName, const TTypeList & aRefType)
+Constructor::Constructor(const std::string & aConstructorName, const std::string & aTypeName, const TTypeList & aRefType, const std::vector<std::string> & aParameters)
 	: mConstructorName(aConstructorName),
 	mReferenceType(aRefType),
 	mTypeName(aTypeName),
 	mTargetType(aTypeName)
 {
+	std::for_each(aParameters.begin(), aParameters.end(), [this](const std::string & param)
+		{
+			mTargetType.addParameter(param, TypeInfo());
+		}
+	);
 }
 
 //-------------------------------------------------------------------------------
@@ -254,7 +259,7 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 
 //-------------------------------------------------------------------------------
 EmptyConstructor::EmptyConstructor(const std::string & aConstructorName, const std::string & aTypeName)
-	: Constructor(aConstructorName, aTypeName, TTypeList()),
+	: Constructor(aConstructorName, aTypeName, TTypeList(), std::vector<std::string>()),
 	mTypeInfo(aTypeName)
 {
 }
