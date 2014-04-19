@@ -34,7 +34,8 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 	{
 		if (aRef->TypeName == aTypeInfo->TypeName)
 		{
-			if (aTypeInfo->Parameters.empty())
+			// Отключил проверку параметров, т.к. в конкретном экземпляре ADT-значения она не сохраняется (Java-style).
+			/*if (aTypeInfo->Parameters.empty())
 			{
 				// Тип не имеет параметров или был создан пустым конструктором.
 				return true;
@@ -47,7 +48,7 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 				{
 					return false;
 				}
-			}
+			}*/
 
 			return true;
 		}
