@@ -23,87 +23,82 @@ DataValue::DataValue(const Ops * aOps)
 }
 
 //-----------------------------------------------------------------------------
-class BaseOps : public Ops
+// Базисные функции.
+DataValue BaseOps::add(const DataValue & aLhs, const DataValue & aRhs) const
 {
-public:
-	// Базисные функции.
-	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+	return invalidOperation();
+}
 
-	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::sub(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::mul(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::div(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::mod(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	virtual DataValue abs(const DataValue & aArg) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::abs(const DataValue & aArg) const
+{
+	return invalidOperation();
+}
 
-	// Функции сравнения.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+// Функции сравнения.
+DataValue BaseOps::equal(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::less(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const
-	{
-		return invalidOperation();
-	}
+DataValue BaseOps::greater(const DataValue & aLhs, const DataValue & aRhs) const
+{
+	return invalidOperation();
+}
 
-	// Функции преобразования.
-	virtual int toInt(const DataValue & aVal) const
-	{
-		invalidOperation();
-		return 0;
-	}
+// Функции преобразования.
+int BaseOps::toInt(const DataValue & aVal) const
+{
+	invalidOperation();
+	return 0;
+}
 
-	virtual double toDouble(const DataValue & aVal) const
-	{
-		invalidOperation();
-		return 0.0;
-	}
+double BaseOps::toDouble(const DataValue & aVal) const
+{
+	invalidOperation();
+	return 0.0;
+}
 
-	virtual StringValue * toString(const DataValue & aVal) const
-	{
-		invalidOperation();
-		return nullptr;
-	}
+StringValue * BaseOps::toString(const DataValue & aVal) const
+{
+	invalidOperation();
+	return nullptr;
+}
 
-	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const
-	{
-	}
+void BaseOps::mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const
+{
+}
 
-protected:
-	DataValue invalidOperation() const
-	{
-		std::stringstream error;
-		error << "invalid operation on type " << *getType(DataValue());
-		throw std::runtime_error(error.str());
-	}
-};
+DataValue BaseOps::invalidOperation() const
+{
+	std::stringstream error;
+	error << "invalid operation on type " << *getType(DataValue());
+	throw std::runtime_error(error.str());
+}
 
 //-----------------------------------------------------------------------------
 

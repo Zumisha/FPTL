@@ -8,6 +8,7 @@
 #include "StandartLibrary.h"
 #include "../Parser/BuildInFunctionNames.h"
 #include "String.h"
+#include "Array.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -414,6 +415,42 @@ void readFile(SExecutionContext & aCtx)
 	aCtx.push(val);
 }
 
+// Создание массива.
+void createArray(SExecutionContext & aCtx)
+{
+	auto & sizeVal = aCtx.getArg(0);
+	auto & initialVal = aCtx.getArg(1);
+
+	int size = sizeVal.getOps()->toInt(sizeVal);
+
+	aCtx.push(ArrayValue::create(aCtx, size, initialVal));
+}
+
+// Чтение элемента из массива.
+void getArrayElement(SExecutionContext & aCtx)
+{
+	auto & arrVal = aCtx.getArg(0);
+	auto & posVal = aCtx.getArg(1);
+
+	int pos = posVal.getOps()->toInt(posVal);
+
+	aCtx.push(ArrayValue::get(arrVal, pos));
+}
+
+// Запись элемента в массив.
+void setArrayElement(SExecutionContext & aCtx)
+{
+	auto & arrVal = aCtx.getArg(0);
+	auto & posVal = aCtx.getArg(1);
+	auto & val = aCtx.getArg(2);
+
+	int pos = posVal.getOps()->toInt(posVal);
+
+	ArrayValue::set(const_cast<DataValue &>(arrVal), pos, val);
+
+	aCtx.push(arrVal);
+}
+
 } // anonymous namespace
 
 StandartLibrary::StandartLibrary() : FunctionLibrary("StdLib")
@@ -465,6 +502,10 @@ StandartLibrary::StandartLibrary() : FunctionLibrary("StdLib")
 	addFunction(FPTL::Parser::BuildInFunctions::Replace, &replace);
 	addFunction(FPTL::Parser::BuildInFunctions::GetToken, &getToken);
 
+	// Работа с массивами.
+	addFunction(FPTL::Parser::BuildInFunctions::arrCreate, &createArray);
+	addFunction(FPTL::Parser::BuildInFunctions::arrGetElem, &getArrayElement);
+	addFunction(FPTL::Parser::BuildInFunctions::arrSetElem, &setArrayElement);
 }
 
 }} // FPTL::Runtime

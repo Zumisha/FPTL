@@ -58,6 +58,11 @@ namespace FPTL
 
 			// Операции с файлами.
 			const char readFile[]       = "readFile";
+
+			// Работа с массивами.
+			const char arrCreate[]      = "arrayCreate";
+			const char arrGetElem[]     = "arrayGet";
+			const char arrSetElem[]     = "arraySet";
 		}
 	}
 }

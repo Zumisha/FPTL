@@ -102,6 +102,10 @@ void Support::initializeKeywordTable( void )
 	regBF(BuildInFunctions::toLongInt);
 
 	regBF(BuildInFunctions::readFile);
+
+	regBF(BuildInFunctions::arrCreate);
+	regBF(BuildInFunctions::arrGetElem);
+	regBF(BuildInFunctions::arrSetElem);
 }
 
 //-------------------------------------------------------------------------------------------

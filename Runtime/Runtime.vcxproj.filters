@@ -89,6 +89,9 @@
     <ClCompile Include="PythonInterop.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
+    <ClCompile Include="DataTypes\Array.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\AST.h">
@@ -155,6 +158,9 @@
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="String.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="Array.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
   </ItemGroup>

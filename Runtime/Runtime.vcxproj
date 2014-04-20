@@ -76,7 +76,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -162,6 +162,7 @@
     </ClCompile>
     <ClCompile Include="ConstructorGenerator.cpp" />
     <ClCompile Include="Data.cpp" />
+    <ClCompile Include="DataTypes\Array.cpp" />
     <ClCompile Include="DataTypes\String.cpp" />
     <ClCompile Include="FScheme.cpp" />
     <ClCompile Include="FSchemeGenerator.cpp" />
@@ -176,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
+    <ClInclude Include="Array.h" />
     <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="ConstructorGenerator.h" />
     <ClInclude Include="Context.h" />

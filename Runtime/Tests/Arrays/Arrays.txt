@@ -1,0 +1,8 @@
+Scheme Arrays
+{
+    @ = ((Create*0*123).arraySet*1*456).arraySet.(([1]*0).arrayGet*([1]*1).arrayGet).print;
+
+    Create = (2*0).arrayCreate;
+}
+Application
+% Arrays
