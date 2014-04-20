@@ -1,7 +1,6 @@
-PROJECT_DIR:=/home/ubuntu/Developer/pshamal-fptl
+PROJECT_DIR:=$(shell pwd)  #полный путь к текущему каталогу мейкфайла
 
-BOOST_DIR:=/home/ubuntu/Developer/boost_1_54_0
-
+BOOST_DIR:=$(shell pwd)/../boost_1_54_
 
 OBJDIR := build-linux
 
@@ -24,6 +23,7 @@ Runtime/Data.cpp\
 Runtime/DataTypes/String.cpp\
 Runtime/FScheme.cpp\
 Runtime/Functions.cpp\
+Runtime/DataTypes/Array.cpp\
 Parser/Tokenizer.cpp\
 Parser/AST.cpp\
 Parser/Nodes.cpp\
@@ -54,7 +54,7 @@ $(info )
 LIBS_DIR =-L$(BOOST_DIR)/stage/lib 
 
 
-LIDS = -lboost_regex -lboost_thread -lboost_system -pthread -lrt -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free -ltcmalloc
+LIDS = -lboost_timer -lboost_chrono -lboost_regex -lboost_thread -lboost_system -pthread -lrt -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free -ltcmalloc
 
 HEADER_PATH =\
 -I$(PROJECT_DIR)/Parser/Generated/Flex \

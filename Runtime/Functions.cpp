@@ -185,7 +185,7 @@ Constructor::Constructor(const std::string & aConstructorName, const std::string
 {
 	std::for_each(aParameters.begin(), aParameters.end(), [this](const std::string & param)
 		{
-			mTargetType.addParameter(param, TypeInfo());
+			mTargetType.addParameter(param, TypeInfo(param));
 		}
 	);
 }

@@ -13,6 +13,7 @@ class Ops;
 
 struct ADTValue;
 struct StringValue;
+struct ArrayValue;
 
 // Variant для представления всех типов данных, кроме неопределенного значения.
 class DataValue
@@ -38,6 +39,7 @@ public:
 		double mDoubleVal;
 		ADTValue * mADT;
 		StringValue * mString;
+		ArrayValue * mArray;
 	};
 };
 
@@ -86,6 +88,34 @@ public:
 
 	// Вывод в поток.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const = 0;
+};
+
+// Базовая реализация операций. Кидает исключения на вызов любого метода.
+class BaseOps : public Ops
+{
+public:
+	// Базисные функции.
+	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue abs(const DataValue & aArg) const;
+
+	// Функции сравнения.
+	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const;
+	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const;
+
+	// Функции преобразования.
+	virtual int toInt(const DataValue & aVal) const;
+	virtual double toDouble(const DataValue & aVal) const;
+	virtual StringValue * toString(const DataValue & aVal) const;
+
+	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const;
+
+protected:
+	DataValue invalidOperation() const;
 };
 
 // Конструкторы типов данных.
