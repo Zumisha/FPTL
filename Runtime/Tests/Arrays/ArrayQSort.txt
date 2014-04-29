@@ -1,19 +1,19 @@
 Scheme ArrayQSort
 {
-    Array = ([1]*([1] * 0.0).arrayCreate).FillArray(FillFn);
+    Array = ([1]*([1] * 0).arrayCreate).FillArray(FillFn);
 
-    @ = ([1]*Array).QSort;
+    @ = ([1]*Array).QSort.print;
 
-    FillFn = ([2]*[1]*rand).arraySet;
+    FillFn = ([2]*[1]*(rand*1000).mul.toInt).arraySet;
 
     Fun FillArray[F]
     {
         N = [1];
         Arr = [2];
 
-        @ = (N * Arr * 0).Recurse;
+        @ = (N * Arr * 0).Recurse.[1];
 
-        Recurse = ([3]*N).equal -> Arr, (([3]*Arr).F * (N*Arr*([3]*1).add).Recurse).[1];
+        Recurse = ([3]*N).equal -> Arr*Arr, (N*([3]*Arr).F*([3]*1).add).Recurse;
     }
 
     Fun QSort
@@ -22,6 +22,7 @@ Scheme ArrayQSort
         Arr = [2];
 
         @ = (0 * (N*1).sub * Arr * N).QSortRecurse(Partition);
+		//@ = Arr.print * (0 * (N*1).sub * (Arr*((N*1).sub*2).div).arrayGet * Arr * N).Partition * Arr;
 
         Fun QSortRecurse[Partition]
         {
@@ -31,9 +32,14 @@ Scheme ArrayQSort
             N = [4];
 
             Mid = ((A * B).add * 2).div;
+			Cmp = (Arr * Mid).arrayGet;
 
-            @ = ((B * A).sub * 1).lequal -> Arr,                                      
-                      (id * (A * B * Mid * Arr * N).Partition).((A * [5] * Arr * N).QSortRecurse * ([6] * B * Arr * N).QSortRecurse).[1];           
+            @ = (A * B).gequal -> Arr,                                      
+                      (id * (A * B * Cmp * Arr * N).Partition).((A * [6] * Arr * N).QSortRecurse * ([5] * B * Arr * N).QSortRecurse).[1];           
+					  
+	        
+            //@ = (A * B).gequal -> Arr,                                      
+              //        (id * (A * B * Cmp * Arr * N).Partition);           
         }
      
 
@@ -47,21 +53,18 @@ Scheme ArrayQSort
 
             ArrL = (Arr * L).arrayGet;
             ArrR = (Arr * R).arrayGet;
-            ArrCmp = (Arr * Cmp).arrayGet;
 
-            // Найти элемент >= опорному.
-            FindLeft = (L * R).lequal ->
-				((ArrL * ArrCmp).gequal -> L, ((L * 1).add * R * Cmp * Arr * N).FindLeft),
-                                R;
+            // Найти элемент > опорному.
+            FindLeft = ((ArrL * Cmp).gequal -> L, ((L * 1).add * R * Cmp * Arr * N).FindLeft);                            
 
             // Найти элемент <= опорному.
-            FindRight = (R * 0).gequal ->
-				((ArrR * ArrCmp).lequal -> R, (L * (R * 1).sub * Cmp * Arr * N).FindRight),
-                                0;
+            FindRight = ((ArrR * Cmp).lequal -> R, (L * (R * 1).sub * Cmp * Arr * N).FindRight);                              
 
-            Partition = (id * FindLeft * FindRight).(([6]*[7]).gequal -> ([6]*[7]), ([6]*[7]*Cmp*Arr*N).Swap.Partition);
+            Partition = (L * R).lequal -> 
+						((id * FindLeft * FindRight).(([6]*[7]).greater -> ([6]*[7]), ([6]*[7]*Cmp*Arr*N).Swap.Partition)),
+						L * R;
 
-            //Partition = (id * FindLeft * FindRight).([6]*[7]*Cmp*Arr*N).Swap;           
+            Partition1 = (id * FindLeft * FindRight).([6]*[7]);//([6]*[7]*Cmp*Arr*N).Swap;           
 
             // Меняем местами 2 элемента местами.
             Swap = (L*1).add * (R*1).sub * Cmp * ((id * ArrL * ArrR) . ((Arr * L * [7]).arraySet * (Arr * R * [6]).arraySet)).[1] * N;
@@ -72,4 +75,4 @@ Scheme ArrayQSort
         
 }
 Application
-% ArrayQSort(1000)
+% ArrayQSort(2000)
