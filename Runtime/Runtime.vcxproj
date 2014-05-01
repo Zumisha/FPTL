@@ -142,7 +142,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\External\AsmJit\AsmJit\Build;$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:16000000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:128000000 %(AdditionalOptions)</AdditionalOptions>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>

@@ -2,9 +2,9 @@ Scheme ArrayQSort
 {
     Array = ([1]*([1] * 0).arrayCreate).FillArray(FillFn);
 
-    @ = ([1]*Array).QSort.print;
+    @ = ([1]*Array).QSort;
 
-    FillFn = ([2]*[1]*(rand*1000).mul.toInt).arraySet;
+    FillFn = ([2]*[1]*(rand*10000     `).mul.toInt).arraySet;
 
     Fun FillArray[F]
     {
@@ -22,7 +22,6 @@ Scheme ArrayQSort
         Arr = [2];
 
         @ = (0 * (N*1).sub * Arr * N).QSortRecurse(Partition);
-		//@ = Arr.print * (0 * (N*1).sub * (Arr*((N*1).sub*2).div).arrayGet * Arr * N).Partition * Arr;
 
         Fun QSortRecurse[Partition]
         {
@@ -36,10 +35,7 @@ Scheme ArrayQSort
 
             @ = (A * B).gequal -> Arr,                                      
                       (id * (A * B * Cmp * Arr * N).Partition).((A * [6] * Arr * N).QSortRecurse * ([5] * B * Arr * N).QSortRecurse).[1];           
-					  
-	        
-            //@ = (A * B).gequal -> Arr,                                      
-              //        (id * (A * B * Cmp * Arr * N).Partition);           
+					      
         }
      
 
@@ -75,4 +71,4 @@ Scheme ArrayQSort
         
 }
 Application
-% ArrayQSort(2000)
+% ArrayQSort(200000)
