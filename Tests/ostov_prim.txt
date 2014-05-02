@@ -1,0 +1,115 @@
+Data List['t]
+{   
+	List = c_nil ++ 't*List['t].c_cons;
+}
+
+Data Trile['s, 't, 'k] 
+{ 
+	Pair = 's * 't * 'k.c_triple; 
+}  
+
+
+Scheme Main
+{	
+	
+	// Создание случайной матрицы связей (Размер) -> (Список списков)
+	Fun RandomMatrix[Max, Min]
+	{
+		Fun RandomList[Max, Min]
+		{
+			@ = (id * 0).equal -> c_nil,
+						((Min * (rand * (Max * Min).sub).mul).add * (id * 1).sub.RandomList).c_cons; 
+		}
+		
+		TmpMax = Max;
+		TmpMin = Min;
+		@ = ([1] * 0).equal -> c_nil,
+                    ([2].RandomList(TmpMax, TmpMin)* (([1] * 1).sub * [2]).RandomMatrix).c_cons; 
+	}
+	
+
+	
+	// (Добавленные_вершины, рёбра, граф) -> (Список_рёбер)
+	Fun FindTree[Size, MaxVal]
+	{	
+			// Поиск минимального веса ребра для добавления
+		// (Не_просмотренные_уже_добавленные_вершины, Минимальный_идекс_исходящей, Минимальный_индекс_входящей, Вес, Уже_добавленные_вершины, Граф) -> (Исходящая вершина, вершина назначения, вес)
+		Fun FindMinMatrix[Size, MaxVal]
+		{
+				// Получение строки в матрице (Текущий_номер_строки,  Матрица, Требуемый_номер_строки) -> (Строка) 
+			Fun GetStr
+			{
+				// Если получено, что индекс дошёл до нуля, то строки нет, возвращаем c_nil
+				// Иначе сравниваем номер строки, если совпал, то возвращаем строку, иначе рекурсивно ищем дальше
+				@ = ([1] * 0).equal -> c_nil, 
+					([1] * [3]).equal -> [2].~c_cons.[1], (([1] * 1).sub * [2].~c_cons.[2] * [3]).GetStr;
+			}
+			
+			// Поиск минимального значения в строке с учётом петель и циклов
+			// (Индекс_элемента, Минимальное_значение, Индекс_минимального_элемента, Запрещёные_значения, Строка_матрицы) -> (Индекс, Минимальное_значение)
+			Fun FindMinStr[Size]
+			{
+				// Поиск наличия элемента в массиве
+				// (значение, строка)
+				Fun StrContains
+				{
+					@ = [2].~c_nil -> false,
+						([1] * [2].~c_cons.[1]).equal -> true,
+						([1] * [2].~c_cons.[2]).StrContains;
+				}
+				// Если дошли до конца, то возвращаем просто значение
+				@ = [5].~c_nil -> [3] * [2],
+					// Если элмент содержится среди запрещённых, то просто запускаем рекурсию
+					([1] * [4]).StrContains -> (([1] * 1).sub * [2] * [3] * [4] * [5].~c_cons.[2]).FindMinStr,
+					// Если найден элемент больше, то заменяем и дальше рекурсия
+					([2] * [5].~c_cons.[1]).greater -> (([1] * 1).sub * [5].~c_cons.[1] * [1] * [4] * [5].~c_cons.[2]).FindMinStr,
+						// если не найден, то просто рекурсия
+						(([1] * 1).sub * [2] * [3] * [4] * [5].~c_cons.[2]).FindMinStr;
+			}
+		
+			// Ищем из следующей вершины в списке уже добавленных
+			
+			NextLevel = [1].~c_nil ->  Size * Size * MaxVal,
+					([1].~c_cons.[2] * [2] * [3] * [4] * [5] * [6]).FindMinMatrix;
+			// Ищем из текущей
+			TmpSize = Size;
+			TmpMaxVal = MaxVal;
+			
+			CurLevel = (Size * MaxVal * Size * [5] * (Size * [6] * [1].~c_cons.[1]).GetStr).FindMinStr(TmpSize);
+			// Если поиск следующей меньше, то возвращаем её, иначе текущую
+			@ = (NextLevel.[3] * CurLevel.[2]).less -> NextLevel, ([1].~c_cons.[1] * CurLevel.[1] * CurLevel.[2]);
+		}
+		
+		TmpSize = Size;
+		TmpMaxVal = MaxVal;
+		
+		// Запускаем поиск из текущего количества вершин
+		NextFound = ([1] * (Size * 1).add * (Size * 1).add * MaxVal * [1] * [3]).FindMinMatrix(TmpSize, TmpMaxVal);
+		// Новое множество границ
+		NewBorders = (NextFound.c_triple * [2]).c_cons;
+		// Если новая граница была найдена, то добавляем и рекурсивно вызываем поиск из нового множества
+		@ = (NextFound.[3] * MaxVal).equal -> [2],
+			((NextFound.[2] * [1]).c_cons * NewBorders * [3]).FindTree;
+	}
+	
+	// Печать остовного дерева.
+	// (Дерево, Сумма) 
+	Fun PrintOst
+	{
+		P = [1].~c_cons.[1].~c_triple;
+		@ = [1].~c_nil -> ("Summ: " * [2].toString).cat,
+			((((((P.[1].toString * "->").cat * P.[2].toString).cat  * " : ").cat 
+			 * P.[3].toString).cat  * "\n").cat  
+			 * ([1].~c_cons.[2] *([2]*P.[3]).add ).PrintOst.toString).cat;
+	}
+	
+	GraphSize = 15;
+	Lst = (GraphSize * GraphSize).RandomMatrix(100, 0);
+	OstTree = ((1*c_nil).c_cons*c_nil*Lst).FindTree(GraphSize, 100);
+	@ = OstTree;
+}
+
+
+
+Application
+% Main

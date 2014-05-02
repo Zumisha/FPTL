@@ -1,0 +1,24 @@
+Scheme Test
+{
+
+	@ = (0.0 * 10.0 * 0.000001).Integrate(TestFunc);
+
+	TestFunc = (((((id*id).mul*id).mul * 0.5).mul.sin * ((id*id).mul * 0.25).mul.sin).mul * (id * 0.125).mul.sin).mul;
+
+	
+	// Параметра A*B*Eps - границы отрезка интегрирования и точность.
+	Fun Integrate[fFunction]
+	{
+		@ = (((([1] * Mid).Trp * (Mid * [2]).Trp).add * ([1] * [2]).Trp).sub.abs * [3]).less ->
+			([1] * [2]).Trp,
+			((([1] * Mid * ([3] * 2.0).div).@ * (Mid * [2] * ([3] * 2.0).div).@).add);
+
+		Mid = (([1] * [2]).add * 2.0).div;
+
+		Trp = ((([2] * [1]).sub * ([2].fFunction * [1].fFunction).add).mul * 2.0).div;
+	}
+
+}
+
+Application
+% Test
