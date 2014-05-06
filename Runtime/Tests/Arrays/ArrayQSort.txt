@@ -4,7 +4,7 @@ Scheme ArrayQSort
 
     @ = ([1]*Array).QSort;
 
-    FillFn = ([2]*[1]*(rand*10000     `).mul.toInt).arraySet;
+    FillFn = ([2]*[1]*(rand*10000).mul.toInt).arraySet;
 
     Fun FillArray[F]
     {
