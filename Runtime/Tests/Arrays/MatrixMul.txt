@@ -1,0 +1,89 @@
+Scheme MatrixMultiply
+{
+     N = [1];
+
+     @ = MulMat;
+
+     FillFn = ([2] * (([1]*[3]).mul*[4]).add * rand).arraySet;
+     PrintFn = print.(" ".print);
+
+     CreateMat = ((N * N).mul * 0.0).arrayCreate;
+
+     MatA = (N * CreateMat * 0 * 0).FillMatrixIJ(FillA);
+     MatB = (N * CreateMat * 0 * 0).FillMatrixIJ(FillB);
+
+     // Генерирует единичную матрицу.
+     FillA = ([2] * (([1]*[3]).mul*[4]).add * (([3]*[4]).equal -> 1.0, 0.0)).arraySet;
+
+     // Генерирует константную матрицу.
+     FillB = ([2] * (([1]*[3]).mul*[4]).add * 2.0).arraySet;
+
+
+     MulMat = (N * CreateMat * MatA * MatB).FillMatrixIJ(MulRowCol);
+
+     MulRowCol = ([2] * (([1]*[3]).mul*[4]).add * ([1]*[5]*[6]*[3]*[4]).DotProduct(GetRowElem, GetColElem)).arraySet;
+
+
+     Fun DotProduct[GetRowElem, GetColElem]
+         {
+            N = [1];
+            MatA = [2];
+            MatB = [3];
+            I = [4];
+            J = [5];
+
+            @ = (N * MatA * MatB * I * J * 0).Recurse;
+
+            Recurse = ([6] * N).equal -> 0.0,
+                 ((([6] * I * MatA * N).GetRowElem * ([6] * J * MatB * N).GetColElem).mul * (N * MatA * MatB * I * J * ([6]*1).add).Recurse).add;
+                      
+         }
+
+     // Возвращает элемент k строки i матрицы M размера n.
+     Fun GetRowElem
+     {
+	 K = [1];
+         I = [2];
+         Mat = [3];
+         N = [4];
+         @ = (Mat * (K * (I * N).mul).add).arrayGet;
+     }
+
+     // Возвращает элемент k столбца j матрицы M размера n.
+     Fun GetColElem
+     {
+         K = [1];
+         J = [2];
+         Mat = [3];
+         N = [4];
+         @ = (Mat * (J * (K * N).mul).add).arrayGet;
+     }
+
+     // N - размерность.
+     // Mat - матрица размера N * N
+     // X - доп. параметр 1.
+     // Y - доп. параметр 2.
+     // Выполняет операцию над каждым элементом матрицы с помощью функции F.
+     // F: N * Mat * i * j * X * Y (i=0..N-1, j=0..N-1) => Mat
+     Fun FillMatrixIJ[F]
+     {
+         N = [1];
+         Mat = [2];
+
+         FillMatrixIJ = (N * Mat * 0 * [3] * [4]).Recurse;
+
+         Recurse = ([3] * N).equal -> Mat,
+                   ((N * Mat * [3] * 0 * [4] * [5]).FillRow * (N * Mat * ([3] * 1).add * [4] * [5]).Recurse).[1];
+
+         // N
+         // Mat
+         // [3] - строка.
+         // [4] - начальный столбец.
+         // [5] - доп. параметр 1.
+         // [6] - доп. параметр 2.
+         FillRow = ([4] * N).equal -> Mat,
+                     ((N*Mat*[3]*[4]*[5]*[6]).F * (N*Mat*[3]*([4]*1).add*[5]*[6]).FillRow).[1]; 
+     }				
+}
+Application
+% MatrixMultiply(200)

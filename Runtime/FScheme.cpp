@@ -238,10 +238,9 @@ void FScheme::optimizeTailCall()
 				mFirstNode = new FFunctionNode([=](SExecutionContext & aCtx)
 				{
 					// Копируем входные данные.
-					auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
 					auto pos = aCtx.stack.size();
 
-					for (int i = 0; i < numArgs; ++i)
+					for (int i = 0; i < aCtx.argNum; ++i)
 					{
 						aCtx.push(aCtx.getArg(i));
 					}

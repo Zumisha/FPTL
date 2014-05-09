@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "Data.h"
 #include "Context.h"
@@ -9,7 +9,7 @@ namespace Runtime
 {
 
 //-----------------------------------------------------------------------------
-// Внутреннее представление массива.
+// Р’РЅСѓС‚СЂРµРЅРЅРµРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РјР°СЃСЃРёРІР°.
 struct ArrayValue : public Collectable
 {
 	const Ops * ops;
@@ -35,13 +35,13 @@ struct ArrayValue : public Collectable
 		return 0;
 	}
 
-	// Конструктор массива.
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РјР°СЃСЃРёРІР°.
 	static DataValue create(SExecutionContext & ctx, int size, const DataValue & initial);
 
-	// Получение элемента массива.
+	// РџРѕР»СѓС‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р° РјР°СЃСЃРёРІР°.
 	static DataValue get(const DataValue & arr, int pos);
 
-	// Установка значения элемента массива.
+	// РЈСЃС‚Р°РЅРѕРІРєР° Р·РЅР°С‡РµРЅРёСЏ СЌР»РµРјРµРЅС‚Р° РјР°СЃСЃРёРІР°.
 	static void set(DataValue & arr, int pos, const DataValue & val);
 
 private:

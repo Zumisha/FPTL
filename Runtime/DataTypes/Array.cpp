@@ -1,4 +1,4 @@
-#include <boost/format.hpp>
+п»ї#include <boost/format.hpp>
 
 #include "../Array.h"
 #include <stdexcept>
@@ -8,7 +8,7 @@ namespace FPTL
 namespace Runtime 
 {
 //-----------------------------------------------------------------------------
-// Операции над массивами.
+// РћРїРµСЂР°С†РёРё РЅР°Рґ РјР°СЃСЃРёРІР°РјРё.
 class ArrayOps : public BaseOps
 {
 public:
@@ -18,14 +18,14 @@ public:
 		return &ops;
 	}
 
-	// Информация о конкретном типе массива во время выполнения не сохраняется.
+	// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРЅРєСЂРµС‚РЅРѕРј С‚РёРїРµ РјР°СЃСЃРёРІР° РІРѕ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅРµ СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ.
 	virtual TypeInfo * getType(const DataValue & aVal) const
 	{
 		static TypeInfo info = typeInfo();
 		return &info;
 	}
 	
-	// Добавлять сюда методы по мере добавления новых типов.
+	// Р”РѕР±Р°РІР»СЏС‚СЊ СЃСЋРґР° РјРµС‚РѕРґС‹ РїРѕ РјРµСЂРµ РґРѕР±Р°РІР»РµРЅРёСЏ РЅРѕРІС‹С… С‚РёРїРѕРІ.
 	virtual Ops * combine(const Ops * aOther) const
 	{
 		throw invalidOperation("combine");
@@ -51,7 +51,7 @@ public:
 		aMarkStack.push(aVal.mArray);
 	}
 
-	// Вывод содержимое массива.
+	// Р’С‹РІРѕРґ СЃРѕРґРµСЂР¶РёРјРѕРµ РјР°СЃСЃРёРІР°.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		aStream << "[";
@@ -94,7 +94,7 @@ DataValue ArrayValue::create(SExecutionContext & ctx, int size, const DataValue 
 	void * memory = ctx.alloc(sizeof(ArrayValue) + sizeof(DataValue) * size);
 	auto val = new(memory) ArrayValue(initial.getOps(), size);
 
-	// Создаем массив и заполняем его начальным значением.
+	// РЎРѕР·РґР°РµРј РјР°СЃСЃРёРІ Рё Р·Р°РїРѕР»РЅСЏРµРј РµРіРѕ РЅР°С‡Р°Р»СЊРЅС‹Рј Р·РЅР°С‡РµРЅРёРµРј.
 	val->arrayData = new (static_cast<char *>(memory) + sizeof(ArrayValue)) DataValue();
 	std::fill_n(val->arrayData, size, initial);
 

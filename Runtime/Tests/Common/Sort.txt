@@ -1,0 +1,46 @@
+// Тип данных: параметризованный список.
+Data List['t]
+{
+   List = c_nil ++ 't * List['t].c_cons;
+}
+
+Scheme Sort
+{
+	@ = 1000.RandomList(-999999,999999).QSort;
+
+
+	// Создание случайного списка вещественных чисел.
+	Fun RandomList[Max, Min]
+	{
+		@ = (id * 0).equal -> c_nil,
+                    ((Min * (rand * (Max * Min).sub).mul).add * (id * 1).sub.RandomList).c_cons; 
+	}
+
+
+	Fun QSort
+	{
+            //@ = ((id*Pivot).Filter(less) * (id*Pivot).Filter(equal) * (id*Pivot).Filter(greater)).print;
+	    @ = ~c_nil -> c_nil,
+                (((id*Pivot).Filter(less).QSort * (id*Pivot).Filter(equal)).Concat * (id*Pivot).Filter(greater).QSort).Concat;
+
+            Fun Filter[fPredicate]
+            {
+                @ = [1].~c_nil -> c_nil,
+                    [1].~c_cons -> Args.(([1]*[3]).fPredicate -> ([1] * ([2]*[3]).Filter).c_cons, ([2]*[3]).Filter);
+
+                Args = [1].~c_cons * [2];
+            }
+
+
+            // Возвращает опорный элемент (первый в списке).
+            Pivot = id.~c_cons.[1];
+
+            Concat = [1].~c_nil -> [2],
+                     [2].~c_nil -> [1],
+                     ([1].~c_cons.[1] * ([1].~c_cons.[2]*[2]).Concat).c_cons;
+                     
+	}
+}
+
+Application
+% Sort

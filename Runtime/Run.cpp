@@ -33,10 +33,12 @@ SExecutionContext * SExecutionContext::fork(FSchemeNode * aScheme)
 	fork->Parent = this;
 
 	// Копируем стек.
-	for (int i = argPos; i < stack.size(); i++)
+	for (int i = argPos; i < (argPos + argNum); i++)
 	{
 		fork->stack.push_back(stack.at(i));
 	}
+
+	fork->argNum = argNum;
 	
 	// Добавляем в очередь новое задание.
 	mEvaluatorUnit->addJob(fork);

@@ -1,0 +1,74 @@
+Scheme ArrayQSort
+{
+    Array = ([1]*([1] * 0).arrayCreate).FillArray(FillFn);
+
+    @ = ([1]*Array).QSort;
+
+    FillFn = ([2]*[1]*(rand*10000).mul.toInt).arraySet;
+
+    Fun FillArray[F]
+    {
+        N = [1];
+        Arr = [2];
+
+        @ = (N * Arr * 0).Recurse.[1];
+
+        Recurse = ([3]*N).equal -> Arr*Arr, (N*([3]*Arr).F*([3]*1).add).Recurse;
+    }
+
+    Fun QSort
+    {
+        N = [1];
+        Arr = [2];
+
+        @ = (0 * (N*1).sub * Arr * N).QSortRecurse(Partition);
+
+        Fun QSortRecurse[Partition]
+        {
+            A = [1];
+            B = [2];
+            Arr = [3];
+            N = [4];
+
+            Mid = ((A * B).add * 2).div;
+			Cmp = (Arr * Mid).arrayGet;
+
+            @ = (A * B).gequal -> Arr,                                      
+                      (id * (A * B * Cmp * Arr * N).Partition).((A * [6] * Arr * N).QSortRecurse * ([5] * B * Arr * N).QSortRecurse).[1];           
+					      
+        }
+     
+
+        Fun Partition
+        {
+            L = [1];
+            R = [2];
+            Cmp = [3];
+            Arr = [4];
+            N = [5];
+
+            ArrL = (Arr * L).arrayGet;
+            ArrR = (Arr * R).arrayGet;
+
+            // Найти элемент > опорному.
+            FindLeft = ((ArrL * Cmp).gequal -> L, ((L * 1).add * R * Cmp * Arr * N).FindLeft);                            
+
+            // Найти элемент <= опорному.
+            FindRight = ((ArrR * Cmp).lequal -> R, (L * (R * 1).sub * Cmp * Arr * N).FindRight);                              
+
+            Partition = (L * R).lequal -> 
+						((id * FindLeft * FindRight).(([6]*[7]).greater -> ([6]*[7]), ([6]*[7]*Cmp*Arr*N).Swap.Partition)),
+						L * R;
+
+            Partition1 = (id * FindLeft * FindRight).([6]*[7]);//([6]*[7]*Cmp*Arr*N).Swap;           
+
+            // Меняем местами 2 элемента местами.
+            Swap = (L*1).add * (R*1).sub * Cmp * ((id * ArrL * ArrR) . ((Arr * L * [7]).arraySet * (Arr * R * [6]).arraySet)).[1] * N;
+                        
+        }   
+    }
+
+        
+}
+Application
+% ArrayQSort(200000)

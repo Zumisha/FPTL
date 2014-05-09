@@ -1,6 +1,8 @@
-PROJECT_DIR:=$(shell pwd)  #полный путь к текущему каталогу мейкфайла
+PROJECT_DIR:=$(CURDIR)#полный путь к текущему каталогу мейкфайла
+$(info $(PROJECT_DIR))
 
-BOOST_DIR:=$(shell pwd)/../boost_1_54_
+BOOST_DIR:=$(CURDIR)/../boost_1_54_0
+$(info $(BOOST_DIR))
 
 OBJDIR := build-linux
 
@@ -8,8 +10,8 @@ TARGET=fptl
 
 CC=g++
 
-#restrict stack size to 14 Mbytes with -Wl, --stack, size
-CXX=-Wl,--stack,14680064 -std=c++11 #-Wc++11-extensions  -stdlib=libc++
+#restrict stack size to 16 Mbytes with -Wl, --stack, size
+CXX=-Wl,--stack,16777216 -std=c++11 #-Wc++11-extensions  -stdlib=libc++
 
 # формируем множество исходников
 SOURCES_TEMP=\
@@ -54,7 +56,7 @@ $(info )
 LIBS_DIR =-L$(BOOST_DIR)/stage/lib 
 
 
-LIDS = -lboost_timer -lboost_chrono -lboost_regex -lboost_thread -lboost_system -pthread -lrt -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free -ltcmalloc
+LIDS = -lboost_timer -lboost_chrono -lboost_regex -lboost_thread -lboost_system -pthread -lrt -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free -ltcmalloc_minimal
 
 HEADER_PATH =\
 -I$(PROJECT_DIR)/Parser/Generated/Flex \
