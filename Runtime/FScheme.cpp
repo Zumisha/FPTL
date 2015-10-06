@@ -129,10 +129,7 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 
 		mLeft->execute(aCtx);
 
-		while (!fork->Ready.load(boost::memory_order_acquire))
-		{
-			aCtx.yield();
-		}
+		aCtx.join(fork);
 
 		// Копируем результат.
 		for (int i = 0; i < fork->arity; ++i)

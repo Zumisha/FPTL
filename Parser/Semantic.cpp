@@ -160,13 +160,14 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 		}
 	}
 
-	if (aTermDesc.Node->getType() == ASTNode::FuncParameterName)
+	// FIXME: сейчас я не вижу оснований для этого ограничения. Но, возможно, оно имеются.
+	/*if (aTermDesc.Node->getType() == ASTNode::FuncParameterName)
 	{
 		if (target->getType() == ASTNode::FunctionParameterDefinition)
 		{
 			mSupport->semanticError(ErrTypes::InvalidFuncallParameters, aTermDesc.TermName);
 		}
-	}
+	}*/
 
 	if (aTermDesc.Node->getType() == ASTNode::RunningSchemeName && target->getType() && target->getType() != ASTNode::FunctionBlock)
 	{

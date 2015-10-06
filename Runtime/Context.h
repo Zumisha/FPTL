@@ -64,20 +64,8 @@ struct SExecutionContext
 	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
 	SExecutionContext * fork(FSchemeNode * aFirstNode);
 
-	// Прерывает выполнение, сохраняя текущий контекст.
-	void yield();
-
-	// Статические версии функций для вызова из JIT-скомпелированного кода.
-
-	/*static SExecutionContext * doFork(SExecutionContext * aCtx, FSchemeNode * aFirstNode, DataElement * volatile * aResult)
-	{
-		return aCtx->fork(aFirstNode, aResult);
-	}
-
-	static void doYield(SExecutionContext * aCtx)
-	{
-		aCtx->yield();
-	}*/
+	// Ожидание выполнения порожденного задания.
+	void join(SExecutionContext * joinCtx);
 
 private:
 

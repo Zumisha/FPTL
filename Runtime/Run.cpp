@@ -46,6 +46,14 @@ SExecutionContext * SExecutionContext::fork(FSchemeNode * aScheme)
 	return fork;
 }
 
+void SExecutionContext::join(SExecutionContext * joinCtx)
+{
+	while (!joinCtx->Ready.load(boost::memory_order_acquire))
+	{
+		mEvaluatorUnit->schedule();
+	}
+}
+
 void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 {
 	assert(!mEvaluatorUnit);
@@ -56,11 +64,6 @@ void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 
 	// Сообщаем о готовности задания.
 	Ready.store(1, boost::memory_order_release);
-}
-
-void SExecutionContext::yield()
-{
-	mEvaluatorUnit->schedule();
 }
 
 const DataValue & SExecutionContext::getArg(int aIndex) const
