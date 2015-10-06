@@ -308,8 +308,7 @@ void FTakeNode::execute(SExecutionContext & aCtx) const
 
 void FTakeNode::accept(FSchemeVisitor * aVisitor) const
 {
-	// Not implemented.
-	assert(false);
+	aVisitor->visit(this);
 }
 
 //-----------------------------------------------------------------------------------
@@ -320,8 +319,7 @@ void FConstantNode::execute(SExecutionContext & aCtx) const
 
 void FConstantNode::accept(FSchemeVisitor * aVisitor) const
 {
-	// Not implemented.
-	assert(false);
+	aVisitor->visit(this);
 }
 
 FStringConstant::FStringConstant(const std::string & aStr, short aLine, short aCol)

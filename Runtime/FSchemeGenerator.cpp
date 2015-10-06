@@ -7,6 +7,7 @@
 #include "../Parser/BuildInFunctionNames.h"
 #include "StandartLibrary.h"
 #include "String.h"
+#include "NodeDeleter.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -39,6 +40,11 @@ FSchemeGenerator::FSchemeGenerator()
 //-----------------------------------------------------------------------------
 FSchemeGenerator::~FSchemeGenerator()
 {
+	NodeDeleter deleter;
+
+	deleter.releaseGraph(mScheme);
+	deleter.releaseGraph(mSchemeInput);
+
 	delete mLibrary;
 	delete mConstructorGenerator;
 }
