@@ -22,6 +22,12 @@ public:
 	// Основная процедура, в которой произдводятс вычисления.
 	void evaluateScheme();
 
+	// Запуск независимого процесса выполнения задания.
+	void fork(SExecutionContext * task);
+
+	// Ожидание завершения процесса выполнения задания.
+	void join(SExecutionContext * task, SExecutionContext * joinTask);
+
 	// Добавление нового задания в очередь.
 	// Вызывается только из потока, к которому привязан или до его создания.
 	void addJob(SExecutionContext * aContext);
@@ -34,6 +40,11 @@ public:
 	void schedule();
 
 private:
+	void traceRoots();
+
+private:
+	std::stack<SExecutionContext *> pendingTasks;
+	std::stack<SExecutionContext *> waitingTasks;
 
 	int mJobsCompleted;
 	int mJobsCreated;

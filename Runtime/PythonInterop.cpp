@@ -81,7 +81,7 @@ public:
 				auto ctor = ctorGenerator->getConstructor(name);
 				
 				list ctorSignature;
-				ctorSignature.append(ctor->targetType());
+				ctorSignature.append(*ctor->targetType());
 				
 				for (int i = 0; i < ctor->type().size(); ++i)
 				{

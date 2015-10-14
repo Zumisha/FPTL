@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "Types.h"
+#include "ADT.h"
 
 namespace FPTL { namespace Runtime {
 
@@ -23,6 +24,10 @@ class DataValue
 public:
 	// Конструктор по умолчани. Создает значение типа "неопределенность".
 	DataValue();
+	DataValue(const DataValue & other)
+	{
+		*this = other;
+	}
 
 	const Ops * getOps() const;
 
@@ -37,7 +42,7 @@ public:
 	{
 		int mIntVal;
 		double mDoubleVal;
-		ADTValue * mADT;
+		ADTValue mADT;
 		StringValue * mString;
 		ArrayValue * mArray;
 	};
@@ -129,7 +134,7 @@ public:
 	static DataValue createBoolean(bool aVal);
 
 	static UndefinedValue createUndefinedValue();
-	static DataValue createADT(ADTValue * mADT, Ops * aOps);
+	static DataValue createADT(const ADTValue & mADT, Ops * aOps);
 };
 
 } // Runtime

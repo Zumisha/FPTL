@@ -62,13 +62,11 @@ struct SExecutionContext
 	void run(EvaluatorUnit * aEvaluatorUnit);
 
 	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
-	SExecutionContext * fork(FSchemeNode * aFirstNode);
+	SExecutionContext * spawn(FSchemeNode * aFirstNode);
 
-	// Ожидание выполнения порожденного задания.
-	void join(SExecutionContext * joinCtx);
-
+	EvaluatorUnit * evaluator() const;
+	 
 private:
-
 	EvaluatorUnit * mEvaluatorUnit;
 };
 

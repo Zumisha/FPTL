@@ -1,5 +1,6 @@
 ﻿#include "FScheme.h"
 #include "FSchemeVisitor.h"
+#include "Run.h"
 #include "String.h"
 
 #include <iostream>
@@ -125,11 +126,14 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 	if (mLeft->isLong() && mRight->isLong())
 	{
 		// Параллельное выполнение.
-		SExecutionContext * fork = aCtx.fork(mRight);
+		SExecutionContext * fork = aCtx.spawn(mRight);
+
+		auto evaluator = aCtx.evaluator();
+		evaluator->fork(fork);
 
 		mLeft->execute(aCtx);
 
-		aCtx.join(fork);
+		evaluator->join(&aCtx, fork);
 
 		// Копируем результат.
 		for (int i = 0; i < fork->arity; ++i)

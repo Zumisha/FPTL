@@ -452,7 +452,7 @@ UndefinedValue DataBuilders::createUndefinedValue()
 	return UndefinedValue(UndefinedValueOps::get());
 }
 
-DataValue DataBuilders::createADT(ADTValue * aADTVal, Ops * aOps)
+DataValue DataBuilders::createADT(const ADTValue & aADTVal, Ops * aOps)
 {
 	DataValue val(aOps);
 	val.mADT = aADTVal;

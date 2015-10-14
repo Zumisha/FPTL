@@ -1,37 +1,12 @@
 ﻿#include <cassert>
 
+#include "ADT.h"
 #include "Functions.h"
 
 namespace FPTL {
 namespace Runtime {
 
 //-------------------------------------------------------------------------------
-// Внутреннее представление абстрактного типа данных (boxed tuple).
-struct ADTValue : public Collectable
-{
-	const TypeInfo * type;
-	const Constructor * ctor;
-
-	std::vector<DataValue> values;
-
-	ADTValue(int aSize)
-	{
-		values.reserve(aSize);
-	}
-
-	virtual void mark(std::stack<Collectable *> & aMarkStack)
-	{
-		for (auto i = values.begin(); i < values.end(); ++i)
-		{
-			i->getOps()->mark(*i, aMarkStack);
-		}
-	}
-
-	virtual size_t size() const
-	{
-		return sizeof(*this);
-	}
-};
 
 // Операции с абстрактным типом данных.
 class ADTOps : public Ops
@@ -48,7 +23,7 @@ public:
 
 	virtual TypeInfo * getType(const DataValue & aVal) const
 	{
-		return (TypeInfo *)aVal.mADT->type;
+		return aVal.mADT.ctor->targetType();
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
@@ -138,23 +113,25 @@ public:
 
 	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const
 	{
-		aMarkStack.push(aVal.mADT);
+		assert(false);
+		//aMarkStack.push(aVal.mADT);
 	}
 
 	// Вывод в поток.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
 		auto val = aVal.mADT;
+		int arity = val.ctor->arity();
 
-		if (!val->values.empty())
+		if (arity > 0)
 		{
 			aStream << "(";
 
-			for (auto i = val->values.begin(); i < val->values.end(); ++i)
+			for (auto i = 0; i < arity; ++i)
 			{
-				i->getOps()->print(*i, aStream);
+				val.values[i].getOps()->print(val.values[i], aStream);
 
-				if (i + 1 < val->values.end())
+				if (i + 1 < arity)
 				{
 					aStream << "*";
 				}
@@ -163,7 +140,7 @@ public:
 			aStream << ").";
 		}
 
-		aStream << val->ctor->name();
+		aStream << val.ctor->name();
 	}
 
 private:
@@ -203,9 +180,10 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		int argNum = 0;
 		TParametersMap params;
 
-		auto adtValue = new (aCtx.alloc(sizeof(ADTValue))) ADTValue(mReferenceType.size());
+		int ar = arity();
+		auto values = new (aCtx.alloc(sizeof(DataValue) * ar)) DataValue;
 
-		for (auto i = 0; i < mReferenceType.size(); ++i)
+		for (auto i = 0; i < ar; ++i)
 		{
 			auto & arg = aCtx.getArg(i);
 
@@ -215,14 +193,11 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 					+ arg.getOps()->getType(arg)->TypeName + " expecting: " + mReferenceType[i].TypeName);
 			}
 
-			adtValue->values.push_back(arg);
+			values[i] = arg;
 		}
 
 		// С типами все ок, cоздаем абстрактный тип данных.
-		adtValue->ctor = this;
-		adtValue->type = &mTargetType;
-
-		aCtx.push(DataBuilders::createADT(adtValue, ADTOps::get()));
+		aCtx.push(DataBuilders::createADT(ADTValue(this, values), ADTOps::get()));
 	}
 	catch (std::out_of_range & oor)
 	{
@@ -240,12 +215,12 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 	{
 		auto ADT = arg.mADT;
 
-		if (ADT->ctor == this)
+		if (ADT.ctor == this)
 		{
 			// Разворачиваем кортеж.
-			for (int i = 0; i < ADT->values.size(); ++i)
+			for (int i = 0; i < arity(); ++i)
 			{
-				aCtx.push(ADT->values[i]);
+				aCtx.push(ADT.values[i]);
 			}
 
 			return;

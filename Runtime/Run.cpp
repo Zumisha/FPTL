@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <stack>
 #include <boost/timer/timer.hpp>
 
 #include "Run.h"
@@ -26,7 +27,7 @@ SExecutionContext::SExecutionContext()
 	stack.reserve(10);
 }
 
-SExecutionContext * SExecutionContext::fork(FSchemeNode * aScheme)
+SExecutionContext * SExecutionContext::spawn(FSchemeNode * aScheme)
 {
 	SExecutionContext * fork = new SExecutionContext();
 	fork->Scheme = aScheme;
@@ -39,19 +40,12 @@ SExecutionContext * SExecutionContext::fork(FSchemeNode * aScheme)
 	}
 
 	fork->argNum = argNum;
-	
-	// Добавляем в очередь новое задание.
-	mEvaluatorUnit->addJob(fork);
-
 	return fork;
 }
 
-void SExecutionContext::join(SExecutionContext * joinCtx)
+EvaluatorUnit * SExecutionContext::evaluator() const
 {
-	while (!joinCtx->Ready.load(boost::memory_order_acquire))
-	{
-		mEvaluatorUnit->schedule();
-	}
+	return mEvaluatorUnit;
 }
 
 void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
@@ -222,6 +216,25 @@ void EvaluatorUnit::evaluateScheme()
 	std::stringstream ss;
 	ss << "\nJobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed;
 	std::cout << ss.str();
+}
+
+void EvaluatorUnit::fork(SExecutionContext * task)
+{
+	pendingTasks.push(task);
+	addJob(task);
+}
+
+void EvaluatorUnit::join(SExecutionContext * task, SExecutionContext * joinTask)
+{
+	waitingTasks.push(task);
+
+	while (!joinTask->Ready.load(boost::memory_order_acquire))
+	{
+		schedule();
+	}
+
+	pendingTasks.pop();
+	waitingTasks.pop();
 }
 
 void EvaluatorUnit::schedule()
