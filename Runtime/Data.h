@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include <stack>
 #include <sstream>
 #include <functional>
 
@@ -89,7 +88,7 @@ public:
 	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 
 	// Метод для определения достижимых обхектов при сборке мусора.
-	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const = 0;
+	virtual void mark(const DataValue & aVal, class GarbageCollector * collector) const = 0;
 
 	// Вывод в поток.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const = 0;
@@ -117,7 +116,7 @@ public:
 	virtual double toDouble(const DataValue & aVal) const;
 	virtual StringValue * toString(const DataValue & aVal) const;
 
-	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const;
+	virtual void mark(const DataValue & aVal, class GarbageCollector * collector) const;
 
 protected:
 	DataValue invalidOperation() const;

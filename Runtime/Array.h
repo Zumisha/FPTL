@@ -22,19 +22,6 @@ struct ArrayValue : public Collectable
 	{
 	}
 
-	virtual void mark(std::stack<Collectable *> & aMarkStack)
-	{
-		for (int i = 0; i < length; ++i)
-		{
-			ops->mark(arrayData[i], aMarkStack);
-		}
-	}
-
-	virtual size_t size() const
-	{
-		return 0;
-	}
-
 	// Конструктор массива.
 	static DataValue create(SExecutionContext & ctx, int size, const DataValue & initial);
 
@@ -43,6 +30,8 @@ struct ArrayValue : public Collectable
 
 	// Установка значения элемента массива.
 	static void set(DataValue & arr, int pos, const DataValue & val);
+
+	static size_t size(int length);
 
 private:
 	static std::runtime_error outOfRange()

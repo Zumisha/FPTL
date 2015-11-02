@@ -141,12 +141,7 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 			aCtx.push(fork->stack.at(fork->stack.size() - fork->arity + i));
 		}
 
-		// Обновляем список выделенной памяти.
-		aCtx.allocatedMemory.splice(aCtx.allocatedMemory.end(), fork->allocatedMemory);
 		aCtx.numAllocated += fork->numAllocated;
-
-		// TEST
-		//aCtx.tryCollect();
 
 		delete fork;
 	}

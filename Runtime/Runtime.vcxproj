@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug DLL|Win32">
       <Configuration>Debug DLL</Configuration>
@@ -24,16 +24,19 @@
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -63,6 +66,10 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fptl</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">fptl</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>E:\boost_1_59_0;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\boost_1_59_0\stage\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -83,7 +90,7 @@
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -160,6 +167,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="CollectedHeap.cpp" />
     <ClCompile Include="ConstructorGenerator.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="DataTypes\Array.cpp" />
@@ -167,9 +175,12 @@
     <ClCompile Include="FScheme.cpp" />
     <ClCompile Include="FSchemeGenerator.cpp" />
     <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="GarbageCollector.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="NodeDeleter.cpp" />
     <ClCompile Include="PythonInterop.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Run.cpp" />
     <ClCompile Include="StandartLibrary.cpp" />
@@ -177,8 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
+    <ClInclude Include="ADT.h" />
     <ClInclude Include="Array.h" />
     <ClInclude Include="CodeGenerator.h" />
+    <ClInclude Include="CollectedHeap.h" />
     <ClInclude Include="ConstructorGenerator.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Data.h" />
@@ -186,6 +199,8 @@
     <ClInclude Include="FSchemeGenerator.h" />
     <ClInclude Include="FSchemeVisitor.h" />
     <ClInclude Include="Functions.h" />
+    <ClInclude Include="GarbageCollector.h" />
+    <ClInclude Include="NodeDeleter.h" />
     <ClInclude Include="Run.h" />
     <ClInclude Include="StandartLibrary.h" />
     <ClInclude Include="String.h" />

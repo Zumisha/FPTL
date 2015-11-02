@@ -1,6 +1,8 @@
 ﻿
 #include "../Data.h"
 #include "../String.h"
+#include "../CollectedHeap.h"
+#include "../GarbageCollector.h"
 
 #include <cstring>
 #include <cassert>
@@ -9,6 +11,23 @@
 
 namespace FPTL {
 namespace Runtime {
+
+//-----------------------------------------------------------------------------
+struct StringData : public Collectable
+{
+	char * const value;
+	const size_t length;
+
+	StringData(size_t aLength)
+		: value((char *)(this) + sizeof(StringData)),
+		length(aLength)
+	{}
+
+	size_t size() const
+	{
+		return sizeof(StringData) + length * sizeof(char);
+	}
+};
 
 //-----------------------------------------------------------------------------
 
@@ -125,9 +144,10 @@ public:
 		);
 	}
 
-	virtual void mark(const DataValue & aVal, std::stack<Collectable *> & aMarkStack) const
+	virtual void mark(const DataValue & aVal, GarbageCollector * collector) const
 	{
-		aMarkStack.push(aVal.mString);
+		collector->markAlive(aVal.mString, sizeof(StringValue));
+		collector->markAlive(aVal.mString->data, aVal.mString->data->size());
 	}
 
 	// Вывод в поток.
@@ -142,25 +162,6 @@ private:
 	{
 		std::string msg = "invalid operation ";
 		return std::runtime_error(msg + "'" + aOpName + "' on type string");
-	}
-};
-
-struct StringData : public Collectable
-{
-	char * const value;
-	const size_t length;
-
-	StringData(size_t aLength) 
-		: value((char *)(this) + sizeof(StringData)),
-		length(aLength)
-	{}
-
-	virtual void mark(std::stack<Collectable *> & aMarkStack)
-	{}
-
-	virtual size_t size() const
-	{
-		return sizeof(*this) + length * sizeof(*value);
 	}
 };
 
@@ -179,16 +180,6 @@ char * StringValue::contents() const
 int StringValue::length() const
 {
 	return end - begin;
-}
-
-void StringValue::mark(std::stack<Collectable *> & aMarkStack)
-{
-	aMarkStack.push(data);
-}
-
-size_t StringValue::size() const
-{
-	return sizeof(*this);
 }
 
 std::string StringValue::str() const
@@ -211,8 +202,9 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 
-	StringData * data = new (aCtx.alloc(sizeof(StringData) + aSize)) StringData(aSize);
-	StringValue * str = new (aCtx.alloc(sizeof(StringValue))) StringValue();
+	StringData * data = aCtx.heap().allocate<StringData>([aSize](void * m) { return new(m) StringData(aSize); }, sizeof(StringData) + aSize);
+	StringValue * str = aCtx.heap().allocate<StringValue>(sizeof(StringValue));
+
 	str->begin = 0;
 	str->end = aSize;
 	str->data = data;
@@ -223,7 +215,8 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 
 DataValue StringBuilder::create(SExecutionContext & aCtx, const StringValue * aOther, int aBegin, int aEnd)
 {
-	StringValue * str = new (aCtx.alloc(sizeof(StringValue))) StringValue();
+	StringValue * str = aCtx.heap().allocate<StringValue>(sizeof(StringValue));
+
 	str->data = aOther->data;
 	str->begin = aBegin;
 	str->end = aEnd;

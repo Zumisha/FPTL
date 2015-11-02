@@ -5,6 +5,8 @@
 #include <boost/thread.hpp>
 
 #include "WorkStealingQueue.h"
+#include "CollectedHeap.h"
+#include "GarbageCollector.h"
 
 namespace FPTL { namespace Runtime {
 
@@ -16,6 +18,7 @@ class SchemeEvaluator;
 class EvaluatorUnit
 {
 public:
+	friend struct SExecutionContext;
 
 	EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator);
 
@@ -39,23 +42,29 @@ public:
 	// Поиск и выполнение задания.
 	void schedule();
 
+	CollectedHeap & heap() const;
+
+	// Трассировка корней стека.
+	void markDataRoots(GarbageCollector * collector);
+
 private:
 	void traceRoots();
 
 private:
-	std::stack<SExecutionContext *> pendingTasks;
-	std::stack<SExecutionContext *> waitingTasks;
+	std::vector<SExecutionContext *> pendingTasks;
+	std::vector<SExecutionContext *> runningTasks;
 
 	int mJobsCompleted;
 	int mJobsCreated;
 	int mJobsStealed;
 	WorkStealingQueue<SExecutionContext *> mJobQueue;
 	SchemeEvaluator * mEvaluator;
+	mutable CollectedHeap mHeap;
 };
 
 // Производит вычисления программы, заданной функциональной схемой.
 // Порождает, владеет и управляет всеми потоками.
-class SchemeEvaluator
+class SchemeEvaluator : public DataRootExplorer
 {
 public:
 	SchemeEvaluator();
@@ -69,10 +78,16 @@ public:
 	// Взять задание у других вычислителей. Возвращает 0, если не получилось.
 	SExecutionContext * findJob(const EvaluatorUnit * aUnit);
 
+	virtual void markRoots(GarbageCollector * collector);
+
+	GarbageCollector * garbageCollector() const;
+	void safePoint();
+
 private:
 	std::vector<EvaluatorUnit *> mEvaluatorUnits;
 	boost::thread_group mThreadGroup;
     boost::mutex mStopMutex;
+	std::unique_ptr<GarbageCollector> mGarbageCollector;
 };
 
 }} // FPTL::Runtime

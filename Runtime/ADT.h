@@ -4,19 +4,20 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		class DataValue;
 		class Constructor;
+		struct DataValueArray;
+		class DataValue;
 
 		// Внутреннее представление абстрактного типа данных (boxed tuple).
 		struct ADTValue
 		{
 			const Constructor * ctor;
-			DataValue * values;
+			DataValueArray * values;
 
 			ADTValue()
 			{}
 
-			ADTValue(const Constructor * ctor, DataValue * values)
+			ADTValue(const Constructor * ctor, DataValueArray * values)
 			{
 				this->ctor = ctor;
 				this->values = values;
@@ -27,6 +28,11 @@ namespace FPTL
 				ctor = other.ctor;
 				values = other.values;
 			}
+
+			const DataValue & operator[](int i) const;
+			DataValue & operator[](int i);
+
+			int size() const;
 		};
 	}
 }

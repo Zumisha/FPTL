@@ -3,7 +3,8 @@
 #include <vector>
 #include <stack>
 
-#include <boost/atomic.hpp>
+#include <atomic>
+#include <boost/intrusive/list.hpp>
 
 #include "Data.h"
 
@@ -13,6 +14,7 @@ namespace Runtime {
 //---------------------------------------------------------------------------------------------
 class EvaluatorUnit;
 class FSchemeNode;
+class CollectedHeap;
 
 // Контекст выполняения.
 struct SExecutionContext
@@ -24,7 +26,7 @@ struct SExecutionContext
 	SExecutionContext * Parent;
 
 	// Флаг готовности задания.
-	boost::atomic<size_t> Ready;
+	std::atomic<int> Ready;
 
 	// Стек для работы с кортежами.
 	std::vector<DataValue> stack;
@@ -38,25 +40,19 @@ struct SExecutionContext
 	// Количество аргументов во входном кортеже.
 	int argNum;
 
-	// Список выделенной памяти.
-	std::list<void *> allocatedMemory;
-
 	// Объем памяти, выделенной до сборки мусора.
 	size_t numAllocated;
 	size_t prevAllocated;
 
 	SExecutionContext();
 
+	bool isReady() const;
+
 	// Методы работы с данными.
 	const DataValue & getArg(int index) const;
 	void push(const DataValue & aData);
 	void advance();
 	void unwind(int aArgPosOld, int aArity, int aPos);
-
-	// Управление памятью в куче.
-	void * alloc(size_t aSize);
-	int collect();
-	void tryCollect();
 
 	// Запуск выполнения.
 	void run(EvaluatorUnit * aEvaluatorUnit);
@@ -65,17 +61,19 @@ struct SExecutionContext
 	SExecutionContext * spawn(FSchemeNode * aFirstNode);
 
 	EvaluatorUnit * evaluator() const;
+	CollectedHeap & heap() const;
 	 
 private:
 	EvaluatorUnit * mEvaluatorUnit;
 };
 
 // Интерфейс объектов с автоматическим управлением памятью.
-class Collectable
+class Collectable :
+	public boost::intrusive::list_base_hook<>
 {
-public:
-	virtual void mark(std::stack<Collectable *> & aMarkStack) = 0;
-	virtual size_t size() const = 0;
+	friend class CollectedHeap;
+
+	CollectedHeap * myHeap;
 };
 
 } // Runtime

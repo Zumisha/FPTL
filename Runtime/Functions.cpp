@@ -1,10 +1,40 @@
 ﻿#include <cassert>
 
+#include "Data.h"
 #include "ADT.h"
 #include "Functions.h"
+#include "CollectedHeap.h"
+#include "GarbageCollector.h"
 
 namespace FPTL {
 namespace Runtime {
+
+//-------------------------------------------------------------------------------
+
+struct DataValueArray : public Collectable
+{
+	DataValue values[];
+
+	static size_t size(int n)
+	{
+		return sizeof(DataValueArray) + n * sizeof(DataValue);
+	}
+};
+
+const DataValue & ADTValue::operator[](int i) const
+{
+	return values->values[i];
+}
+
+DataValue & ADTValue::operator[](int i)
+{
+	return values->values[i];
+}
+
+int ADTValue::size() const
+{
+	return DataValueArray::size(ctor->arity());
+}
 
 //-------------------------------------------------------------------------------
 
@@ -111,10 +141,14 @@ public:
 		throw invalidOperation();
 	}
 
-	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const
+	virtual void mark(const DataValue & aVal, GarbageCollector * collector) const
 	{
-		assert(false);
-		//aMarkStack.push(aVal.mADT);
+		for (int i = 0; i < aVal.mADT.ctor->arity(); i++)
+		{
+			collector->addChild(&aVal.mADT[i]);
+		}
+
+		collector->markAlive(aVal.mADT.values, aVal.mADT.size());
 	}
 
 	// Вывод в поток.
@@ -129,7 +163,7 @@ public:
 
 			for (auto i = 0; i < arity; ++i)
 			{
-				val.values[i].getOps()->print(val.values[i], aStream);
+				val[i].getOps()->print(val[i], aStream);
 
 				if (i + 1 < arity)
 				{
@@ -181,7 +215,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		TParametersMap params;
 
 		int ar = arity();
-		auto values = new (aCtx.alloc(sizeof(DataValue) * ar)) DataValue;
+		auto values = aCtx.heap().allocate<DataValueArray>(DataValueArray::size(ar));
 
 		for (auto i = 0; i < ar; ++i)
 		{
@@ -193,7 +227,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 					+ arg.getOps()->getType(arg)->TypeName + " expecting: " + mReferenceType[i].TypeName);
 			}
 
-			values[i] = arg;
+			values->values[i] = arg;
 		}
 
 		// С типами все ок, cоздаем абстрактный тип данных.
@@ -213,14 +247,14 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 
 	if (arg.getOps() == ADTOps::get())
 	{
-		auto ADT = arg.mADT;
+		auto adt = arg.mADT;
 
-		if (ADT.ctor == this)
+		if (adt.ctor == this)
 		{
 			// Разворачиваем кортеж.
 			for (int i = 0; i < arity(); ++i)
 			{
-				aCtx.push(ADT.values[i]);
+				aCtx.push(adt[i]);
 			}
 
 			return;

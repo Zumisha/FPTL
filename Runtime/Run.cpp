@@ -27,6 +27,11 @@ SExecutionContext::SExecutionContext()
 	stack.reserve(10);
 }
 
+bool SExecutionContext::isReady() const
+{
+	return Ready.load(std::memory_order_acquire) == 1;
+}
+
 SExecutionContext * SExecutionContext::spawn(FSchemeNode * aScheme)
 {
 	SExecutionContext * fork = new SExecutionContext();
@@ -48,16 +53,23 @@ EvaluatorUnit * SExecutionContext::evaluator() const
 	return mEvaluatorUnit;
 }
 
+CollectedHeap & SExecutionContext::heap() const
+{
+	return mEvaluatorUnit->heap();
+}
+
 void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 {
 	assert(!mEvaluatorUnit);
 	mEvaluatorUnit = aEvaluatorUnit;
+	mEvaluatorUnit->runningTasks.push_back(this);
 
-	// Для отключения JIT.
 	Scheme->execute(*this);
 
+	mEvaluatorUnit->runningTasks.pop_back();
+
 	// Сообщаем о готовности задания.
-	Ready.store(1, boost::memory_order_release);
+	Ready.store(1, std::memory_order_release);
 }
 
 const DataValue & SExecutionContext::getArg(int aIndex) const
@@ -91,86 +103,12 @@ void SExecutionContext::unwind(int aArgPosOld, int aArity, int aPos)
 }
 
 //-----------------------------------------------------------------------------
-void * SExecutionContext::alloc(size_t aSize)
-{
-	void * ptr = operator new (aSize);
-	allocatedMemory.push_front(ptr);
-	numAllocated += aSize;
-	return ptr;
-}
-
-int SExecutionContext::collect()
-{
-	std::stack<Collectable *> markStack;
-	std::unordered_set<void *> marked;
-
-	// Помечаем корни.
-	for (auto i = stack.begin(); i < stack.end(); ++i)
-	{
-		i->getOps()->mark(*i, markStack);
-	}
-
-	size_t aliveSize = 0;
-
-	// Помечаем транзитивное замыкание.
-	while (!markStack.empty())
-	{
-		auto ptr = markStack.top();
-		markStack.pop();
-
-		// Циклических ссылок нет.
-		if (marked.insert(ptr).second)
-		{
-			aliveSize += ptr->size();
-		}
-
-		ptr->mark(markStack);
-	}
-
-	// Освобождаем непомеченную память.
-	std::list<void *> alive;
-
-	for (auto i = allocatedMemory.begin(); i != allocatedMemory.end(); ++i)
-	{
-		if (marked.find(*i) != marked.end())
-		{
-			alive.push_back(*i);
-		}
-		else
-		{
-			delete *i;
-		}
-	}
-
-	allocatedMemory.swap(alive);
-	numAllocated = aliveSize;
-
-	return aliveSize;
-}
-
-void SExecutionContext::tryCollect()
-{
-	if (numAllocated - prevAllocated > (1 << 18))
-	{
-		prevAllocated = numAllocated;
-
-		collect();
-
-		if (numAllocated > prevAllocated)
-		{
-			std::cout << "err: ";
-		}
-
-		std::cout << numAllocated << "/" << prevAllocated << "\n";
-	}
-}
-
-//-----------------------------------------------------------------------------
 EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	: mEvaluator(aSchemeEvaluator),
 	  mJobsCompleted(0),
 	  mJobsCreated(0),
-	  mJobsStealed(0)
+	  mJobsStealed(0),
+	  mHeap(aSchemeEvaluator->garbageCollector())
 {
 }
 
@@ -220,21 +158,18 @@ void EvaluatorUnit::evaluateScheme()
 
 void EvaluatorUnit::fork(SExecutionContext * task)
 {
-	pendingTasks.push(task);
+	pendingTasks.push_back(task);
 	addJob(task);
 }
 
 void EvaluatorUnit::join(SExecutionContext * task, SExecutionContext * joinTask)
 {
-	waitingTasks.push(task);
-
-	while (!joinTask->Ready.load(boost::memory_order_acquire))
+	while (!joinTask->Ready.load(std::memory_order_acquire))
 	{
 		schedule();
 	}
 
-	pendingTasks.pop();
-	waitingTasks.pop();
+	pendingTasks.pop_back();
 }
 
 void EvaluatorUnit::schedule()
@@ -256,6 +191,41 @@ void EvaluatorUnit::schedule()
 	{
 		context->run(this);
 		mJobsCompleted++;
+	}
+	else
+	{
+		mEvaluator->safePoint();
+	}
+}
+
+CollectedHeap & EvaluatorUnit::heap() const
+{
+	return mHeap;
+}
+
+void EvaluatorUnit::markDataRoots(GarbageCollector * collector)
+{
+	// Помечаем корни у всех заданий, взятых на выполнение текщим юнитом.
+	for (SExecutionContext * ctx : runningTasks)
+	{
+		std::for_each(ctx->stack.begin(), ctx->stack.end(),
+			[collector](DataValue & data) {
+				data.getOps()->mark(data, collector);
+			}
+		);
+	}
+
+	// Помечаем корни у всех форкнутых заданий, которые были выполнены.
+	for (SExecutionContext * ctx : pendingTasks)
+	{
+		if (ctx->isReady())
+		{
+			std::for_each(ctx->stack.begin(), ctx->stack.end(),
+				[collector](DataValue & data) {
+					data.getOps()->mark(data, collector);
+				}
+			);
+		}
 	}
 }
 
@@ -288,6 +258,24 @@ SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
 	return 0;
 }
 
+void SchemeEvaluator::markRoots(GarbageCollector * collector)
+{
+	for (EvaluatorUnit * unit : mEvaluatorUnits)
+	{
+		unit->markDataRoots(collector);
+	}
+}
+
+GarbageCollector * SchemeEvaluator::garbageCollector() const
+{
+	return mGarbageCollector.get();
+}
+
+void SchemeEvaluator::safePoint()
+{
+	mGarbageCollector->safePoint();
+}
+
 void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInput, int aNumEvaluators)
 {
 	if (aNumEvaluators <= 0 || aNumEvaluators >= 32)
@@ -305,12 +293,13 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 	}
 
 	// Создаем задание и назначем его первому вычислителю.
+	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this);
+	mGarbageCollector.reset(collector);
 
 	SExecutionContext * context = new SExecutionContext();
 
-	///
 	FFunctionNode startNode(
-		[this, aScheme, aInput, context](SExecutionContext & aCtx)
+		[this, aScheme, aInput, context, collector](SExecutionContext & aCtx)
 		{
 			if (aInput)
 			{
@@ -323,18 +312,16 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 			aScheme->execute(aCtx);
 
+			// TEST
+			collector->runGc(&aCtx.evaluator()->heap());
+
 			stop();
 
 			std::cout << "\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
-
-			// TEST: собираем всю память.
-			//aCtx.collect();
 		}
 	);
-	///
 
 	context->Scheme = &startNode;
-
 	mEvaluatorUnits[0]->addJob(context);
     
     // Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
@@ -350,10 +337,6 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 	// Ждем завершения вычислений.
 	mThreadGroup.join_all();
-
-	int stop = 0;
-
-	// TODO: освобождаем всю память, выделенную под скомпилированный в рантайме код.
 }
 
 //-----------------------------------------------------------------------------

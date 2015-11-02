@@ -89,7 +89,7 @@ StringValue * BaseOps::toString(const DataValue & aVal) const
 	return nullptr;
 }
 
-void BaseOps::mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const
+void BaseOps::mark(const DataValue & aVal, GarbageCollector * collector) const
 {
 }
 

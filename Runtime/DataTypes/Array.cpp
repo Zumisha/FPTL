@@ -1,6 +1,8 @@
 ﻿#include <boost/format.hpp>
 
 #include "../Array.h"
+#include "../GarbageCollector.h"
+#include "../CollectedHeap.h"
 
 namespace FPTL
 {
@@ -45,9 +47,14 @@ public:
 		throw invalidOperation("toDouble");
 	}
 
-	virtual void mark(const DataValue & aVal, std::stack<class Collectable *> & aMarkStack) const
+	virtual void mark(const DataValue & aVal, GarbageCollector * collector) const
 	{
-		aMarkStack.push(aVal.mArray);
+		for (int i = 0; i < aVal.mArray->length; i++)
+		{
+			collector->addChild(&aVal.mArray->arrayData[i]);
+		}
+
+		collector->markAlive(aVal.mArray, ArrayValue::size(aVal.mArray->length));
 	}
 
 	// Вывод содержимое массива.
@@ -83,19 +90,21 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-DataValue ArrayValue::create(SExecutionContext & ctx, int size, const DataValue & initial)
+DataValue ArrayValue::create(SExecutionContext & ctx, int length, const DataValue & initial)
 {
-	if (size <= 0)
+	if (length <= 0)
 	{
-		throw std::exception("Array size must be positive integer number.");
+		throw std::exception("Array length must be positive integer number.");
 	}
 
-	void * memory = ctx.alloc(sizeof(ArrayValue) + sizeof(DataValue) * size);
-	auto val = new(memory) ArrayValue(initial.getOps(), size);
+	auto val = ctx.heap().allocate<ArrayValue>(
+		[initial, length](void * m) { return new(m) ArrayValue(initial.getOps(), length); },
+		size(length)
+	);
 
 	// Создаем массив и заполняем его начальным значением.
-	val->arrayData = new (static_cast<char *>(memory) + sizeof(ArrayValue)) DataValue();
-	std::fill_n(val->arrayData, size, initial);
+	val->arrayData = new (reinterpret_cast<char *>(val) + sizeof(ArrayValue)) DataValue();
+	std::fill_n(val->arrayData, length, initial);
 
 	DataValue res = DataBuilders::createVal(ArrayOps::get());
 	res.mArray = val;
@@ -144,6 +153,11 @@ void ArrayValue::set(DataValue & arr, int pos, const DataValue & val)
 	}
 
 	trg->arrayData[pos] = val;
+}
+
+size_t ArrayValue::size(int length)
+{
+	return sizeof(ArrayValue) + sizeof(DataValue) * length;
 }
 
 //-----------------------------------------------------------------------------
