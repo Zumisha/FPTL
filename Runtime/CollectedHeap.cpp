@@ -1,4 +1,5 @@
 #include "CollectedHeap.h"
+#include "GarbageCollector.h"
 
 #include <functional>
 #include <iterator>
@@ -8,8 +9,12 @@ namespace FPTL { namespace Runtime {
 CollectedHeap::CollectedHeap(GarbageCollector * collector)
 	: mAllocatedSize(0),
 	mGarbageSize(0),
-	mCollector(collector)
+	mCollector(collector),
+	mMaxHeapSize(20 * 1024*1024),
+	mGcCount(0)
 {
+	mCollector->registerHeap(this);
+
 	disposer = [](Collectable * obj) { 
 		delete obj;
 	};
@@ -22,21 +27,32 @@ CollectedHeap::~CollectedHeap()
 	mAllocated.clear_and_dispose(disposer);
 }
 
-bool CollectedHeap::isMyObject(const Collectable * object) const
+void CollectedHeap::updateStats(size_t sizeAlive)
 {
-	return object->myHeap == this;
+	mGarbageSize = mAllocatedSize - sizeAlive;
+	mAllocatedSize = sizeAlive;
 }
 
-void CollectedHeap::moveObject(Collectable * object)
+int CollectedHeap::heapSize() const
 {
-	mAllocated.erase(mAllocated.iterator_to(*object));
-	mAlive.push_back(*object);
+	return mAllocatedSize + mGarbageSize;
 }
 
-void CollectedHeap::switchHeap()
+CollectedHeap::MemList CollectedHeap::reset()
 {
-	mGarbage.splice(mGarbage.end(), mAllocated);
-	mAllocated.swap(mAlive);
+	MemList allocated;
+	allocated.swap(mAllocated);
+	mAllocatedSize = 0;
+	return allocated;
+}
+
+void CollectedHeap::checkFreeSpace(size_t size)
+{
+	if (mAllocatedSize + size > mMaxHeapSize)
+	{
+		mCollector->runGc(this);
+		mGcCount++;
+	}
 }
 
 void CollectedHeap::sweepObject(Collectable * object)
@@ -46,8 +62,8 @@ void CollectedHeap::sweepObject(Collectable * object)
 
 void CollectedHeap::registerObject(Collectable * object, size_t size)
 {
-	object->myHeap = this;
-	mAllocated.push_back(*object);
+	object->age = Collectable::YOUNG;
+	mAllocated.push_front(*object);
 	mAllocatedSize += size;
 }
 

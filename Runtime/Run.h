@@ -31,6 +31,9 @@ public:
 	// Ожидание завершения процесса выполнения задания.
 	void join(SExecutionContext * task, SExecutionContext * joinTask);
 
+	// Проверка на необходимость выполнения системного действия (сборка мусора и т.п.).
+	void safePoint();
+
 	// Добавление нового задания в очередь.
 	// Вызывается только из потока, к которому привязан или до его создания.
 	void addJob(SExecutionContext * aContext);
@@ -45,7 +48,7 @@ public:
 	CollectedHeap & heap() const;
 
 	// Трассировка корней стека.
-	void markDataRoots(GarbageCollector * collector);
+	void markDataRoots(ObjectMarker * marker);
 
 private:
 	void traceRoots();
@@ -60,6 +63,7 @@ private:
 	WorkStealingQueue<SExecutionContext *> mJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
+	GarbageCollector * mCollector;
 };
 
 // Производит вычисления программы, заданной функциональной схемой.
@@ -78,10 +82,9 @@ public:
 	// Взять задание у других вычислителей. Возвращает 0, если не получилось.
 	SExecutionContext * findJob(const EvaluatorUnit * aUnit);
 
-	virtual void markRoots(GarbageCollector * collector);
+	virtual void markRoots(ObjectMarker * marker);
 
 	GarbageCollector * garbageCollector() const;
-	void safePoint();
 
 private:
 	std::vector<EvaluatorUnit *> mEvaluatorUnits;

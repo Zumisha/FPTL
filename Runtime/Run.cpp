@@ -108,7 +108,8 @@ EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	  mJobsCompleted(0),
 	  mJobsCreated(0),
 	  mJobsStealed(0),
-	  mHeap(aSchemeEvaluator->garbageCollector())
+	  mHeap(aSchemeEvaluator->garbageCollector()),
+	  mCollector(aSchemeEvaluator->garbageCollector())
 {
 }
 
@@ -172,6 +173,11 @@ void EvaluatorUnit::join(SExecutionContext * task, SExecutionContext * joinTask)
 	pendingTasks.pop_back();
 }
 
+void EvaluatorUnit::safePoint()
+{
+	mCollector->safePoint();
+}
+
 void EvaluatorUnit::schedule()
 {
 	// Берем задание из своей очереди.
@@ -194,7 +200,7 @@ void EvaluatorUnit::schedule()
 	}
 	else
 	{
-		mEvaluator->safePoint();
+		safePoint();
 	}
 }
 
@@ -203,14 +209,14 @@ CollectedHeap & EvaluatorUnit::heap() const
 	return mHeap;
 }
 
-void EvaluatorUnit::markDataRoots(GarbageCollector * collector)
+void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 {
 	// Помечаем корни у всех заданий, взятых на выполнение текщим юнитом.
 	for (SExecutionContext * ctx : runningTasks)
 	{
 		std::for_each(ctx->stack.begin(), ctx->stack.end(),
-			[collector](DataValue & data) {
-				data.getOps()->mark(data, collector);
+			[marker](DataValue & data) {
+				data.getOps()->mark(data, marker);
 			}
 		);
 	}
@@ -221,8 +227,8 @@ void EvaluatorUnit::markDataRoots(GarbageCollector * collector)
 		if (ctx->isReady())
 		{
 			std::for_each(ctx->stack.begin(), ctx->stack.end(),
-				[collector](DataValue & data) {
-					data.getOps()->mark(data, collector);
+				[marker](DataValue & data) {
+					data.getOps()->mark(data, marker);
 				}
 			);
 		}
@@ -258,22 +264,17 @@ SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
 	return 0;
 }
 
-void SchemeEvaluator::markRoots(GarbageCollector * collector)
+void SchemeEvaluator::markRoots(ObjectMarker * marker)
 {
 	for (EvaluatorUnit * unit : mEvaluatorUnits)
 	{
-		unit->markDataRoots(collector);
+		unit->markDataRoots(marker);
 	}
 }
 
 GarbageCollector * SchemeEvaluator::garbageCollector() const
 {
 	return mGarbageCollector.get();
-}
-
-void SchemeEvaluator::safePoint()
-{
-	mGarbageCollector->safePoint();
 }
 
 void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInput, int aNumEvaluators)
@@ -286,15 +287,15 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 	int evaluatorUnits = aNumEvaluators;
 
+		// Создаем задание и назначем его первому вычислителю.
+	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this);
+	mGarbageCollector.reset(collector);
+
 	// Создаем юниты выполнения.
 	for (int i = 0; i < evaluatorUnits; i++)
 	{
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
-
-	// Создаем задание и назначем его первому вычислителю.
-	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this);
-	mGarbageCollector.reset(collector);
 
 	SExecutionContext * context = new SExecutionContext();
 

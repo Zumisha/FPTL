@@ -144,10 +144,10 @@ public:
 		);
 	}
 
-	virtual void mark(const DataValue & aVal, GarbageCollector * collector) const
+	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
 	{
-		collector->markAlive(aVal.mString, sizeof(StringValue));
-		collector->markAlive(aVal.mString->data, aVal.mString->data->size());
+		marker->markAlive(aVal.mString, sizeof(StringValue));
+		marker->markAlive(aVal.mString->data, aVal.mString->data->size());
 	}
 
 	// Вывод в поток.
@@ -202,6 +202,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 
+	// FIXME: data может быть удален сборщиком.
 	StringData * data = aCtx.heap().allocate<StringData>([aSize](void * m) { return new(m) StringData(aSize); }, sizeof(StringData) + aSize);
 	StringValue * str = aCtx.heap().allocate<StringValue>(sizeof(StringValue));
 

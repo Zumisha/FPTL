@@ -141,14 +141,15 @@ public:
 		throw invalidOperation();
 	}
 
-	virtual void mark(const DataValue & aVal, GarbageCollector * collector) const
+	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
 	{
-		for (int i = 0; i < aVal.mADT.ctor->arity(); i++)
+		if (marker->markAlive(aVal.mADT.values, aVal.mADT.size()))
 		{
-			collector->addChild(&aVal.mADT[i]);
+			for (int i = 0; i < aVal.mADT.ctor->arity(); i++)
+			{
+				marker->addChild(&aVal.mADT[i]);
+			}
 		}
-
-		collector->markAlive(aVal.mADT.values, aVal.mADT.size());
 	}
 
 	// Вывод в поток.

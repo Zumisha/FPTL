@@ -47,14 +47,15 @@ public:
 		throw invalidOperation("toDouble");
 	}
 
-	virtual void mark(const DataValue & aVal, GarbageCollector * collector) const
+	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
 	{
-		for (int i = 0; i < aVal.mArray->length; i++)
+		if (marker->markAlive(aVal.mArray, ArrayValue::size(aVal.mArray->length)))
 		{
-			collector->addChild(&aVal.mArray->arrayData[i]);
+			for (int i = 0; i < aVal.mArray->length; i++)
+			{
+				marker->addChild(&aVal.mArray->arrayData[i]);
+			}
 		}
-
-		collector->markAlive(aVal.mArray, ArrayValue::size(aVal.mArray->length));
 	}
 
 	// Вывод содержимое массива.

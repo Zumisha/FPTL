@@ -89,7 +89,7 @@ StringValue * BaseOps::toString(const DataValue & aVal) const
 	return nullptr;
 }
 
-void BaseOps::mark(const DataValue & aVal, GarbageCollector * collector) const
+void BaseOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 {
 }
 

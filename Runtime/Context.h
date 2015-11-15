@@ -4,7 +4,7 @@
 #include <stack>
 
 #include <atomic>
-#include <boost/intrusive/list.hpp>
+#include <boost/intrusive/slist.hpp>
 
 #include "Data.h"
 
@@ -68,12 +68,22 @@ private:
 };
 
 // Интерфейс объектов с автоматическим управлением памятью.
+// Все наследника этого класса обязаны иметь тривиальный деструктор.
 class Collectable :
-	public boost::intrusive::list_base_hook<>
+	public boost::intrusive::slist_base_hook<>
 {
 	friend class CollectedHeap;
+	friend class ObjectMarker;
 
-	CollectedHeap * myHeap;
+public:
+	enum Age
+	{
+		YOUNG,
+		OLD
+	};
+
+private:
+	Age age;
 };
 
 } // Runtime

@@ -74,6 +74,9 @@ void FConditionNode::execute(SExecutionContext & aCtx) const
 	static DataValue falseConst = DataBuilders::createBoolean(false);
 	static DataValue undefined = DataBuilders::createUndefinedValue();
 
+	// Выполняем системные действия.
+	aCtx.evaluator()->safePoint();
+
 	int arity = aCtx.arity;
 
 	// Вычисление условия.

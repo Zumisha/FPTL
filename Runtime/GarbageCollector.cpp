@@ -1,31 +1,38 @@
 #include "GarbageCollector.h"
 #include "CollectedHeap.h"
+#include "BlockingQueue.h"
 
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
 #include <vector>
+#include <functional>
+
+#include <boost/timer/timer.hpp>
 
 namespace FPTL {
 namespace Runtime {
 
-class GarbageCollectorImpl : public GarbageCollector
+typedef std::vector<const DataValue *> MarkList;
+
+//-------------------------------------------------------------------------------
+class ObjectMarkerImpl : public ObjectMarker
 {
 public:
-	GarbageCollectorImpl(int numThreads, DataRootExplorer * rootExplorer)
-		: mStopped(0),
-		mThreads(numThreads),
-		mStop(0),
-		mRootExplorer(rootExplorer),
-		mCollectedHeap(nullptr)
+	ObjectMarkerImpl()
+		: mAliveSize(0)
 	{}
 
-	virtual void markAlive(Collectable * object, size_t size)
+	virtual bool markAlive(Collectable * object, size_t size)
 	{
-		if (mCollectedHeap->isMyObject(object))
+		if (ObjectMarker::checkAge(object, Collectable::YOUNG))
 		{
-			mCollectedHeap->moveObject(object);
+			ObjectMarker::setObjectAge(object, Collectable::OLD);
+			mAliveSize += size;
+			return true;
 		}
+
+		return false;
 	}
 
 	virtual void addChild(const DataValue * child)
@@ -33,9 +40,61 @@ public:
 		mMarkStack.push_back(child);
 	}
 
-	virtual void runIfNeed(CollectedHeap * heap)
+	size_t aliveSize() const
 	{
-		assert(false);
+		return mAliveSize;
+	}
+
+	int traceDataRecursively()
+	{
+		int count = 0;
+
+		while (!mMarkStack.empty())
+		{
+			const DataValue * val = mMarkStack.back();
+			mMarkStack.pop_back();
+
+			val->getOps()->mark(*val, this);
+			count++;
+		}
+
+		return count;
+	}
+
+private:
+	size_t mAliveSize;
+	MarkList mMarkStack;
+};
+
+//-------------------------------------------------------------------------------
+class GarbageCollectorImpl : public GarbageCollector
+{
+private:
+	struct GcJob
+	{
+		ObjectMarkerImpl marker;
+		CollectedHeap::MemList allocated;
+	};
+
+public:
+	GarbageCollectorImpl(int numThreads, DataRootExplorer * rootExplorer)
+		: mStopped(0),
+		mThreads(numThreads),
+		mStop(0),
+		mRootExplorer(rootExplorer),
+		mQuit(false),
+		mSizeAlive(0),
+		mVerbose(false)
+	{
+		new (&mCollectorThread) std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this));
+	}
+
+	virtual ~GarbageCollectorImpl()
+	{
+		mQuit = true;
+		mQueue.quit();
+		mCollectorThread.join();
+		mAllocated.clear_and_dispose([](Collectable * obj) { delete obj; });
 	}
 
 	virtual void runGc(CollectedHeap * heap)
@@ -46,7 +105,7 @@ public:
 			safePoint();
 		}
 
-		mCollectedHeap = heap;
+		boost::timer::cpu_timer pauseTimer;
 
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
@@ -60,10 +119,19 @@ public:
 			mStopped--;
 		}
 
-		reset();
+		GcJob * job = new GcJob();
 
 		// Сканируем корни.
-		mRootExplorer->markRoots(this);
+		mRootExplorer->markRoots(&job->marker);
+
+		// Сбрасываем списке выделенной памяти во всех кучах.
+		for (auto heap : mHeaps)
+		{
+			job->allocated.splice(job->allocated.end(), heap->reset());
+		}
+
+		// Добавляем задание на сборку мусора.
+		mQueue.push(job);
 
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
@@ -73,10 +141,8 @@ public:
 			mRunCond.notify_all();
 		}
 
-		// Продолжаем сборку мусора.
-		traceDataRecursively();
-		mCollectedHeap->switchHeap();
-		mCollectedHeap = nullptr;
+		//std::cout << "GC pause time : " << boost::timer::format(pauseTimer.elapsed()) << "\n";
+
 		mGcMutex.unlock();
 	}
 
@@ -93,45 +159,93 @@ public:
 			mStopped--;
 		}
 	}
+
+	virtual void registerHeap(CollectedHeap * heap)
+	{
+		mHeaps.push_back(heap);
+	}
 	
 private:
-	void traceDataRecursively()
+	void collectorThreadLoop()
 	{
-		while (!mMarkStack.empty())
+		while (!mQuit)
 		{
-			const DataValue * val = mMarkStack.back();
-			mMarkStack.pop_back();
+			auto deqJob = mQueue.pop();
 
-			val->getOps()->mark(*val, this);
+			if (!deqJob.is_initialized())
+			{
+				break;
+			}
+
+			GcJob * job = deqJob.get();
+
+			boost::timer::cpu_timer gcTimer;
+
+			// Помечаем доступные вершины.
+			int count = job->marker.traceDataRecursively();
+
+			// Очищаем память.
+			job->allocated.remove_and_dispose_if(
+				[](const Collectable & obj)
+				{ 
+					return ObjectMarker::checkAge(&obj, Collectable::YOUNG);
+				},
+				[](Collectable * obj)
+				{
+					delete obj;
+				}
+			);
+
+			mSizeAlive += job->marker.aliveSize();
+			mAllocated.splice(mAllocated.end(), job->allocated);
+
+			//std::cout << "GC time : " << boost::timer::format(gcTimer.elapsed()) << "\n";
+
+			delete job;
 		}
 	}
 
-	void reset()
-	{
-		mSizeAlive = 0;
-	}
-
 private:
+	bool mVerbose;
+
 	std::atomic<int> mStop;
-	
 	int mStopped;
 	int mThreads;
-
 	std::mutex mGcMutex;
-
 	std::mutex mRunMutex;
 	std::condition_variable mRunCond;
 
 	DataRootExplorer * mRootExplorer;
-
-	std::vector<const DataValue *> mMarkStack;
+	std::vector<CollectedHeap *> mHeaps;
 	size_t mSizeAlive;
-	CollectedHeap * mCollectedHeap;
+
+	// Общие структуры данных.
+	BlockingQueue<GcJob *> mQueue;
+	bool mQuit;
+
+	// Структуры данных потока сборки мусора.
+	std::thread mCollectorThread;
+	CollectedHeap::MemList mAllocated;
 };
 
+//-------------------------------------------------------------------------------
 GarbageCollector * GarbageCollector::getCollector(int numThreads, DataRootExplorer * rootExplorer)
 {
 	return new GarbageCollectorImpl(numThreads, rootExplorer);
 }
 
-}}
+}
+
+//-------------------------------------------------------------------------------
+void Runtime::ObjectMarker::setObjectAge(Collectable * object, int age)
+{
+	object->age = static_cast<Collectable::Age>(age);
+}
+
+//-------------------------------------------------------------------------------
+bool Runtime::ObjectMarker::checkAge(const Collectable * object, int age)
+{
+	return object->age == age;
+}
+
+}
