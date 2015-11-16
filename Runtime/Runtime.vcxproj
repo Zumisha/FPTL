@@ -92,7 +92,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/STACK:64000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -147,7 +147,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>..\External\AsmJit\AsmJit\Build;$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:128000000 %(AdditionalOptions)</AdditionalOptions>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
@@ -190,6 +190,7 @@
     <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
     <ClInclude Include="ADT.h" />
     <ClInclude Include="Array.h" />
+    <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="CollectedHeap.h" />
     <ClInclude Include="ConstructorGenerator.h" />

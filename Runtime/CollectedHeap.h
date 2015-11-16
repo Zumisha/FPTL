@@ -41,27 +41,23 @@ public:
 
 	void updateStats(size_t sizeAlive);
 
-	int heapSize() const;
+	size_t heapSize() const;
 
 	MemList reset();
 
+	void setLimit(size_t size);
+
 private:
 	void checkFreeSpace(size_t size);
-
-	void sweepObject(Collectable * object);
 
 	void registerObject(Collectable * object, size_t size);
 
 private:
 	MemList mAllocated;
-	MemList mAlive;
-	MemList mGarbage;
 	size_t mAllocatedSize;
-	size_t mGarbageSize;
 	size_t mMaxHeapSize;
 	std::function<void(Collectable *)> disposer;
 	GarbageCollector * mCollector;
-	int mGcCount;
 };
 
 

@@ -153,7 +153,7 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "\nJobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed;
+	ss << "Jobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed << "\n";
 	std::cout << ss.str();
 }
 
@@ -279,16 +279,16 @@ GarbageCollector * SchemeEvaluator::garbageCollector() const
 
 void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInput, int aNumEvaluators)
 {
-	if (aNumEvaluators <= 0 || aNumEvaluators >= 32)
+	if (aNumEvaluators >= 32)
 	{
-		std::cerr << "Number of evaluation units is incorrect. Using default value (1).\n";
-		aNumEvaluators = 1;
+		aNumEvaluators = 32;
+		std::cerr << "Too many evaluators. Using default " << aNumEvaluators << "\n";
 	}
 
 	int evaluatorUnits = aNumEvaluators;
 
 		// Создаем задание и назначем его первому вычислителю.
-	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this);
+	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this, GcConfig());
 	mGarbageCollector.reset(collector);
 
 	// Создаем юниты выполнения.
@@ -313,12 +313,10 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 			aScheme->execute(aCtx);
 
-			// TEST
-			collector->runGc(&aCtx.evaluator()->heap());
-
+			collector->runGc();
 			stop();
 
-			std::cout << "\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
+			std::cout << "Time : " << boost::timer::format(timer.elapsed()) << "\n";
 		}
 	);
 

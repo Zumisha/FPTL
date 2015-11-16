@@ -74,19 +74,28 @@ private:
 	{
 		ObjectMarkerImpl marker;
 		CollectedHeap::MemList allocated;
+		size_t allocatedSize;
+
+		GcJob() : allocatedSize(0)
+		{}
+
+		size_t garbageSize() const
+		{
+			return allocatedSize - marker.aliveSize();
+		}
 	};
 
 public:
-	GarbageCollectorImpl(int numThreads, DataRootExplorer * rootExplorer)
-		: mStopped(0),
-		mThreads(numThreads),
+	GarbageCollectorImpl(int numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+		: mConfig(config),
+		mStopped(0),
+		mThreads(numMutatorThreads),
 		mStop(0),
 		mRootExplorer(rootExplorer),
 		mQuit(false),
-		mSizeAlive(0),
-		mVerbose(false)
+		mSizeAlive(0)
 	{
-		new (&mCollectorThread) std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this));
+		mCollectorThread.swap(std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this)));
 	}
 
 	virtual ~GarbageCollectorImpl()
@@ -97,7 +106,7 @@ public:
 		mAllocated.clear_and_dispose([](Collectable * obj) { delete obj; });
 	}
 
-	virtual void runGc(CollectedHeap * heap)
+	virtual void runGc()
 	{
 		// Проверяем, не начал ли кто-нибудь другой сборку мусора.
 		while (!mGcMutex.try_lock())
@@ -127,6 +136,7 @@ public:
 		// Сбрасываем списке выделенной памяти во всех кучах.
 		for (auto heap : mHeaps)
 		{
+			job->allocatedSize += heap->heapSize();
 			job->allocated.splice(job->allocated.end(), heap->reset());
 		}
 
@@ -141,7 +151,7 @@ public:
 			mRunCond.notify_all();
 		}
 
-		//std::cout << "GC pause time : " << boost::timer::format(pauseTimer.elapsed()) << "\n";
+		std::cout << "GC. Time: " << boost::timer::format(pauseTimer.elapsed()) << ". Reclaimed: " << job->garbageSize() / (1024 * 1024) << " MiB \n";
 
 		mGcMutex.unlock();
 	}
@@ -206,11 +216,17 @@ private:
 	}
 
 private:
-	bool mVerbose;
+	GcConfig mConfig;
 
+	// Флаг, сигнализирующий о необходимости остановки.
 	std::atomic<int> mStop;
+
+	// Количество остановившихся потоков.
 	int mStopped;
+
+	// Количество потоков мутатора.
 	int mThreads;
+
 	std::mutex mGcMutex;
 	std::mutex mRunMutex;
 	std::condition_variable mRunCond;
@@ -229,9 +245,9 @@ private:
 };
 
 //-------------------------------------------------------------------------------
-GarbageCollector * GarbageCollector::getCollector(int numThreads, DataRootExplorer * rootExplorer)
+GarbageCollector * GarbageCollector::getCollector(int numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 {
-	return new GarbageCollectorImpl(numThreads, rootExplorer);
+	return new GarbageCollectorImpl(numThreads, rootExplorer, config);
 }
 
 }

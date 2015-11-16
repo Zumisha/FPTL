@@ -6,12 +6,11 @@
 
 namespace FPTL { namespace Runtime {
 
+//-----------------------------------------------------------------------------
 CollectedHeap::CollectedHeap(GarbageCollector * collector)
 	: mAllocatedSize(0),
-	mGarbageSize(0),
 	mCollector(collector),
-	mMaxHeapSize(20 * 1024*1024),
-	mGcCount(0)
+	mMaxHeapSize(20 * 1024*1024)
 {
 	mCollector->registerHeap(this);
 
@@ -23,19 +22,12 @@ CollectedHeap::CollectedHeap(GarbageCollector * collector)
 CollectedHeap::~CollectedHeap()
 {
 	// Очищаем всю выделенную память.
-	mGarbage.clear_and_dispose(disposer);
 	mAllocated.clear_and_dispose(disposer);
 }
 
-void CollectedHeap::updateStats(size_t sizeAlive)
+size_t CollectedHeap::heapSize() const
 {
-	mGarbageSize = mAllocatedSize - sizeAlive;
-	mAllocatedSize = sizeAlive;
-}
-
-int CollectedHeap::heapSize() const
-{
-	return mAllocatedSize + mGarbageSize;
+	return mAllocatedSize;
 }
 
 CollectedHeap::MemList CollectedHeap::reset()
@@ -46,18 +38,17 @@ CollectedHeap::MemList CollectedHeap::reset()
 	return allocated;
 }
 
+void CollectedHeap::setLimit(size_t size)
+{
+	mMaxHeapSize = size;
+}
+
 void CollectedHeap::checkFreeSpace(size_t size)
 {
 	if (mAllocatedSize + size > mMaxHeapSize)
 	{
-		mCollector->runGc(this);
-		mGcCount++;
+		mCollector->runGc();
 	}
-}
-
-void CollectedHeap::sweepObject(Collectable * object)
-{
-	mGarbage.erase_and_dispose(mGarbage.iterator_to(*object), disposer);
 }
 
 void CollectedHeap::registerObject(Collectable * object, size_t size)
@@ -66,5 +57,7 @@ void CollectedHeap::registerObject(Collectable * object, size_t size)
 	mAllocated.push_front(*object);
 	mAllocatedSize += size;
 }
+
+//-----------------------------------------------------------------------------
 
 }}

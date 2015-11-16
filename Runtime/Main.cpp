@@ -3,16 +3,19 @@
 #include <iterator>
 #include <cstdlib>
 #include <boost/lexical_cast.hpp>
+#include <boost/program_options.hpp>
 
 #include "../Parser/Support.h"
 #include "../Parser/Tokenizer.h"
 #include "FSchemeGenerator.h"
 #include "Run.h"
 
+namespace po = boost::program_options;
+
 namespace FPTL {
 namespace Parser {
 
-void run(char * programPath, char * numProcessors)
+void run(const char * programPath, int numCores)
 {
 	std::ifstream inpFile(programPath);
 
@@ -39,15 +42,13 @@ void run(char * programPath, char * numProcessors)
 	// Генерируем внутренне представление.
 	if (astRoot)
 	{
-		std::cout << "Running program: " << programPath << " on " << numProcessors << " processors...\n";
+		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n";
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
-		int processors = boost::lexical_cast<int>(numProcessors);
-
 		Runtime::SchemeEvaluator evaluator;
-		evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), processors);
+		evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
 	}
 
 	delete astRoot;
@@ -57,13 +58,29 @@ void run(char * programPath, char * numProcessors)
 
 int main(int argc, char ** argv)
 {
-	if (argc < 3)
-	{
-		std::cout << "Invalid command line arguments.\n Usage: fptl <source_file> <num_cores>\n";
-		return -1;
-	}
+	std::string programFile;
+	int numCores;
 
-	FPTL::Parser::run(argv[1], argv[2]);
+	po::options_description desc("Avilable options");
+	desc.add_options()
+		("source-file", po::value<std::string>(&programFile)->required(), "fptl program file")
+		("num-cores", po::value<int>(&numCores)->default_value(1), "number of cores")
+		;
+
+	try
+	{
+		po::variables_map vm;
+		po::store(po::parse_command_line(argc, argv, desc), vm);
+		po::notify(vm);
+
+		FPTL::Parser::run(programFile.c_str(), numCores);
+	}
+	catch (std::exception & e)
+	{
+		std::cout
+			<< e.what() << std::endl
+			<< desc << std::endl;
+	}
 
 	return 0;
 }
