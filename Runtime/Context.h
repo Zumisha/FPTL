@@ -78,12 +78,26 @@ class Collectable :
 public:
 	enum Age
 	{
-		YOUNG,
-		OLD
+		YOUNG = 0,
+		OLD   = 1
 	};
 
 private:
-	Age age;
+	struct MetaInfo
+	{
+		Age age : 30;
+		int marked : 2;
+	};
+
+	MetaInfo meta;
+
+public:
+	Collectable()
+		: meta({YOUNG, 0})
+	{}
+
+	bool isMarked() const
+	{ return meta.marked == 1; }
 };
 
 } // Runtime

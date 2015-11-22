@@ -16,18 +16,57 @@ namespace Runtime {
 typedef std::vector<const DataValue *> MarkList;
 
 //-------------------------------------------------------------------------------
-class ObjectMarkerImpl : public ObjectMarker
+class RootMarker : public ObjectMarker
 {
 public:
-	ObjectMarkerImpl()
-		: mAliveSize(0)
+	RootMarker(Collectable::Age maxAge)
+		: mAliveSize(0),
+		mMaxAge(maxAge)
 	{}
 
 	virtual bool markAlive(Collectable * object, size_t size)
 	{
-		if (ObjectMarker::checkAge(object, Collectable::YOUNG))
+		if (ObjectMarker::checkAge(object, mMaxAge))
 		{
-			ObjectMarker::setObjectAge(object, Collectable::OLD);
+			mAliveSize += size;
+			mRoots.push_back(object);
+			return true;
+		}
+
+		return false;
+	}
+
+	virtual void addChild(const DataValue * child)
+	{
+		mMarkStack.push_back(child);
+	}
+
+	std::vector<Collectable *> mRoots;
+	MarkList mMarkStack;
+	size_t mAliveSize;
+	Collectable::Age mMaxAge;
+};
+
+//-------------------------------------------------------------------------------
+class HeapMarker : public ObjectMarker
+{
+public:
+	HeapMarker()
+		: mAliveSize(0)
+	{}
+
+	HeapMarker(RootMarker & rootMarker)
+		: mAliveSize(rootMarker.mAliveSize),
+		mMaxAge(rootMarker.mMaxAge)
+	{
+		mMarkStack.swap(rootMarker.mMarkStack);
+	}
+
+	virtual bool markAlive(Collectable * object, size_t size)
+	{
+		if (!object->isMarked() && ObjectMarker::checkAge(object, Collectable::YOUNG))
+		{
+			ObjectMarker::setMarked(object, 1);
 			mAliveSize += size;
 			return true;
 		}
@@ -64,6 +103,7 @@ public:
 private:
 	size_t mAliveSize;
 	MarkList mMarkStack;
+	Collectable::Age mMaxAge;
 };
 
 //-------------------------------------------------------------------------------
@@ -72,17 +112,14 @@ class GarbageCollectorImpl : public GarbageCollector
 private:
 	struct GcJob
 	{
-		ObjectMarkerImpl marker;
+		RootMarker marker;
 		CollectedHeap::MemList allocated;
 		size_t allocatedSize;
 
-		GcJob() : allocatedSize(0)
+		GcJob() :
+			marker(Collectable::YOUNG),
+			allocatedSize(0)
 		{}
-
-		size_t garbageSize() const
-		{
-			return allocatedSize - marker.aliveSize();
-		}
 	};
 
 public:
@@ -151,7 +188,7 @@ public:
 			mRunCond.notify_all();
 		}
 
-		std::cout << "GC. Time: " << boost::timer::format(pauseTimer.elapsed()) << ". Reclaimed: " << job->garbageSize() / (1024 * 1024) << " MiB \n";
+		std::cout << "GC Pause. Time: " << boost::timer::format(pauseTimer.elapsed());
 
 		mGcMutex.unlock();
 	}
@@ -173,6 +210,7 @@ public:
 	virtual void registerHeap(CollectedHeap * heap)
 	{
 		mHeaps.push_back(heap);
+		heap->setLimit(mConfig.youngGenSize());
 	}
 	
 private:
@@ -191,14 +229,22 @@ private:
 
 			boost::timer::cpu_timer gcTimer;
 
+			// Маркируем корневые объекты.
+			for (auto object : job->marker.mRoots)
+			{
+				ObjectMarker::setMarked(object, 1);
+			}
+			
+			HeapMarker marker(job->marker);
+
 			// Помечаем доступные вершины.
-			int count = job->marker.traceDataRecursively();
+			int count = marker.traceDataRecursively();
 
 			// Очищаем память.
 			job->allocated.remove_and_dispose_if(
 				[](const Collectable & obj)
 				{ 
-					return ObjectMarker::checkAge(&obj, Collectable::YOUNG);
+					return !obj.isMarked();
 				},
 				[](Collectable * obj)
 				{
@@ -206,10 +252,18 @@ private:
 				}
 			);
 
-			mSizeAlive += job->marker.aliveSize();
+			// Сбрасываем флаги.
+			for (auto & object : job->allocated)
+			{
+				ObjectMarker::setObjectAge(&object, Collectable::OLD);
+				ObjectMarker::setMarked(&object, 0);
+			}
+
+			mSizeAlive += marker.aliveSize();
 			mAllocated.splice(mAllocated.end(), job->allocated);
 
-			//std::cout << "GC time : " << boost::timer::format(gcTimer.elapsed()) << "\n";
+			std::cout << "GC time : " << boost::timer::format(gcTimer.elapsed())
+				<< "Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024) << " MiB \n";;
 
 			delete job;
 		}
@@ -255,13 +309,18 @@ GarbageCollector * GarbageCollector::getCollector(int numThreads, DataRootExplor
 //-------------------------------------------------------------------------------
 void Runtime::ObjectMarker::setObjectAge(Collectable * object, int age)
 {
-	object->age = static_cast<Collectable::Age>(age);
+	object->meta.age = static_cast<Collectable::Age>(age);
 }
 
 //-------------------------------------------------------------------------------
 bool Runtime::ObjectMarker::checkAge(const Collectable * object, int age)
 {
-	return object->age == age;
+	return object->meta.age <= age;
+}
+
+void Runtime::ObjectMarker::setMarked(Collectable * object, int flag)
+{
+	object->meta.marked = flag;
 }
 
 }

@@ -20,6 +20,7 @@ public:
 
 	static void setObjectAge(Collectable * object, int age);
 	static bool checkAge(const Collectable * object, int age);
+	static void setMarked(Collectable * object, int flag);
 };
 
 //-----------------------------------------------------------------------------

@@ -10,7 +10,7 @@ namespace FPTL { namespace Runtime {
 CollectedHeap::CollectedHeap(GarbageCollector * collector)
 	: mAllocatedSize(0),
 	mCollector(collector),
-	mMaxHeapSize(20 * 1024*1024)
+	mMaxHeapSize(std::numeric_limits<size_t>::max())
 {
 	mCollector->registerHeap(this);
 
@@ -53,7 +53,6 @@ void CollectedHeap::checkFreeSpace(size_t size)
 
 void CollectedHeap::registerObject(Collectable * object, size_t size)
 {
-	object->age = Collectable::YOUNG;
 	mAllocated.push_front(*object);
 	mAllocatedSize += size;
 }
