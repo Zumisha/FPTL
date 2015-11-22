@@ -318,7 +318,7 @@ bool Runtime::ObjectMarker::checkAge(const Collectable * object, int age)
 	return object->meta.age <= age;
 }
 
-void Runtime::ObjectMarker::setMarked(Collectable * object, int flag)
+void Runtime::ObjectMarker::setMarked(Collectable * object, unsigned int flag)
 {
 	object->meta.marked = flag;
 }

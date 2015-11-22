@@ -86,7 +86,7 @@ private:
 	struct MetaInfo
 	{
 		Age age : 30;
-		int marked : 2;
+		unsigned int marked : 2;
 	};
 
 	MetaInfo meta;
