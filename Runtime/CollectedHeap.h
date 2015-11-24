@@ -3,6 +3,7 @@
 #include <boost/intrusive/slist.hpp>
 
 #include "Context.h"
+#include "GcAwarePtr.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -16,28 +17,10 @@ public:
 	typedef boost::intrusive::slist<Collectable> MemList;
 
 	CollectedHeap(GarbageCollector * collector);
-
 	~CollectedHeap();
 
-	template<typename T>
-	T * allocate(size_t size)
-	{
-		checkFreeSpace(size);
-		void * memory = operator new(size);
-		T * object = new (memory) T;
-		registerObject(object, size);
-		return object;
-	}
-
-	template<typename T>
-	T * allocate(std::function<T *(void *)> constructor, size_t size)
-	{
-		checkFreeSpace(size);
-		void * memory = operator new(size);
-		T * object = constructor(memory);
-		registerObject(object, size);
-		return object;
-	}
+	template <typename T> GcAwarePtr<T> alloc(size_t size);
+	template <typename T> GcAwarePtr<T> alloc(std::function<T *(void *)> constructor, size_t size);
 
 	void updateStats(size_t sizeAlive);
 
@@ -47,10 +30,10 @@ public:
 
 	void setLimit(size_t size);
 
+	void registerObject(Collectable * object, size_t size);
+
 private:
 	void checkFreeSpace(size_t size);
-
-	void registerObject(Collectable * object, size_t size);
 
 private:
 	MemList mAllocated;
@@ -60,6 +43,32 @@ private:
 	GarbageCollector * mCollector;
 };
 
+//-----------------------------------------------------------------------------
 
+template<typename T>
+inline GcAwarePtr<T> CollectedHeap::alloc(size_t size)
+{
+	checkFreeSpace(size);
+	void * memory = operator new(size);
+	T * object = new (memory) T;
+	return GcAwarePtr<T>(object, this, size);
 }
+
+template<typename T>
+inline GcAwarePtr<T> CollectedHeap::alloc(std::function<T*(void*)> constructor, size_t size)
+{
+	checkFreeSpace(size);
+	void * memory = operator new(size);
+	T * object = constructor(memory);
+	return GcAwarePtr<T>(object, this, size);
 }
+
+//-----------------------------------------------------------------------------
+
+template<typename T> GcAwarePtr<T>::~GcAwarePtr()
+{
+	mHeap->registerObject(mPtr, mSize);
+}
+
+
+}}

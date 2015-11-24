@@ -202,28 +202,27 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 
-	// FIXME: data может быть удален сборщиком.
-	StringData * data = aCtx.heap().allocate<StringData>([aSize](void * m) { return new(m) StringData(aSize); }, sizeof(StringData) + aSize);
-	StringValue * str = aCtx.heap().allocate<StringValue>(sizeof(StringValue));
+	GcAwarePtr<StringData> data = aCtx.heap().alloc<StringData>([aSize](void * m) { return new(m) StringData(aSize); }, sizeof(StringData) + aSize);
+	GcAwarePtr<StringValue> str = aCtx.heap().alloc<StringValue>(sizeof(StringValue));
 
 	str->begin = 0;
 	str->end = aSize;
-	str->data = data;
+	str->data = data.ptr();
 
-	val.mString = str;
+	val.mString = str.ptr();
 	return val;
 }
 
 DataValue StringBuilder::create(SExecutionContext & aCtx, const StringValue * aOther, int aBegin, int aEnd)
 {
-	StringValue * str = aCtx.heap().allocate<StringValue>(sizeof(StringValue));
+	GcAwarePtr<StringValue> str = aCtx.heap().alloc<StringValue>(sizeof(StringValue));
 
 	str->data = aOther->data;
 	str->begin = aBegin;
 	str->end = aEnd;
 
 	auto val = DataBuilders::createVal(StringOps::get());
-	val.mString = str;
+	val.mString = str.ptr();
 	return val;
 }
 

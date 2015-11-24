@@ -98,17 +98,17 @@ DataValue ArrayValue::create(SExecutionContext & ctx, int length, const DataValu
 		throw std::exception("Array length must be positive integer number.");
 	}
 
-	auto val = ctx.heap().allocate<ArrayValue>(
+	auto val = ctx.heap().alloc<ArrayValue>(
 		[initial, length](void * m) { return new(m) ArrayValue(initial.getOps(), length); },
 		size(length)
 	);
 
 	// Создаем массив и заполняем его начальным значением.
-	val->arrayData = new (reinterpret_cast<char *>(val) + sizeof(ArrayValue)) DataValue();
+	val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
 	std::fill_n(val->arrayData, length, initial);
 
 	DataValue res = DataBuilders::createVal(ArrayOps::get());
-	res.mArray = val;
+	res.mArray = val.ptr();
 	return res;
 }
 

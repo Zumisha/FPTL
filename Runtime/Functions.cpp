@@ -216,7 +216,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		TParametersMap params;
 
 		int ar = arity();
-		auto values = aCtx.heap().allocate<DataValueArray>(DataValueArray::size(ar));
+		auto values = aCtx.heap().alloc<DataValueArray>(DataValueArray::size(ar));
 
 		for (auto i = 0; i < ar; ++i)
 		{
@@ -232,7 +232,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		}
 
 		// С типами все ок, cоздаем абстрактный тип данных.
-		aCtx.push(DataBuilders::createADT(ADTValue(this, values), ADTOps::get()));
+		aCtx.push(DataBuilders::createADT(ADTValue(this, values.ptr()), ADTOps::get()));
 	}
 	catch (std::out_of_range & oor)
 	{
