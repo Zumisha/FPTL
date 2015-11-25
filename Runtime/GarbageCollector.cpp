@@ -64,7 +64,7 @@ public:
 
 	virtual bool markAlive(Collectable * object, size_t size)
 	{
-		if (!object->isMarked() && ObjectMarker::checkAge(object, Collectable::YOUNG))
+		if (!object->isMarked() && ObjectMarker::checkAge(object, mMaxAge))
 		{
 			ObjectMarker::setMarked(object, 1);
 			mAliveSize += size;
@@ -115,10 +115,18 @@ private:
 		RootMarker marker;
 		CollectedHeap::MemList allocated;
 		size_t allocatedSize;
+		bool fullGc;
 
 		GcJob() :
 			marker(Collectable::YOUNG),
-			allocatedSize(0)
+			allocatedSize(0),
+			fullGc(false)
+		{}
+
+		GcJob(bool fullGc)
+			: marker(fullGc ? Collectable::OLD : Collectable::YOUNG),
+			allocatedSize(0),
+			fullGc(fullGc)
 		{}
 	};
 
@@ -130,7 +138,8 @@ public:
 		mStop(0),
 		mRootExplorer(rootExplorer),
 		mQuit(false),
-		mSizeAlive(0)
+		mOldGenSize(0),
+		mCollectOld(false)
 	{
 		mCollectorThread.swap(std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this)));
 	}
@@ -165,7 +174,7 @@ public:
 			mStopped--;
 		}
 
-		GcJob * job = new GcJob();
+		GcJob * job = new GcJob(mCollectOld);
 
 		// Сканируем корни.
 		mRootExplorer->markRoots(&job->marker);
@@ -193,6 +202,7 @@ public:
 		mGcMutex.unlock();
 	}
 
+	// Этот метод выполняется другими потоками для ожидании сканирования корней.
 	virtual void safePoint()
 	{
 		if (mStop.load(std::memory_order_acquire) == 1)
@@ -240,17 +250,21 @@ private:
 			// Помечаем доступные вершины.
 			int count = marker.traceDataRecursively();
 
+			if (job->fullGc)
+			{
+				job->allocated.splice(job->allocated.end(), mAllocated);
+				job->allocatedSize += mOldGenSize;
+				mOldGenSize = 0;
+				mCollectOld = false;
+			}
+
 			// Очищаем память.
-			job->allocated.remove_and_dispose_if(
-				[](const Collectable & obj)
-				{ 
-					return !obj.isMarked();
-				},
-				[](Collectable * obj)
-				{
-					delete obj;
-				}
-			);
+			job->allocated
+				.remove_and_dispose_if([](const Collectable & obj) { 
+											return !obj.isMarked();
+										}, [](Collectable * obj) {
+											delete obj;
+										});
 
 			// Сбрасываем флаги.
 			for (auto & object : job->allocated)
@@ -259,11 +273,15 @@ private:
 				ObjectMarker::setMarked(&object, 0);
 			}
 
-			mSizeAlive += marker.aliveSize();
+			mOldGenSize += marker.aliveSize();
 			mAllocated.splice(mAllocated.end(), job->allocated);
 
 			std::cout << "GC time : " << boost::timer::format(gcTimer.elapsed())
-				<< "Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024) << " MiB \n";;
+				<< "Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024) << " MiB. OldGen: "
+				<< mOldGenSize / (1024 * 1024) << " MiB \n";
+
+			if (mOldGenSize > 20 * 1024 * 1024)
+				mCollectOld = true;
 
 			delete job;
 		}
@@ -287,7 +305,7 @@ private:
 
 	DataRootExplorer * mRootExplorer;
 	std::vector<CollectedHeap *> mHeaps;
-	size_t mSizeAlive;
+	size_t mOldGenSize;
 
 	// Общие структуры данных.
 	BlockingQueue<GcJob *> mQueue;
@@ -296,6 +314,8 @@ private:
 	// Структуры данных потока сборки мусора.
 	std::thread mCollectorThread;
 	CollectedHeap::MemList mAllocated;
+
+	bool mCollectOld;
 };
 
 //-------------------------------------------------------------------------------
