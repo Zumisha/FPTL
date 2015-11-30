@@ -99,7 +99,7 @@
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="GarbageCollector.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Runtime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +183,12 @@
     </ClInclude>
     <ClInclude Include="GarbageCollector.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockingQueue.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="GcAwarePtr.h">
+      <Filter>Header Files\Runtime</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

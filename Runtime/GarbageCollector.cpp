@@ -29,6 +29,9 @@ public:
 		if (ObjectMarker::checkAge(object, mMaxAge))
 		{
 			mAliveSize += size;
+			// Т.к. корни помечаются из потоков мутатора, то в этом методе
+			// мы не маркируем объекты, а лишь заносим их в список для
+			// дальнейшей маркировки, чтобы избежать гонки со сборщиком.
 			mRoots.push_back(object);
 			return true;
 		}
@@ -154,6 +157,11 @@ public:
 
 	virtual void runGc()
 	{
+		if (!mConfig.enabled())
+		{ 
+			return;
+		}
+
 		// Проверяем, не начал ли кто-нибудь другой сборку мусора.
 		while (!mGcMutex.try_lock())
 		{
@@ -197,7 +205,11 @@ public:
 			mRunCond.notify_all();
 		}
 
-		std::cout << "GC Pause. Time: " << boost::timer::format(pauseTimer.elapsed());
+		if (mConfig.verbose())
+		{
+			std::cout 
+				<< "GC Pause. Time: " << boost::timer::format(pauseTimer.elapsed());
+		}
 
 		mGcMutex.unlock();
 	}
@@ -276,11 +288,15 @@ private:
 			mOldGenSize += marker.aliveSize();
 			mAllocated.splice(mAllocated.end(), job->allocated);
 
-			std::cout << "GC time : " << boost::timer::format(gcTimer.elapsed())
-				<< "Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024) << " MiB. OldGen: "
-				<< mOldGenSize / (1024 * 1024) << " MiB \n";
+			if (mConfig.verbose())
+			{
+				std::cout 
+					<< "GC time : " << boost::timer::format(gcTimer.elapsed())
+					<< "Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024) << " MiB. OldGen: "
+					<< mOldGenSize / (1024 * 1024) << " MiB \n";
+			}
 
-			if (mOldGenSize > 20 * 1024 * 1024)
+			if (mOldGenSize > mConfig.oldGenSize())
 				mCollectOld = true;
 
 			delete job;

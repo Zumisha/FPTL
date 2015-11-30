@@ -1,0 +1,15 @@
+Data List['t]
+{
+	List = c_nil ++ 't * List['t].c_cons;
+}
+
+Scheme TailRec
+{
+	TailTest = [1].~c_nil -> [2], ([1].~c_cons.[2] * ([2]*1).add).TailTest;
+
+	@ = ((2*(1*c_nil).c_cons).c_cons*0).((TailTest*1).print * print);
+	//@ = (c_nil*0).TailTest.print;
+}
+
+Application
+% TailRec

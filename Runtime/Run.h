@@ -73,6 +73,9 @@ class SchemeEvaluator : public DataRootExplorer
 public:
 	SchemeEvaluator();
 
+	void setGcConfig(const GcConfig & config)
+	{ mGcConfig = config; }
+
 	// Запуск вычисления схемы.
 	void runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInputGenerator, int aNumEvaluators);
 
@@ -91,6 +94,7 @@ private:
 	boost::thread_group mThreadGroup;
     boost::mutex mStopMutex;
 	std::unique_ptr<GarbageCollector> mGarbageCollector;
+	GcConfig mGcConfig;
 };
 
 }} // FPTL::Runtime

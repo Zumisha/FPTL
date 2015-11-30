@@ -201,6 +201,7 @@
     <ClInclude Include="FSchemeVisitor.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GarbageCollector.h" />
+    <ClInclude Include="GcAwarePtr.h" />
     <ClInclude Include="NodeDeleter.h" />
     <ClInclude Include="Run.h" />
     <ClInclude Include="StandartLibrary.h" />

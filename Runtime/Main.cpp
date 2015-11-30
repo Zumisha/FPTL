@@ -15,7 +15,15 @@ namespace po = boost::program_options;
 namespace FPTL {
 namespace Parser {
 
-void run(const char * programPath, int numCores)
+template <typename T> void setOption(const po::variable_value & val, std::function<void(T)> setter)
+{
+	if (!val.empty())
+	{
+		setter(val.as<T>());
+	}
+}
+
+void run(const char * programPath, int numCores, po::variables_map & vm)
 {
 	std::ifstream inpFile(programPath);
 
@@ -48,6 +56,16 @@ void run(const char * programPath, int numCores)
 		schemeGenerator.process(astRoot);
 
 		Runtime::SchemeEvaluator evaluator;
+
+		Runtime::GcConfig gcConfig;
+		
+		setOption<bool>(vm["disable-gc"], [&](bool v) {gcConfig.setEnabled(!v); });
+		setOption<bool>(vm["verbose-gc"], [&](bool v) {gcConfig.setVerbose(v); });
+		setOption<size_t>(vm["young-gen"], [&](size_t s) {gcConfig.setYoungGenSize(s * 1024 * 1024); });
+		setOption<size_t>(vm["old-gen"], [&](size_t s) {gcConfig.setOldGenSize(s * 1024 * 1024); });
+
+		evaluator.setGcConfig(gcConfig);
+
 		evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
 	}
 
@@ -65,6 +83,10 @@ int main(int argc, char ** argv)
 	desc.add_options()
 		("source-file", po::value<std::string>(&programFile)->required(), "fptl program file")
 		("num-cores", po::value<int>(&numCores)->default_value(1), "number of cores")
+		("disable-gc", po::bool_switch(), "disable garbage collector")
+		("verbose-gc", po::bool_switch(), "print garbage collector info")
+		("young-gen", po::value<size_t>(), "young generation size in MiB")
+		("old-gen", po::value<size_t>(), "old generation size in MiB")
 		;
 
 	try
@@ -73,7 +95,7 @@ int main(int argc, char ** argv)
 		po::store(po::parse_command_line(argc, argv, desc), vm);
 		po::notify(vm);
 
-		FPTL::Parser::run(programFile.c_str(), numCores);
+		FPTL::Parser::run(programFile.c_str(), numCores, vm);
 	}
 	catch (std::exception & e)
 	{

@@ -288,7 +288,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 	int evaluatorUnits = aNumEvaluators;
 
 		// Создаем задание и назначем его первому вычислителю.
-	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this, GcConfig());
+	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this, mGcConfig);
 	mGarbageCollector.reset(collector);
 
 	// Создаем юниты выполнения.

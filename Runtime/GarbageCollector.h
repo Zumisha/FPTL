@@ -32,6 +32,7 @@ public:
 	GcConfig() :
 		mEnabled(true),
 		mYoungGenSize(DEFAULT_YOUNG_GEN_SIZE),
+		mOldGenSize(2 * DEFAULT_YOUNG_GEN_SIZE),
 		mVerbose(false)
 	{}
 
@@ -44,17 +45,24 @@ public:
 	void setVerbose(bool enabled)
 	{ mVerbose = enabled; }
 
+	void setOldGenSize(size_t size)
+	{ mOldGenSize = size; }
+
 	bool enabled() const
 	{ return mEnabled; }
 
 	size_t youngGenSize() const
 	{ return mYoungGenSize; }
 
+	size_t oldGenSize() const
+	{ return mOldGenSize; }
+
 	bool verbose() const
 	{ return mVerbose; }
 
 private:
 	size_t mYoungGenSize;
+	size_t mOldGenSize;
 	bool mEnabled;
 	bool mVerbose;
 };
