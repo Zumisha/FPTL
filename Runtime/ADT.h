@@ -32,7 +32,7 @@ namespace FPTL
 			const DataValue & operator[](int i) const;
 			DataValue & operator[](int i);
 
-			int size() const;
+			size_t size() const;
 		};
 	}
 }

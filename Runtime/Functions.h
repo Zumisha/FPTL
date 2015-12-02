@@ -28,7 +28,7 @@ public:
 	std::string name() const { return mConstructorName; }
 	TTypeList type() const { return mReferenceType; }
 	TypeInfo * targetType() const { return const_cast<TypeInfo *>(&mTargetType); }
-	int arity() const { return mReferenceType.size(); }
+	int arity() const { return static_cast<int>(mReferenceType.size()); }
 
 protected:
 

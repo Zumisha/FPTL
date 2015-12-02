@@ -31,7 +31,7 @@ DataValue & ADTValue::operator[](int i)
 	return values->values[i];
 }
 
-int ADTValue::size() const
+size_t ADTValue::size() const
 {
 	return DataValueArray::size(ctor->arity());
 }
