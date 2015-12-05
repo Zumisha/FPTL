@@ -308,6 +308,8 @@
     <ClCompile Include="FSchemeGenerator.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="GarbageCollector.cpp" />
+    <ClCompile Include="IntForm\Generator.cpp" />
+    <ClCompile Include="IntForm\InternalForm.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NodeDeleter.cpp" />
     <ClCompile Include="PythonInterop.cpp">
@@ -336,6 +338,8 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GcAwarePtr.h" />
+    <ClInclude Include="IntForm\Generator.h" />
+    <ClInclude Include="IntForm\InternalForm.h" />
     <ClInclude Include="NodeDeleter.h" />
     <ClInclude Include="Run.h" />
     <ClInclude Include="StandartLibrary.h" />

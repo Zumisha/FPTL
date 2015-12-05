@@ -27,6 +27,12 @@
     <Filter Include="Header Files\Runtime">
       <UniqueIdentifier>{1db81756-4ac6-4180-b210-b7604ea9034f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Runtime\IntForm">
+      <UniqueIdentifier>{80001741-01b1-4218-91aa-1045f98dba96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Runtime\IntForm">
+      <UniqueIdentifier>{7df96ea4-bc7f-47d4-a759-ec017e2b6205}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Parser\AST.cpp">
@@ -100,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="GarbageCollector.cpp">
       <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="IntForm\Generator.cpp">
+      <Filter>Source Files\Runtime\IntForm</Filter>
+    </ClCompile>
+    <ClCompile Include="IntForm\InternalForm.cpp">
+      <Filter>Source Files\Runtime\IntForm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +201,12 @@
     </ClInclude>
     <ClInclude Include="GcAwarePtr.h">
       <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="IntForm\InternalForm.h">
+      <Filter>Header Files\Runtime\IntForm</Filter>
+    </ClInclude>
+    <ClInclude Include="IntForm\Generator.h">
+      <Filter>Header Files\Runtime\IntForm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
