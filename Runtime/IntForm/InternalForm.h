@@ -1,124 +1,139 @@
 #pragma once
 
+#include "../Functions.h"
+
 #include <string>
+#include <memory>
+#include <unordered_map>
 
 namespace FPTL {
 namespace Runtime {
 
 struct SExecutionContext;
 
+//-----------------------------------------------------------------------------
 class InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) = 0;
+	virtual ~InternalForm()
+	{}
+
+	virtual void exec(SExecutionContext & ctx) const = 0;
 };
 
+typedef std::shared_ptr<const InternalForm> IfPtr;
+
+//-----------------------------------------------------------------------------
 class ParFork : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	ParFork(const InternalForm * left, const InternalForm * right)
+	ParFork(const IfPtr & left, const IfPtr & right)
 		: mLeft(left), mRight(right)
 	{}
 
-	const InternalForm * mLeft;
-	const InternalForm * mRight;
+	IfPtr mLeft;
+	IfPtr mRight;
 };
 
 class ParJoin : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	ParJoin(const InternalForm * next)
+	ParJoin(const IfPtr & next)
 		: mNext(next)
 	{}
 
-	const InternalForm * mNext;
+	IfPtr mNext;
 };
 
 class SeqBegin : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	SeqBegin(const InternalForm * next)
+	SeqBegin(const IfPtr & next)
 		: mNext(next)
 	{}
 
-	const InternalForm * mNext;
+	IfPtr mNext;
 };
 
 class SeqEnd : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	SeqEnd(const InternalForm * next)
+	SeqEnd(const IfPtr & next)
 		: mNext(next)
 	{}
 
-	const InternalForm * mNext;
+	IfPtr mNext;
 };
 
 class SeqAdvance : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	SeqAdvance(const InternalForm * next)
+	SeqAdvance(const IfPtr & next)
 		: mNext(next)
 	{}
 
-	const InternalForm * mNext;
+	IfPtr mNext;
 };
 
 class CondStart : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	CondStart(const InternalForm * cond)
+	CondStart(const IfPtr & cond)
 		: mCond(cond)
 	{}
 
-	const InternalForm * mCond;
+	IfPtr mCond;
 };
 
 class CondChoose : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	CondChoose(const InternalForm * thenBr, const InternalForm * elseBr)
+	CondChoose(const IfPtr & thenBr, const IfPtr & elseBr)
 		: mThen(thenBr), mElse(elseBr)
 	{}
 
-	const InternalForm * mThen;
-	const InternalForm * mElse;
+	IfPtr mThen;
+	IfPtr mElse;
+
+private:
+	static const DataValue falseConst;
+	static const DataValue undefined;
 };
 
 class RecFn : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	RecFn(const InternalForm * fn, const InternalForm * next, const std::string & name)
-		: mFn(fn),
+	RecFn(const IfPtr & next, const std::string & name)
+		: mFn(nullptr),
 		mNext(next),
 		mName(name)
 	{}
 
 	const InternalForm * mFn;
-	const InternalForm * mNext;
+	IfPtr mNext;
 	std::string mName;
 };
 
 class Ret : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
 	Ret()
 	{}
@@ -127,20 +142,69 @@ public:
 class BasicFn : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 
-	BasicFn(const InternalForm * next, const std::string & name)
-		: mNext(next), mName(name)
+	BasicFn(const IfPtr & next, const std::string & name, const TFunction & fn)
+		: mNext(next), mName(name), mFn(fn)
 	{}
 
-	const InternalForm * mNext;
+	IfPtr mNext;
 	const std::string mName;
+	const TFunction mFn;
+};
+
+class GetArg : public InternalForm
+{
+public:
+	virtual void exec(SExecutionContext & ctx) const;
+
+	GetArg(const IfPtr & next, int argNum)
+		: mNext(next), mArgNum(argNum)
+	{}
+
+	IfPtr mNext;
+	const int mArgNum;
+};
+
+class Constant : public InternalForm
+{
+public:
+	virtual void exec(SExecutionContext & ctx) const;
+
+	Constant(const IfPtr & next, const DataValue & data)
+		: mNext(next), mData(data)
+	{}
+
+	IfPtr mNext;
+	DataValue mData;
 };
 
 class EndOp : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx);
+	virtual void exec(SExecutionContext & ctx) const;
 };
+
+//-----------------------------------------------------------------------------
+class FunctionalProgram
+{
+	friend class Generator;
+
+public:
+	FunctionalProgram(const IfPtr & main)
+		: mMain(main)
+	{}
+
+	IfPtr main() const
+	{ return mMain; }
+
+private:
+	std::unordered_map<std::string, IfPtr>
+		mDefinitions;
+
+	IfPtr mMain;
+};
+
+//-----------------------------------------------------------------------------
 
 }}

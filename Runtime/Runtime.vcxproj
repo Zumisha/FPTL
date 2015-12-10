@@ -338,6 +338,7 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GcAwarePtr.h" />
+    <ClInclude Include="IntForm\ControlValue.h" />
     <ClInclude Include="IntForm\Generator.h" />
     <ClInclude Include="IntForm\InternalForm.h" />
     <ClInclude Include="NodeDeleter.h" />

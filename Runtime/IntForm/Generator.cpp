@@ -2,15 +2,14 @@
 #include "InternalForm.h"
 
 #include "../FScheme.h"
+#include "../String.h"
 
 #include <cassert>
 
 namespace FPTL {
 namespace Runtime {
 
-Generator::Generator() :
-	mTail(nullptr),
-	mResult(nullptr)
+Generator::Generator()
 {
 }
 
@@ -18,11 +17,11 @@ void Generator::visit(const FParallelNode * node)
 {
 	if (node->left()->isLong() && node->right()->isLong())
 	{
-		auto join = new ParJoin(mTail);
-		auto left = createSpan(node->left(), join);
+		auto join = std::make_shared<ParJoin>(mTail);
+		auto left = createSpan(node->left(), std::make_shared<EndOp>());
 		auto right = createSpan(node->right(), join);
 
-		mResult = new ParFork(left, right);
+		mResult = std::make_shared<ParFork>(left, right);
 	}
 	else
 	{
@@ -35,12 +34,28 @@ void Generator::visit(const FParallelNode * node)
 
 void Generator::visit(const FSequentialNode * node)
 {
-	auto end = new SeqEnd(mTail);
-	auto second = createSpan(node->second(), end);
-	auto unwind = new SeqAdvance(second);
-	auto first = createSpan(node->first(), unwind);
-	auto begin = new SeqBegin(first);
+	// ≈сли подр€д следует несколько выражений A . B . C, 
+	// то генерируем внутреннее представлени€ дл€ всей цепочки.
 
+	std::vector<FSchemeNode *> chain;
+
+	const FSequentialNode * current = node;
+	while (current)
+	{
+		node = current;
+		chain.push_back(current->second());
+		current = dynamic_cast<FSequentialNode *>(node->first());
+	}
+
+	IfPtr last = std::make_shared<SeqEnd>(mTail);
+	for (auto elem : chain)
+	{
+		last = createSpan(elem, last);
+		last = std::make_shared<SeqAdvance>(last);
+	}
+
+	auto first = createSpan(node->first(), last);
+	auto begin = std::make_shared<SeqBegin>(first);
 	mResult = begin;
 }
 
@@ -49,11 +64,11 @@ void Generator::visit(const FConditionNode * node)
 	auto thenBr = createSpan(node->trueBranch(), mTail);	
 	auto elseBr = createSpan(node->falseBranch(), mTail);
 	
-	auto chooser = new CondChoose(thenBr, elseBr);
+	auto chooser = std::make_shared<CondChoose>(thenBr, elseBr);
 
 	auto cond = createSpan(node->condition(), chooser);
 
-	auto start = new CondStart(cond);
+	auto start = std::make_shared<CondStart>(cond);
 
 	mResult = start;
 }
@@ -63,37 +78,62 @@ void Generator::visit(const FScheme * scheme)
 	// ѕри первом заходе создаем определени€ в контексте.
 	if (mCtx.declareFun(scheme))
 	{
-		auto ret = new Ret();
+		auto ret = std::make_shared<Ret>();
 		mCtx.defineFun(scheme, createSpan(scheme->firstNode(), ret));
 	}
 	
-	mResult = new RecFn(mCtx.getFun(scheme), mTail, scheme->name());
+	auto rec = new RecFn(mTail, scheme->name());
+	mResult = IfPtr(rec);
+
+	mCtx.addRec(scheme, rec);
 }
 
 void Generator::visit(const FFunctionNode * node)
 {
-	mResult = new BasicFn(mTail, node->name());
+	mResult = std::make_shared<BasicFn>(mTail, node->name(), node->fn());
 }
 
 void Generator::visit(const FTakeNode * node)
 {
-	mResult = new BasicFn(mTail, "[]");
+	mResult = std::make_shared<GetArg>(mTail, node->index());
 }
 
 void Generator::visit(const FConstantNode * node)
 {
-	mResult = new BasicFn(mTail, "C");
+	auto str = dynamic_cast<const FStringConstant *>(node);
+	if (str)
+	{
+		// ƒл€ строк создаем функцию-констурктор,
+		// т.к. строка может создаватьс€ только при наличии контекста.
+
+		std::string constant = str->str();
+		mResult = std::make_shared<BasicFn>(mTail, "c_string",
+			[constant](SExecutionContext & ctx)
+			{
+				return StringBuilder::create(ctx, constant);
+			});
+	}
+	else
+	{
+		mResult = std::make_shared<Constant>(mTail, node->data());
+	}
 }
 
-InternalForm * Generator::generate(FSchemeNode * node)
+FunctionalProgram * Generator::generate(FSchemeNode * node)
 {
 	Generator generator;
-	return generator.createSpan(node, new EndOp());
+	auto main = generator.createSpan(node, std::make_shared<EndOp>());
+
+	generator.mCtx.resolveRec();
+
+	auto result = new FunctionalProgram(main);
+	generator.mCtx.getFunctions(result->mDefinitions);
+	return result;
 }
 
-InternalForm * Generator::createSpan(FSchemeNode * node, InternalForm * tail)
+IfPtr Generator::createSpan(FSchemeNode * node, const IfPtr & tail)
 {
-	InternalForm * tmp = tail;
+	auto tmp = tail;
 	std::swap(mTail, tmp);
 	node->accept(this);
 	std::swap(mTail, tmp);

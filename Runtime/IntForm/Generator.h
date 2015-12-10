@@ -1,20 +1,22 @@
 #pragma once
 
 #include "../FSchemeVisitor.h"
+#include "InternalForm.h"
 
-#include <tuple>
-#include <map>
 #include <unordered_map>
+#include <iterator>
+#include <algorithm>
 
 namespace FPTL {
 namespace Runtime {
 
 class InternalForm;
-class GeneratorContext;
+class FunctionalProgram;
 
 class GeneratorContext
 {
-	std::unordered_map<const FScheme *, const InternalForm *> mFunctions;
+	std::unordered_map<const FScheme *, IfPtr> mFunctions;
+	std::unordered_map<RecFn *, const FScheme *> mCalls;
 
 public:
 	GeneratorContext()
@@ -22,17 +24,36 @@ public:
 
 	bool declareFun(const FScheme * scheme)
 	{
-		return mFunctions.insert({ scheme, nullptr }).second;
+		return mFunctions.insert({ scheme, IfPtr() }).second;
 	}
 
-	void defineFun(const FScheme * scheme, const InternalForm * body)
+	void defineFun(const FScheme * scheme, const IfPtr & body)
 	{
 		mFunctions[scheme] = body;
 	}
 
-	const InternalForm * getFun(const FScheme * scheme)
+	std::shared_ptr<const InternalForm> getFun(const FScheme * scheme)
 	{
 		return mFunctions.at(scheme);
+	}
+
+	void addRec(const FScheme * scheme, RecFn * fn)
+	{
+		mCalls[fn] = scheme;
+	}
+
+	void resolveRec()
+	{
+		for (auto rec : mCalls)
+		{
+			rec.first->mFn = mFunctions.at(rec.second).get();
+		}
+	}
+
+	void getFunctions(std::unordered_map<std::string, IfPtr> & functions)
+	{
+		std::transform(mFunctions.begin(), mFunctions.end(), std::inserter(functions, functions.end()),
+			[](auto entry) { return std::make_pair(entry.first->name(), entry.second); });
 	}
 };
 
@@ -49,16 +70,16 @@ public:
 	virtual void visit(const FTakeNode * aNode);
 	virtual void visit(const FConstantNode * aNode);
 
-	static InternalForm * generate(FSchemeNode * node);
+	static FunctionalProgram * generate(FSchemeNode * node);
 
 private:
-	InternalForm * createSpan(FSchemeNode * node, InternalForm * mTail);
+	IfPtr createSpan(FSchemeNode * node, const IfPtr & mTail);
 
 private:
 	GeneratorContext mCtx;
 
-	InternalForm * mTail;
-	InternalForm * mResult;
+	IfPtr mTail;
+	IfPtr mResult;
 };
 
 }}

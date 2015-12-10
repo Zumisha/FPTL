@@ -208,6 +208,9 @@
     <ClInclude Include="IntForm\Generator.h">
       <Filter>Header Files\Runtime\IntForm</Filter>
     </ClInclude>
+    <ClInclude Include="IntForm\ControlValue.h">
+      <Filter>Header Files\Runtime\IntForm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Parser\parser.yy">

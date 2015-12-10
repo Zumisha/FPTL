@@ -4,11 +4,14 @@
 #include <cstdlib>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
+#include <boost/timer/timer.hpp>
 
 #include "../Parser/Support.h"
 #include "../Parser/Tokenizer.h"
 #include "FSchemeGenerator.h"
 #include "Run.h"
+#include "IntForm/Generator.h"
+#include "IntForm/InternalForm.h"
 
 namespace po = boost::program_options;
 
@@ -54,6 +57,19 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
+
+		// TEST
+		{
+			std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getFScheme()));
+
+			Runtime::SExecutionContext ctx;
+			ctx.stack.push_back(Runtime::DataBuilders::createInt(37));
+			ctx.argNum = 1;
+			boost::timer::cpu_timer timer;
+			internalForm->main()->exec(ctx);
+			std::cout << "Time : " << boost::timer::format(timer.elapsed()) << "\n";
+		}
+		// TEST
 
 		Runtime::SchemeEvaluator evaluator;
 

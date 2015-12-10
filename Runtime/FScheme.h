@@ -82,6 +82,7 @@ public:
 	std::string name() const { return mName; }
 	int col() const { return mColumn; }
 	int line() const { return mLine; }
+	TFunction fn() const { return mFunction; }
 
 private:
 	std::function<void(SExecutionContext &)> mFunction;
@@ -175,6 +176,7 @@ public:
 	virtual void accept(FSchemeVisitor * aVisitor) const;
 
 	TypeInfo type() const { return mType; }
+	DataValue data() const { return mData; }
 
 private:
 	DataValue mData;
@@ -189,6 +191,8 @@ public:
 	FStringConstant(const std::string & aStr, short aLine, short aCol);
 
 	virtual void execute(SExecutionContext & aCtx) const;
+
+	std::string str() const { return mStr; }
 
 private:
 	std::string mStr;

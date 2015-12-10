@@ -7,6 +7,7 @@
 #include <boost/intrusive/slist.hpp>
 
 #include "Data.h"
+#include "IntForm/ControlValue.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -32,7 +33,7 @@ struct SExecutionContext
 	std::vector<DataValue> stack;
 
 	// Положение кортежа аргументов.
-	int argPos;
+	size_t argPos;
 
 	// Теущая арность операции.
 	int arity;
@@ -40,9 +41,7 @@ struct SExecutionContext
 	// Количество аргументов во входном кортеже.
 	int argNum;
 
-	// Объем памяти, выделенной до сборки мусора.
-	size_t numAllocated;
-	size_t prevAllocated;
+	std::vector<ControlValue> controlStack;
 
 	SExecutionContext();
 
@@ -52,7 +51,7 @@ struct SExecutionContext
 	const DataValue & getArg(int index) const;
 	void push(const DataValue & aData);
 	void advance();
-	void unwind(int aArgPosOld, int aArity, int aPos);
+	void unwind(size_t aArgPosOld, int aArity, size_t aPos);
 
 	// Запуск выполнения.
 	void run(EvaluatorUnit * aEvaluatorUnit);

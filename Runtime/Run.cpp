@@ -19,12 +19,11 @@ SExecutionContext::SExecutionContext()
 	mEvaluatorUnit(0),
 	arity(0),
 	argPos(0),
-	numAllocated(0),
 	Ready(0),
-	prevAllocated(0),
 	argNum(0)
 {
 	stack.reserve(10);
+	controlStack.reserve(100);
 }
 
 bool SExecutionContext::isReady() const
@@ -90,8 +89,8 @@ void SExecutionContext::advance()
 	arity = 0;
 }
 
-void SExecutionContext::unwind(int aArgPosOld, int aArity, int aPos)
-{
+void SExecutionContext::unwind(size_t aArgPosOld, int aArity, size_t aPos)
+{;
 	for (int i = 0; i < arity; ++i)
 	{
 		stack[aPos + i] = stack[stack.size() - arity + i];
