@@ -144,12 +144,16 @@ class BasicFn : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
-	BasicFn(const IfPtr & next, const std::string & name, const TFunction & fn)
-		: mNext(next), mName(name), mFn(fn)
+	BasicFn(const IfPtr & next, const std::string & name, const std::pair<int, int> & pos, const TFunction & fn)
+		: mNext(next), mName(name), mPos(pos), mFn(fn)
 	{}
+
+private:
+	void callFn(SExecutionContext & ctx) const;
 
 	IfPtr mNext;
 	const std::string mName;
+	std::pair<int, int> mPos;
 	const TFunction mFn;
 };
 
@@ -174,6 +178,8 @@ public:
 	Constant(const IfPtr & next, const DataValue & data)
 		: mNext(next), mData(data)
 	{}
+
+	static void pushString(SExecutionContext & ctx, const std::string & str);
 
 	IfPtr mNext;
 	DataValue mData;

@@ -62,6 +62,11 @@ public:
 		throw invalidOperation();
 	}
 
+	virtual Ops * withOps(class Ops const * aOps) const
+	{
+		throw invalidOperation();
+	}
+
 	virtual Ops * withOps(class IntegerOps const * aOps) const
 	{
 		throw invalidOperation();

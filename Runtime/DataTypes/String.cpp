@@ -33,6 +33,7 @@ struct StringData : public Collectable
 
 class StringOps : public Ops
 {
+protected:
 	StringOps()
 	{}
 
@@ -45,7 +46,12 @@ public:
 
 	virtual Ops * combine(const Ops * aOther) const
 	{
-		return (Ops *)aOther;
+		return aOther->withOps(this);
+	}
+
+	virtual Ops * withOps(const Ops * aOps) const
+	{
+		throw invalidOperation("combine");
 	}
 
 	virtual Ops * withOps(const BooleanOps * aOps) const

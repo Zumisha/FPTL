@@ -70,6 +70,7 @@ public:
 	virtual Ops * withOps(class IntegerOps const * aOps) const = 0;
 	virtual Ops * withOps(class BooleanOps const * aOps) const = 0;
 	virtual Ops * withOps(class DoubleOps const * aOps) const = 0;
+	virtual Ops * withOps(const Ops * aOther) const = 0;
 
 	// Преобразование типов.
 	virtual int toInt(const DataValue & aVal) const = 0;
@@ -100,6 +101,8 @@ public:
 class BaseOps : public Ops
 {
 public:
+	virtual Ops * withOps(const Ops * aOther) const;
+
 	// Базисные функции.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const;
 	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const;

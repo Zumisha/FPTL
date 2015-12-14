@@ -121,27 +121,27 @@ FParallelNode::FParallelNode(FSchemeNode * aLeft, FSchemeNode * aRight)
 
 void FParallelNode::execute(SExecutionContext & aCtx) const
 {
-	//if (mLeft->isLong() && mRight->isLong())
-	//{
-	//	// Параллельное выполнение.
-	//	SExecutionContext * fork = aCtx.spawn(mRight);
+	if (mLeft->isLong() && mRight->isLong())
+	{
+		// Параллельное выполнение.
+		SExecutionContext * fork = aCtx.spawn(mRight);
 
-	//	auto evaluator = aCtx.evaluator();
-	//	evaluator->fork(fork);
+		auto evaluator = aCtx.evaluator();
+		evaluator->fork(fork);
 
-	//	mLeft->execute(aCtx);
+		mLeft->execute(aCtx);
 
-	//	evaluator->join(&aCtx, fork);
+		evaluator->join();
 
-	//	// Копируем результат.
-	//	for (int i = 0; i < fork->arity; ++i)
-	//	{
-	//		aCtx.push(fork->stack.at(fork->stack.size() - fork->arity + i));
-	//	}
+		// Копируем результат.
+		for (int i = 0; i < fork->arity; ++i)
+		{
+			aCtx.push(fork->stack.at(fork->stack.size() - fork->arity + i));
+		}
 
-	//	delete fork;
-	//}
-	//else
+		delete fork;
+	}
+	else
 	{
 		// Последовательное выполнение.
 		mLeft->execute(aCtx);

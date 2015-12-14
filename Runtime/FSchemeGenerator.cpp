@@ -42,8 +42,7 @@ FSchemeGenerator::~FSchemeGenerator()
 {
 	NodeDeleter deleter;
 
-	deleter.releaseGraph(mScheme);
-	deleter.releaseGraph(mSchemeInput);
+	deleter.releaseGraph(mProgram);
 
 	delete mLibrary;
 	delete mConstructorGenerator;
@@ -59,6 +58,11 @@ FSchemeNode * FSchemeGenerator::getFScheme()
 FSchemeNode * FSchemeGenerator::getSchemeInput()
 {
 	return mSchemeInput;
+}
+
+FSchemeNode * FSchemeGenerator::getProgram()
+{
+	return mProgram;
 }
 
 //-----------------------------------------------------------------------------
@@ -417,6 +421,12 @@ void FSchemeGenerator::visit(Parser::FunctionalProgram * aFuncProgram)
 
 		mSchemeInput = mNodeStack.top();
 		mNodeStack.pop();
+
+		mProgram = new FSequentialNode(mSchemeInput, mScheme);
+	}
+	else
+	{
+		mProgram = mScheme;
 	}
 }
 

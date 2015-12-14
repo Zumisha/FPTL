@@ -54,7 +54,7 @@ struct SExecutionContext
 	void unwind(size_t aArgPosOld, int aArity, size_t aPos);
 
 	// Запуск выполнения.
-	void run(EvaluatorUnit * aEvaluatorUnit);
+	virtual void run(EvaluatorUnit * aEvaluatorUnit);
 
 	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
 	SExecutionContext * spawn(FSchemeNode * aFirstNode);
@@ -62,7 +62,7 @@ struct SExecutionContext
 	EvaluatorUnit * evaluator() const;
 	CollectedHeap & heap() const;
 	 
-private:
+protected:
 	EvaluatorUnit * mEvaluatorUnit;
 };
 

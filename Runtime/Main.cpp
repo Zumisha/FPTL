@@ -12,6 +12,7 @@
 #include "Run.h"
 #include "IntForm/Generator.h"
 #include "IntForm/InternalForm.h"
+#include "IntForm/Context.h"
 
 namespace po = boost::program_options;
 
@@ -58,18 +59,8 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
-		// TEST
-		{
-			std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getFScheme()));
 
-			Runtime::SExecutionContext ctx;
-			ctx.stack.push_back(Runtime::DataBuilders::createInt(37));
-			ctx.argNum = 1;
-			boost::timer::cpu_timer timer;
-			internalForm->main()->exec(ctx);
-			std::cout << "Time : " << boost::timer::format(timer.elapsed()) << "\n";
-		}
-		// TEST
+		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram()));
 
 		Runtime::SchemeEvaluator evaluator;
 
@@ -82,7 +73,10 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 
 		evaluator.setGcConfig(gcConfig);
 
-		evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
+		Runtime::IFExecutionContext ctx(internalForm->main().get());
+		evaluator.run(ctx, numCores);
+
+		//evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
 	}
 
 	delete astRoot;

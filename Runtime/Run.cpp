@@ -15,15 +15,16 @@ namespace FPTL { namespace Runtime {
 
 //-----------------------------------------------------------------------------
 SExecutionContext::SExecutionContext()
-	: Parent(0),
-	mEvaluatorUnit(0),
+	: Scheme(nullptr),
+	Parent(nullptr),
+	mEvaluatorUnit(nullptr),
 	arity(0),
 	argPos(0),
 	Ready(0),
 	argNum(0)
 {
 	stack.reserve(10);
-	controlStack.reserve(100);
+	controlStack.reserve(10);
 }
 
 bool SExecutionContext::isReady() const
@@ -162,14 +163,17 @@ void EvaluatorUnit::fork(SExecutionContext * task)
 	addJob(task);
 }
 
-void EvaluatorUnit::join(SExecutionContext * task, SExecutionContext * joinTask)
+SExecutionContext * EvaluatorUnit::join()
 {
+	SExecutionContext * joinTask = pendingTasks.back();
+
 	while (!joinTask->Ready.load(std::memory_order_acquire))
 	{
 		schedule();
 	}
 
 	pendingTasks.pop_back();
+	return joinTask;
 }
 
 void EvaluatorUnit::safePoint()
@@ -234,6 +238,16 @@ void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 	}
 }
 
+void EvaluatorUnit::pushTask(SExecutionContext * task)
+{
+	runningTasks.push_back(task);
+}
+
+void EvaluatorUnit::popTask()
+{
+	runningTasks.pop_back();
+}
+
 //-----------------------------------------------------------------------------
 SchemeEvaluator::SchemeEvaluator()
 {
@@ -286,7 +300,6 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 	int evaluatorUnits = aNumEvaluators;
 
-		// Создаем задание и назначем его первому вычислителю.
 	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this, mGcConfig);
 	mGarbageCollector.reset(collector);
 
@@ -296,6 +309,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
 
+	// Создаем задание и назначем его первому вычислителю.
 	SExecutionContext * context = new SExecutionContext();
 
 	FFunctionNode startNode(
@@ -335,6 +349,61 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 
 	// Ждем завершения вычислений.
 	mThreadGroup.join_all();
+}
+
+struct ControlContext : public SExecutionContext
+{
+	ControlContext(SExecutionContext * target, SchemeEvaluator * evaluator)
+		: mTarget(target),
+		mEvaluator(evaluator)
+	{}
+
+	virtual void run(EvaluatorUnit * evaluatorUnit)
+	{
+		boost::timer::cpu_timer timer;
+
+		mTarget->run(evaluatorUnit);		
+		mEvaluator->stop();
+
+		std::cout << "Time : " << boost::timer::format(timer.elapsed()) << "\n";
+	}
+
+private:
+	SExecutionContext * mTarget;
+	SchemeEvaluator * mEvaluator;
+};
+
+void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
+{
+	GarbageCollector * collector = GarbageCollector::getCollector(numEvaluators, this, mGcConfig);
+	mGarbageCollector.reset(collector);
+
+	// Создаем юниты выполнения.
+	for (int i = 0; i < numEvaluators; i++)
+	{
+		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
+	}
+
+	ControlContext controlContext(&program, this);
+
+	// Добавляем задание в очередь к первому потоку.
+	mEvaluatorUnits[0]->addJob(&controlContext);
+
+	// Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
+	mStopMutex.lock();
+
+	// Создаем потоки.
+	for (int i = 0; i < numEvaluators; i++)
+	{
+		mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
+	}
+
+	mStopMutex.unlock();
+
+	mThreadGroup.join_all();
+
+	std::for_each(mEvaluatorUnits.begin(), mEvaluatorUnits.end(), [](auto unit) { delete unit; });
+	mEvaluatorUnits.clear();
 }
 
 //-----------------------------------------------------------------------------

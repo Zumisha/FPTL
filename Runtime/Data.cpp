@@ -23,6 +23,11 @@ DataValue::DataValue(const Ops * aOps)
 }
 
 //-----------------------------------------------------------------------------
+Ops * BaseOps::withOps(const Ops * aOther) const
+{
+	return const_cast<Ops *>(invalidOperation().getOps());
+}
+
 // Базисные функции.
 DataValue BaseOps::add(const DataValue & aLhs, const DataValue & aRhs) const
 {

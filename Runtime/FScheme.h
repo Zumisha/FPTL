@@ -82,6 +82,7 @@ public:
 	std::string name() const { return mName; }
 	int col() const { return mColumn; }
 	int line() const { return mLine; }
+	std::pair<int, int> pos() const { return{ mColumn, mLine }; }
 	TFunction fn() const { return mFunction; }
 
 private:

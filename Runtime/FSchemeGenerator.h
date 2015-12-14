@@ -39,6 +39,7 @@ public:
 	// Получение результата.
 	FSchemeNode * getFScheme();
 	FSchemeNode * getSchemeInput();
+	FSchemeNode * getProgram();
 
 	ConstructorGenerator * getConstructorGenerator() const;
 
@@ -67,6 +68,7 @@ private:
 	
 	FSchemeNode * mScheme;
 	FSchemeNode * mSchemeInput;
+	FSchemeNode * mProgram;
 
 	ConstructorGenerator * mConstructorGenerator;
 	FunctionLibrary * mLibrary;

@@ -29,7 +29,7 @@ public:
 	void fork(SExecutionContext * task);
 
 	// Ожидание завершения процесса выполнения задания.
-	void join(SExecutionContext * task, SExecutionContext * joinTask);
+	SExecutionContext * join();
 
 	// Проверка на необходимость выполнения системного действия (сборка мусора и т.п.).
 	void safePoint();
@@ -49,6 +49,9 @@ public:
 
 	// Трассировка корней стека.
 	void markDataRoots(ObjectMarker * marker);
+
+	void pushTask(SExecutionContext * task);
+	void popTask();
 
 private:
 	void traceRoots();
@@ -78,6 +81,8 @@ public:
 
 	// Запуск вычисления схемы.
 	void runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInputGenerator, int aNumEvaluators);
+
+	void run(SExecutionContext & program, int numEvaluators);
 
 	// Прерывать вычисления.
 	void stop();

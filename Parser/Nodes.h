@@ -117,7 +117,7 @@ public:
 	// Возвращает узел, на который ссылается данное имя.
 	ASTNode *                getTarget() const { return mTarget; }
 	ASTNode *                copy() const;
-	int                      numParameters() const { return mParameters ? mParameters->size() : 0; }
+	int                      numParameters() const { return mParameters ? static_cast<int>(mParameters->size()) : 0; }
 
 private:
 
@@ -169,7 +169,7 @@ public:
 	ListNode *      getTypeParams() const   { return mTypeParameters; }
 
 	ASTNode *       copy() const;
-	int             numParameters() const   { return mTypeParameters ? mTypeParameters->size() : 0; }
+	int             numParameters() const   { return mTypeParameters ? static_cast<int>(mTypeParameters->size()) : 0; }
 
 private:
 
@@ -198,7 +198,7 @@ public:
 	DefinitionNode *  getDefinition(Ident aName) const;
 
 	FunctionNode *    copy() const;
-	int               numParameters() const { return mFormalParameters ? mFormalParameters->size() : 0; }
+	int               numParameters() const { return mFormalParameters ? static_cast<int>(mFormalParameters->size()) : 0; }
 
 private:
 

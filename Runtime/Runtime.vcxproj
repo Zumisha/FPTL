@@ -169,7 +169,7 @@
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/STACK:64000000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/STACK:256000000 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -278,7 +278,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:128000000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:10000000 %(AdditionalOptions)</AdditionalOptions>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
@@ -338,6 +338,7 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GcAwarePtr.h" />
+    <ClInclude Include="IntForm\Context.h" />
     <ClInclude Include="IntForm\ControlValue.h" />
     <ClInclude Include="IntForm\Generator.h" />
     <ClInclude Include="IntForm\InternalForm.h" />

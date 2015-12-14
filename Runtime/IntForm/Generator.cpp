@@ -2,7 +2,6 @@
 #include "InternalForm.h"
 
 #include "../FScheme.h"
-#include "../String.h"
 
 #include <cassert>
 
@@ -18,8 +17,8 @@ void Generator::visit(const FParallelNode * node)
 	if (node->left()->isLong() && node->right()->isLong())
 	{
 		auto join = std::make_shared<ParJoin>(mTail);
-		auto left = createSpan(node->left(), std::make_shared<EndOp>());
-		auto right = createSpan(node->right(), join);
+		auto left = createSpan(node->left(), join);
+		auto right = createSpan(node->right(), std::make_shared<EndOp>());
 
 		mResult = std::make_shared<ParFork>(left, right);
 	}
@@ -90,7 +89,7 @@ void Generator::visit(const FScheme * scheme)
 
 void Generator::visit(const FFunctionNode * node)
 {
-	mResult = std::make_shared<BasicFn>(mTail, node->name(), node->fn());
+	mResult = std::make_shared<BasicFn>(mTail, node->name(), node->pos(), node->fn());
 }
 
 void Generator::visit(const FTakeNode * node)
@@ -107,11 +106,12 @@ void Generator::visit(const FConstantNode * node)
 		// т.к. строка может создаваться только при наличии контекста.
 
 		std::string constant = str->str();
-		mResult = std::make_shared<BasicFn>(mTail, "c_string",
-			[constant](SExecutionContext & ctx)
-			{
-				return StringBuilder::create(ctx, constant);
-			});
+		mResult = std::make_shared<BasicFn>(
+			mTail,
+			"c_string",
+			std::make_pair(0,0),
+			[constant](SExecutionContext & ctx) { Constant::pushString(ctx, constant); }
+		);
 	}
 	else
 	{
