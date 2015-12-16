@@ -20,19 +20,17 @@ class RootMarker : public ObjectMarker
 {
 public:
 	RootMarker(Collectable::Age maxAge)
-		: mAliveSize(0),
-		mMaxAge(maxAge)
+		: mMaxAge(maxAge)
 	{}
 
 	virtual bool markAlive(Collectable * object, size_t size)
 	{
 		if (ObjectMarker::checkAge(object, mMaxAge))
 		{
-			mAliveSize += size;
 			// Т.к. корни помечаются из потоков мутатора, то в этом методе
 			// мы не маркируем объекты, а лишь заносим их в список для
 			// дальнейшей маркировки, чтобы избежать гонки со сборщиком.
-			mRoots.push_back(object);
+			mRoots.emplace_back(object, size);
 			return true;
 		}
 
@@ -44,9 +42,8 @@ public:
 		mMarkStack.push_back(child);
 	}
 
-	std::vector<Collectable *> mRoots;
+	std::vector<std::pair<Collectable *, size_t>> mRoots;
 	MarkList mMarkStack;
-	size_t mAliveSize;
 	Collectable::Age mMaxAge;
 };
 
@@ -58,8 +55,8 @@ public:
 		: mAliveSize(0)
 	{}
 
-	HeapMarker(RootMarker & rootMarker)
-		: mAliveSize(rootMarker.mAliveSize),
+	HeapMarker(RootMarker & rootMarker, size_t aliveSize)
+		: mAliveSize(aliveSize),
 		mMaxAge(rootMarker.mMaxAge)
 	{
 		mMarkStack.swap(rootMarker.mMarkStack);
@@ -252,12 +249,18 @@ private:
 			boost::timer::cpu_timer gcTimer;
 
 			// Маркируем корневые объекты.
+			size_t aliveSize = 0;
 			for (auto object : job->marker.mRoots)
 			{
-				ObjectMarker::setMarked(object, 1);
+				Collectable * root = object.first;
+				if (!root->isMarked())
+				{
+					ObjectMarker::setMarked(root, 1);
+					aliveSize += object.second;
+				}
 			}
 			
-			HeapMarker marker(job->marker);
+			HeapMarker marker(job->marker, aliveSize);
 
 			// Помечаем доступные вершины.
 			int count = marker.traceDataRecursively();
