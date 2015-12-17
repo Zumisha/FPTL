@@ -1,4 +1,4 @@
-#include "GarbageCollector.h"
+п»ї#include "GarbageCollector.h"
 #include "CollectedHeap.h"
 #include "BlockingQueue.h"
 
@@ -27,9 +27,9 @@ public:
 	{
 		if (ObjectMarker::checkAge(object, mMaxAge))
 		{
-			// Т.к. корни помечаются из потоков мутатора, то в этом методе
-			// мы не маркируем объекты, а лишь заносим их в список для
-			// дальнейшей маркировки, чтобы избежать гонки со сборщиком.
+			// Рў.Рє. РєРѕСЂРЅРё РїРѕРјРµС‡Р°СЋС‚СЃСЏ РёР· РїРѕС‚РѕРєРѕРІ РјСѓС‚Р°С‚РѕСЂР°, С‚Рѕ РІ СЌС‚РѕРј РјРµС‚РѕРґРµ
+			// РјС‹ РЅРµ РјР°СЂРєРёСЂСѓРµРј РѕР±СЉРµРєС‚С‹, Р° Р»РёС€СЊ Р·Р°РЅРѕСЃРёРј РёС… РІ СЃРїРёСЃРѕРє РґР»СЏ
+			// РґР°Р»СЊРЅРµР№С€РµР№ РјР°СЂРєРёСЂРѕРІРєРё, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ РіРѕРЅРєРё СЃРѕ СЃР±РѕСЂС‰РёРєРѕРј.
 			mRoots.emplace_back(object, size);
 			return true;
 		}
@@ -159,7 +159,7 @@ public:
 			return;
 		}
 
-		// Проверяем, не начал ли кто-нибудь другой сборку мусора.
+		// РџСЂРѕРІРµСЂСЏРµРј, РЅРµ РЅР°С‡Р°Р» Р»Рё РєС‚Рѕ-РЅРёР±СѓРґСЊ РґСЂСѓРіРѕР№ СЃР±РѕСЂРєСѓ РјСѓСЃРѕСЂР°.
 		while (!mGcMutex.try_lock())
 		{
 			safePoint();
@@ -170,34 +170,34 @@ public:
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
 
-			// Посылаем команду на остановку других потоков.
+			// РџРѕСЃС‹Р»Р°РµРј РєРѕРјР°РЅРґСѓ РЅР° РѕСЃС‚Р°РЅРѕРІРєСѓ РґСЂСѓРіРёС… РїРѕС‚РѕРєРѕРІ.
 			mStop.store(1, std::memory_order_release);
 			mStopped++;
 
-			// Ждем, пока они остановятся.
+			// Р–РґРµРј, РїРѕРєР° РѕРЅРё РѕСЃС‚Р°РЅРѕРІСЏС‚СЃСЏ.
 			mRunCond.wait(lock, [this] { return mStopped == mThreads; });
 			mStopped--;
 		}
 
 		GcJob * job = new GcJob(mCollectOld);
 
-		// Сканируем корни.
+		// РЎРєР°РЅРёСЂСѓРµРј РєРѕСЂРЅРё.
 		mRootExplorer->markRoots(&job->marker);
 
-		// Сбрасываем списке выделенной памяти во всех кучах.
+		// РЎР±СЂР°СЃС‹РІР°РµРј СЃРїРёСЃРєРµ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РІРѕ РІСЃРµС… РєСѓС‡Р°С….
 		for (auto heap : mHeaps)
 		{
 			job->allocatedSize += heap->heapSize();
 			job->allocated.splice(job->allocated.end(), heap->reset());
 		}
 
-		// Добавляем задание на сборку мусора.
+		// Р”РѕР±Р°РІР»СЏРµРј Р·Р°РґР°РЅРёРµ РЅР° СЃР±РѕСЂРєСѓ РјСѓСЃРѕСЂР°.
 		mQueue.push(job);
 
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
 
-			// Возобновляем работу других потоков.
+			// Р’РѕР·РѕР±РЅРѕРІР»СЏРµРј СЂР°Р±РѕС‚Сѓ РґСЂСѓРіРёС… РїРѕС‚РѕРєРѕРІ.
 			mStop.store(0, std::memory_order_relaxed);
 			mRunCond.notify_all();
 		}
@@ -211,7 +211,7 @@ public:
 		mGcMutex.unlock();
 	}
 
-	// Этот метод выполняется другими потоками для ожидании сканирования корней.
+	// Р­С‚РѕС‚ РјРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РґСЂСѓРіРёРјРё РїРѕС‚РѕРєР°РјРё РґР»СЏ РѕР¶РёРґР°РЅРёРё СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ РєРѕСЂРЅРµР№.
 	virtual void safePoint()
 	{
 		if (mStop.load(std::memory_order_acquire) == 1)
@@ -248,7 +248,7 @@ private:
 
 			boost::timer::cpu_timer gcTimer;
 
-			// Маркируем корневые объекты.
+			// РњР°СЂРєРёСЂСѓРµРј РєРѕСЂРЅРµРІС‹Рµ РѕР±СЉРµРєС‚С‹.
 			size_t aliveSize = 0;
 			for (auto object : job->marker.mRoots)
 			{
@@ -262,7 +262,7 @@ private:
 			
 			HeapMarker marker(job->marker, aliveSize);
 
-			// Помечаем доступные вершины.
+			// РџРѕРјРµС‡Р°РµРј РґРѕСЃС‚СѓРїРЅС‹Рµ РІРµСЂС€РёРЅС‹.
 			int count = marker.traceDataRecursively();
 
 			if (job->fullGc)
@@ -273,7 +273,7 @@ private:
 				mCollectOld = false;
 			}
 
-			// Очищаем память.
+			// РћС‡РёС‰Р°РµРј РїР°РјСЏС‚СЊ.
 			job->allocated
 				.remove_and_dispose_if([](const Collectable & obj) { 
 											return !obj.isMarked();
@@ -281,7 +281,7 @@ private:
 											delete obj;
 										});
 
-			// Сбрасываем флаги.
+			// РЎР±СЂР°СЃС‹РІР°РµРј С„Р»Р°РіРё.
 			for (auto & object : job->allocated)
 			{
 				ObjectMarker::setObjectAge(&object, Collectable::OLD);
@@ -309,13 +309,13 @@ private:
 private:
 	GcConfig mConfig;
 
-	// Флаг, сигнализирующий о необходимости остановки.
+	// Р¤Р»Р°Рі, СЃРёРіРЅР°Р»РёР·РёСЂСѓСЋС‰РёР№ Рѕ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РѕСЃС‚Р°РЅРѕРІРєРё.
 	std::atomic<int> mStop;
 
-	// Количество остановившихся потоков.
+	// РљРѕР»РёС‡РµСЃС‚РІРѕ РѕСЃС‚Р°РЅРѕРІРёРІС€РёС…СЃСЏ РїРѕС‚РѕРєРѕРІ.
 	int mStopped;
 
-	// Количество потоков мутатора.
+	// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕС‚РѕРєРѕРІ РјСѓС‚Р°С‚РѕСЂР°.
 	int mThreads;
 
 	std::mutex mGcMutex;
@@ -326,11 +326,11 @@ private:
 	std::vector<CollectedHeap *> mHeaps;
 	size_t mOldGenSize;
 
-	// Общие структуры данных.
+	// РћР±С‰РёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С….
 	BlockingQueue<GcJob *> mQueue;
 	bool mQuit;
 
-	// Структуры данных потока сборки мусора.
+	// РЎС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С… РїРѕС‚РѕРєР° СЃР±РѕСЂРєРё РјСѓСЃРѕСЂР°.
 	std::thread mCollectorThread;
 	CollectedHeap::MemList mAllocated;
 
