@@ -50,7 +50,7 @@ public:
 		}
 	}
 
-	void getFunctions(std::unordered_map<std::string, IfPtr> & functions)
+	void getFunctions(std::unordered_multimap<std::string, IfPtr> & functions)
 	{
 		std::transform(mFunctions.begin(), mFunctions.end(), std::inserter(functions, functions.end()),
 			[](auto entry) { return std::make_pair(entry.first->name(), entry.second); });

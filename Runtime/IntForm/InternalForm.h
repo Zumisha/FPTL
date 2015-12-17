@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../Functions.h"
 
@@ -205,8 +205,9 @@ public:
 	{ return mMain; }
 
 private:
-	std::unordered_map<std::string, IfPtr>
-		mDefinitions;
+	// Здесь обязателен multimap, т.к. определения одной и той же функции может встречаться
+	// несколько раз с разными параметрами (для функционалов).
+	std::unordered_multimap<std::string, IfPtr> mDefinitions;
 
 	IfPtr mMain;
 };

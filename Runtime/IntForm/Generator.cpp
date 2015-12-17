@@ -1,4 +1,4 @@
-#include "Generator.h"
+п»ї#include "Generator.h"
 #include "InternalForm.h"
 
 #include "../FScheme.h"
@@ -33,8 +33,8 @@ void Generator::visit(const FParallelNode * node)
 
 void Generator::visit(const FSequentialNode * node)
 {
-	// Если подряд следует несколько выражений A . B . C, 
-	// то генерируем внутреннее представления для всей цепочки.
+	// Р•СЃР»Рё РїРѕРґСЂСЏРґ СЃР»РµРґСѓРµС‚ РЅРµСЃРєРѕР»СЊРєРѕ РІС‹СЂР°Р¶РµРЅРёР№ A . B . C, 
+	// С‚Рѕ РіРµРЅРµСЂРёСЂСѓРµРј РІРЅСѓС‚СЂРµРЅРЅРµРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РґР»СЏ РІСЃРµР№ С†РµРїРѕС‡РєРё.
 
 	std::vector<FSchemeNode *> chain;
 
@@ -74,7 +74,7 @@ void Generator::visit(const FConditionNode * node)
 
 void Generator::visit(const FScheme * scheme)
 {
-	// При первом заходе создаем определения в контексте.
+	// РџСЂРё РїРµСЂРІРѕРј Р·Р°С…РѕРґРµ СЃРѕР·РґР°РµРј РѕРїСЂРµРґРµР»РµРЅРёСЏ РІ РєРѕРЅС‚РµРєСЃС‚Рµ.
 	if (mCtx.declareFun(scheme))
 	{
 		auto ret = std::make_shared<Ret>();
@@ -102,8 +102,8 @@ void Generator::visit(const FConstantNode * node)
 	auto str = dynamic_cast<const FStringConstant *>(node);
 	if (str)
 	{
-		// Для строк создаем функцию-констурктор,
-		// т.к. строка может создаваться только при наличии контекста.
+		// Р”Р»СЏ СЃС‚СЂРѕРє СЃРѕР·РґР°РµРј С„СѓРЅРєС†РёСЋ-РєРѕРЅСЃС‚СѓСЂРєС‚РѕСЂ,
+		// С‚.Рє. СЃС‚СЂРѕРєР° РјРѕР¶РµС‚ СЃРѕР·РґР°РІР°С‚СЊСЃСЏ С‚РѕР»СЊРєРѕ РїСЂРё РЅР°Р»РёС‡РёРё РєРѕРЅС‚РµРєСЃС‚Р°.
 
 		std::string constant = str->str();
 		mResult = std::make_shared<BasicFn>(
