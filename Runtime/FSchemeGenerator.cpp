@@ -303,17 +303,19 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 			FSchemeNode * node = mNodeStack.top();
 			mNodeStack.pop();
 
-			FScheme * delegateScheme = new FScheme(node);
+			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);			
 
-			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);
+			FScheme * delegateScheme = dynamic_cast<FScheme *>(node);
+			if (!delegateScheme)
+			{
+				delegateScheme = new FScheme(node);
+			}
 
 			// Здесь нельзя делать insert(), т.к. значения параметров должны переопределяться каждый раз при заходе во вложенную функцию.
 			mDefinitions[formalParamName->getName().getStr()] = delegateScheme;
 		}
 
 		// Генерируем схему для функции.
-		// TODO: target может быть функцией для встроенной библиотеки.
-		// в этом случае необходимо передать ей все функциональные параметры в виде функций Fi: aCtx -> void
 		process(target);
 
 		// Подставляем сгенерированную схему.
@@ -376,6 +378,7 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 			if (definition->isRecursive() || definition->getDefinitionName() == aFunctionNode->getFuncName())
 			{
 				auto name = definition->getDefinitionName().getStr();
+
 				mDefinitions.insert(std::make_pair(name, new FScheme(nullptr, name)));
 				toProcess.push_back(aDef);
 			}
