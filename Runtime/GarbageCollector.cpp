@@ -179,7 +179,7 @@ public:
 			mStopped--;
 		}
 
-		GcJob * job = new GcJob(mCollectOld);
+		std::unique_ptr<GcJob> job(new GcJob(mCollectOld));
 
 		// Сканируем корни.
 		mRootExplorer->markRoots(&job->marker);
@@ -192,7 +192,7 @@ public:
 		}
 
 		// Добавляем задание на сборку мусора.
-		mQueue.push(job);
+		mQueue.push(std::move(job));
 
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
@@ -244,7 +244,8 @@ private:
 				break;
 			}
 
-			GcJob * job = deqJob.get();
+			std::unique_ptr<GcJob> job;
+			job.swap(deqJob.get());
 
 			boost::timer::cpu_timer gcTimer;
 
@@ -301,8 +302,6 @@ private:
 
 			if (mOldGenSize > mConfig.oldGenSize())
 				mCollectOld = true;
-
-			delete job;
 		}
 	}
 
@@ -327,7 +326,7 @@ private:
 	size_t mOldGenSize;
 
 	// Общие структуры данных.
-	BlockingQueue<GcJob *> mQueue;
+	BlockingQueue<std::unique_ptr<GcJob>> mQueue;
 	bool mQuit;
 
 	// Структуры данных потока сборки мусора.

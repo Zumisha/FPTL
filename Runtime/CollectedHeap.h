@@ -22,8 +22,6 @@ public:
 	template <typename T> GcAwarePtr<T> alloc(size_t size);
 	template <typename T> GcAwarePtr<T> alloc(std::function<T *(void *)> constructor, size_t size);
 
-	void updateStats(size_t sizeAlive);
-
 	size_t heapSize() const;
 
 	MemList reset();
