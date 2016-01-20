@@ -49,6 +49,11 @@ public:
 		return aOther->withOps(this);
 	}
 
+	virtual Ops * withOps(const StringOps * aOther) const
+	{
+		return get();
+	}
+
 	virtual Ops * withOps(const Ops * aOps) const
 	{
 		throw invalidOperation("combine");

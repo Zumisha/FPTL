@@ -82,6 +82,11 @@ public:
 		throw invalidOperation();
 	}
 
+	virtual Ops * withOps(class StringOps const * aOps) const
+	{
+		throw invalidOperation();
+	}
+
 	// Преобразование типов.
 	virtual int toInt(const DataValue & aVal) const
 	{

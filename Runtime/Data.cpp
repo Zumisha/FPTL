@@ -25,7 +25,14 @@ DataValue::DataValue(const Ops * aOps)
 //-----------------------------------------------------------------------------
 Ops * BaseOps::withOps(const Ops * aOther) const
 {
-	return const_cast<Ops *>(invalidOperation().getOps());
+	invalidOperation();
+	return nullptr;
+}
+
+Ops * BaseOps::withOps(StringOps const * aOther) const
+{
+	invalidOperation();
+	return nullptr;
 }
 
 // Базисные функции.
