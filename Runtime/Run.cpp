@@ -60,6 +60,7 @@ CollectedHeap & SExecutionContext::heap() const
 
 void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 {
+	assert(!Ready.load(std::memory_order_acquire));
 	assert(!mEvaluatorUnit);
 	mEvaluatorUnit = aEvaluatorUnit;
 	mEvaluatorUnit->runningTasks.push_back(this);
@@ -123,12 +124,6 @@ SExecutionContext * EvaluatorUnit::stealJob()
 {
 	SExecutionContext * elem = 0;
 	mJobQueue.steal(elem);
-
-	if (elem)
-	{
-		mJobsStealed++;
-	}
-
 	return elem;
 }
 
@@ -199,6 +194,7 @@ void EvaluatorUnit::schedule()
 	if (context)
 	{
 		context->run(this);
+		mJobsStealed++;
 		mJobsCompleted++;
 	}
 	else

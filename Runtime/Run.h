@@ -5,6 +5,7 @@
 #include <boost/thread.hpp>
 
 #include "WorkStealingQueue.h"
+#include "LockFreeWorkStealingQueue.h"
 #include "CollectedHeap.h"
 #include "GarbageCollector.h"
 
@@ -63,7 +64,7 @@ private:
 	int mJobsCompleted;
 	int mJobsCreated;
 	int mJobsStealed;
-	WorkStealingQueue<SExecutionContext *> mJobQueue;
+	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
