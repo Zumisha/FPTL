@@ -6,7 +6,7 @@
 namespace FPTL {
 	namespace Runtime {
 
-		// Очередь для хранения заданий. Неблокирующая версия.
+		// РћС‡РµСЂРµРґСЊ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Р·Р°РґР°РЅРёР№. РќРµР±Р»РѕРєРёСЂСѓСЋС‰Р°СЏ РІРµСЂСЃРёСЏ.
 		template <typename T>
 		class LockFreeWorkStealingQueue
 		{
@@ -25,18 +25,18 @@ namespace FPTL {
 				}
 				else
 				{
-					// Увеличиваем размер очереди.
+					// РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ РѕС‡РµСЂРµРґРё.
 
 					int headPos = -1;
 
-					// Нужно не дать крадущим потокам делать свою работу.
-					// Для этого подменяем позицию чтения крадущего потока.
+					// РќСѓР¶РЅРѕ РЅРµ РґР°С‚СЊ РєСЂР°РґСѓС‰РёРј РїРѕС‚РѕРєР°Рј РґРµР»Р°С‚СЊ СЃРІРѕСЋ СЂР°Р±РѕС‚Сѓ.
+					// Р”Р»СЏ СЌС‚РѕРіРѕ РїРѕРґРјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ С‡С‚РµРЅРёСЏ РєСЂР°РґСѓС‰РµРіРѕ РїРѕС‚РѕРєР°.
 					while (true)
 					{
-						// Запоминаем позицию для "кражи".
+						// Р—Р°РїРѕРјРёРЅР°РµРј РїРѕР·РёС†РёСЋ РґР»СЏ "РєСЂР°Р¶Рё".
 						headPos = mHeadPos.load(std::memory_order_acquire);
 
-						// Ждем, пока крадущий поток закончит свои действия.
+						// Р–РґРµРј, РїРѕРєР° РєСЂР°РґСѓС‰РёР№ РїРѕС‚РѕРє Р·Р°РєРѕРЅС‡РёС‚ СЃРІРѕРё РґРµР№СЃС‚РІРёСЏ.
 						if (mHeadPos.compare_exchange_strong(headPos, tailPos))
 							break;
 					}
@@ -53,15 +53,15 @@ namespace FPTL {
 						mTailPos.store(numJobs, std::memory_order_relaxed);
 					}
 
-					// Увеличиваем размер очереди.
+					// РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ РѕС‡РµСЂРµРґРё.
 					mSize *= 2;
 					mQueue.resize(mSize);
 
-					// Добавляем элемент.
+					// Р”РѕР±Р°РІР»СЏРµРј СЌР»РµРјРµРЅС‚.
 					mQueue[numJobs] = aElem;
 					mTailPos.store(numJobs + 1, std::memory_order_relaxed);
 
-					// Разрешаем "красть" задания дальше.
+					// Р Р°Р·СЂРµС€Р°РµРј "РєСЂР°СЃС‚СЊ" Р·Р°РґР°РЅРёСЏ РґР°Р»СЊС€Рµ.
 					mHeadPos.store(0, std::memory_order_release);
 				}
 			}
@@ -72,11 +72,13 @@ namespace FPTL {
 
 				mTailPos.store(tailPos, std::memory_order_release);
 
+				std::atomic_thread_fence(std::memory_order_seq_cst);
+
 				int headPos = mHeadPos.load(std::memory_order_acquire);
 
 				if (tailPos < headPos)
 				{
-					mTailPos.store(headPos, std::memory_order_release);
+					mTailPos.store(headPos, std::memory_order_relaxed);
 					return false;
 				}
 				else
@@ -88,15 +90,15 @@ namespace FPTL {
 					}
 					else
 					{
-						if (mHeadPos.compare_exchange_strong(headPos, headPos + 1, std::memory_order_acq_rel))
+						if (mHeadPos.compare_exchange_strong(headPos, headPos + 1))
 						{
 							aElem = mQueue[headPos];
-							mTailPos.store(headPos + 1, std::memory_order::memory_order_release);
+							mTailPos.store(headPos + 1, std::memory_order::memory_order_relaxed);
 							return true;
 						}
 						else
 						{
-							mTailPos.store(headPos, std::memory_order::memory_order_release);
+							mTailPos.store(headPos, std::memory_order::memory_order_relaxed);
 							return false; 
 						}
 					}
@@ -110,7 +112,7 @@ namespace FPTL {
 
 				if (headPos < tailPos)
 				{
-					if (mHeadPos.compare_exchange_strong(headPos, headPos + 1, std::memory_order_acq_rel))
+					if (mHeadPos.compare_exchange_strong(headPos, headPos + 1))
 					{
 						aElem = mQueue[headPos];
 						return true;
