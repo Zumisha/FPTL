@@ -69,11 +69,8 @@ namespace FPTL {
 			bool pop(T & aElem)
 			{
 				int tailPos = mTailPos.load(std::memory_order_acquire) - 1;
-
 				mTailPos.store(tailPos, std::memory_order_release);
-
 				std::atomic_thread_fence(std::memory_order_seq_cst);
-
 				int headPos = mHeadPos.load(std::memory_order_acquire);
 
 				if (tailPos < headPos)

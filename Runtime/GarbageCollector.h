@@ -32,8 +32,9 @@ public:
 	GcConfig() :
 		mEnabled(true),
 		mYoungGenSize(DEFAULT_YOUNG_GEN_SIZE),
-		mOldGenSize(2 * DEFAULT_YOUNG_GEN_SIZE),
-		mVerbose(false)
+		mOldGenSize(5 * DEFAULT_YOUNG_GEN_SIZE),
+		mVerbose(false),
+		mOldGenThreashold(mOldGenSize * 0.75)
 	{}
 
 	void setEnabled(bool state)
@@ -60,11 +61,22 @@ public:
 	bool verbose() const
 	{ return mVerbose; }
 
+	void setOldGenThreashold(double ratio)
+	{
+		mOldGenThreashold = mOldGenSize * ratio;
+	}
+
+	size_t oldGenGCThreashold() const
+	{
+		return mOldGenThreashold;
+	}
+
 private:
 	size_t mYoungGenSize;
 	size_t mOldGenSize;
 	bool mEnabled;
 	bool mVerbose;
+	size_t mOldGenThreashold;
 };
 
 //-----------------------------------------------------------------------------

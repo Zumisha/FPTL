@@ -14,6 +14,8 @@
 #include "IntForm/InternalForm.h"
 #include "IntForm/Context.h"
 
+#include "jemalloc/jemalloc.h"
+
 namespace po = boost::program_options;
 
 namespace FPTL {
@@ -70,12 +72,14 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 		setOption<bool>(vm["verbose-gc"], [&](bool v) {gcConfig.setVerbose(v); });
 		setOption<size_t>(vm["young-gen"], [&](size_t s) {gcConfig.setYoungGenSize(s * 1024 * 1024); });
 		setOption<size_t>(vm["old-gen"], [&](size_t s) {gcConfig.setOldGenSize(s * 1024 * 1024); });
+		setOption<double>(vm["old-gen-ratio"], [&](double r) {gcConfig.setOldGenThreashold(r); });
 
 		evaluator.setGcConfig(gcConfig);
 
 		Runtime::IFExecutionContext ctx(internalForm->main().get());
 		evaluator.run(ctx, numCores);
 
+		// Старый eveluator. Использовать для сравнения производительности
 		//evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
 	}
 
@@ -84,9 +88,29 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 
 }}
 
+void * operator new  (std::size_t count)
+{
+	return ::je_malloc(count);
+}
+
+void * operator new[](std::size_t count)
+{
+	return ::je_malloc(count);
+}
+
+void operator delete  (void * ptr)
+{
+	::je_free(ptr);
+}
+
+void operator delete[](void * ptr)
+{
+	::je_free(ptr);
+}
+
 int main(int argc, char ** argv)
 {
-	std::string programFile;
+ 	std::string programFile;
 	int numCores;
 
 	po::options_description desc("Avilable options");
@@ -97,6 +121,7 @@ int main(int argc, char ** argv)
 		("verbose-gc", po::bool_switch(), "print garbage collector info")
 		("young-gen", po::value<size_t>(), "young generation size in MiB")
 		("old-gen", po::value<size_t>(), "old generation size in MiB")
+		("old-gen-ratio", po::value<double>(), "old gen usage ratio to start full GC")
 		;
 
 	try

@@ -61,6 +61,9 @@ struct SExecutionContext
 
 	EvaluatorUnit * evaluator() const;
 	CollectedHeap & heap() const;
+
+	/*void * operator new(size_t size);
+	void operator delete(void * address);*/
 	 
 protected:
 	EvaluatorUnit * mEvaluatorUnit;

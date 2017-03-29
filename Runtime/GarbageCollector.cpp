@@ -301,7 +301,15 @@ private:
 			}
 
 			if (mOldGenSize > mConfig.oldGenSize())
+			{
+				std::cout << "\n\nERROR: out of memory\n";
+				::exit(1);
+			}
+
+			if (mOldGenSize > mConfig.oldGenGCThreashold())
+			{
 				mCollectOld = true;
+			}
 		}
 	}
 

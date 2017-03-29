@@ -325,7 +325,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 			collector->runGc();
 			stop();
 
-			std::cout << "Time : " << boost::timer::format(timer.elapsed()) << "\n";
+			std::cout << "\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
 		}
 	);
 
@@ -361,7 +361,7 @@ struct ControlContext : public SExecutionContext
 		mTarget->run(evaluatorUnit);		
 		mEvaluator->stop();
 
-		std::cout << "Time : " << boost::timer::format(timer.elapsed()) << "\n";
+		std::cout << "\n\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
 	}
 
 private:

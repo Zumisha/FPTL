@@ -1,0 +1,7 @@
+Scheme Arrays
+{
+    Arrays = ([1]*0).equal -> "done".print, (Create*([1]*1).sub.Arrays).[1];	
+    Create = ((200*0).arrayCreate*1).[2];
+}
+Application
+% Arrays(10000000)

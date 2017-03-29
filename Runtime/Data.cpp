@@ -531,7 +531,9 @@ int doTest()
 	return -1;
 }
 
+#ifdef _DEBUG
 static int test = doTest();
+#endif
 
 //-----------------------------------------------------------------------------
 
