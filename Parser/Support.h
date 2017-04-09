@@ -67,6 +67,13 @@ namespace FPTL
 
 		ErrTypes::ErrType mErr;
 		Ident mIdent;
+
+		bool operator == (const ErrorMessage & other) const {
+			return mErr == other.mErr
+				&& mIdent == other.mIdent
+				&& mIdent.Col == other.mIdent.Col
+				&& mIdent.Line == other.mIdent.Line;
+		}
 	};
 
 	/*

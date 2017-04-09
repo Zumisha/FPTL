@@ -151,7 +151,7 @@ public:
 
 	virtual TypeInfo * getType(const DataValue &) const
 	{
-		static TypeInfo info("integer");
+		static TypeInfo info("int");
 		return &info;
 	}
 

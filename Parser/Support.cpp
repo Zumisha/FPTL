@@ -42,6 +42,7 @@ void Support::initializeKeywordTable( void )
 	registerKeyword("float", BisonParser::token::T_TDOUBLE); // float не реализован.
 	registerKeyword("double", BisonParser::token::T_TDOUBLE);
 	registerKeyword("string", BisonParser::token::T_TSTRING);
+	registerKeyword("boolean", BisonParser::token::T_TBOOL);
 
 	// Ключевые слова.
 	registerKeyword("Functional program", BisonParser::token::T_FUNCTIONAL_PROGRAM);
@@ -180,12 +181,16 @@ const char * Support::getErrorString( ErrTypes::ErrType aErr ) const
 //-------------------------------------------------------------------------------------------
 void Support::getErrorList( std::ostream & aOutStream )
 {
+	std::vector<ErrorMessage> processed;
 	for( std::list<ErrorMessage>::iterator errMsg = mErrorList.begin(); errMsg != mErrorList.end(); ++errMsg )
 	{
-		aOutStream << "Error : " << getErrorString( errMsg->mErr ) << " : "
-			<< "\'" << *errMsg->mIdent.Ptr << "\'"
-			<< " line " << errMsg->mIdent.Line
-			<< " ch " << errMsg->mIdent.Col << "\n";
+		if (std::find(processed.begin(), processed.end(), *errMsg) == processed.end()) {
+			aOutStream << "Error : " << getErrorString(errMsg->mErr) << " : "
+				<< "\'" << *errMsg->mIdent.Ptr << "\'"
+				<< " line " << errMsg->mIdent.Line
+				<< " ch " << errMsg->mIdent.Col << "\n";
+			processed.push_back(*errMsg);
+		}
 	}
 }
 
