@@ -197,6 +197,21 @@ DefinitionNode * FunctionNode::getDefinition(Ident aName) const
 	return 0;
 }
 
+std::vector<FunctionNode *> FunctionNode::getFunctionNodes() const
+{
+	std::vector<FunctionNode *> functions;
+	for (ListNode::iterator it = mDefinitions->begin(); it != mDefinitions->end(); ++it)
+	{
+		auto def = dynamic_cast<FunctionNode *>(*it);
+		if (def)
+		{
+			functions.push_back(def);
+		}
+	}
+
+	return functions;
+}
+
 //-------------------------------------------------------------------------------------------
 
 DefinitionNode::DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition )

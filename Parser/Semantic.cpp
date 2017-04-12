@@ -28,8 +28,16 @@ void NamesChecker::visit( DataNode * aDataNode )
 //---------------------------------------------------------------------------
 void NamesChecker::visit( FunctionNode * aFunctionNode )
 {
-	mContext.insertName( aFunctionNode->getFuncName(), aFunctionNode );
-	pushContext();
+	mContext.insertName(aFunctionNode->getFuncName(), aFunctionNode);
+
+	// Добавляем вложенные fun-конструкции в лексический контекст
+	for (auto functionNode : aFunctionNode->getFunctionNodes()) {
+		if (functionNode != aFunctionNode && !mContext.insertName(functionNode->getFuncName(), functionNode)) {
+			mSupport->semanticError(ErrTypes::DuplicateDefinition, functionNode->getFuncName());
+		}
+	}
+
+	pushContext(aFunctionNode);
 
 	NodeVisitor::visit(aFunctionNode);
 
@@ -78,7 +86,7 @@ void NamesChecker::visit( NameRefNode * aNameNode )
 	STermDescriptor termDesc;
 	termDesc.TermName = aNameNode->getName();
 	termDesc.Node = aNameNode;
-
+	 
 	switch( aNameNode->getType() )
 	{
 		case ASTNode::InputVarName:
@@ -115,6 +123,13 @@ void NamesChecker::pushContext()
 	mContext.clear();
 }
 
+void NamesChecker::pushContext(FunctionNode * function)
+{
+	mContextStack.push_back(mContext);
+	mContext.clear();
+	mContext.currentFunction = function;
+}
+
 //---------------------------------------------------------------------------
 void NamesChecker::popContext()
 {
@@ -141,16 +156,28 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 		// Затем ищем в глобальном пространстве имен.
 		if( !mContextStack.empty() )
 		{
-			pos = mContextStack[0].DefinitionsList.find( aTermDesc.TermName );
+			// Ищем среди определений блоков fun из родительского контекста
+			SLexicalContext & parent = mContextStack.back();
 
-			if( pos != mContextStack[0].DefinitionsList.end() )
+			pos = parent.DefinitionsList.find(aTermDesc.TermName);
+			if (pos != parent.DefinitionsList.end())
 			{
 				target = pos->second;
 			}
 			else
 			{
-				mSupport->semanticError( ErrTypes::UndefinedIdentifier, aTermDesc.TermName );
-				return;
+				// Ищем в глобальном контексте (типы данных, конструкторы, ...)
+				pos = mContextStack[0].DefinitionsList.find(aTermDesc.TermName);
+
+				if (pos != mContextStack[0].DefinitionsList.end())
+				{
+					target = pos->second;
+				}
+				else
+				{
+					mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+					return;
+				}
 			}
 		}
 		else

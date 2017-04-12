@@ -189,15 +189,22 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 //-----------------------------------------------------------------------------
 void FSchemeGenerator::visit(Parser::DefinitionNode * aDefinitionNode)
 {
-	NodeVisitor::visit(aDefinitionNode);
-
 	if (aDefinitionNode->getType() == Parser::ASTNode::Definition)
 	{
-		FScheme * scheme = mDefinitions[aDefinitionNode->getDefinitionName().getStr()];
+		auto name = aDefinitionNode->getDefinitionName().getStr();
+
+		FScheme * me = new FScheme(nullptr, name);
+		mDefinitions.insert(std::make_pair(name, me));
+
+		NodeVisitor::visit(aDefinitionNode);
 
 		FSchemeNode * contents = mNodeStack.top();
 		mNodeStack.pop();
-		scheme->setFirstNode(contents);
+		me->setFirstNode(contents);
+	}
+	else
+	{
+		NodeVisitor::visit(aDefinitionNode);
 	}
 }
 
@@ -277,18 +284,6 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 	// Проверяем, на кого ссылается имя терма.
 	Parser::ASTNode * target = aFuncTermName->getTarget();
 
-	if (target->getType() == Parser::ASTNode::Definition)
-	{
-		// Делаем подстановку нерекурсивного уравнения.
-		if (!target->isRecursive())
-		{
-			target = static_cast<Parser::DefinitionNode *>(target)->getDefinition();
-			process(target);
-
-			return;
-		}
-	}
-
 	if (aFuncTermName->getType() == Parser::ASTNode::FuncObjectWithParameters)
 	{
 		// Создаем новую функциональную схему с параметрами.
@@ -319,15 +314,44 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 		process(target);
 
 		// Подставляем сгенерированную схему.
-		mNodeStack.push(mDefinitions[aFuncTermName->getName().getStr()]);
+		mNodeStack.push(mDefinitions.at(aFuncTermName->getName().getStr()));
 
 		mDefinitions = mDefinitionsStack.top();
 		mDefinitionsStack.pop();
 
 		return;
-	}
+	} 
+	else
+	{
+		auto name = aFuncTermName->getName().getStr();
+		if (target->getType() == Parser::ASTNode::Definition || target->getType() == Parser::ASTNode::FunctionBlock)
+		{
+			// Делаем подстановку нерекурсивного уравнения.
+			if (!target->isRecursive() && target->getType() == Parser::ASTNode::Definition)
+			{
+				target = static_cast<Parser::DefinitionNode *>(target)->getDefinition();
+				process(target);
+				return;
+			}
+			else
+			{
+				if (mDefinitions.find(name) == mDefinitions.end())
+				{
+					// Инстанциируем рекурсивную функцию, как только встречаем ее первый раз
+					process(target);
+				}
 
-	mNodeStack.push(mDefinitions[aFuncTermName->getName().getStr()]);
+				mNodeStack.push(mDefinitions.at(name));
+				return;
+			}
+		}
+		else
+		{
+			// Базисная функция, переданная, как функциональный параметр
+			mNodeStack.push(mDefinitions.at(name));
+			return;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -344,63 +368,39 @@ void FSchemeGenerator::processBuildInFunction(Parser::NameRefNode * aFunctionNam
 //-----------------------------------------------------------------------------
 void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 {
-	Parser::ListNode * definitions = aFunctionNode->getDefinitions();
+	auto name = aFunctionNode->getFuncName();
+	auto mainDef = aFunctionNode->getDefinition(name);
 
-	std::vector<Parser::ASTNode *> toProcess;
+	bool hasParameters = (aFunctionNode->getFormalParameters() != nullptr);
 
-	// Создаем узлы схемы для каждого рекурсивного функционального уравнения и функции без параметров.
-	for (Parser::ListNode::iterator it = definitions->begin(); it != definitions->end(); ++it)
-	{
-		Parser::ASTNode * aDef = *it;
-
-		if (aDef->getType() == Parser::ASTNode::FunctionBlock)
-		{
-			Parser::FunctionNode * function = static_cast<Parser::FunctionNode *>(aDef);
-
-			if (!function->getFormalParameters())
-			{
-				// Генерируем схемы для внутренних функций.
-				mDefinitionsStack.push(mDefinitions);
-				mDefinitions.clear();
-
-				process(aDef);
-
-				FScheme * scheme = mDefinitions[function->getFuncName().getStr()];
-				mDefinitions = mDefinitionsStack.top();
-				mDefinitionsStack.pop();
-				mDefinitions.insert(std::make_pair(function->getFuncName().getStr(), scheme));
-			}
-		}
-		else if (aDef->getType() == Parser::ASTNode::Definition)
-		{
-			Parser::DefinitionNode * definition = static_cast<Parser::DefinitionNode *>(aDef);
-
-			if (definition->isRecursive() || definition->getDefinitionName() == aFunctionNode->getFuncName())
-			{
-				auto name = definition->getDefinitionName().getStr();
-
-				mDefinitions.insert(std::make_pair(name, new FScheme(nullptr, name)));
-				toProcess.push_back(aDef);
-			}
-		}
+	// Сохраняем контекст. Если есть функциональные параметры, контекст сохраняется раньше
+	if (!hasParameters) {
+		mDefinitionsStack.push(mDefinitions);
+		mDefinitions.clear();
 	}
 
-	std::for_each(toProcess.begin(), toProcess.end(), [this](Parser::ASTNode * aDef)
-		{
-			process(aDef);
-		}
-	);
+	process(mainDef);
 
 	// Сохраняеи список определений.
-
 	std::map<std::string, FSchemeNode *> definitionMap;
 	std::for_each(mDefinitions.begin(), mDefinitions.end(), [&](const std::pair<std::string, FScheme *> & elem) -> void
 		{
+			// FIXME: нужно добавлять только те функции, которые есть в aFunctionNode, а не в контексте!
 			definitionMap.insert(std::make_pair(elem.first, elem.second));
 		}
 	);
 
-	mDefinitions.at(aFunctionNode->getFuncName().getStr())->setDefinitions(definitionMap);
+	FScheme * me = mDefinitions.at(name.getStr());
+	me->setDefinitions(definitionMap);
+
+	// Восстанавливаем контекст
+	if (!hasParameters) {
+		mDefinitions = mDefinitionsStack.top();
+		mDefinitionsStack.pop();
+
+		// fun-блок должен быть виден во внешнем контексте
+		mDefinitions.insert(std::make_pair(name.getStr(), me));
+	}
 }
 
 //-----------------------------------------------------------------------------

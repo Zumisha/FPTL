@@ -194,12 +194,12 @@ public:
 	Ident             getFuncName() const         { return mFuncName; }
 	ListNode *        getFormalParameters() const { return mFormalParameters; }
 	ListNode *        getDefinitions() const      { return mDefinitions; }
-
 	DefinitionNode *  getDefinition(Ident aName) const;
 
 	FunctionNode *    copy() const;
 	int               numParameters() const { return mFormalParameters ? static_cast<int>(mFormalParameters->size()) : 0; }
 
+	std::vector<FunctionNode *>    getFunctionNodes() const;
 private:
 
 	Ident mFuncName;
