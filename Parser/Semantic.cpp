@@ -30,14 +30,14 @@ void NamesChecker::visit( FunctionNode * aFunctionNode )
 {
 	mContext.insertName(aFunctionNode->getFuncName(), aFunctionNode);
 
+	pushContext(aFunctionNode);
+
 	// Добавляем вложенные fun-конструкции в лексический контекст
 	for (auto functionNode : aFunctionNode->getFunctionNodes()) {
-		if (functionNode != aFunctionNode && !mContext.insertName(functionNode->getFuncName(), functionNode)) {
+		if (!mContext.insertName(functionNode->getFuncName(), functionNode)) {
 			mSupport->semanticError(ErrTypes::DuplicateDefinition, functionNode->getFuncName());
 		}
 	}
-
-	pushContext(aFunctionNode);
 
 	NodeVisitor::visit(aFunctionNode);
 
@@ -187,7 +187,7 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 		}
 	}
 
-	// FIXME: сейчас я не вижу оснований для этого ограничения. Но, возможно, оно имеются.
+	// FIXME: сейчас я не вижу оснований для этого ограничения.
 	/*if (aTermDesc.Node->getType() == ASTNode::FuncParameterName)
 	{
 		if (target->getType() == ASTNode::FunctionParameterDefinition)
