@@ -205,7 +205,7 @@ int yylex( BisonParser::semantic_type * aVal, Support * aSupport, Tokenizer * aT
 }
 
 //-------------------------------------------------------------------------------------------
-void BisonParser::error( const BisonParser::location_type & loc, const std::string & msg )
+void BisonParser::error(const std::string & msg)
 {
 	pSupport->semanticError( ErrTypes::GeneralSyntaxError, aTokenizer->getErrorIdent() );
 }

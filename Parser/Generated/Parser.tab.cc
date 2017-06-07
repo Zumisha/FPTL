@@ -1,70 +1,67 @@
+// A Bison parser, made by GNU Bison 3.0.2.
 
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+// Skeleton implementation for Bison LALR(1) parsers in C++
 
-/* Skeleton implementation for Bison LALR(1) parsers in C++
-   
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
-   
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+// Copyright (C) 2002-2013 Free Software Foundation, Inc.
 
-/* As a special exception, you may create a larger work that contains
-   part or all of the Bison parser skeleton and distribute that work
-   under terms of your choice, so long as that work isn't itself a
-   parser generator using the skeleton or a modified version thereof
-   as a parser skeleton.  Alternatively, if you modify or redistribute
-   the parser skeleton itself, you may (at your option) remove this
-   special exception, which will cause the skeleton and the resulting
-   Bison output files to be licensed under the GNU General Public
-   License without this special exception.
-   
-   This special exception was added by the Free Software Foundation in
-   version 2.2 of Bison.  */
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+// As a special exception, you may create a larger work that contains
+// part or all of the Bison parser skeleton and distribute that work
+// under terms of your choice, so long as that work isn't itself a
+// parser generator using the skeleton or a modified version thereof
+// as a parser skeleton.  Alternatively, if you modify or redistribute
+// the parser skeleton itself, you may (at your option) remove this
+// special exception, which will cause the skeleton and the resulting
+// Bison output files to be licensed under the GNU General Public
+// License without this special exception.
+
+// This special exception was added by the Free Software Foundation in
+// version 2.2 of Bison.
 
 
-/* First part of user declarations.  */
+// First part of user declarations.
 
+#line 37 "parser.tab.cc" // lalr1.cc:399
 
-/* Line 311 of lalr1.cc  */
-#line 41 "parser.tab.cc"
-
+# ifndef YY_NULLPTR
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULLPTR nullptr
+#  else
+#   define YY_NULLPTR 0
+#  endif
+# endif
 
 #include "parser.tab.hh"
 
-/* User implementation prologue.  */
+// User implementation prologue.
 
-
-/* Line 317 of lalr1.cc  */
-#line 50 "parser.tab.cc"
-/* Unqualified %code blocks.  */
-
-/* Line 318 of lalr1.cc  */
-#line 49 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 51 "parser.tab.cc" // lalr1.cc:407
+// Unqualified %code blocks.
+#line 49 "parser.yy" // lalr1.cc:408
 
 #include "../Support.h"
 #include "../Tokenizer.h"
 #include "../Nodes.h"
 
+#line 59 "parser.tab.cc" // lalr1.cc:408
 
-
-/* Line 318 of lalr1.cc  */
-#line 63 "parser.tab.cc"
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
-#   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
+#   include <libintl.h> // FIXME: INFRINGES ON USER NAME SPACE.
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
 #  endif
 # endif
@@ -73,101 +70,59 @@
 # endif
 #endif
 
-/* Suppress unused-variable warnings by "using" E.  */
-#define YYUSE(e) ((void) (e))
 
-/* Enable debugging if requested.  */
+
+// Suppress unused-variable warnings by "using" E.
+#define YYUSE(E) ((void) (E))
+
+// Enable debugging if requested.
 #if YYDEBUG
 
-/* A pseudo ostream that takes yydebug_ into account.  */
+// A pseudo ostream that takes yydebug_ into account.
 # define YYCDEBUG if (yydebug_) (*yycdebug_)
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)	\
-do {							\
-  if (yydebug_)						\
-    {							\
-      *yycdebug_ << Title << ' ';			\
-      yy_symbol_print_ ((Type), (Value), (Location));	\
-      *yycdebug_ << std::endl;				\
-    }							\
-} while (false)
+# define YY_SYMBOL_PRINT(Title, Symbol)         \
+  do {                                          \
+    if (yydebug_)                               \
+    {                                           \
+      *yycdebug_ << Title << ' ';               \
+      yy_print_ (*yycdebug_, Symbol);           \
+      *yycdebug_ << std::endl;                  \
+    }                                           \
+  } while (false)
 
-# define YY_REDUCE_PRINT(Rule)		\
-do {					\
-  if (yydebug_)				\
-    yy_reduce_print_ (Rule);		\
-} while (false)
+# define YY_REDUCE_PRINT(Rule)          \
+  do {                                  \
+    if (yydebug_)                       \
+      yy_reduce_print_ (Rule);          \
+  } while (false)
 
-# define YY_STACK_PRINT()		\
-do {					\
-  if (yydebug_)				\
-    yystack_print_ ();			\
-} while (false)
+# define YY_STACK_PRINT()               \
+  do {                                  \
+    if (yydebug_)                       \
+      yystack_print_ ();                \
+  } while (false)
 
-#else /* !YYDEBUG */
+#else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
+# define YY_STACK_PRINT()                static_cast<void>(0)
 
-#endif /* !YYDEBUG */
+#endif // !YYDEBUG
 
-#define yyerrok		(yyerrstatus_ = 0)
-#define yyclearin	(yychar = yyempty_)
+#define yyerrok         (yyerrstatus_ = 0)
+#define yyclearin       (yyempty = true)
 
-#define YYACCEPT	goto yyacceptlab
-#define YYABORT		goto yyabortlab
-#define YYERROR		goto yyerrorlab
+#define YYACCEPT        goto yyacceptlab
+#define YYABORT         goto yyabortlab
+#define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-
-/* Line 380 of lalr1.cc  */
-#line 2 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 2 "parser.yy" // lalr1.cc:474
 namespace FPTL { namespace Parser {
-
-/* Line 380 of lalr1.cc  */
-#line 131 "parser.tab.cc"
-#if YYERROR_VERBOSE
-
-  /* Return YYSTR after stripping away unnecessary quotes and
-     backslashes, so that it's suitable for yyerror.  The heuristic is
-     that double-quoting is unnecessary unless the string contains an
-     apostrophe, a comma, or backslash (other than backslash-backslash).
-     YYSTR is taken from yytname.  */
-  std::string
-  BisonParser::yytnamerr_ (const char *yystr)
-  {
-    if (*yystr == '"')
-      {
-        std::string yyr = "";
-        char const *yyp = yystr;
-
-        for (;;)
-          switch (*++yyp)
-            {
-            case '\'':
-            case ',':
-              goto do_not_strip_quotes;
-
-            case '\\':
-              if (*++yyp != '\\')
-                goto do_not_strip_quotes;
-              /* Fall through.  */
-            default:
-              yyr += *yyp;
-              break;
-
-            case '"':
-              return yyr;
-            }
-      do_not_strip_quotes: ;
-      }
-
-    return yystr;
-  }
-
-#endif
+#line 126 "parser.tab.cc" // lalr1.cc:474
 
   /// Build a parser object.
   BisonParser::BisonParser (Support * pSupport_yyarg, Tokenizer * aTokenizer_yyarg, ASTNode* & mASTRoot_yyarg)
@@ -179,731 +134,772 @@ namespace FPTL { namespace Parser {
       pSupport (pSupport_yyarg),
       aTokenizer (aTokenizer_yyarg),
       mASTRoot (mASTRoot_yyarg)
+  {}
+
+  BisonParser::~BisonParser ()
+  {}
+
+
+  /*---------------.
+  | Symbol types.  |
+  `---------------*/
+
+  inline
+  BisonParser::syntax_error::syntax_error (const std::string& m)
+    : std::runtime_error (m)
+  {}
+
+  // basic_symbol.
+  template <typename Base>
+  inline
+  BisonParser::basic_symbol<Base>::basic_symbol ()
+    : value ()
+  {}
+
+  template <typename Base>
+  inline
+  BisonParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
+    : Base (other)
+    , value ()
+  {
+    value = other.value;
+  }
+
+
+  template <typename Base>
+  inline
+  BisonParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v)
+    : Base (t)
+    , value (v)
+  {}
+
+
+  /// Constructor for valueless symbols.
+  template <typename Base>
+  inline
+  BisonParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t)
+    : Base (t)
+    , value ()
+  {}
+
+  template <typename Base>
+  inline
+  BisonParser::basic_symbol<Base>::~basic_symbol ()
   {
   }
 
-  BisonParser::~BisonParser ()
+  template <typename Base>
+  inline
+  void
+  BisonParser::basic_symbol<Base>::move (basic_symbol& s)
   {
+    super_type::move(s);
+    value = s.value;
+  }
+
+  // by_type.
+  inline
+  BisonParser::by_type::by_type ()
+     : type (empty)
+  {}
+
+  inline
+  BisonParser::by_type::by_type (const by_type& other)
+    : type (other.type)
+  {}
+
+  inline
+  BisonParser::by_type::by_type (token_type t)
+    : type (yytranslate_ (t))
+  {}
+
+  inline
+  void
+  BisonParser::by_type::move (by_type& that)
+  {
+    type = that.type;
+    that.type = empty;
+  }
+
+  inline
+  int
+  BisonParser::by_type::type_get () const
+  {
+    return type;
+  }
+
+
+  // by_state.
+  inline
+  BisonParser::by_state::by_state ()
+    : state (empty)
+  {}
+
+  inline
+  BisonParser::by_state::by_state (const by_state& other)
+    : state (other.state)
+  {}
+
+  inline
+  void
+  BisonParser::by_state::move (by_state& that)
+  {
+    state = that.state;
+    that.state = empty;
+  }
+
+  inline
+  BisonParser::by_state::by_state (state_type s)
+    : state (s)
+  {}
+
+  inline
+  BisonParser::symbol_number_type
+  BisonParser::by_state::type_get () const
+  {
+    return state == empty ? 0 : yystos_[state];
+  }
+
+  inline
+  BisonParser::stack_symbol_type::stack_symbol_type ()
+  {}
+
+
+  inline
+  BisonParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
+    : super_type (s)
+  {
+    value = that.value;
+    // that is emptied.
+    that.type = empty;
+  }
+
+  inline
+  BisonParser::stack_symbol_type&
+  BisonParser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  {
+    state = that.state;
+    value = that.value;
+    return *this;
+  }
+
+
+  template <typename Base>
+  inline
+  void
+  BisonParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
+  {
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yysym);
+
+    // User destructor.
+    switch (yysym.type_get ())
+    {
+            case 12: // NUMBER
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 307 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 13: // REALNUMBER
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 318 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 14: // STRING
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 329 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 56: // FunctionalProgram
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 340 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 57: // DataTypeDefinitionsBlocks
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 351 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 58: // DataTypeDefinitionsBlock
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 362 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 60: // TypeParametersList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 373 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 61: // TypeParameterDef
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scDef);
+	delete node;
+
+}
+#line 384 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 62: // ConstructorsDefinitionList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 395 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 63: // ConstructorDef
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 406 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 64: // ConstructorParametersList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 417 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 65: // TypesDefinitionList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 428 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 66: // TypesDefinitionList2
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 439 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 67: // TypeDefinition
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scDef);
+	delete node;
+
+}
+#line 450 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 68: // TypeDefConstructor
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 461 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 69: // TypeExpression
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 472 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 70: // AtomType
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 483 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 72: // TypeExpressionsList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 494 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 75: // Scheme
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scFun);
+	delete node;
+
+}
+#line 505 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 77: // FormalParametersList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 516 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 78: // FormalParameter
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scDef);
+	delete node;
+
+}
+#line 527 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 79: // DefinitionsList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 538 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 80: // Definition
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 549 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 81: // Term
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 560 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 82: // AtomTerm
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 571 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 83: // FuncObjectWithParameters
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 582 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 84: // FuncArgumentList
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 593 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 85: // FuncParameterName
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 604 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 86: // SequentialTerm
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 615 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 87: // CompositionTerm
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 626 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 88: // ConditionTerm
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 637 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 89: // VariantTerm
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 648 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 90: // FuncObjectName
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 659 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 91: // ConstructionFun
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scFun);
+	delete node;
+
+}
+#line 670 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 96: // ElementaryFunctionName
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 681 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 97: // Constructor
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 692 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 98: // Destructor
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 703 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 99: // BuiltInFunction
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 714 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 100: // TupleElement
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 725 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 101: // Constant
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 736 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 102: // BuiltInFunctionName
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 747 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 103: // Application
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scApp);
+	delete node;
+
+}
+#line 758 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 104: // DataInit
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scList);
+	delete node;
+
+}
+#line 769 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 105: // OneDataInit
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scDef);
+	delete node;
+
+}
+#line 780 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 107: // InterpFunProgramName
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scName);
+	delete node;
+
+}
+#line 791 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 108: // Data
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 802 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 109: // OneData
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 813 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 110: // ValueAtom
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 824 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 111: // ValueConstructor
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 835 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 112: // ValueComposition
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 846 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+      case 113: // Value
+
+#line 56 "parser.yy" // lalr1.cc:599
+        {
+	ASTNode * node = (yysym.value.scNode);
+	delete node;
+
+}
+#line 857 "parser.tab.cc" // lalr1.cc:599
+        break;
+
+
+      default:
+        break;
+    }
   }
 
 #if YYDEBUG
-  /*--------------------------------.
-  | Print this symbol on YYOUTPUT.  |
-  `--------------------------------*/
-
-  inline void
-  BisonParser::yy_symbol_value_print_ (int yytype,
-			   const semantic_type* yyvaluep, const location_type* yylocationp)
-  {
-    YYUSE (yylocationp);
-    YYUSE (yyvaluep);
-    switch (yytype)
-      {
-         default:
-	  break;
-      }
-  }
-
-
+  template <typename Base>
   void
-  BisonParser::yy_symbol_print_ (int yytype,
-			   const semantic_type* yyvaluep, const location_type* yylocationp)
+  BisonParser::yy_print_ (std::ostream& yyo,
+                                     const basic_symbol<Base>& yysym) const
   {
-    *yycdebug_ << (yytype < yyntokens_ ? "token" : "nterm")
-	       << ' ' << yytname_[yytype] << " ("
-	       << *yylocationp << ": ";
-    yy_symbol_value_print_ (yytype, yyvaluep, yylocationp);
-    *yycdebug_ << ')';
+    std::ostream& yyoutput = yyo;
+    YYUSE (yyoutput);
+    symbol_number_type yytype = yysym.type_get ();
+    yyo << (yytype < yyntokens_ ? "token" : "nterm")
+        << ' ' << yytname_[yytype] << " (";
+    YYUSE (yytype);
+    yyo << ')';
   }
 #endif
 
+  inline
   void
-  BisonParser::yydestruct_ (const char* yymsg,
-			   int yytype, semantic_type* yyvaluep, location_type* yylocationp)
+  BisonParser::yypush_ (const char* m, state_type s, symbol_type& sym)
   {
-    YYUSE (yylocationp);
-    YYUSE (yymsg);
-    YYUSE (yyvaluep);
-
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
-
-    switch (yytype)
-      {
-        case 12: /* "NUMBER" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 244 "parser.tab.cc"
-	break;
-      case 13: /* "REALNUMBER" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 257 "parser.tab.cc"
-	break;
-      case 14: /* "STRING" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 270 "parser.tab.cc"
-	break;
-      case 56: /* "FunctionalProgram" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 283 "parser.tab.cc"
-	break;
-      case 57: /* "DataTypeDefinitionsBlocks" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 296 "parser.tab.cc"
-	break;
-      case 58: /* "DataTypeDefinitionsBlock" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 309 "parser.tab.cc"
-	break;
-      case 60: /* "TypeParametersList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 322 "parser.tab.cc"
-	break;
-      case 61: /* "TypeParameterDef" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scDef);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 335 "parser.tab.cc"
-	break;
-      case 62: /* "ConstructorsDefinitionList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 348 "parser.tab.cc"
-	break;
-      case 63: /* "ConstructorDef" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 361 "parser.tab.cc"
-	break;
-      case 64: /* "ConstructorParametersList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 374 "parser.tab.cc"
-	break;
-      case 65: /* "TypesDefinitionList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 387 "parser.tab.cc"
-	break;
-      case 66: /* "TypesDefinitionList2" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 400 "parser.tab.cc"
-	break;
-      case 67: /* "TypeDefinition" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scDef);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 413 "parser.tab.cc"
-	break;
-      case 68: /* "TypeDefConstructor" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 426 "parser.tab.cc"
-	break;
-      case 69: /* "TypeExpression" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 439 "parser.tab.cc"
-	break;
-      case 70: /* "AtomType" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 452 "parser.tab.cc"
-	break;
-      case 72: /* "TypeExpressionsList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 465 "parser.tab.cc"
-	break;
-      case 75: /* "Scheme" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scFun);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 478 "parser.tab.cc"
-	break;
-      case 77: /* "FormalParametersList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 491 "parser.tab.cc"
-	break;
-      case 78: /* "FormalParameter" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scDef);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 504 "parser.tab.cc"
-	break;
-      case 79: /* "DefinitionsList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 517 "parser.tab.cc"
-	break;
-      case 80: /* "Definition" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 530 "parser.tab.cc"
-	break;
-      case 81: /* "Term" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 543 "parser.tab.cc"
-	break;
-      case 82: /* "AtomTerm" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 556 "parser.tab.cc"
-	break;
-      case 83: /* "FuncObjectWithParameters" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 569 "parser.tab.cc"
-	break;
-      case 84: /* "FuncArgumentList" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 582 "parser.tab.cc"
-	break;
-      case 85: /* "FuncParameterName" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 595 "parser.tab.cc"
-	break;
-      case 86: /* "SequentialTerm" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 608 "parser.tab.cc"
-	break;
-      case 87: /* "CompositionTerm" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 621 "parser.tab.cc"
-	break;
-      case 88: /* "ConditionTerm" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 634 "parser.tab.cc"
-	break;
-      case 89: /* "VariantTerm" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 647 "parser.tab.cc"
-	break;
-      case 90: /* "FuncObjectName" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 660 "parser.tab.cc"
-	break;
-      case 91: /* "ConstructionFun" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scFun);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 673 "parser.tab.cc"
-	break;
-      case 96: /* "ElementaryFunctionName" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 686 "parser.tab.cc"
-	break;
-      case 97: /* "Constructor" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 699 "parser.tab.cc"
-	break;
-      case 98: /* "Destructor" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 712 "parser.tab.cc"
-	break;
-      case 99: /* "BuiltInFunction" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 725 "parser.tab.cc"
-	break;
-      case 100: /* "TupleElement" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 738 "parser.tab.cc"
-	break;
-      case 101: /* "Constant" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 751 "parser.tab.cc"
-	break;
-      case 102: /* "BuiltInFunctionName" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 764 "parser.tab.cc"
-	break;
-      case 103: /* "Application" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scApp);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 777 "parser.tab.cc"
-	break;
-      case 104: /* "DataInit" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scList);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 790 "parser.tab.cc"
-	break;
-      case 105: /* "OneDataInit" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scDef);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 803 "parser.tab.cc"
-	break;
-      case 107: /* "InterpFunProgramName" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scName);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 816 "parser.tab.cc"
-	break;
-      case 108: /* "Data" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 829 "parser.tab.cc"
-	break;
-      case 109: /* "OneData" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 842 "parser.tab.cc"
-	break;
-      case 110: /* "ValueAtom" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 855 "parser.tab.cc"
-	break;
-      case 111: /* "ValueConstructor" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 868 "parser.tab.cc"
-	break;
-      case 112: /* "ValueComposition" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 881 "parser.tab.cc"
-	break;
-      case 113: /* "Value" */
-
-/* Line 480 of lalr1.cc  */
-#line 56 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-	{
-	ASTNode * node = (yyvaluep->scNode);
-	delete node;
-
-};
-
-/* Line 480 of lalr1.cc  */
-#line 894 "parser.tab.cc"
-	break;
-
-	default:
-	  break;
-      }
+    stack_symbol_type t (s, sym);
+    yypush_ (m, t);
   }
 
+  inline
+  void
+  BisonParser::yypush_ (const char* m, stack_symbol_type& s)
+  {
+    if (m)
+      YY_SYMBOL_PRINT (m, s);
+    yystack_.push (s);
+  }
+
+  inline
   void
   BisonParser::yypop_ (unsigned int n)
   {
-    yystate_stack_.pop (n);
-    yysemantic_stack_.pop (n);
-    yylocation_stack_.pop (n);
+    yystack_.pop (n);
   }
 
 #if YYDEBUG
@@ -931,128 +927,132 @@ namespace FPTL { namespace Parser {
   {
     yydebug_ = l;
   }
-#endif
+#endif // YYDEBUG
+
+  inline BisonParser::state_type
+  BisonParser::yy_lr_goto_state_ (state_type yystate, int yysym)
+  {
+    int yyr = yypgoto_[yysym - yyntokens_] + yystate;
+    if (0 <= yyr && yyr <= yylast_ && yycheck_[yyr] == yystate)
+      return yytable_[yyr];
+    else
+      return yydefgoto_[yysym - yyntokens_];
+  }
+
+  inline bool
+  BisonParser::yy_pact_value_is_default_ (int yyvalue)
+  {
+    return yyvalue == yypact_ninf_;
+  }
+
+  inline bool
+  BisonParser::yy_table_value_is_error_ (int yyvalue)
+  {
+    return yyvalue == yytable_ninf_;
+  }
 
   int
   BisonParser::parse ()
   {
-    /// Lookahead and lookahead in internal form.
-    int yychar = yyempty_;
-    int yytoken = 0;
+    /// Whether yyla contains a lookahead.
+    bool yyempty = true;
 
-    /* State.  */
+    // State.
     int yyn;
+    /// Length of the RHS of the rule being reduced.
     int yylen = 0;
-    int yystate = 0;
 
-    /* Error handling.  */
+    // Error handling.
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
-    /// Semantic value of the lookahead.
-    semantic_type yylval;
-    /// Location of the lookahead.
-    location_type yylloc;
-    /// The locations where the error started and ended.
-    location_type yyerror_range[2];
+    /// The lookahead symbol.
+    symbol_type yyla;
 
-    /// $$.
-    semantic_type yyval;
-    /// @$.
-    location_type yyloc;
-
+    /// The return value of parse ().
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
-    /* Initialize the stacks.  The initial state will be pushed in
+    /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
        stacks with a primary value.  */
-    yystate_stack_ = state_stack_type (0);
-    yysemantic_stack_ = semantic_stack_type (0);
-    yylocation_stack_ = location_stack_type (0);
-    yysemantic_stack_.push (yylval);
-    yylocation_stack_.push (yylloc);
+    yystack_.clear ();
+    yypush_ (YY_NULLPTR, 0, yyla);
 
-    /* New state.  */
+    // A new symbol was pushed on the stack.
   yynewstate:
-    yystate_stack_.push (yystate);
-    YYCDEBUG << "Entering state " << yystate << std::endl;
+    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
 
-    /* Accept?  */
-    if (yystate == yyfinal_)
+    // Accept?
+    if (yystack_[0].state == yyfinal_)
       goto yyacceptlab;
 
     goto yybackup;
 
-    /* Backup.  */
+    // Backup.
   yybackup:
 
-    /* Try to take a decision without lookahead.  */
-    yyn = yypact_[yystate];
-    if (yyn == yypact_ninf_)
+    // Try to take a decision without lookahead.
+    yyn = yypact_[yystack_[0].state];
+    if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
-    /* Read a lookahead token.  */
-    if (yychar == yyempty_)
+    // Read a lookahead token.
+    if (yyempty)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval, pSupport, aTokenizer);
+        YYCDEBUG << "Reading a token: ";
+        try
+          {
+            yyla.type = yytranslate_ (yylex (&yyla.value, pSupport, aTokenizer));
+          }
+        catch (const syntax_error& yyexc)
+          {
+            error (yyexc);
+            goto yyerrlab1;
+          }
+        yyempty = false;
       }
+    YY_SYMBOL_PRINT ("Next token is", yyla);
 
-
-    /* Convert token to internal form.  */
-    if (yychar <= yyeof_)
-      {
-	yychar = yytoken = yyeof_;
-	YYCDEBUG << "Now at end of input." << std::endl;
-      }
-    else
-      {
-	yytoken = yytranslate_ (yychar);
-	YY_SYMBOL_PRINT ("Next token is", yytoken, &yylval, &yylloc);
-      }
-
-    /* If the proper action on seeing token YYTOKEN is to reduce or to
-       detect an error, take that action.  */
-    yyn += yytoken;
-    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yytoken)
+    /* If the proper action on seeing token YYLA.TYPE is to reduce or
+       to detect an error, take that action.  */
+    yyn += yyla.type_get ();
+    if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.type_get ())
       goto yydefault;
 
-    /* Reduce or error.  */
+    // Reduce or error.
     yyn = yytable_[yyn];
     if (yyn <= 0)
       {
-	if (yyn == 0 || yyn == yytable_ninf_)
-	goto yyerrlab;
-	yyn = -yyn;
-	goto yyreduce;
+        if (yy_table_value_is_error_ (yyn))
+          goto yyerrlab;
+        yyn = -yyn;
+        goto yyreduce;
       }
 
-    /* Shift the lookahead token.  */
-    YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
+    // Discard the token being shifted.
+    yyempty = true;
 
-    /* Discard the token being shifted.  */
-    yychar = yyempty_;
-
-    yysemantic_stack_.push (yylval);
-    yylocation_stack_.push (yylloc);
-
-    /* Count tokens shifted since error; after three, turn off error
-       status.  */
+    // Count tokens shifted since error; after three, turn off error status.
     if (yyerrstatus_)
       --yyerrstatus_;
 
-    yystate = yyn;
+    // Shift the lookahead token.
+    yypush_ ("Shifting", yyn, yyla);
     goto yynewstate;
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
   `-----------------------------------------------------------*/
   yydefault:
-    yyn = yydefact_[yystate];
+    yyn = yydefact_[yystack_[0].state];
     if (yyn == 0)
       goto yyerrlab;
     goto yyreduce;
@@ -1062,859 +1062,770 @@ namespace FPTL { namespace Parser {
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
-    /* If YYLEN is nonzero, implement the default value of the action:
-       `$$ = $1'.  Otherwise, use the top of the stack.
-
-       Otherwise, the following line sets YYVAL to garbage.
-       This behavior is undocumented and Bison
-       users should not rely upon it.  */
-    if (yylen)
-      yyval = yysemantic_stack_[yylen - 1];
-    else
-      yyval = yysemantic_stack_[0];
-
     {
-      slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
-      YYLLOC_DEFAULT (yyloc, slice, yylen);
-    }
-    YY_REDUCE_PRINT (yyn);
-    switch (yyn)
-      {
-	  case 2:
+      stack_symbol_type yylhs;
+      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      /* If YYLEN is nonzero, implement the default value of the
+         action: '$$ = $1'.  Otherwise, use the top of the stack.
 
-/* Line 678 of lalr1.cc  */
-#line 179 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+         Otherwise, the following line sets YYLHS.VALUE to garbage.
+         This behavior is undocumented and Bison users should not rely
+         upon it.  */
+      if (yylen)
+        yylhs.value = yystack_[yylen - 1].value;
+      else
+        yylhs.value = yystack_[0].value;
+
+
+      // Perform the reduction.
+      YY_REDUCE_PRINT (yyn);
+      try
+        {
+          switch (yyn)
+            {
+  case 2:
+#line 179 "parser.yy" // lalr1.cc:847
     {
-			mASTRoot = new FunctionalProgram( (yysemantic_stack_[(3) - (1)].scList), (yysemantic_stack_[(3) - (2)].scFun), (yysemantic_stack_[(3) - (3)].scApp) );
+			mASTRoot = new FunctionalProgram( (yystack_[2].value.scList), (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			
-			// Âîçâðàùàåì 0, èíà÷å âñå äåðåâî áóäåò "ñðóáëåíî" äåñòðóêòîðîì ïàðñåðà.
-			(yyval.scNode) = 0;
+			// Ð’Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÐ¼ 0, Ð¸Ð½Ð°Ñ‡Ðµ Ð²ÑÐµ Ð´ÐµÑ€ÐµÐ²Ð¾ Ð±ÑƒÐ´ÐµÑ‚ "ÑÑ€ÑƒÐ±Ð»ÐµÐ½Ð¾" Ð´ÐµÑÑ‚Ñ€ÑƒÐºÑ‚Ð¾Ñ€Ð¾Ð¼ Ð¿Ð°Ñ€ÑÐµÑ€Ð°.
+			(yylhs.value.scNode) = 0;
 		}
+#line 1095 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 3:
-
-/* Line 678 of lalr1.cc  */
-#line 186 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 186 "parser.yy" // lalr1.cc:847
     {
-			mASTRoot = new FunctionalProgram( 0, (yysemantic_stack_[(2) - (1)].scFun), (yysemantic_stack_[(2) - (2)].scApp) );
-			(yyval.scNode) = 0;
+			mASTRoot = new FunctionalProgram( 0, (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
+			(yylhs.value.scNode) = 0;
 		}
+#line 1104 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 4:
-
-/* Line 678 of lalr1.cc  */
-#line 196 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 196 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode(  ASTNode::DataTypeDefinitionsBlocks );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scNode) );
+			(yylhs.value.scList) = new ListNode(  ASTNode::DataTypeDefinitionsBlocks );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 		}
+#line 1113 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 5:
-
-/* Line 678 of lalr1.cc  */
-#line 201 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 201 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(2) - (2)].scList)->addElement( (yysemantic_stack_[(2) - (1)].scNode) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 		}
+#line 1121 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 6:
-
-/* Line 678 of lalr1.cc  */
-#line 208 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 208 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DataNode(  (yysemantic_stack_[(5) - (2)].scIdent), (yysemantic_stack_[(5) - (4)].scList), 0, 0 );
+			(yylhs.value.scNode) = new DataNode(  (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0, 0 );
 		}
+#line 1129 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 7:
-
-/* Line 678 of lalr1.cc  */
-#line 212 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 212 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DataNode(  (yysemantic_stack_[(8) - (2)].scIdent), (yysemantic_stack_[(8) - (7)].scList), (yysemantic_stack_[(8) - (4)].scList), 0 );
+			(yylhs.value.scNode) = new DataNode(  (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList), 0 );
 		}
+#line 1137 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 8:
-
-/* Line 678 of lalr1.cc  */
-#line 216 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 216 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DataNode(  (yysemantic_stack_[(9) - (2)].scIdent), (yysemantic_stack_[(9) - (8)].scList), 0, (yysemantic_stack_[(9) - (6)].scList) );
+			(yylhs.value.scNode) = new DataNode(  (yystack_[7].value.scIdent), (yystack_[1].value.scList), 0, (yystack_[3].value.scList) );
 		}
+#line 1145 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 9:
-
-/* Line 678 of lalr1.cc  */
-#line 220 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 220 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DataNode(  (yysemantic_stack_[(12) - (2)].scIdent), (yysemantic_stack_[(12) - (11)].scList), (yysemantic_stack_[(12) - (4)].scList), (yysemantic_stack_[(12) - (9)].scList) );
+			(yylhs.value.scNode) = new DataNode(  (yystack_[10].value.scIdent), (yystack_[1].value.scList), (yystack_[8].value.scList), (yystack_[3].value.scList) );
 		}
+#line 1153 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 11:
-
-/* Line 678 of lalr1.cc  */
-#line 231 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 231 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::TypeParametersList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scDef) );
+			(yylhs.value.scList) = new ListNode( ASTNode::TypeParametersList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 		}
+#line 1162 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 12:
-
-/* Line 678 of lalr1.cc  */
-#line 236 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 236 "parser.yy" // lalr1.cc:847
     {		
-			(yyval.scList) = (yysemantic_stack_[(3) - (3)].scList)->addElement( (yysemantic_stack_[(3) - (1)].scDef) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 		}
+#line 1170 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 13:
-
-/* Line 678 of lalr1.cc  */
-#line 243 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 243 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yysemantic_stack_[(1) - (1)].scIdent), 0 );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
+#line 1178 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 14:
-
-/* Line 678 of lalr1.cc  */
-#line 250 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 250 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::ConstructorsDefinitionList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scNode) );
+			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorsDefinitionList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 		}
+#line 1187 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 15:
-
-/* Line 678 of lalr1.cc  */
-#line 255 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 255 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(2) - (2)].scList)->addElement( (yysemantic_stack_[(2) - (1)].scNode) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 		}
+#line 1195 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 16:
-
-/* Line 678 of lalr1.cc  */
-#line 262 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 262 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ConstructorNode( (yysemantic_stack_[(5) - (4)].scIdent), 0, (yysemantic_stack_[(5) - (2)].scIdent) );
+			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), 0, (yystack_[3].value.scIdent) );
 		}
+#line 1203 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 17:
-
-/* Line 678 of lalr1.cc  */
-#line 266 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 266 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ConstructorNode( (yysemantic_stack_[(6) - (5)].scIdent), (yysemantic_stack_[(6) - (1)].scList), (yysemantic_stack_[(6) - (3)].scIdent) );
+			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), (yystack_[5].value.scList), (yystack_[3].value.scIdent) );
 		}
+#line 1211 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 18:
-
-/* Line 678 of lalr1.cc  */
-#line 272 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 272 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::ConstructorParametersList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scName) );
+			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorParametersList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
 		}
+#line 1220 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 19:
-
-/* Line 678 of lalr1.cc  */
-#line 277 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 277 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(3) - (3)].scList)->addElement( (yysemantic_stack_[(3) - (1)].scName) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 		}
+#line 1228 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 20:
-
-/* Line 678 of lalr1.cc  */
-#line 285 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 285 "parser.yy" // lalr1.cc:847
     {
-			if( (yysemantic_stack_[(1) - (1)].scList)->size() > 1 )
+			if( (yystack_[0].value.scList)->size() > 1 )
 			{
-				for( ListNode::iterator it = (yysemantic_stack_[(1) - (1)].scList)->begin(); it != (yysemantic_stack_[(1) - (1)].scList)->end(); ++it )
+				for( ListNode::iterator it = (yystack_[0].value.scList)->begin(); it != (yystack_[0].value.scList)->end(); ++it )
 					pSupport->semanticError( ErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>( *it )->getDefinitionName() );
 			}
 
-			(yyval.scList) = (yysemantic_stack_[(1) - (1)].scList);
+			(yylhs.value.scList) = (yystack_[0].value.scList);
 		}
+#line 1242 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 21:
-
-/* Line 678 of lalr1.cc  */
-#line 298 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 298 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::TypesDefinitionList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scDef) );
+			(yylhs.value.scList) = new ListNode( ASTNode::TypesDefinitionList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 		}
+#line 1251 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 22:
-
-/* Line 678 of lalr1.cc  */
-#line 303 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 303 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(2) - (2)].scList)->addElement( (yysemantic_stack_[(2) - (1)].scDef) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 		}
+#line 1259 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 23:
-
-/* Line 678 of lalr1.cc  */
-#line 310 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 310 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yysemantic_stack_[(4) - (1)].scIdent), (yysemantic_stack_[(4) - (3)].scNode) );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 		}
+#line 1267 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 24:
-
-/* Line 678 of lalr1.cc  */
-#line 314 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 314 "parser.yy" // lalr1.cc:847
     {
-			pSupport->semanticError( ErrTypes::NestedDataDefinition, static_cast<DataNode*>((yysemantic_stack_[(1) - (1)].scNode))->getDataName() );
-			delete (yysemantic_stack_[(1) - (1)].scNode);
-			(yyval.scDef) = 0;
+			pSupport->semanticError( ErrTypes::NestedDataDefinition, static_cast<DataNode*>((yystack_[0].value.scNode))->getDataName() );
+			delete (yystack_[0].value.scNode);
+			(yylhs.value.scDef) = 0;
 		}
+#line 1277 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 25:
-
-/* Line 678 of lalr1.cc  */
-#line 323 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 323 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yysemantic_stack_[(3) - (3)].scIdent), (yysemantic_stack_[(3) - (1)].scList) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), (yystack_[2].value.scList) );
 		}
+#line 1285 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 26:
-
-/* Line 678 of lalr1.cc  */
-#line 327 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 327 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yysemantic_stack_[(1) - (1)].scIdent), 0 );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), 0 );
 		}
+#line 1293 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 28:
-
-/* Line 678 of lalr1.cc  */
-#line 335 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 335 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::TypeExpression, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::TypeExpression, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1301 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 29:
-
-/* Line 678 of lalr1.cc  */
-#line 343 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 343 "parser.yy" // lalr1.cc:847
     {	
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scToken), NameRefNode::BaseType );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scToken), NameRefNode::BaseType );
 		}
+#line 1309 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 30:
-
-/* Line 678 of lalr1.cc  */
-#line 347 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 347 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), NameRefNode::Type );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::Type );
 		}
+#line 1317 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 31:
-
-/* Line 678 of lalr1.cc  */
-#line 351 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 351 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(4) - (1)].scIdent), NameRefNode::Template, (yysemantic_stack_[(4) - (3)].scList) );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::Template, (yystack_[1].value.scList) );
 		}
+#line 1325 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 32:
-
-/* Line 678 of lalr1.cc  */
-#line 355 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 355 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), NameRefNode::TypeParamName );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::TypeParamName );
 		}
+#line 1333 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 40:
-
-/* Line 678 of lalr1.cc  */
-#line 372 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 372 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::TypeExpressionsList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scName) );
+			(yylhs.value.scList) = new ListNode( ASTNode::TypeExpressionsList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
 		}
+#line 1342 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 41:
-
-/* Line 678 of lalr1.cc  */
-#line 377 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 377 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(3) - (3)].scList)->addElement( (yysemantic_stack_[(3) - (1)].scName) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 		}
+#line 1350 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 44:
-
-/* Line 678 of lalr1.cc  */
-#line 390 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 390 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scFun) = new FunctionNode( (yysemantic_stack_[(4) - (1)].scIdent), (yysemantic_stack_[(4) - (3)].scList), 0 );
+			(yylhs.value.scFun) = new FunctionNode( (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0 );
 			pSupport->popIdent();
 		}
+#line 1359 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 45:
-
-/* Line 678 of lalr1.cc  */
-#line 395 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 395 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scFun) = new FunctionNode( (yysemantic_stack_[(7) - (1)].scIdent), (yysemantic_stack_[(7) - (6)].scList), (yysemantic_stack_[(7) - (3)].scList) );
+			(yylhs.value.scFun) = new FunctionNode( (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			pSupport->popIdent();
 		}
+#line 1368 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 46:
-
-/* Line 678 of lalr1.cc  */
-#line 403 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 403 "parser.yy" // lalr1.cc:847
     {
-			pSupport->pushIdent( (yysemantic_stack_[(2) - (2)].scIdent) );
-			(yyval.scIdent) = (yysemantic_stack_[(2) - (2)].scIdent);
+			pSupport->pushIdent( (yystack_[0].value.scIdent) );
+			(yylhs.value.scIdent) = (yystack_[0].value.scIdent);
 		}
+#line 1377 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 47:
-
-/* Line 678 of lalr1.cc  */
-#line 411 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 411 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::FormalParametersList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scDef) );
+			(yylhs.value.scList) = new ListNode( ASTNode::FormalParametersList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 		}
+#line 1386 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 48:
-
-/* Line 678 of lalr1.cc  */
-#line 416 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 416 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(3) - (3)].scList)->addElement( (yysemantic_stack_[(3) - (1)].scDef) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 		}
+#line 1394 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 49:
-
-/* Line 678 of lalr1.cc  */
-#line 423 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 423 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yysemantic_stack_[(1) - (1)].scIdent), 0 );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
+#line 1402 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 50:
-
-/* Line 678 of lalr1.cc  */
-#line 430 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 430 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::DefinitionsList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scNode) );
+			(yylhs.value.scList) = new ListNode( ASTNode::DefinitionsList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 		}
+#line 1411 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 51:
-
-/* Line 678 of lalr1.cc  */
-#line 435 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 435 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(2) - (2)].scList)->addElement( (yysemantic_stack_[(2) - (1)].scNode) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 		}
+#line 1419 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 52:
-
-/* Line 678 of lalr1.cc  */
-#line 442 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 442 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yysemantic_stack_[(4) - (3)].scNode) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode) );
 		}
+#line 1427 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 53:
-
-/* Line 678 of lalr1.cc  */
-#line 446 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 446 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new DefinitionNode( ASTNode::Definition, (yysemantic_stack_[(4) - (1)].scIdent), (yysemantic_stack_[(4) - (3)].scNode) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 		}
+#line 1435 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 54:
-
-/* Line 678 of lalr1.cc  */
-#line 450 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scFun); }
+#line 450 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scFun); }
+#line 1441 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 56:
-
-/* Line 678 of lalr1.cc  */
-#line 459 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    {	(yyval.scNode) = (yysemantic_stack_[(3) - (2)].scNode); }
+#line 459 "parser.yy" // lalr1.cc:847
+    {	(yylhs.value.scNode) = (yystack_[1].value.scNode); }
+#line 1447 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 58:
-
-/* Line 678 of lalr1.cc  */
-#line 462 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scName); }
+#line 462 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 1453 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 59:
-
-/* Line 678 of lalr1.cc  */
-#line 464 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 464 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName );
+			(yylhs.value.scNode) = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName );
 		}
+#line 1461 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 60:
-
-/* Line 678 of lalr1.cc  */
-#line 471 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 471 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(4) - (1)].scIdent), NameRefNode::FuncObjectWithParameters, (yysemantic_stack_[(4) - (3)].scList) );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::FuncObjectWithParameters, (yystack_[1].value.scList) );
 		}
+#line 1469 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 61:
-
-/* Line 678 of lalr1.cc  */
-#line 477 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 477 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::FuncArgumentsList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scNode) );
+			(yylhs.value.scList) = new ListNode( ASTNode::FuncArgumentsList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 		}
+#line 1478 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 62:
-
-/* Line 678 of lalr1.cc  */
-#line 482 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 482 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(3) - (3)].scList)->addElement( (yysemantic_stack_[(3) - (1)].scNode) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scNode) );
 		}
+#line 1486 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 63:
-
-/* Line 678 of lalr1.cc  */
-#line 489 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 489 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), NameRefNode::FuncParameterName );
+			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncParameterName );
 		}
+#line 1494 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 65:
-
-/* Line 678 of lalr1.cc  */
-#line 494 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scName); }
+#line 494 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 1500 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 67:
-
-/* Line 678 of lalr1.cc  */
-#line 500 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 500 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::SequentialTerm, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::SequentialTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1508 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 69:
-
-/* Line 678 of lalr1.cc  */
-#line 508 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 508 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::CompositionTerm, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::CompositionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1516 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 71:
-
-/* Line 678 of lalr1.cc  */
-#line 516 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 516 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::ConditionTerm, (yysemantic_stack_[(5) - (1)].scNode), (yysemantic_stack_[(5) - (3)].scNode), (yysemantic_stack_[(5) - (5)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ConditionTerm, (yystack_[4].value.scNode), (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1524 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 72:
-
-/* Line 678 of lalr1.cc  */
-#line 520 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 520 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::ConditionTerm, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ConditionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1532 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 74:
-
-/* Line 678 of lalr1.cc  */
-#line 528 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 528 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::VariantTerm, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::VariantTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1540 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 75:
-
-/* Line 678 of lalr1.cc  */
-#line 535 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 535 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), NameRefNode::FuncObjectName );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncObjectName );
 		}
+#line 1548 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 77:
-
-/* Line 678 of lalr1.cc  */
-#line 543 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 543 "parser.yy" // lalr1.cc:847
     {
-			pSupport->pushIdent( (yysemantic_stack_[(2) - (2)].scIdent) );
+			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
+#line 1556 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 78:
-
-/* Line 678 of lalr1.cc  */
-#line 547 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 547 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scFun) = new FunctionNode( (yysemantic_stack_[(6) - (2)].scIdent), (yysemantic_stack_[(6) - (5)].scList), 0 );
+			(yylhs.value.scFun) = new FunctionNode( (yystack_[4].value.scIdent), (yystack_[1].value.scList), 0 );
 			pSupport->popIdent();
 		}
+#line 1565 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 79:
-
-/* Line 678 of lalr1.cc  */
-#line 552 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 552 "parser.yy" // lalr1.cc:847
     {
-			pSupport->pushIdent( (yysemantic_stack_[(2) - (2)].scIdent) );
+			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
+#line 1573 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 80:
-
-/* Line 678 of lalr1.cc  */
-#line 556 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 556 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scFun) = new FunctionNode( (yysemantic_stack_[(9) - (2)].scIdent), (yysemantic_stack_[(9) - (8)].scList), (yysemantic_stack_[(9) - (5)].scList) );
+			(yylhs.value.scFun) = new FunctionNode( (yystack_[7].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			pSupport->popIdent();
 		}
+#line 1582 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 84:
-
-/* Line 678 of lalr1.cc  */
-#line 573 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scName); }
+#line 573 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 1588 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 85:
-
-/* Line 678 of lalr1.cc  */
-#line 575 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scName); }
+#line 575 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 1594 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 86:
-
-/* Line 678 of lalr1.cc  */
-#line 580 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 580 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), NameRefNode::ConstructorName );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::ConstructorName );
 		}
+#line 1602 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 87:
-
-/* Line 678 of lalr1.cc  */
-#line 587 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 587 "parser.yy" // lalr1.cc:847
     {	
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(2) - (2)].scIdent), NameRefNode::DestructorName );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::DestructorName );
 		}
+#line 1610 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 88:
-
-/* Line 678 of lalr1.cc  */
-#line 594 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scName); }
+#line 594 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 1616 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 91:
-
-/* Line 678 of lalr1.cc  */
-#line 601 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 601 "parser.yy" // lalr1.cc:847
     {
-		ConstantNode * number = static_cast<ConstantNode*>( (yysemantic_stack_[(3) - (2)].scNode) );
+		ConstantNode * number = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
 		if (number->isNatural())
 		{
-			(yyval.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
+			(yylhs.value.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
 			delete number;
 		}
 		else
 		{
 			pSupport->semanticError(ErrTypes::InvalidTupleIndex, number->getConstant());
-			(yyval.scNode) = 0;
+			(yylhs.value.scNode) = 0;
 		}
 	}
+#line 1634 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 95:
-
-/* Line 678 of lalr1.cc  */
-#line 620 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 620 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ConstantNode( ASTNode::TrueValue, (yysemantic_stack_[(1) - (1)].scToken) );
+			(yylhs.value.scNode) = new ConstantNode( ASTNode::TrueValue, (yystack_[0].value.scToken) );
 		}
+#line 1642 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 96:
-
-/* Line 678 of lalr1.cc  */
-#line 624 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 624 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ConstantNode( ASTNode::FalseValue, (yysemantic_stack_[(1) - (1)].scToken) );
+			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
 		}
+#line 1650 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 97:
-
-/* Line 678 of lalr1.cc  */
-#line 632 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 632 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scName) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), NameRefNode::BuildInFunction );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction );
 		}
+#line 1658 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 98:
-
-/* Line 678 of lalr1.cc  */
-#line 639 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 639 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scApp) = new ApplicationBlock( (yysemantic_stack_[(2) - (2)].scName), 0, 0 );
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, 0 );
 		}
+#line 1666 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 99:
-
-/* Line 678 of lalr1.cc  */
-#line 643 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 643 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scApp) = new ApplicationBlock( (yysemantic_stack_[(5) - (2)].scName), (yysemantic_stack_[(5) - (4)].scNode), 0 );
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), 0 );
 		}
+#line 1674 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 100:
-
-/* Line 678 of lalr1.cc  */
-#line 647 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 647 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scApp) = new ApplicationBlock( (yysemantic_stack_[(3) - (3)].scName), 0, (yysemantic_stack_[(3) - (2)].scList) ); 
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, (yystack_[1].value.scList) ); 
 		}
+#line 1682 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 101:
-
-/* Line 678 of lalr1.cc  */
-#line 651 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 651 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scApp) = new ApplicationBlock( (yysemantic_stack_[(6) - (3)].scName), (yysemantic_stack_[(6) - (5)].scNode), (yysemantic_stack_[(6) - (2)].scList) );
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 		}
+#line 1690 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 102:
-
-/* Line 678 of lalr1.cc  */
-#line 658 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 658 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = new ListNode( ASTNode::InputVarDefinitionList );
-			(yyval.scList)->addElement( (yysemantic_stack_[(1) - (1)].scDef) );
+			(yylhs.value.scList) = new ListNode( ASTNode::InputVarDefinitionList );
+			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 		}
+#line 1699 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 103:
-
-/* Line 678 of lalr1.cc  */
-#line 663 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 663 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scList) = (yysemantic_stack_[(2) - (2)].scList)->addElement( (yysemantic_stack_[(2) - (1)].scDef) );
+			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 		}
+#line 1707 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 104:
-
-/* Line 678 of lalr1.cc  */
-#line 670 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 670 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yysemantic_stack_[(4) - (1)].scIdent), (yysemantic_stack_[(4) - (3)].scNode) );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 		}
+#line 1715 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 106:
-
-/* Line 678 of lalr1.cc  */
-#line 679 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 679 "parser.yy" // lalr1.cc:847
     { 
-			(yyval.scName) = new NameRefNode((yysemantic_stack_[(2) - (2)].scIdent), ASTNode::RunningSchemeName);
+			(yylhs.value.scName) = new NameRefNode((yystack_[0].value.scIdent), ASTNode::RunningSchemeName);
 		}
+#line 1723 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 107:
-
-/* Line 678 of lalr1.cc  */
-#line 686 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 686 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = (yysemantic_stack_[(1) - (1)].scNode);
+			(yylhs.value.scNode) = (yystack_[0].value.scNode);
 		}
+#line 1731 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 108:
-
-/* Line 678 of lalr1.cc  */
-#line 690 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 690 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode(ASTNode::InputVarList, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode));
+			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode));
 		}
+#line 1739 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 109:
-
-/* Line 678 of lalr1.cc  */
-#line 697 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 697 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new NameRefNode( (yysemantic_stack_[(1) - (1)].scIdent), ASTNode::InputVarName );
+			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName );
 		}
+#line 1747 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 112:
-
-/* Line 678 of lalr1.cc  */
-#line 707 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
-    { (yyval.scNode) = (yysemantic_stack_[(1) - (1)].scName); }
+#line 707 "parser.yy" // lalr1.cc:847
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 1753 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 113:
-
-/* Line 678 of lalr1.cc  */
-#line 709 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 709 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = (yysemantic_stack_[(3) - (2)].scNode);
+			(yylhs.value.scNode) = (yystack_[1].value.scNode);
 		}
+#line 1761 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 115:
-
-/* Line 678 of lalr1.cc  */
-#line 717 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 717 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scName) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName) );
 		}
+#line 1769 "parser.tab.cc" // lalr1.cc:847
     break;
 
   case 117:
-
-/* Line 678 of lalr1.cc  */
-#line 725 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 725 "parser.yy" // lalr1.cc:847
     {
-			(yyval.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yysemantic_stack_[(3) - (1)].scNode), (yysemantic_stack_[(3) - (3)].scNode) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
+#line 1777 "parser.tab.cc" // lalr1.cc:847
     break;
 
 
+#line 1781 "parser.tab.cc" // lalr1.cc:847
+            default:
+              break;
+            }
+        }
+      catch (const syntax_error& yyexc)
+        {
+          error (yyexc);
+          YYERROR;
+        }
+      YY_SYMBOL_PRINT ("-> $$ =", yylhs);
+      yypop_ (yylen);
+      yylen = 0;
+      YY_STACK_PRINT ();
 
-/* Line 678 of lalr1.cc  */
-#line 1864 "parser.tab.cc"
-	default:
-          break;
-      }
-    YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
-
-    yypop_ (yylen);
-    yylen = 0;
-    YY_STACK_PRINT ();
-
-    yysemantic_stack_.push (yyval);
-    yylocation_stack_.push (yyloc);
-
-    /* Shift the result of the reduction.  */
-    yyn = yyr1_[yyn];
-    yystate = yypgoto_[yyn - yyntokens_] + yystate_stack_[0];
-    if (0 <= yystate && yystate <= yylast_
-	&& yycheck_[yystate] == yystate_stack_[0])
-      yystate = yytable_[yystate];
-    else
-      yystate = yydefgoto_[yyn - yyntokens_];
+      // Shift the result of the reduction.
+      yypush_ (YY_NULLPTR, yylhs);
+    }
     goto yynewstate;
 
-  /*------------------------------------.
-  | yyerrlab -- here on detecting error |
-  `------------------------------------*/
+  /*--------------------------------------.
+  | yyerrlab -- here on detecting error.  |
+  `--------------------------------------*/
   yyerrlab:
-    /* If not already recovering from an error, report this error.  */
+    // If not already recovering from an error, report this error.
     if (!yyerrstatus_)
       {
-	++yynerrs_;
-	error (yylloc, yysyntax_error_ (yystate));
+        ++yynerrs_;
+        error (yysyntax_error_ (yystack_[0].state,
+                                           yyempty ? yyempty_ : yyla.type_get ()));
       }
 
-    yyerror_range[0] = yylloc;
+
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
 
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        // Return failure if at end of input.
+        if (yyla.type_get () == yyeof_)
+          YYABORT;
+        else if (!yyempty)
+          {
+            yy_destroy_ ("Error: discarding", yyla);
+            yyempty = true;
+          }
       }
 
-    /* Else will try to reuse lookahead token after shifting the error
-       token.  */
+    // Else will try to reuse lookahead token after shifting the error token.
     goto yyerrlab1;
 
 
@@ -1928,148 +1839,114 @@ namespace FPTL { namespace Parser {
        code.  */
     if (false)
       goto yyerrorlab;
-
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
-    /* Do not reclaim the symbols of the rule which action triggered
+    /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
-    yystate = yystate_stack_[0];
     goto yyerrlab1;
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
   `-------------------------------------------------------------*/
   yyerrlab1:
-    yyerrstatus_ = 3;	/* Each real token shifted decrements this.  */
+    yyerrstatus_ = 3;   // Each real token shifted decrements this.
+    {
+      stack_symbol_type error_token;
+      for (;;)
+        {
+          yyn = yypact_[yystack_[0].state];
+          if (!yy_pact_value_is_default_ (yyn))
+            {
+              yyn += yyterror_;
+              if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
+                {
+                  yyn = yytable_[yyn];
+                  if (0 < yyn)
+                    break;
+                }
+            }
 
-    for (;;)
-      {
-	yyn = yypact_[yystate];
-	if (yyn != yypact_ninf_)
-	{
-	  yyn += yyterror_;
-	  if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
-	    {
-	      yyn = yytable_[yyn];
-	      if (0 < yyn)
-		break;
-	    }
-	}
+          // Pop the current state because it cannot handle the error token.
+          if (yystack_.size () == 1)
+            YYABORT;
 
-	/* Pop the current state because it cannot handle the error token.  */
-	if (yystate_stack_.height () == 1)
-	YYABORT;
+          yy_destroy_ ("Error: popping", yystack_[0]);
+          yypop_ ();
+          YY_STACK_PRINT ();
+        }
 
-	yyerror_range[0] = yylocation_stack_[0];
-	yydestruct_ ("Error: popping",
-		     yystos_[yystate],
-		     &yysemantic_stack_[0], &yylocation_stack_[0]);
-	yypop_ ();
-	yystate = yystate_stack_[0];
-	YY_STACK_PRINT ();
-      }
 
-    yyerror_range[1] = yylloc;
-    // Using YYLLOC is tempting, but would change the location of
-    // the lookahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
-    yysemantic_stack_.push (yylval);
-    yylocation_stack_.push (yyloc);
-
-    /* Shift the error token.  */
-    YY_SYMBOL_PRINT ("Shifting", yystos_[yyn],
-		     &yysemantic_stack_[0], &yylocation_stack_[0]);
-
-    yystate = yyn;
+      // Shift the error token.
+      error_token.state = yyn;
+      yypush_ ("Shifting", error_token);
+    }
     goto yynewstate;
 
-    /* Accept.  */
+    // Accept.
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    /* Abort.  */
+    // Abort.
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
   yyreturn:
-    if (yychar != yyempty_)
-      yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval, &yylloc);
+    if (!yyempty)
+      yy_destroy_ ("Cleanup: discarding lookahead", yyla);
 
-    /* Do not reclaim the symbols of the rule which action triggered
+    /* Do not reclaim the symbols of the rule whose action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystack_.size ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yy_destroy_ ("Cleanup: popping", yystack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
   }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (!yyempty)
+          yy_destroy_ (YY_NULLPTR, yyla);
+
+        while (1 < yystack_.size ())
+          {
+            yy_destroy_ (YY_NULLPTR, yystack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
+  }
+
+  void
+  BisonParser::error (const syntax_error& yyexc)
+  {
+    error (yyexc.what());
+  }
 
   // Generate an error message.
   std::string
-  BisonParser::yysyntax_error_ (int yystate)
+  BisonParser::yysyntax_error_ (state_type, symbol_number_type) const
   {
-    std::string res;
-    YYUSE (yystate);
-#if YYERROR_VERBOSE
-    int yyn = yypact_[yystate];
-    if (yypact_ninf_ < yyn && yyn <= yylast_)
-      {
-	/* Start YYX at -YYN if negative to avoid negative indexes in
-	   YYCHECK.  */
-	int yyxbegin = yyn < 0 ? -yyn : 0;
-
-	/* Stay within bounds of both yycheck and yytname.  */
-	int yychecklim = yylast_ - yyn + 1;
-	int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-	int count = 0;
-	for (int x = yyxbegin; x < yyxend; ++x)
-	  if (yycheck_[x + yyn] == x && x != yyterror_)
-	    ++count;
-
-	// FIXME: This method of building the message is not compatible
-	// with internationalization.  It should work like yacc.c does it.
-	// That is, first build a string that looks like this:
-	// "syntax error, unexpected %s or %s or %s"
-	// Then, invoke YY_ on this string.
-	// Finally, use the string as a format to output
-	// yytname_[tok], etc.
-	// Until this gets fixed, this message appears in English only.
-	res = "syntax error, unexpected ";
-	res += yytnamerr_ (yytname_[tok]);
-	if (count < 5)
-	  {
-	    count = 0;
-	    for (int x = yyxbegin; x < yyxend; ++x)
-	      if (yycheck_[x + yyn] == x && x != yyterror_)
-		{
-		  res += (!count++) ? ", expecting " : " or ";
-		  res += yytnamerr_ (yytname_[x]);
-		}
-	  }
-      }
-    else
-#endif
-      res = YY_("syntax error");
-    return res;
+    return YY_("syntax error");
   }
 
 
-  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-     STATE-NUM.  */
   const short int BisonParser::yypact_ninf_ = -135;
+
+  const signed char BisonParser::yytable_ninf_ = -80;
+
   const short int
   BisonParser::yypact_[] =
   {
-        50,    22,    32,    52,    42,    48,    53,     9,  -135,  -135,
+      50,    22,    32,    52,    42,    48,    53,     9,  -135,  -135,
       20,  -135,    53,  -135,    11,  -135,    14,    67,    17,    68,
     -135,  -135,    71,    28,    78,    36,    34,  -135,    83,    55,
       74,    14,  -135,    73,  -135,    79,    80,    85,  -135,    75,
@@ -2093,13 +1970,10 @@ namespace FPTL { namespace Parser {
      181,  -135,   182,  -135,  -135
   };
 
-  /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
-     doesn't specify something else to do.  Zero means the default is an
-     error.  */
   const unsigned char
   BisonParser::yydefact_[] =
   {
-         0,     0,     0,     0,     0,     4,     0,     0,    46,    10,
+       0,     0,     0,     0,     0,     4,     0,     0,    46,    10,
        0,     1,     0,     5,     0,     3,     0,     0,     0,     0,
        2,   105,     0,     0,   102,     0,    98,    82,     0,     0,
        0,    50,    54,     0,    49,     0,    47,     0,    24,     0,
@@ -2123,11 +1997,10 @@ namespace FPTL { namespace Parser {
        0,    17,     0,    80,     9
   };
 
-  /* YYPGOTO[NTERM-NUM].  */
   const short int
   BisonParser::yypgoto_[] =
   {
-      -135,  -135,   204,    31,    -2,   159,  -135,  -110,  -135,   -56,
+    -135,  -135,   204,    31,    -2,   159,  -135,  -110,  -135,   -56,
     -120,   183,  -135,  -135,    57,  -126,  -135,    29,    -1,   -59,
      219,  -135,   -50,  -135,   -30,  -135,   -36,    82,  -129,    35,
     -135,    81,    89,  -134,  -135,  -135,  -135,  -135,  -135,  -135,
@@ -2135,11 +2008,10 @@ namespace FPTL { namespace Parser {
     -135,    27,   209,   -60,  -135,  -135,  -135,    98,   -28
   };
 
-  /* YYDEFGOTO[NTERM-NUM].  */
   const short int
   BisonParser::yydefgoto_[] =
   {
-        -1,     3,     4,    38,   119,    44,    45,   120,   121,   122,
+      -1,     3,     4,    38,   119,    44,    45,   120,   121,   122,
       40,    41,    42,   127,   128,   123,   124,   184,   125,    74,
        6,     7,    35,    36,    30,    31,    93,    94,    95,   172,
      173,    96,    97,    98,    99,   100,    32,    85,    86,    53,
@@ -2147,14 +2019,10 @@ namespace FPTL { namespace Parser {
       24,    81,    26,    82,    83,    77,    78,    79,    84
   };
 
-  /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
-     positive, shift that token.  If negative, reduce the rule which
-     number is the opposite.  If zero, do what YYDEFACT says.  */
-  const signed char BisonParser::yytable_ninf_ = -80;
   const short int
   BisonParser::yytable_[] =
   {
-        10,    56,   129,    75,    75,   126,   132,    76,    76,   110,
+      10,    56,   129,    75,    75,   126,   132,    76,    76,   110,
      162,   155,   171,   174,    21,   180,    39,    27,    46,    75,
        9,   108,    80,    76,     9,     8,    75,   183,     9,   196,
       76,     5,   148,   144,   185,     9,     5,    28,     2,    37,
@@ -2180,11 +2048,10 @@ namespace FPTL { namespace Parser {
      204,    49,    48,   166,     0,     0,   178
   };
 
-  /* YYCHECK.  */
   const short int
   BisonParser::yycheck_[] =
   {
-         2,    31,    61,    50,    51,    61,    66,    50,    51,    59,
+       2,    31,    61,    50,    51,    61,    66,    50,    51,    59,
      130,   121,   141,   141,     3,   149,    18,     3,    19,    66,
        3,    57,    50,    66,     3,     3,    73,   153,     3,    43,
       73,     0,    46,    92,   154,     3,     5,    23,    21,    22,
@@ -2210,12 +2077,10 @@ namespace FPTL { namespace Parser {
      195,    24,    23,   135,    -1,    -1,   147
   };
 
-  /* STOS_[STATE-NUM] -- The (internal number of the) accessing
-     symbol of state STATE-NUM.  */
   const unsigned char
   BisonParser::yystos_[] =
   {
-         0,    18,    21,    56,    57,    58,    75,    76,     3,     3,
+       0,    18,    21,    56,    57,    58,    75,    76,     3,     3,
       59,     0,    75,    57,    20,   103,    39,    41,    39,    41,
      103,     3,    54,   104,   105,   106,   107,     3,    23,    49,
       79,    80,    91,    95,     3,    77,    78,    22,    58,    59,
@@ -2239,26 +2104,10 @@ namespace FPTL { namespace Parser {
       79,    45,    65,    40,    40
   };
 
-#if YYDEBUG
-  /* TOKEN_NUMBER_[YYLEX-NUM] -- Internal symbol number corresponding
-     to YYLEX-NUM.  */
-  const unsigned short int
-  BisonParser::yytoken_number_[] =
-  {
-         0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,   292,   293,   123,
-     125,    91,    93,    44,    58,    59,    42,    61,    46,    64,
-      40,    41,    43,   126,    37
-  };
-#endif
-
-  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
   const unsigned char
   BisonParser::yyr1_[] =
   {
-         0,    55,    56,    56,    57,    57,    58,    58,    58,    58,
+       0,    55,    56,    56,    57,    57,    58,    58,    58,    58,
       59,    60,    60,    61,    62,    62,    63,    63,    64,    64,
       65,    66,    66,    67,    67,    68,    68,    69,    69,    70,
       70,    70,    70,    71,    71,    71,    71,    71,    71,    71,
@@ -2272,11 +2121,10 @@ namespace FPTL { namespace Parser {
      109,   110,   110,   110,   111,   111,   112,   112,   113
   };
 
-  /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
   const unsigned char
   BisonParser::yyr2_[] =
   {
-         0,     2,     3,     2,     1,     2,     5,     8,     9,    12,
+       0,     2,     3,     2,     1,     2,     5,     8,     9,    12,
        1,     1,     3,     1,     1,     2,     5,     6,     1,     3,
        1,     1,     2,     4,     1,     3,     1,     1,     3,     1,
        1,     4,     1,     1,     1,     1,     1,     1,     1,     1,
@@ -2290,13 +2138,14 @@ namespace FPTL { namespace Parser {
        1,     1,     1,     3,     1,     3,     1,     3,     1
   };
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-  /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
-     First, the terminals, then, starting at \a yyntokens_, nonterminals.  */
+
+#if YYDEBUG
+  // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
+  // First, the terminals, then, starting at \a yyntokens_, nonterminals.
   const char*
   const BisonParser::yytname_[] =
   {
-    "$end", "error", "$undefined", "NAME", "FUNNAME", "CONSNAME",
+  "$end", "error", "$undefined", "NAME", "FUNNAME", "CONSNAME",
   "DESTNAME", "TYPEPARAMNAME", "IPNAME", "FUNCVARNAME", "BFNAME", "IFUNC",
   "NUMBER", "REALNUMBER", "STRING", "T_FUNCTIONAL_PROGRAM", "T_IMPORT",
   "T_LIBRARIES", "T_SCHEME", "T_INTERPRETATION", "T_APPLICATION", "T_DATA",
@@ -2319,79 +2168,14 @@ namespace FPTL { namespace Parser {
   "ElementaryFunctionName", "Constructor", "Destructor", "BuiltInFunction",
   "TupleElement", "Constant", "BuiltInFunctionName", "Application",
   "DataInit", "OneDataInit", "DataName", "InterpFunProgramName", "Data",
-  "OneData", "ValueAtom", "ValueConstructor", "ValueComposition", "Value", 0
-  };
-#endif
-
-#if YYDEBUG
-  /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
-  const BisonParser::rhs_number_type
-  BisonParser::yyrhs_[] =
-  {
-        56,     0,    -1,    57,    75,   103,    -1,    75,   103,    -1,
-      58,    -1,    58,    57,    -1,    21,    59,    39,    65,    40,
-      -1,    21,    59,    41,    60,    42,    39,    65,    40,    -1,
-      21,    59,    39,    22,    39,    62,    40,    65,    40,    -1,
-      21,    59,    41,    60,    42,    39,    22,    39,    62,    40,
-      65,    40,    -1,     3,    -1,    61,    -1,    61,    43,    60,
-      -1,    73,    -1,    63,    -1,    63,    62,    -1,    38,    59,
-      44,     5,    45,    -1,    64,    38,    59,    44,     5,    45,
-      -1,    70,    -1,    70,    46,    64,    -1,    66,    -1,    67,
-      -1,    67,    66,    -1,    59,    47,    69,    45,    -1,    58,
-      -1,    64,    48,    74,    -1,    74,    -1,    68,    -1,    68,
-      36,    69,    -1,    71,    -1,    59,    -1,    59,    41,    72,
-      42,    -1,    73,    -1,    25,    -1,    26,    -1,    27,    -1,
-      28,    -1,    29,    -1,    30,    -1,    31,    -1,    70,    -1,
-      70,    43,    72,    -1,     7,    -1,     5,    -1,    76,    39,
-      79,    40,    -1,    76,    41,    77,    42,    39,    79,    40,
-      -1,    18,     3,    -1,    78,    -1,    78,    43,    77,    -1,
-       3,    -1,    80,    -1,    80,    79,    -1,    49,    47,    81,
-      45,    -1,    95,    47,    81,    45,    -1,    91,    -1,    89,
-      -1,    50,    81,    51,    -1,    96,    -1,    90,    -1,    49,
-      -1,     3,    50,    84,    51,    -1,    85,    -1,    85,    43,
-      84,    -1,     3,    -1,    96,    -1,    83,    -1,    82,    -1,
-      86,    48,    82,    -1,    86,    -1,    87,    46,    86,    -1,
-      87,    -1,    87,    37,    87,    43,    88,    -1,    87,    37,
-      87,    -1,    88,    -1,    89,    52,    88,    -1,     3,    -1,
-      83,    -1,    -1,    23,    94,    92,    39,    79,    40,    -1,
-      -1,    23,    94,    93,    41,    77,    42,    39,    79,    40,
-      -1,     3,    -1,     3,    -1,    99,    -1,    97,    -1,    98,
-      -1,    74,    -1,    53,    74,    -1,   102,    -1,   100,    -1,
-     101,    -1,    41,    12,    42,    -1,    12,    -1,    13,    -1,
-      14,    -1,    32,    -1,    33,    -1,    10,    -1,    20,   107,
-      -1,    20,   107,    50,   108,    51,    -1,    20,   104,   107,
-      -1,    20,   104,   107,    50,   108,    51,    -1,   105,    -1,
-     105,   104,    -1,   106,    47,   113,    45,    -1,     3,    -1,
-      54,     3,    -1,   109,    -1,   109,    43,   108,    -1,   106,
-      -1,   113,    -1,   101,    -1,    97,    -1,    50,   113,    51,
-      -1,   110,    -1,   110,    48,    97,    -1,   111,    -1,   111,
-      46,   112,    -1,   112,    -1
+  "OneData", "ValueAtom", "ValueConstructor", "ValueComposition", "Value", YY_NULLPTR
   };
 
-  /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
-     YYRHS.  */
-  const unsigned short int
-  BisonParser::yyprhs_[] =
-  {
-         0,     0,     3,     7,    10,    12,    15,    21,    30,    40,
-      53,    55,    57,    61,    63,    65,    68,    74,    81,    83,
-      87,    89,    91,    94,    99,   101,   105,   107,   109,   113,
-     115,   117,   122,   124,   126,   128,   130,   132,   134,   136,
-     138,   140,   144,   146,   148,   153,   161,   164,   166,   170,
-     172,   174,   177,   182,   187,   189,   191,   195,   197,   199,
-     201,   206,   208,   212,   214,   216,   218,   220,   224,   226,
-     230,   232,   238,   242,   244,   248,   250,   252,   253,   260,
-     261,   271,   273,   275,   277,   279,   281,   283,   286,   288,
-     290,   292,   296,   298,   300,   302,   304,   306,   308,   311,
-     317,   321,   328,   330,   333,   338,   340,   343,   345,   349,
-     351,   353,   355,   357,   361,   363,   367,   369,   373
-  };
 
-  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned short int
   BisonParser::yyrline_[] =
   {
-         0,   178,   178,   185,   195,   200,   207,   211,   215,   219,
+       0,   178,   178,   185,   195,   200,   207,   211,   215,   219,
      226,   230,   235,   242,   249,   254,   261,   265,   271,   276,
      284,   297,   302,   309,   313,   322,   326,   333,   334,   342,
      346,   350,   354,   361,   362,   363,   364,   365,   366,   367,
@@ -2410,9 +2194,11 @@ namespace FPTL { namespace Parser {
   BisonParser::yystack_print_ ()
   {
     *yycdebug_ << "Stack now";
-    for (state_stack_type::const_iterator i = yystate_stack_.begin ();
-	 i != yystate_stack_.end (); ++i)
-      *yycdebug_ << ' ' << *i;
+    for (stack_type::const_iterator
+           i = yystack_.begin (),
+           i_end = yystack_.end ();
+         i != i_end; ++i)
+      *yycdebug_ << ' ' << i->state;
     *yycdebug_ << std::endl;
   }
 
@@ -2422,19 +2208,18 @@ namespace FPTL { namespace Parser {
   {
     unsigned int yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
-    /* Print the symbols being reduced, and their result.  */
+    // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-	       << " (line " << yylno << "):" << std::endl;
-    /* The symbols being reduced.  */
+               << " (line " << yylno << "):" << std::endl;
+    // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
-		       yyrhs_[yyprhs_[yyrule] + yyi],
-		       &(yysemantic_stack_[(yynrhs) - (yyi + 1)]),
-		       &(yylocation_stack_[(yynrhs) - (yyi + 1)]));
+                       yystack_[(yynrhs) - (yyi + 1)]);
   }
 #endif // YYDEBUG
 
-  /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
+  // Symbol number corresponding to token number t.
+  inline
   BisonParser::token_number_type
   BisonParser::yytranslate_ (int t)
   {
@@ -2442,7 +2227,7 @@ namespace FPTL { namespace Parser {
     const token_number_type
     translate_table[] =
     {
-           0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,    54,     2,     2,
@@ -2473,30 +2258,17 @@ namespace FPTL { namespace Parser {
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38
     };
-    if ((unsigned int) t <= yyuser_token_number_max_)
+    const unsigned int user_token_number_max_ = 293;
+    const token_number_type undef_token_ = 2;
+
+    if (static_cast<int>(t) <= yyeof_)
+      return yyeof_;
+    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
       return translate_table[t];
     else
-      return yyundef_token_;
+      return undef_token_;
   }
 
-  const int BisonParser::yyeof_ = 0;
-  const int BisonParser::yylast_ = 236;
-  const int BisonParser::yynnts_ = 59;
-  const int BisonParser::yyempty_ = -2;
-  const int BisonParser::yyfinal_ = 11;
-  const int BisonParser::yyterror_ = 1;
-  const int BisonParser::yyerrcode_ = 256;
-  const int BisonParser::yyntokens_ = 55;
-
-  const unsigned int BisonParser::yyuser_token_number_max_ = 293;
-  const BisonParser::token_number_type BisonParser::yyundef_token_ = 2;
-
-
-/* Line 1054 of lalr1.cc  */
-#line 2 "e:\\FPTL1\\Src\\Interpreter\\Parser\\parser.yy"
+#line 2 "parser.yy" // lalr1.cc:1155
 } } // FPTL::Parser
-
-/* Line 1054 of lalr1.cc  */
-#line 2501 "parser.tab.cc"
-
-
+#line 2275 "parser.tab.cc" // lalr1.cc:1155
