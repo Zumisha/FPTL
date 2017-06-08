@@ -43,7 +43,8 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 	std::copy(std::istreambuf_iterator<char>(inpFile), std::istreambuf_iterator<char>(), std::back_inserter(inputStr));
 
 	Support support;
-	Tokenizer tokenizer(inputStr);
+	std::stringstream input(inputStr);
+	Tokenizer tokenizer(input);
 	ASTNode * astRoot = support.getInternalForm(&tokenizer);
 
 	if (astRoot)

@@ -12,15 +12,14 @@
 namespace FPTL { namespace Parser {
 
 //-------------------------------------------------------------------------------------------
-Tokenizer::Tokenizer( const std::string & aInputString )
-	: yyFlexLexer( &mInputStream ),
+Tokenizer::Tokenizer(std::istream & input)
+	: yyFlexLexer( input, std::cout ),
 	mLine(1),
 	mCol(0),
 	mTokenBegin(0),
 	mLastTokenLen(0),
 	mPrevTokenLine(0)
 {
-	mInputStream << aInputString;
 }
 
 //-------------------------------------------------------------------------------------------

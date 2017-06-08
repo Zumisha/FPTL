@@ -1,5 +1,6 @@
 
 flex tokenizer.flex
-copy /Y FlexScanner.cpp Generated\Flex\
+cp FlexScanner.cpp ./Generated/Flex/
+rm FlexScanner.cpp
 
 pause

@@ -18,7 +18,7 @@ namespace Parser {
 	class Tokenizer : private yyFlexLexer
 	{
 	public:
-		Tokenizer( const std::string& aInputString );
+		Tokenizer(std::istream& input);
 
 		BisonParser::token_type  getToken( BisonParser::semantic_type * aVal, Support * aSupport );
 		Ident                    getErrorIdent() const;
@@ -38,8 +38,6 @@ namespace Parser {
 		int	processIdentifier();
 
 	private:
-
-		std::stringstream mInputStream;
 		Support * mSupport;
 		BisonParser::semantic_type * mVal;
 
