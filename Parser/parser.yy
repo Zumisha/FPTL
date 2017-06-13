@@ -243,7 +243,7 @@ TypeParametersList
 TypeParameterDef
 	: TypeParameter
 		{
-			$$ = new DefinitionNode( ASTNode::TypeParameterDefinition, $1, 0 );
+			$$ = new DefinitionNode( ASTNode::TypeParameterDefinition, $1, 0, 0 );
 		}
 	;
 
@@ -310,7 +310,7 @@ TypesDefinitionList2
 TypeDefinition
 	: TypeName '=' TypeExpression ';'
 		{
-			$$ = new DefinitionNode( ASTNode::TypeDefinition, $1, $3 );
+			$$ = new DefinitionNode( ASTNode::TypeDefinition, $1, $3, 0 );
 		}
 	| DataTypeDefinitionsBlock
 		{
@@ -323,11 +323,11 @@ TypeDefinition
 TypeDefConstructor
 	: ConstructorParametersList '.' ConstructorName
 		{
-			$$ = new DefinitionNode( ASTNode::TypeConstructorDefinition, $3, $1 );
+			$$ = new DefinitionNode( ASTNode::TypeConstructorDefinition, $3, $1, 0 );
 		}
 	| ConstructorName
 		{
-			$$ = new DefinitionNode( ASTNode::TypeConstructorDefinition, $1, 0 );
+			$$ = new DefinitionNode( ASTNode::TypeConstructorDefinition, $1, 0, 0 );
 		}
 	;
 	
@@ -423,7 +423,7 @@ FormalParametersList
 FormalParameter
 	: NAME
 		{
-			$$ = new DefinitionNode( ASTNode::FunctionParameterDefinition, $1, 0 );
+			$$ = new DefinitionNode( ASTNode::FunctionParameterDefinition, $1, 0, 0 );
 		}
 	;
 	
@@ -442,19 +442,19 @@ DefinitionsList
 Definition
 	: '@' '=' Term ';'
 		{
-			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $3 );
+			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $3, 0 );
 		}
 	| '@' '(' NamedArgumentList ')' '=' Term ';'
 		{
-			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $6 );
+			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $6, $3 );
 		}
 	| FuncVarName '=' Term ';'
 		{
-			$$ = new DefinitionNode( ASTNode::Definition, $1, $3 );
+			$$ = new DefinitionNode( ASTNode::Definition, $1, $3, 0 );
 		}
 	| FuncVarName '(' NamedArgumentList ')' '=' Term ';'
 		{
-			$$ = new DefinitionNode( ASTNode::Definition, $1, $6 );
+			$$ = new DefinitionNode( ASTNode::Definition, $1, $6, $3 );
 		}
 	| ConstructionFun
 		{ $$ = $1; }
@@ -694,7 +694,7 @@ DataInit
 OneDataInit
 	: DataName '=' Value ';'
 		{
-			$$ = new DefinitionNode( ASTNode::InputVarDefinition, $1, $3 );
+			$$ = new DefinitionNode( ASTNode::InputVarDefinition, $1, $3, 0 );
 		}
 	;
 	

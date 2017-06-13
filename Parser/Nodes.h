@@ -82,19 +82,22 @@ public:
 class DefinitionNode : public ASTNode
 {
 public:
-	DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition );
+	DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition, ListNode * aArguments);
 	~DefinitionNode();
 
 	Ident         getDefinitionName() const { return mDefinitionName; }
-	ASTNode *     getDefinition() const     { return mDefinition; }
+	ASTNode *     getDefinition() const       { return mDefinition; }
+	ListNode *    getFormalParameters() const { return mArguments; }
 
 	void accept( NodeVisitor * aVisitor );
+	int  numParameters() const { return mArguments ? static_cast<int>(mArguments->size()) : 0; }
 
 	ASTNode * copy() const;
 
 private:
 	Ident mDefinitionName;
 	ASTNode * mDefinition;
+	ListNode * mArguments;
 };
 
 //-------------------------------------------------------------------------------------

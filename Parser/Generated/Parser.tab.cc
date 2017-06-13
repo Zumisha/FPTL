@@ -1225,7 +1225,7 @@ namespace FPTL { namespace Parser {
   case 13:
 #line 245 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yystack_[0].value.scIdent), 0 );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yystack_[0].value.scIdent), 0, 0 );
 		}
 #line 1231 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1314,7 +1314,7 @@ namespace FPTL { namespace Parser {
   case 23:
 #line 312 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode), 0 );
 		}
 #line 1320 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1332,7 +1332,7 @@ namespace FPTL { namespace Parser {
   case 25:
 #line 325 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), (yystack_[2].value.scList) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), (yystack_[2].value.scList), 0 );
 		}
 #line 1338 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1340,7 +1340,7 @@ namespace FPTL { namespace Parser {
   case 26:
 #line 329 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), 0 );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), 0, 0 );
 		}
 #line 1346 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1449,7 +1449,7 @@ namespace FPTL { namespace Parser {
   case 49:
 #line 425 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yystack_[0].value.scIdent), 0 );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yystack_[0].value.scIdent), 0, 0 );
 		}
 #line 1455 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1474,7 +1474,7 @@ namespace FPTL { namespace Parser {
   case 52:
 #line 444 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode), 0 );
 		}
 #line 1480 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1482,7 +1482,7 @@ namespace FPTL { namespace Parser {
   case 53:
 #line 448 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 		}
 #line 1488 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1490,7 +1490,7 @@ namespace FPTL { namespace Parser {
   case 54:
 #line 452 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode), 0 );
 		}
 #line 1496 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1498,7 +1498,7 @@ namespace FPTL { namespace Parser {
   case 55:
 #line 456 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[6].value.scIdent), (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[6].value.scIdent), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 		}
 #line 1504 "parser.tab.cc" // lalr1.cc:859
     break;
@@ -1795,7 +1795,7 @@ namespace FPTL { namespace Parser {
   case 109:
 #line 696 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode), 0 );
 		}
 #line 1801 "parser.tab.cc" // lalr1.cc:859
     break;

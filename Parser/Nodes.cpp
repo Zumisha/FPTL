@@ -214,10 +214,11 @@ std::vector<FunctionNode *> FunctionNode::getFunctionNodes() const
 
 //-------------------------------------------------------------------------------------------
 
-DefinitionNode::DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition )
+DefinitionNode::DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition, ListNode * aArguments)
 	: ASTNode( aType ),
 	mDefinitionName(aName),
-	mDefinition(aDefinition)
+	mDefinition(aDefinition),
+	mArguments(aArguments)
 {
 }
 
@@ -233,7 +234,7 @@ void DefinitionNode::accept( NodeVisitor * aVisitor )
 
 ASTNode * DefinitionNode::copy() const
 {
-	return new DefinitionNode( getType(), mDefinitionName, mDefinition ? mDefinition->copy() : 0 );
+	return new DefinitionNode( getType(), mDefinitionName, mDefinition ? mDefinition->copy() : 0, mArguments ? mArguments->copy() : 0);
 }
 
 //-------------------------------------------------------------------------------------------
