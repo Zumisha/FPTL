@@ -154,6 +154,8 @@
 %type <scName>  FuncObjectName
 %type <scName>  FuncObjectWithParameters
 %type <scList>  FuncArgumentList
+%type <scName>  NamedArgument
+%type <scList>  NamedArgumentList
 
 %type <scIdent> SchemeBegin
 %type <scIdent> ConstructionFunName
@@ -442,12 +444,36 @@ Definition
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $3 );
 		}
+	| '@' '(' NamedArgumentList ')' '=' Term ';'
+		{
+			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $6 );
+		}
 	| FuncVarName '=' Term ';'
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, $1, $3 );
 		}
+	| FuncVarName '(' NamedArgumentList ')' '=' Term ';'
+		{
+			$$ = new DefinitionNode( ASTNode::Definition, $1, $6 );
+		}
 	| ConstructionFun
 		{ $$ = $1; }
+	;
+
+NamedArgument 
+	: NAME
+	;
+
+NamedArgumentList
+	: NamedArgument
+		{
+			$$ = new ListNode( ASTNode::NamedArgumentsList );
+			$$ -> addElement( $1 );
+		}
+	| NamedArgument ',' NamedArgumentList
+		{
+		   $$ = $3 -> addElement( $1 );
+		}
 	;
 	
 Term
