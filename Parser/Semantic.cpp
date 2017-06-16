@@ -48,6 +48,7 @@ void NamesChecker::visit( FunctionNode * aFunctionNode )
 	}
 
 	// Выполняем проверку имен.
+	//preCheckNames();
 	checkNames();
 	popContext();
 }
@@ -65,19 +66,26 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 				// проверка на повторение аргументов
 				if (!aDefinitionNode->hasDuplicates())
 				{
-					printf("------------------no duplicates\n");
 					// создание фейковых уравнений
-			//		//int i = 0;
-			//		//for (ListNode::iterator it = pList->begin(); it != pList->end(); ++it)
-			//		//{
-			//		//	++i;
-			//		//	Ident idNRF = static_cast<NameRefNode*>(*it)->getName();
-			//		//	Ident id;
-			//		//	mSupport->newIdent("_fake" + aDefinitionNode->getDefinitionName().getStr() + "$" + idNRF.getStr(), i, id);
-			//		//	ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, id);
-			//		//	aDefinitionNode->mFakeEquations.push_back(node);
-			//		//	mContext.insertArg(idNRF, node);
-			//		//}
+					ListNode * FEList = aDefinitionNode->getFakeEquations();
+					//FEList = new ListNode(ConstantNode::TupleElemNumber);
+					int i = 0;
+					ListNode * pList = aDefinitionNode->getArguments();
+					for (ListNode::iterator it = pList->begin(); it != pList->end(); ++it)
+					{
+						++i;
+						Ident nrfId = static_cast<NameRefNode*>(*it)->getName();
+						Ident newId;
+						std::string FEName = "_fake" + aDefinitionNode->getDefinitionName().getStr() + "$" + nrfId.getStr();
+						mSupport->newIdent(FEName, i, newId);
+						ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, newId);
+						//FEList->addElement(node);   //To do
+						mContext.insertArg(nrfId, node);
+					}
+				}
+				else
+				{
+					printf("------------------ERROR: duplicate args\n"); //To do сделать нормально
 				}
 			}
 			if (mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode) == false)
@@ -179,37 +187,45 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 	}
 	else
 	{
-		// Затем ищем в глобальном пространстве имен.
-		if( !mContextStack.empty() )
+		pos = mContext.ArgumentsList.find(aTermDesc.TermName);
+		if (pos != mContext.ArgumentsList.end())
 		{
-			// Ищем среди определений блоков fun из родительского контекста
-			SLexicalContext & parent = mContextStack.back();
-
-			pos = parent.DefinitionsList.find(aTermDesc.TermName);
-			if (pos != parent.DefinitionsList.end())
+			target = pos->second;
+		}
+		else
+		{
+			// Затем ищем в глобальном пространстве имен.
+			if (!mContextStack.empty())
 			{
-				target = pos->second;
-			}
-			else
-			{
-				// Ищем в глобальном контексте (типы данных, конструкторы, ...)
-				pos = mContextStack[0].DefinitionsList.find(aTermDesc.TermName);
+				// Ищем среди определений блоков fun из родительского контекста
+				SLexicalContext & parent = mContextStack.back();
 
-				if (pos != mContextStack[0].DefinitionsList.end())
+				pos = parent.DefinitionsList.find(aTermDesc.TermName);
+				if (pos != parent.DefinitionsList.end())
 				{
 					target = pos->second;
 				}
 				else
 				{
-					mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
-					return;
+					// Ищем в глобальном контексте (типы данных, конструкторы, ...)
+					pos = mContextStack[0].DefinitionsList.find(aTermDesc.TermName);
+
+					if (pos != mContextStack[0].DefinitionsList.end())
+					{
+						target = pos->second;
+					}
+					else
+					{
+						mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+						return;
+					}
 				}
 			}
-		}
-		else
-		{
-			mSupport->semanticError( ErrTypes::UndefinedIdentifier, aTermDesc.TermName );
-			return;
+			else
+			{
+				mSupport->semanticError( ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+				return;
+			}
 		}
 	}
 
@@ -230,9 +246,20 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 }
 
 //---------------------------------------------------------------------------
+void NamesChecker::preCheckName(STermDescriptor & aTermDesc)
+{
+
+}
+
+//---------------------------------------------------------------------------
 void NamesChecker::checkNames()
 {
 	std::for_each( mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind( &NamesChecker::checkName, this, _1 ) );
 }
 
+//---------------------------------------------------------------------------
+void NamesChecker::preCheckNames()
+{
+	std::for_each(mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind(&NamesChecker::preCheckName, this, _1));
+}
 }} // FPTL::Parser

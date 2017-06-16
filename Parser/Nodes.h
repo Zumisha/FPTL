@@ -88,6 +88,8 @@ public:
 	Ident         getDefinitionName() const { return mDefinitionName; }
 	ASTNode *     getDefinition() const       { return mDefinition; }
 	ListNode *    getArguments() const { return mArguments; }
+	ListNode *    getFakeEquations() const { return mFakeEquations; }
+
 	bool hasDuplicates() const;
 
 	void accept( NodeVisitor * aVisitor );
@@ -95,12 +97,12 @@ public:
 
 	ASTNode * copy() const;
 
-	std::list<ConstantNode *> mFakeEquations;
 
 private:
 	Ident mDefinitionName;
 	ASTNode * mDefinition;
 	ListNode * mArguments;
+	ListNode * mFakeEquations;
 };
 
 //-------------------------------------------------------------------------------------

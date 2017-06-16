@@ -29,6 +29,7 @@ class NamesChecker : public NodeVisitor
 		FunctionNode * currentFunction;
 		std::vector<STermDescriptor> TermsList;
 		std::map<Ident, ASTNode*> DefinitionsList;
+		std::map<Ident, ASTNode*> ArgumentsList;
 
 		SLexicalContext() : currentFunction(nullptr)
 		{
@@ -44,6 +45,11 @@ class NamesChecker : public NodeVisitor
 		bool insertName( const Ident & aIdent, ASTNode * aNode )
 		{
 			return DefinitionsList.insert(std::make_pair(aIdent, aNode)).second;
+		}
+
+		bool insertArg(const Ident & aIdent, ASTNode * aNode)
+		{
+			return ArgumentsList.insert(std::make_pair(aIdent, aNode)).second;
 		}
 	};
 
@@ -62,7 +68,9 @@ private:
 	void pushContext();
 	void pushContext(FunctionNode * function);
 	void popContext();
+	void preCheckName(STermDescriptor & aTermDesc);
 	void checkName( STermDescriptor & aTermDesc );
+	void preCheckNames();
 	void checkNames();
 
 	SLexicalContext mContext;

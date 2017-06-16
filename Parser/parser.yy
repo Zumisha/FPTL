@@ -622,7 +622,7 @@ BuiltInFunction
 	: BuiltInFunctionName
 		{ $$ = $1; }
 	| TupleElement
-	| NAME // наверное здесь нужен NamedArgument, но с ним не работает
+	| FuncObjectName
 	| Constant
 	;
 	
