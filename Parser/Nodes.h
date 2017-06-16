@@ -87,12 +87,15 @@ public:
 
 	Ident         getDefinitionName() const { return mDefinitionName; }
 	ASTNode *     getDefinition() const       { return mDefinition; }
-	ListNode *    getFormalParameters() const { return mArguments; }
+	ListNode *    getArguments() const { return mArguments; }
+	bool hasDuplicates() const;
 
 	void accept( NodeVisitor * aVisitor );
-	int  numParameters() const { return mArguments ? static_cast<int>(mArguments->size()) : 0; }
+	int  numArguments() const { return mArguments ? static_cast<int>(mArguments->size()) : 0; }
 
 	ASTNode * copy() const;
+
+	std::list<ConstantNode *> mFakeEquations;
 
 private:
 	Ident mDefinitionName;

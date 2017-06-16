@@ -155,7 +155,7 @@
 %type <scName>  FuncObjectWithParameters
 %type <scList>  FuncArgumentList
 %type <scName>  NamedArgument
-%type <scList>  NamedArgumentList
+%type <scList>  NamedArgumentsList
 
 %type <scIdent> SchemeBegin
 %type <scIdent> ConstructionFunName
@@ -444,7 +444,7 @@ Definition
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $3, 0 );
 		}
-	| '@' '(' NamedArgumentList ')' '=' Term ';'
+	| '@' '(' NamedArgumentsList ')' '=' Term ';'
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $6, $3 );
 		}
@@ -452,7 +452,7 @@ Definition
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, $1, $3, 0 );
 		}
-	| FuncVarName '(' NamedArgumentList ')' '=' Term ';'
+	| FuncVarName '(' NamedArgumentsList ')' '=' Term ';'
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, $1, $6, $3 );
 		}
@@ -462,15 +462,18 @@ Definition
 
 NamedArgument 
 	: NAME
+		{
+			$$ = new NameRefNode( $1, NameRefNode::NamedArgument);
+		}
 	;
 
-NamedArgumentList
+NamedArgumentsList
 	: NamedArgument
 		{
 			$$ = new ListNode( ASTNode::NamedArgumentsList );
 			$$ -> addElement( $1 );
 		}
-	| NamedArgument ',' NamedArgumentList
+	| NamedArgument ',' NamedArgumentsList
 		{
 		   $$ = $3 -> addElement( $1 );
 		}
@@ -619,6 +622,7 @@ BuiltInFunction
 	: BuiltInFunctionName
 		{ $$ = $1; }
 	| TupleElement
+	| NAME // наверное здесь нужен NamedArgument, но с ним не работает
 	| Constant
 	;
 	
@@ -637,6 +641,7 @@ TupleElement
 			$$ = 0;
 		}
 	}
+	;
 	
 Constant
 	: NUMBER

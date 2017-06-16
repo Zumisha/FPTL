@@ -237,6 +237,28 @@ ASTNode * DefinitionNode::copy() const
 	return new DefinitionNode( getType(), mDefinitionName, mDefinition ? mDefinition->copy() : 0, mArguments ? mArguments->copy() : 0);
 }
 
+bool DefinitionNode::hasDuplicates() const
+{
+	if (mArguments->size() > 1)
+	{
+		for (ListNode::iterator it1 = mArguments->begin(); it1 != mArguments->end(); ++it1)
+		{
+			ListNode::iterator it3 = it1;
+			++it3;
+			for (ListNode::iterator it2 = it3; it2 != mArguments->end(); ++it2)
+			{
+				std::string s1 = static_cast<NameRefNode*>(*it1)->getName().getStr();
+				std::string s2 = static_cast<NameRefNode*>(*it2)->getName().getStr();
+				if (s1 == s2)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 //-------------------------------------------------------------------------------------------
 
 FunctionalProgram::FunctionalProgram( ListNode * aDataDefinitions, FunctionNode * aScheme, ApplicationBlock * aApplication )

@@ -52,6 +52,7 @@ namespace Parser {
 			FunctionBlock,
 			FuncArgumentsList,
 			NamedArgumentsList,
+			NamedArgument,
 
 			// NameRefNode
 			BaseType,

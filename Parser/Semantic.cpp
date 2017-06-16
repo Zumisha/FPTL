@@ -60,12 +60,38 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 	{
 		case ASTNode::FunctionParameterDefinition:
 		case ASTNode::Definition:
-		case ASTNode::TypeParameterDefinition:
-		case ASTNode::InputVarDefinition:
-			if (mContext.insertName( aDefinitionNode->getDefinitionName(),aDefinitionNode ) == false)
+			if (aDefinitionNode->numArguments())
+			{
+				// проверка на повторение аргументов
+				if (!aDefinitionNode->hasDuplicates())
+				{
+					printf("------------------no duplicates\n");
+					// создание фейковых уравнений
+			//		//int i = 0;
+			//		//for (ListNode::iterator it = pList->begin(); it != pList->end(); ++it)
+			//		//{
+			//		//	++i;
+			//		//	Ident idNRF = static_cast<NameRefNode*>(*it)->getName();
+			//		//	Ident id;
+			//		//	mSupport->newIdent("_fake" + aDefinitionNode->getDefinitionName().getStr() + "$" + idNRF.getStr(), i, id);
+			//		//	ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, id);
+			//		//	aDefinitionNode->mFakeEquations.push_back(node);
+			//		//	mContext.insertArg(idNRF, node);
+			//		//}
+				}
+			}
+			if (mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode) == false)
 			{
 				// Повторное определение.
-				mSupport->semanticError( ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName() );
+				mSupport->semanticError(ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
+			}
+			break;
+		case ASTNode::TypeParameterDefinition:
+		case ASTNode::InputVarDefinition:
+			if (mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode) == false)
+			{
+				// Повторное определение.
+				mSupport->semanticError(ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
 			}
 			break;
 
