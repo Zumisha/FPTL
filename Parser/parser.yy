@@ -73,6 +73,7 @@
 %token <scNode> NUMBER
 %token <scNode> REALNUMBER
 %token <scNode> STRING
+%token <scName> ARG
 
 
 /* Ключевые слова. */
@@ -156,6 +157,7 @@
 %type <scList>  FuncArgumentList
 %type <scName>  NamedArgument
 %type <scList>  NamedArgumentsList
+%type <scName>  Argument
 
 %type <scIdent> SchemeBegin
 %type <scIdent> ConstructionFunName
@@ -622,8 +624,12 @@ BuiltInFunction
 	: BuiltInFunctionName
 		{ $$ = $1; }
 	| TupleElement
-	| FuncObjectName
+	| Argument
 	| Constant
+	;
+
+Argument
+	: ARG
 	;
 	
 TupleElement

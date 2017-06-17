@@ -28,6 +28,8 @@ StringConstant	L?\"([^\"\\\n]|(\\['\"?\\abfnrtv])|(\\([0123456]{1,3}))|(\\x[[:xd
 
 Ident			[a-zA-Z][a-zA-Z0-9_]*
 
+Arg				[$][a-zA-Z][a-zA-Z0-9_]*
+
 %%
 
 "/*"							{ return processCommentBlock(); }
@@ -42,6 +44,11 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 {Ident}							{ return processIdentifier(); }
 								
 \'{Ident}						{ return processIdentifier(); }
+
+{Arg}							{
+									mVal->scNode = formArgumentName();
+									return BisonParser::token::ARG;
+								}
 								
 {DecNumber}						{
 									mVal->scNode = formDecimalConstant();
@@ -73,7 +80,7 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 "->"							{ return BisonParser::token::T_FARROW; }
 "=>"							{ return BisonParser::token::T_TARROW; }
 
-[\(\)\.\,\:\;\[\]\{\}\<\>\~\$\#\*\=\+\~\@\%]	{ return *YYText(); }
+[\(\)\.\,\:\;\[\]\{\}\<\>\~\#\*\=\+\~\@\%]	{ return *YYText(); }
 
 .								{
 									Ident errSymb = { static_cast<short>(mCol), static_cast<short>(mLine), 0 };

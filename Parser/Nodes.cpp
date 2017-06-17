@@ -222,6 +222,13 @@ DefinitionNode::DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefin
 {
 }
 
+DefinitionNode::DefinitionNode(ASTNodeType aType, Ident aName, ASTNode * aDefinition)
+	: ASTNode(aType),
+	mDefinitionName(aName),
+	mDefinition(aDefinition)
+{
+}
+
 DefinitionNode::~DefinitionNode()
 {
 	delete mDefinition;

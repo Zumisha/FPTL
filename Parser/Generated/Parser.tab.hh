@@ -186,30 +186,31 @@ namespace FPTL { namespace Parser {
         NUMBER = 267,
         REALNUMBER = 268,
         STRING = 269,
-        T_FUNCTIONAL_PROGRAM = 270,
-        T_IMPORT = 271,
-        T_LIBRARIES = 272,
-        T_SCHEME = 273,
-        T_INTERPRETATION = 274,
-        T_APPLICATION = 275,
-        T_DATA = 276,
-        T_CONSTRUCTORS = 277,
-        T_FUN = 278,
-        T_FUNCTIONS = 279,
-        T_TSTRING = 280,
-        T_TINT = 281,
-        T_TUINT = 282,
-        T_TSIZE = 283,
-        T_TFLOAT = 284,
-        T_TDOUBLE = 285,
-        T_TBOOL = 286,
-        T_TRUE = 287,
-        T_FALSE = 288,
-        T_ARGET = 289,
-        T_ID = 290,
-        T_UNION = 291,
-        T_FARROW = 292,
-        T_TARROW = 293
+        ARG = 270,
+        T_FUNCTIONAL_PROGRAM = 271,
+        T_IMPORT = 272,
+        T_LIBRARIES = 273,
+        T_SCHEME = 274,
+        T_INTERPRETATION = 275,
+        T_APPLICATION = 276,
+        T_DATA = 277,
+        T_CONSTRUCTORS = 278,
+        T_FUN = 279,
+        T_FUNCTIONS = 280,
+        T_TSTRING = 281,
+        T_TINT = 282,
+        T_TUINT = 283,
+        T_TSIZE = 284,
+        T_TFLOAT = 285,
+        T_TDOUBLE = 286,
+        T_TBOOL = 287,
+        T_TRUE = 288,
+        T_FALSE = 289,
+        T_ARGET = 290,
+        T_ID = 291,
+        T_UNION = 292,
+        T_FARROW = 293,
+        T_TARROW = 294
       };
     };
 
@@ -508,12 +509,12 @@ namespace FPTL { namespace Parser {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 255,     ///< Last index in yytable_.
-      yynnts_ = 61,  ///< Number of nonterminal symbols.
+      yylast_ = 251,     ///< Last index in yytable_.
+      yynnts_ = 62,  ///< Number of nonterminal symbols.
       yyfinal_ = 11, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 55  ///< Number of tokens.
+      yyntokens_ = 56  ///< Number of tokens.
     };
 
 
@@ -526,7 +527,7 @@ namespace FPTL { namespace Parser {
 
 #line 2 "parser.yy" // lalr1.cc:377
 } } // FPTL::Parser
-#line 530 "parser.tab.hh" // lalr1.cc:377
+#line 531 "parser.tab.hh" // lalr1.cc:377
 
 
 

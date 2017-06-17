@@ -82,6 +82,7 @@ public:
 class DefinitionNode : public ASTNode
 {
 public:
+	DefinitionNode(ASTNodeType aType, Ident aName, ASTNode * aDefinition);
 	DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition, ListNode * aArguments);
 	~DefinitionNode();
 

@@ -51,7 +51,7 @@ namespace Parser {
 			FormalParametersList,
 			FunctionBlock,
 			FuncArgumentsList,
-			NamedArgumentsList,
+			NamedArgumentsList,  // Left part Args 
 			NamedArgument,
 
 			// NameRefNode
@@ -67,6 +67,7 @@ namespace Parser {
 			InputVarName,
 			FuncParameterName,
 			RunningSchemeName,
+			FuncNamedArg,        // Right part Arg
 
 			Application,
 			InputVarDefinitionList,

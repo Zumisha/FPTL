@@ -33,6 +33,7 @@ namespace Parser {
 		ConstantNode * formLongLongConstant();
 		ConstantNode * formFPConstant( bool aForceFloat );
 		ConstantNode * formStringConstant();
+		NameRefNode  * formArgumentName();
 
 		int	processCommentBlock();
 		int	processIdentifier();

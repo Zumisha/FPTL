@@ -134,6 +134,13 @@ int Tokenizer::processCommentBlock(void)
 }
 
 //-------------------------------------------------------------------------------------------
+NameRefNode * Tokenizer::formArgumentName(void)
+{
+	std::string str = YYText();
+	return new NameRefNode( mSupport->newConstant(str, mLine, mCol), ASTNode::FuncNamedArg );
+}
+
+//-------------------------------------------------------------------------------------------
 int Tokenizer::processIdentifier(void)
 {
 	mVal->scIdent.Col = mCol;
