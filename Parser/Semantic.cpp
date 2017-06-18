@@ -48,7 +48,6 @@ void NamesChecker::visit( FunctionNode * aFunctionNode )
 	}
 
 	// Выполняем проверку имен.
-	//preCheckNames();
 	checkNames();
 	popContext();
 }
@@ -67,7 +66,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 				if (!aDefinitionNode->hasDuplicates())
 				{
 					// создание фейковых уравнений
-					//ListNode * FEList = aDefinitionNode->getFakeEquations(); //To do хранение и удаление
+					//ListNode * FEList = aDefinitionNode->getFakeEquations(); //FIXME хранение и удаление
 					//FEList = new ListNode(ConstantNode::TupleElemNumber);
 					int i = 0;
 					ListNode * pList = aDefinitionNode->getArguments();
@@ -80,8 +79,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 						ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, newId);
 						
 						NameRefNode * arg = static_cast<NameRefNode*>(*it);
-						//arg->setTarget(node);
-						//FEList->addElement(node);   //To do
+						//FEList->addElement(node);   //  FIXME
 						mContext.insertArg(arg->getName(), node);
 					}
 				}
@@ -142,7 +140,6 @@ void NamesChecker::visit( NameRefNode * aNameNode )
 				{
 					ConstantNode * node = static_cast<ConstantNode *> (pos->second);
 					aNameNode->setTarget(node);
-					mContext.TermsList.push_back(termDesc);
 				}
 			}
 			break;
@@ -201,45 +198,37 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 	}
 	else
 	{
-		pos = mContext.ArgumentsList.find(aTermDesc.TermName);
-		if (pos != mContext.ArgumentsList.end())
+		// Затем ищем в глобальном пространстве имен.
+		if (!mContextStack.empty())
 		{
-			target = pos->second;
-		}
-		else
-		{
-			// Затем ищем в глобальном пространстве имен.
-			if (!mContextStack.empty())
-			{
-				// Ищем среди определений блоков fun из родительского контекста
-				SLexicalContext & parent = mContextStack.back();
+			// Ищем среди определений блоков fun из родительского контекста
+			SLexicalContext & parent = mContextStack.back();
 
-				pos = parent.DefinitionsList.find(aTermDesc.TermName);
-				if (pos != parent.DefinitionsList.end())
+			pos = parent.DefinitionsList.find(aTermDesc.TermName);
+			if (pos != parent.DefinitionsList.end())
+			{
+				target = pos->second;
+			}
+			else
+			{
+				// Ищем в глобальном контексте (типы данных, конструкторы, ...)
+				pos = mContextStack[0].DefinitionsList.find(aTermDesc.TermName);
+
+				if (pos != mContextStack[0].DefinitionsList.end())
 				{
 					target = pos->second;
 				}
 				else
 				{
-					// Ищем в глобальном контексте (типы данных, конструкторы, ...)
-					pos = mContextStack[0].DefinitionsList.find(aTermDesc.TermName);
-
-					if (pos != mContextStack[0].DefinitionsList.end())
-					{
-						target = pos->second;
-					}
-					else
-					{
-						mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
-						return;
-					}
+					mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+					return;
 				}
 			}
-			else
-			{
-				mSupport->semanticError( ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
-				return;
-			}
+		}
+		else
+		{
+			mSupport->semanticError( ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+			return;
 		}
 	}
 
