@@ -137,6 +137,7 @@ int Tokenizer::processCommentBlock(void)
 NameRefNode * Tokenizer::formArgumentName(void)
 {
 	std::string str = YYText();
+	str.erase(0, 1);
 	return new NameRefNode( mSupport->newConstant(str, mLine, mCol), ASTNode::FuncNamedArg );
 }
 

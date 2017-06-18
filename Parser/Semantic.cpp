@@ -67,20 +67,22 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 				if (!aDefinitionNode->hasDuplicates())
 				{
 					// создание фейковых уравнений
-					ListNode * FEList = aDefinitionNode->getFakeEquations();
+					//ListNode * FEList = aDefinitionNode->getFakeEquations(); //To do хранение и удаление
 					//FEList = new ListNode(ConstantNode::TupleElemNumber);
 					int i = 0;
 					ListNode * pList = aDefinitionNode->getArguments();
 					for (ListNode::iterator it = pList->begin(); it != pList->end(); ++it)
 					{
-						++i;
-						Ident nrfId = static_cast<NameRefNode*>(*it)->getName();
 						Ident newId;
-						std::string FEName = "_fake" + aDefinitionNode->getDefinitionName().getStr() + "$" + nrfId.getStr();
-						mSupport->newIdent(FEName, i, newId);
+						mSupport->newIdent(std::to_string(++i), 0, newId);
+						newId.Col = 1;
+						newId.Line = 1;
 						ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, newId);
+						
+						NameRefNode * arg = static_cast<NameRefNode*>(*it);
+						//arg->setTarget(node);
 						//FEList->addElement(node);   //To do
-						mContext.insertArg(nrfId, node);
+						mContext.insertArg(arg->getName(), node);
 					}
 				}
 				else
@@ -131,6 +133,18 @@ void NamesChecker::visit( NameRefNode * aNameNode )
 		case ASTNode::FuncParameterName:
 		case ASTNode::RunningSchemeName:
 			mContext.TermsList.push_back( termDesc );
+			break;
+
+		case ASTNode::FuncNamedArg:
+			{
+				std::map<Ident, ASTNode*>::iterator pos = mContext.ArgumentsList.find(aNameNode->getName());
+				if (pos != mContext.ArgumentsList.end())
+				{
+					ConstantNode * node = static_cast<ConstantNode *> (pos->second);
+					aNameNode->setTarget(node);
+					mContext.TermsList.push_back(termDesc);
+				}
+			}
 			break;
 
 		case ASTNode::Type:

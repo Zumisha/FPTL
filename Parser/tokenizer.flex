@@ -28,7 +28,7 @@ StringConstant	L?\"([^\"\\\n]|(\\['\"?\\abfnrtv])|(\\([0123456]{1,3}))|(\\x[[:xd
 
 Ident			[a-zA-Z][a-zA-Z0-9_]*
 
-Arg				[$][a-zA-Z][a-zA-Z0-9_]*
+Arg				[\$][a-zA-Z][a-zA-Z0-9_]*
 
 %%
 
@@ -46,7 +46,7 @@ Arg				[$][a-zA-Z][a-zA-Z0-9_]*
 \'{Ident}						{ return processIdentifier(); }
 
 {Arg}							{
-									mVal->scNode = formArgumentName();
+									mVal->scName = formArgumentName();
 									return BisonParser::token::ARG;
 								}
 								

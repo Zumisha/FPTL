@@ -719,7 +719,7 @@ case 6:
 YY_RULE_SETUP
 #line 48 "tokenizer.flex"
 {
-									mVal->scNode = formArgumentName();
+									mVal->scName = formArgumentName();
 									return BisonParser::token::ARG;
 								}
 	YY_BREAK

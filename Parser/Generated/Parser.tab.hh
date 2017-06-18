@@ -509,8 +509,8 @@ namespace FPTL { namespace Parser {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 251,     ///< Last index in yytable_.
-      yynnts_ = 62,  ///< Number of nonterminal symbols.
+      yylast_ = 253,     ///< Last index in yytable_.
+      yynnts_ = 61,  ///< Number of nonterminal symbols.
       yyfinal_ = 11, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,

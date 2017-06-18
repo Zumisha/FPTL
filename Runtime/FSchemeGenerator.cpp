@@ -181,6 +181,12 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 			break;
 		}
 
+		case Parser::ASTNode::FuncNamedArg:
+		{
+			process(aNameRefNode->getTarget());
+			break;
+		}
+
 		default:
 			assert(false);
 	}

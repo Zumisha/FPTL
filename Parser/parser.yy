@@ -157,7 +157,6 @@
 %type <scList>  FuncArgumentList
 %type <scName>  NamedArgument
 %type <scList>  NamedArgumentsList
-%type <scName>  Argument
 
 %type <scIdent> SchemeBegin
 %type <scIdent> ConstructionFunName
@@ -624,13 +623,11 @@ BuiltInFunction
 	: BuiltInFunctionName
 		{ $$ = $1; }
 	| TupleElement
-	| Argument
+	| ARG
+		{ $$ = $1; }
 	| Constant
 	;
 
-Argument
-	: ARG
-	;
 	
 TupleElement
 	: '[' NUMBER ']'
