@@ -75,7 +75,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 						Ident newId;
 						mSupport->newIdent(std::to_string(++i), 0, newId);
 						newId.Col = 1;
-						newId.Line = 1;
+						newId.Line = 1;  // FIXME 
 						ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, newId);
 						
 						NameRefNode * arg = static_cast<NameRefNode*>(*it);
