@@ -64,6 +64,7 @@ public:
 	NamesChecker( Support * aSupport );
 
 	void visit( DataNode * aDataNode );
+	void visit( ExpressionNode * aNode );
 	void visit( FunctionNode * aFunctionNode );
 	void visit( DefinitionNode * aDefinitionNode );
 	void visit( NameRefNode * aNameNode );

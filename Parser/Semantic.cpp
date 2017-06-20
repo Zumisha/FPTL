@@ -72,20 +72,25 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 					ListNode * pList = aDefinitionNode->getArguments();
 					for (ListNode::iterator it = pList->begin(); it != pList->end(); ++it)
 					{
+						NameRefNode * arg = static_cast<NameRefNode*>(*it);
+						Ident ident = arg->getName();
+
 						Ident newId;
 						mSupport->newIdent(std::to_string(++i), 0, newId);
-						newId.Col = 1;
-						newId.Line = 1;  // FIXME 
+						newId.Col = ident.Col;
+						newId.Line = ident.Line;
 						ConstantNode * node = new ConstantNode(ASTNode::TupleElemNumber, newId);
-						
-						NameRefNode * arg = static_cast<NameRefNode*>(*it);
+								
 						//FEList->addElement(node);   //  FIXME
-						mContext.insertArg(arg->getName(), node);
+						mContext.insertArg(ident, node);
 					}
 				}
 				else
 				{
-					printf("------------------ERROR: duplicate args\n"); //To do сделать нормально
+					// FIXME вместо getDefinitionName() должен быть Ident повторяемого аргумента
+					// переделать метод hasDuplicates()
+					mSupport->semanticError(ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
+					return;
 				}
 			}
 			if (mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode) == false)
@@ -113,13 +118,31 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 
 	NodeVisitor::visit(aDefinitionNode);
 
-	// Удаляем добавлененные раннее фейковые уравнения
-	ListNode * pList = aDefinitionNode->getArguments();
-	for (auto it = pList->begin(); it != pList->end(); ++it)
+	if (aDefinitionNode->numArguments())
 	{
-		NameRefNode * arg = static_cast<NameRefNode*>(*it);
-		mContext.eraseArg(arg->getName());
+		// Удаляем добавлененные раннее фейковые уравнения
+		ListNode * pList = aDefinitionNode->getArguments();
+		for (auto it = pList->begin(); it != pList->end(); ++it)
+		{
+			NameRefNode * arg = static_cast<NameRefNode*>(*it);
+			mContext.eraseArg(arg->getName());
+		}
 	}
+}
+
+void NamesChecker::visit(ExpressionNode * aNode)
+{
+	ASTNode * lNode = aNode->getLeft();
+	ASTNode * rNode = aNode->getRight();
+	if (lNode != nullptr && rNode != nullptr)
+		if (aNode->getType() != ASTNode::CompositionTerm &&
+			lNode->getType() == ASTNode::FuncNamedArg && 
+			rNode->getType() == ASTNode::FuncNamedArg)
+		{
+			mSupport->semanticError(ErrTypes::UndefinedIdentifier, (static_cast<NameRefNode *>(rNode))->getName());
+			return;
+		}
+	NodeVisitor::visit(aNode);
 }
 
 //---------------------------------------------------------------------------
