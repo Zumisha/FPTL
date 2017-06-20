@@ -149,6 +149,11 @@ void NamesChecker::visit( NameRefNode * aNameNode )
 					ConstantNode * node = static_cast<ConstantNode *> (pos->second);
 					aNameNode->setTarget(node);
 				}
+				else
+				{
+					mSupport->semanticError(ErrTypes::UndefinedIdentifier, aNameNode->getName());
+					return;
+				}
 			}
 			break;
 
