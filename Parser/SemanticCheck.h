@@ -51,6 +51,12 @@ class NamesChecker : public NodeVisitor
 		{
 			return ArgumentsList.insert(std::make_pair(aIdent, aNode)).second;
 		}
+
+		void eraseArg(const Ident & aIdent)
+		{
+			auto mapIt = ArgumentsList.find(aIdent);
+			ArgumentsList.erase(mapIt);
+		}
 	};
 
 public:
@@ -68,9 +74,7 @@ private:
 	void pushContext();
 	void pushContext(FunctionNode * function);
 	void popContext();
-	void preCheckName(STermDescriptor & aTermDesc);
 	void checkName( STermDescriptor & aTermDesc );
-	void preCheckNames();
 	void checkNames();
 
 	SLexicalContext mContext;

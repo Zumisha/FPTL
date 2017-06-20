@@ -112,6 +112,14 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 	}
 
 	NodeVisitor::visit(aDefinitionNode);
+
+	// Удаляем добавлененные раннее фейковые уравнения
+	ListNode * pList = aDefinitionNode->getArguments();
+	for (auto it = pList->begin(); it != pList->end(); ++it)
+	{
+		NameRefNode * arg = static_cast<NameRefNode*>(*it);
+		mContext.eraseArg(arg->getName());
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -249,20 +257,9 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 }
 
 //---------------------------------------------------------------------------
-void NamesChecker::preCheckName(STermDescriptor & aTermDesc)
-{
-
-}
-
-//---------------------------------------------------------------------------
 void NamesChecker::checkNames()
 {
 	std::for_each( mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind( &NamesChecker::checkName, this, _1 ) );
 }
 
-//---------------------------------------------------------------------------
-void NamesChecker::preCheckNames()
-{
-	std::for_each(mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind(&NamesChecker::preCheckName, this, _1));
-}
 }} // FPTL::Parser
