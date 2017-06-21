@@ -39,6 +39,7 @@ class NamesChecker : public NodeVisitor
 		{
 			TermsList.clear();
 			DefinitionsList.clear();
+			ArgumentsList.clear();
 			currentFunction = nullptr;
 		}
 
@@ -55,7 +56,18 @@ class NamesChecker : public NodeVisitor
 		void eraseArg(const Ident & aIdent)
 		{
 			auto mapIt = ArgumentsList.find(aIdent);
-			ArgumentsList.erase(mapIt);
+			if (mapIt != ArgumentsList.end())
+				ArgumentsList.erase(mapIt);
+		}
+
+		std::map<Ident, ASTNode*>::iterator findArg(const Ident & aIdent)
+		{
+			return ArgumentsList.find(aIdent);
+		}
+
+		std::map<Ident, ASTNode*>::iterator getEnd()
+		{
+			return ArgumentsList.end();
 		}
 	};
 

@@ -75,6 +75,13 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 						NameRefNode * arg = static_cast<NameRefNode*>(*it);
 						Ident ident = arg->getName();
 
+						//проверка на использование уже указанных аргуметов
+						auto pos = mContext.findArg(ident);
+						if (pos != mContext.getEnd())
+						{
+							mSupport->semanticError(ErrTypes::DuplicateDefinition, pos->first);
+						}
+
 						Ident newId;
 						mSupport->newIdent(std::to_string(++i), 0, newId);
 						newId.Col = ident.Col;
@@ -118,16 +125,16 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 
 	NodeVisitor::visit(aDefinitionNode);
 
-	if (aDefinitionNode->numArguments())
-	{
-		// Удаляем добавлененные раннее фейковые уравнения
-		ListNode * pList = aDefinitionNode->getArguments();
-		for (auto it = pList->begin(); it != pList->end(); ++it)
-		{
-			NameRefNode * arg = static_cast<NameRefNode*>(*it);
-			mContext.eraseArg(arg->getName());
-		}
-	}
+	//if (aDefinitionNode->numArguments())
+	//{
+	//	// Удаляем добавлененные раннее фейковые уравнения
+	//	ListNode * pList = aDefinitionNode->getArguments();
+	//	for (auto it = pList->begin(); it != pList->end(); ++it)
+	//	{
+	//		NameRefNode * arg = static_cast<NameRefNode*>(*it);
+	//		mContext.eraseArg(arg->getName());
+	//	}
+	//}
 }
 
 void NamesChecker::visit(ExpressionNode * aNode)
