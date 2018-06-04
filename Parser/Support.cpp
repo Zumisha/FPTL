@@ -85,6 +85,7 @@ void Support::initializeKeywordTable( void )
 	regBF(BuildInFunctions::Exp);
 	regBF(BuildInFunctions::Ln);
 	regBF(BuildInFunctions::Abs);
+	regBF(BuildInFunctions::Pi);
 
 	regBF(BuildInFunctions::Rand);
 	regBF(BuildInFunctions::Print);

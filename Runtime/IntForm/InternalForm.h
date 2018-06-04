@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <iostream>
 
 namespace FPTL {
 namespace Runtime {

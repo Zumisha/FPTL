@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include <vector>
 #include <functional>
+#include <iostream>
 
 #include <boost/timer/timer.hpp>
 
