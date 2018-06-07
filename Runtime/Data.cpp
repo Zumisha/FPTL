@@ -322,6 +322,7 @@ public:
 	// Вывод в поток.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const
 	{
+		aStream.precision(15);
 		aStream << aVal.mDoubleVal;
 	}
 };
