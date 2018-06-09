@@ -1,5 +1,5 @@
 ﻿#include "SemanticCheck.h"
-#include "boost/bind.hpp"
+//#include "boost/bind.hpp"
 
 // Semantic.cpp - реализация класса для семантической проверки структуры программы.
 
@@ -206,7 +206,11 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 //---------------------------------------------------------------------------
 void NamesChecker::checkNames()
 {
-	std::for_each( mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind( &NamesChecker::checkName, this, _1 ) );
+	//std::for_each( mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind( &NamesChecker::checkName, this, _1 ) );
+	for (auto & termsList : mContext.TermsList)
+	{
+		checkName(termsList);
+	}
 }
 
 }} // FPTL::Parser

@@ -193,9 +193,6 @@
     <ClInclude Include="ADT.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="GarbageCollector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BlockingQueue.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
@@ -217,6 +214,9 @@
     <ClInclude Include="LockFreeWorkStealingQueue.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
+    <ClInclude Include="GarbageCollector.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Parser\parser.yy">
@@ -225,6 +225,5 @@
     <None Include="..\Parser\tokenizer.flex">
       <Filter>Grammar rules</Filter>
     </None>
-    <None Include="Bugs.txt" />
   </ItemGroup>
 </Project>

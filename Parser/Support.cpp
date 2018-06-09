@@ -16,7 +16,9 @@ ErrorMessage::ErrorMessage( ErrTypes::ErrType aErr, Ident aIdent )
 //-------------------------------------------------------------------------------------------
 Support::Support() : mWasError(false)
 {
-	initializeKeywordTable();
+	//initializeKeywordTable();
+	//Бессмысленно, т.к. экземпляр класса Support создаётся только в Parser::run,
+	//после чего вызывается метод getInternalForm, который перестраевает таблицу имён.
 }
 
 //-------------------------------------------------------------------------------------------

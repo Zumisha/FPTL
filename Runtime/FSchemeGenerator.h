@@ -34,7 +34,8 @@ public:
 	virtual void visit(Parser::ConstantNode * aConstantNode);
 
 	// Запуск генерации функциональной схемы.
-	void generateFScheme();
+	//void generateFScheme();
+	//Нет реализации.
 
 	// Получение результата.
 	FSchemeNode * getFScheme();
