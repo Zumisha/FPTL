@@ -407,7 +407,7 @@ void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
 	std::for_each(mEvaluatorUnits.begin(), mEvaluatorUnits.end(), [](auto unit) { delete unit; });
 	mEvaluatorUnits.clear();
 
-	std::cout << "\n\nTime : " << boost::timer::format(controlContext.getWorkTime(), 3, "%w");
+	std::cout << "\n\nTime : " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws");
 }
 
 //-----------------------------------------------------------------------------
