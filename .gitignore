@@ -1,0 +1,8 @@
+.vs/
+x64/
+Runtime/Debug/
+Runtime/test3.txt
+Runtime/x64/
+Debug/
+!x64/Release/jemalloc.dll
+!x64/Debug/jemallocd.dll
