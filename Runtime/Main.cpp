@@ -1,10 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
-#include <iterator>
-#include <cstdlib>
-#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
-#include <boost/timer/timer.hpp>
 
 #include "../Parser/Support.h"
 #include "../Parser/Tokenizer.h"
@@ -57,7 +53,7 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 	// Генерируем внутренне представление.
 	if (astRoot)
 	{
-		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n";
+		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n\n";
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);

@@ -33,9 +33,6 @@ public:
 	virtual void visit(Parser::ExpressionNode * aExpressionNode);
 	virtual void visit(Parser::ConstantNode * aConstantNode);
 
-	// Запуск генерации функциональной схемы.
-	void generateFScheme();
-
 	// Получение результата.
 	FSchemeNode * getFScheme();
 	FSchemeNode * getSchemeInput();

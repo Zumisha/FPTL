@@ -183,12 +183,10 @@ std::vector<std::string> FScheme::definitions() const
 {
 	std::vector<std::string> defs;
 
-	std::for_each(mDefinitions.begin(), mDefinitions.end(), [&defs](const std::pair<std::string, FSchemeNode *> & elem)
-		{
-			defs.push_back(elem.first);
-		}
-	);
-
+	for (auto &elem : mDefinitions)
+	{
+		defs.push_back(elem.first);
+	}
 	return defs;
 }
 

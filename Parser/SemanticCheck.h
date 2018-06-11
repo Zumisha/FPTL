@@ -6,7 +6,6 @@
 #include <cassert>
 #include "Support.h"
 #include "Nodes.h"
-#include <boost/bind.hpp>
 
 namespace FPTL {
 namespace Parser {
@@ -85,7 +84,6 @@ public:
 		if( aDefinitionNode->getType() == ASTNode::Definition )
 		{
 			process(aDefinitionNode->getDefinition());
-
 		}
 
 		mTestDefinitions.pop_back();

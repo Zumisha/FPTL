@@ -148,7 +148,7 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "Jobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed << "\n";
+	ss << "\nJobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed;
 	std::cout << ss.str();
 }
 
@@ -358,15 +358,21 @@ struct ControlContext : public SExecutionContext
 	{
 		boost::timer::cpu_timer timer;
 
-		mTarget->run(evaluatorUnit);		
+		mTarget->run(evaluatorUnit);
 		mEvaluator->stop();
 
-		std::cout << "\n\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
+		elapsed_times = timer.elapsed();
+	}
+
+	boost::timer::cpu_times getWorkTime()
+	{
+		return elapsed_times;
 	}
 
 private:
 	SExecutionContext * mTarget;
 	SchemeEvaluator * mEvaluator;
+	boost::timer::cpu_times elapsed_times;
 };
 
 void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
@@ -380,6 +386,7 @@ void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
 
+	std::cout.precision(15);
 	ControlContext controlContext(&program, this);
 
 	// Добавляем задание в очередь к первому потоку.
@@ -400,6 +407,8 @@ void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
 
 	std::for_each(mEvaluatorUnits.begin(), mEvaluatorUnits.end(), [](auto unit) { delete unit; });
 	mEvaluatorUnits.clear();
+
+	std::cout << "\n\nTime : " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws\n");
 }
 
 //-----------------------------------------------------------------------------

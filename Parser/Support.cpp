@@ -16,7 +16,6 @@ ErrorMessage::ErrorMessage( ErrTypes::ErrType aErr, Ident aIdent )
 //-------------------------------------------------------------------------------------------
 Support::Support() : mWasError(false)
 {
-	initializeKeywordTable();
 }
 
 //-------------------------------------------------------------------------------------------

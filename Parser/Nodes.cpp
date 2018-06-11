@@ -1,5 +1,4 @@
 ﻿#include <cassert>
-#include <boost/bind.hpp>
 #include "Support.h"
 #include "Nodes.h"
 #include "Generated/Parser.tab.hh"
@@ -193,7 +192,6 @@ DefinitionNode * FunctionNode::getDefinition(Ident aName) const
 			return def;
 		}
 	}
-
 	return 0;
 }
 
