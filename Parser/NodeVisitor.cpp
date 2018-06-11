@@ -62,11 +62,7 @@ void NodeVisitor::visit( ConstantNode * aConstantNode )
 }
 
 void NodeVisitor::visit( ListNode * aNode )                    
-{
-	/*using namespace std::placeholders;
-
-	std::for_each(aNode->begin(), aNode->end(), std::bind(&NodeVisitor::process, this, _1));*/
-	
+{	
 	for (auto & node : *aNode)
 	{
 		process(node);

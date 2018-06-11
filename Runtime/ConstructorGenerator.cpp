@@ -104,12 +104,10 @@ std::vector<std::string> ConstructorGenerator::constructors() const
 {
 	std::vector<std::string> result;
 
-	std::for_each(mConstructors.begin(), mConstructors.end(), [&result](const std::pair<std::string, std::shared_ptr<Constructor>> & arg)
-		{
-			result.push_back(arg.first);
-		}
-	);
-
+	for (auto &arg : mConstructors)
+	{
+		result.push_back(arg.first);
+	}
 	return result;
 }
 
