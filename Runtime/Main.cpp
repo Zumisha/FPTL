@@ -57,7 +57,7 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 	// Генерируем внутренне представление.
 	if (astRoot)
 	{
-		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n";
+		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n\n";
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);

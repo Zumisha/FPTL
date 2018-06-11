@@ -1,6 +1,4 @@
 ﻿#include <string>
-//#include <cassert>
-//#include <cmath>
 #include <regex>
 
 #include <boost/lexical_cast.hpp>

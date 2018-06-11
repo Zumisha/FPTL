@@ -386,6 +386,7 @@ void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
 
+	std::cout.precision(15);
 	ControlContext controlContext(&program, this);
 
 	// Добавляем задание в очередь к первому потоку.
@@ -407,7 +408,7 @@ void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
 	std::for_each(mEvaluatorUnits.begin(), mEvaluatorUnits.end(), [](auto unit) { delete unit; });
 	mEvaluatorUnits.clear();
 
-	std::cout << "\n\nTime : " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws");
+	std::cout << "\n\nTime : " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws\n");
 }
 
 //-----------------------------------------------------------------------------
