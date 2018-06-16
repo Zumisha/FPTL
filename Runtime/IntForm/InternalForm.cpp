@@ -71,8 +71,40 @@ void CondStart::exec(SExecutionContext & ctx) const
 	mCond->exec(ctx);
 }
 
-const DataValue CondChoose::falseConst = DataBuilders::createBoolean(false);
-const DataValue CondChoose::undefined = DataBuilders::createUndefinedValue();
+void CondFork::exec(SExecutionContext & ctx) const
+{
+	IFExecutionContext *fork;
+
+	// Выполняем системные действия.
+	ctx.evaluator()->safePoint();
+
+	ctx.controlStack.push_back(ctx.arity);
+
+	if (mThen)
+	{
+		fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
+		ctx.evaluator()->forkAnticipation(fork);
+	}
+	else
+	{
+
+	}
+
+	if (mElse)
+	{
+		fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
+		ctx.evaluator()->forkAnticipation(fork);
+	}
+	else
+	{
+
+	}
+	
+	mCond->exec(ctx);
+}
+
+const DataValue falseConst = DataBuilders::createBoolean(false);
+const DataValue undefined = DataBuilders::createUndefinedValue();
 
 void CondChoose::exec(SExecutionContext & ctx) const
 {
@@ -108,6 +140,55 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	{
 		mThen->exec(ctx);
 	}
+}
+
+void CondJoin::exec(SExecutionContext & ctx) const
+{
+	auto arity = ctx.controlStack.back().OutArity;
+	ctx.controlStack.pop_back();
+
+	// Берём сверху стека 1 аргумент - результат вычисления предиката.
+	DataValue cond = ctx.stack.back();
+	bool isUndefined = false;
+
+	int numArgs = ctx.arity - arity;
+	for (int i = 0; i < numArgs; ++i)
+	{
+		DataValue & arg = ctx.stack.back();
+
+		// Проверяем, содержится ли в кортеже неопределенное значение w для реализации семантики w*a = a*w = w.
+		if (arg.getOps() == undefined.getOps())
+		{
+			isUndefined = true;
+		}
+
+		ctx.stack.pop_back();
+	}
+
+	ctx.arity = arity;
+
+	SExecutionContext *branch;
+
+	// Проверка условия.
+	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
+	{
+		branch = ctx.evaluator()->joinAnticipation(false);
+	}
+	else
+	{
+		branch = ctx.evaluator()->joinAnticipation(true);
+	}
+
+
+	// Копируем результат.
+	for (int i = 0; i < branch->arity; ++i)
+	{
+		ctx.push(branch->stack.at(branch->stack.size() - branch->arity + i));
+	}
+
+	delete branch;
+
+	mNext->exec(ctx);
 }
 
 void RecFn::exec(SExecutionContext & ctx) const

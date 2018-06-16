@@ -107,8 +107,11 @@ void SExecutionContext::unwind(size_t aArgPosOld, int aArity, size_t aPos)
 EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	: mEvaluator(aSchemeEvaluator),
 	  mJobsCompleted(0),
+	  mJobsCompleted_a(0),
 	  mJobsCreated(0),
+	  mJobsCreated_a(0),
 	  mJobsStealed(0),
+	  mJobsStealed_a(0),
 	  mHeap(aSchemeEvaluator->garbageCollector()),
 	  mCollector(aSchemeEvaluator->garbageCollector())
 {
@@ -120,10 +123,23 @@ void EvaluatorUnit::addJob(SExecutionContext * aContext)
 	mJobQueue.push(aContext);
 }
 
+void EvaluatorUnit::addAnticipationJob(SExecutionContext * aContext)
+{
+	mJobsCreated_a++;
+	mJobQueue.push_a(aContext);
+}
+
 SExecutionContext * EvaluatorUnit::stealJob()
 {
 	SExecutionContext * elem = 0;
 	mJobQueue.steal(elem);
+	return elem;
+}
+
+SExecutionContext * EvaluatorUnit::stealAnticipationJob()
+{
+	SExecutionContext * elem = 0;
+	mJobQueue.steal_a(elem);
 	return elem;
 }
 
@@ -148,7 +164,7 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "\nJobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed;
+	ss << "\n\nJobs processed by thread id = " << boost::this_thread::get_id() << " compleated:" << mJobsCompleted << ", stealed: " << mJobsStealed << ". Anticipation created:" << mJobsCreated_a << ", compleated: " << mJobsCompleted_a << ", stealed: " << mJobsStealed_a << ".";
 	std::cout << ss.str();
 }
 
@@ -171,6 +187,36 @@ SExecutionContext * EvaluatorUnit::join()
 	return joinTask;
 }
 
+void EvaluatorUnit::forkAnticipation(SExecutionContext * task)
+{
+	pendingTasks.push_back(task);
+	addAnticipationJob(task);
+}
+
+SExecutionContext * EvaluatorUnit::joinAnticipation(bool thenBr)
+{
+	SExecutionContext * joinTask;
+	if (thenBr)
+	{
+		pendingTasks.pop_back();
+		joinTask = pendingTasks.back();
+	}
+	else
+	{
+		joinTask = pendingTasks.back();
+	}
+
+	while (!joinTask->Ready.load(std::memory_order_acquire))
+	{
+		schedule();
+	}
+
+	pendingTasks.pop_back();
+	if (!thenBr) pendingTasks.pop_back();
+
+	return joinTask;
+}
+
 void EvaluatorUnit::safePoint()
 {
 	mCollector->safePoint();
@@ -178,9 +224,9 @@ void EvaluatorUnit::safePoint()
 
 void EvaluatorUnit::schedule()
 {
-	// Берем задание из своей очереди.
 	SExecutionContext * context = 0;
-		
+
+	// Берем задание из своей очереди.
 	if (mJobQueue.pop(context))
 	{
 		context->run(this);
@@ -188,19 +234,33 @@ void EvaluatorUnit::schedule()
 		return;
 	}
 
-	// Если это не удалось, берем у кого-нибудь другого.
-	context = mEvaluator->findJob(this);
-	
+	// Если это не удалось, ищем у кого-нибудь другого.
+	context = mEvaluator->findJob(this);	
 	if (context)
 	{
 		context->run(this);
 		mJobsStealed++;
 		mJobsCompleted++;
 	}
-	else
+	
+	// Если не нашли, берём задание из своей упреждающей очереди.
+	if (mJobQueue.pop_a(context))
 	{
-		safePoint();
+		context->run(this);
+		mJobsCompleted_a++;
+		return;
 	}
+
+	// Если не удалось, ищем упреждающую у кого-нибудь другого.
+	context = mEvaluator->findAnticipationJob(this);
+	if (context)
+	{
+		context->run(this);
+		mJobsStealed_a++;
+		mJobsCompleted_a++;
+	}
+
+	safePoint();
 }
 
 CollectedHeap & EvaluatorUnit::heap() const
@@ -213,11 +273,10 @@ void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 	// Помечаем корни у всех заданий, взятых на выполнение текщим юнитом.
 	for (SExecutionContext * ctx : runningTasks)
 	{
-		std::for_each(ctx->stack.begin(), ctx->stack.end(),
-			[marker](DataValue & data) {
-				data.getOps()->mark(data, marker);
-			}
-		);
+		for (auto & data : ctx->stack)
+		{
+			data.getOps()->mark(data, marker);
+		}
 	}
 
 	// Помечаем корни у всех форкнутых заданий, которые были выполнены.
@@ -225,11 +284,10 @@ void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 	{
 		if (ctx->isReady())
 		{
-			std::for_each(ctx->stack.begin(), ctx->stack.end(),
-				[marker](DataValue & data) {
-					data.getOps()->mark(data, marker);
-				}
-			);
+			for (auto & data : ctx->stack)
+			{
+				data.getOps()->mark(data, marker);
+			}
 		}
 	}
 }
@@ -270,6 +328,22 @@ SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
 		}
 	}
 
+	return 0;
+}
+
+SExecutionContext * SchemeEvaluator::findAnticipationJob(const EvaluatorUnit * aUnit)
+{
+	for (size_t i = 0; i < mEvaluatorUnits.size(); i++)
+	{
+		if (mEvaluatorUnits[i] != aUnit)
+		{
+			SExecutionContext * job = mEvaluatorUnits[i]->stealAnticipationJob();
+			if (job)
+			{
+				return job;
+			}
+		}
+	}
 	return 0;
 }
 

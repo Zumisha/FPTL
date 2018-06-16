@@ -109,10 +109,32 @@ public:
 
 	IfPtr mThen;
 	IfPtr mElse;
+};
 
-private:
-	static const DataValue falseConst;
-	static const DataValue undefined;
+class CondFork : public InternalForm
+{
+public:
+	virtual void exec(SExecutionContext & ctx) const;
+
+	CondFork(const IfPtr & cond, const IfPtr & thenBr, const IfPtr & elseBr)
+		: mCond(cond), mThen(thenBr), mElse(elseBr)
+	{}
+
+	IfPtr mCond;
+	IfPtr mThen;
+	IfPtr mElse;
+};
+
+class CondJoin : public InternalForm
+{
+public:
+	virtual void exec(SExecutionContext & ctx) const;
+	CondJoin(const IfPtr & Branch)
+		: mNext(Branch)
+	{}
+
+	IfPtr mCond;
+	IfPtr mNext;
 };
 
 class RecFn : public InternalForm
