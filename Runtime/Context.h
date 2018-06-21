@@ -24,7 +24,7 @@ struct SExecutionContext
 	// Указатель на схему.
 	FSchemeNode * Scheme;
 
-	// Указатель на дочерний контекст.
+	// Указатель на родительский контекст.
 	SExecutionContext * Parent;
 
 	// Указатели на порождённые задачи.
