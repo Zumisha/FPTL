@@ -215,7 +215,6 @@ SExecutionContext *EvaluatorUnit::join()
 
 void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 {
-	static boost::mutex outputMutex;
 	movingTask->Anticipation.store(0, std::memory_order_release);
 	if (!movingTask->Ready && !movingTask->Working)
 	{
