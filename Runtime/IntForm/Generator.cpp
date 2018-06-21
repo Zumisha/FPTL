@@ -60,31 +60,23 @@ void Generator::visit(const FSequentialNode * node)
 
 void Generator::visit(const FConditionNode * node)
 {
-	IfPtr thenBr, elseBr, cond;
-	if (node->condition()->isLong() && (node->trueBranch()->isLong() && node->falseBranch()->isLong()))
-	{
-		auto join = std::make_shared<CondJoin>(mTail);
-		cond = createSpan(node->condition(), join);
+	IfPtr thenBr = 0, elseBr = 0, thenBrFork = 0, elseBrFork = 0, cond;
 
-		if (node->trueBranch()->isLong())
-			thenBr = createSpan(node->trueBranch(), std::make_shared<EndOp>());
-
-		if (node->falseBranch()->isLong())
-			elseBr = createSpan(node->falseBranch(), std::make_shared<EndOp>());
-
-		mResult = std::make_shared<CondFork>(cond, thenBr, elseBr);
-	}
+	if (node->condition()->isLong() && node->trueBranch()->isLong())
+		thenBrFork = createSpan(node->trueBranch(), std::make_shared<EndOp>());
 	else
-	{
 		thenBr = createSpan(node->trueBranch(), mTail);
+
+	if (node->condition()->isLong() && node->falseBranch()->isLong())
+		elseBrFork = createSpan(node->falseBranch(), std::make_shared<EndOp>());
+	else
 		elseBr = createSpan(node->falseBranch(), mTail);
 
-		auto chooser = std::make_shared<CondChoose>(thenBr, elseBr);
+	auto join = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
 
-		cond = createSpan(node->condition(), chooser);
+	cond = createSpan(node->condition(), join);
 
-		mResult = std::make_shared<CondStart>(cond);
-	}
+	mResult = std::make_shared<CondStart>(cond, thenBrFork, elseBrFork);
 }
 
 void Generator::visit(const FScheme * scheme)

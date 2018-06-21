@@ -18,19 +18,24 @@ void ParFork::exec(SExecutionContext & ctx) const
 	mLeft->exec(ctx);
 }
 
+void ParFork::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mLeft);
+	mLeft = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
 void ParJoin::exec(SExecutionContext & ctx) const
 {
-	auto joined = ctx.evaluator()->join();
-
-	// Копируем результат.
-	for (int i = 0; i < joined->arity; ++i)
-	{
-		ctx.push(joined->stack.at(joined->stack.size() - joined->arity + i));
-	}
-
-	delete joined;
-
+	ctx.join();
 	mNext->exec(ctx);
+}
+
+void ParJoin::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void SeqBegin::exec(SExecutionContext & ctx) const
@@ -40,6 +45,13 @@ void SeqBegin::exec(SExecutionContext & ctx) const
 	ctx.arity = 0;
 
 	mNext->exec(ctx);
+}
+
+void SeqBegin::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void SeqEnd::exec(SExecutionContext & ctx) const
@@ -54,11 +66,25 @@ void SeqEnd::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
+void SeqEnd::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
 void SeqAdvance::exec(SExecutionContext & ctx) const
 {
 	ctx.advance();
 
 	mNext->exec(ctx);
+}
+
+void SeqAdvance::zeroing(SExecutionContext & ctx) 
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void CondStart::exec(SExecutionContext & ctx) const
@@ -68,81 +94,32 @@ void CondStart::exec(SExecutionContext & ctx) const
 
 	ctx.controlStack.push_back(ctx.arity);
 
-	mCond->exec(ctx);
-}
-
-void CondFork::exec(SExecutionContext & ctx) const
-{
-	IFExecutionContext *fork;
-
-	// Выполняем системные действия.
-	ctx.evaluator()->safePoint();
-
-	ctx.controlStack.push_back(ctx.arity);
-
 	if (mThen)
 	{
-		fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
+		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
 		ctx.evaluator()->forkAnticipation(fork);
-	}
-	else
-	{
-
 	}
 
 	if (mElse)
 	{
-		fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
+		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
 		ctx.evaluator()->forkAnticipation(fork);
-	}
-	else
-	{
-
 	}
 	
 	mCond->exec(ctx);
+}
+
+void CondStart::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mCond);
+	mCond = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 const DataValue falseConst = DataBuilders::createBoolean(false);
 const DataValue undefined = DataBuilders::createUndefinedValue();
 
 void CondChoose::exec(SExecutionContext & ctx) const
-{
-	auto arity = ctx.controlStack.back().OutArity;
-	ctx.controlStack.pop_back();
-
-	// Запоминаем на верху стека 1 аргумент - результат вычисления предиката.
-	DataValue cond = ctx.stack.back();
-	bool isUndefined = false;
-
-	int numArgs = ctx.arity - arity;
-	for (int i = 0; i < numArgs; ++i)
-	{
-		DataValue & arg = ctx.stack.back();
-
-		// Проверяем, содержится ли в кортеже неопределенное значение w для реализации семантики w*a = a*w = w.
-		if (arg.getOps() == undefined.getOps())
-		{
-			isUndefined = true;
-		}
-
-		ctx.stack.pop_back();
-	}
-
-	ctx.arity = arity;
-
-	// Проверка условия.
-	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
-	{
-		mElse->exec(ctx);
-	}
-	else
-	{
-		mThen->exec(ctx);
-	}
-}
-
-void CondJoin::exec(SExecutionContext & ctx) const
 {
 	auto arity = ctx.controlStack.back().OutArity;
 	ctx.controlStack.pop_back();
@@ -164,31 +141,53 @@ void CondJoin::exec(SExecutionContext & ctx) const
 
 		ctx.stack.pop_back();
 	}
-
 	ctx.arity = arity;
-
-	SExecutionContext *branch;
 
 	// Проверка условия.
 	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
 	{
-		branch = ctx.evaluator()->joinAnticipation(false);
+		if (!mThen) // Если ненужная ветвь длинная - отменяем её вычисление.
+			ctx.evaluator()->cancelFromPendingEnd(1 + !mElse);
+		if (mElse) // Если верная ветвь короткая - начинаем её вычислять.
+			mElse->exec(ctx);
+		else
+		{
+			ctx.join();			
+			mNext->exec(ctx);
+		}
 	}
 	else
 	{
-		branch = ctx.evaluator()->joinAnticipation(true);
+		if (!mElse) // Если ненужная ветвь длинная - отменяем её вычисление.
+			ctx.evaluator()->cancelFromPendingEnd();
+		if (mThen) // Если верная ветвь короткая - начинаем её вычислять.
+			mThen->exec(ctx);
+		else
+		{
+			ctx.join();
+			mNext->exec(ctx);
+		}
 	}
+}
 
-
-	// Копируем результат.
-	for (int i = 0; i < branch->arity; ++i)
+void CondChoose::zeroing(SExecutionContext & ctx)
+{
+	// TODO: переписать, чтобы работала оптимизация хвостовой рекурсии.
+	if (mThen)
 	{
-		ctx.push(branch->stack.at(branch->stack.size() - branch->arity + i));
+		ctx.exchangedNodes.push_back(mThen);
+		mThen = ctx.endIfPtr;
+		ctx.exchangedNodes.back()->zeroing(ctx);
 	}
-
-	delete branch;
-
-	mNext->exec(ctx);
+	if (mElse)
+	{
+		ctx.exchangedNodes.push_back(mElse);
+		mElse = ctx.endIfPtr;
+		ctx.exchangedNodes.back()->zeroing(ctx);
+	}
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void RecFn::exec(SExecutionContext & ctx) const
@@ -196,6 +195,13 @@ void RecFn::exec(SExecutionContext & ctx) const
 	ctx.controlStack.push_back(mNext.get());
 
 	mFn->exec(ctx);
+}
+
+void RecFn::zeroing(SExecutionContext & ctx)
+{
+	InternalForm *temp = mFn;
+	mFn = ctx.endPtr;
+	temp->zeroing(ctx);
 }
 
 void Ret::exec(SExecutionContext & ctx) const
@@ -206,6 +212,10 @@ void Ret::exec(SExecutionContext & ctx) const
 	next->exec(ctx);
 }
 
+void Ret::zeroing(SExecutionContext & ctx)
+{
+}
+
 void BasicFn::exec(SExecutionContext & ctx) const
 {
 	// Поскольку при вызове базисной функции необходимо обработать исключение, проивзодим вызов
@@ -213,6 +223,13 @@ void BasicFn::exec(SExecutionContext & ctx) const
 	callFn(ctx);
 
 	mNext->exec(ctx);
+}
+
+void BasicFn::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void BasicFn::callFn(SExecutionContext & ctx) const
@@ -237,11 +254,25 @@ void GetArg::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
+void GetArg::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
 void Constant::exec(SExecutionContext & ctx) const
 {
 	ctx.push(mData);
 	
 	mNext->exec(ctx);
+}
+
+void Constant::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void Constant::pushString(SExecutionContext & ctx, const std::string & str)
@@ -253,8 +284,12 @@ void EndOp::exec(SExecutionContext & ctx) const
 {
 }
 
+void EndOp::zeroing(SExecutionContext & ctx)
+{
+}
+
 //-----------------------------------------------------------------------------
-IFExecutionContext::IFExecutionContext(const InternalForm * body)
+IFExecutionContext::IFExecutionContext(InternalForm * body)
 	: mInternalForm(body)
 {
 }
@@ -273,10 +308,19 @@ void IFExecutionContext::run(EvaluatorUnit * evaluator)
 	Ready.store(1, std::memory_order_release);
 }
 
-IFExecutionContext * IFExecutionContext::spawn(const InternalForm * forkBody)
+void IFExecutionContext::cancel()
+{
+	endIfPtr = std::make_shared<EndOp>();
+	endPtr = &EndOp();
+	mInternalForm->zeroing(*this);
+}
+
+IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 {
 	IFExecutionContext * fork = new IFExecutionContext(forkBody);
 	fork->Parent = this;
+	fork->Anticipation.store(this->Anticipation.load(std::memory_order_acquire), std::memory_order_release);
+	this->Childs.insert(fork);
 
 	// Копируем стек.
 	for (int i = argPos; i < (argPos + argNum); i++)

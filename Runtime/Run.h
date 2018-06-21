@@ -29,14 +29,20 @@ public:
 	// Запуск независимого процесса выполнения задания.
 	void fork(SExecutionContext * task);
 
-	// Ожидание завершения процесса выполнения задания.
-	SExecutionContext * join();
-
-	// Ожидание завершения процесса выполнения "правильной" ветки.
-	SExecutionContext * joinAnticipation(bool thenBr);
-
 	// Запуск независимого процесса выполнения упреждающего задания.
 	void forkAnticipation(SExecutionContext * task);
+
+	// Переместить задачу и все подзадачи в основную очередь.
+	void moveToMainOrder(SExecutionContext * movingTask);
+
+	// Ожидание завершения процесса выполнения последнего в очереди задания.
+	SExecutionContext * join();
+
+	//Отмена задания, стоящего в списке ожидающих выполнения на позиции pos с конца.
+	void cancelFromPendingEnd(int pos = 1);
+
+	//Отмена задания и всех его дочерних заданий.
+	void cancel(SExecutionContext *cancelTask);
 
 	// Проверка на необходимость выполнения системного действия (сборка мусора и т.п.).
 	void safePoint();
@@ -48,10 +54,6 @@ public:
 	// Получение работы для другого потока.
 	// Вызывается из любого потока.
 	SExecutionContext * stealJob();
-
-	// Добавление нового задания в очередь  упреждающих задач.
-	// Вызывается только из потока, к которому привязан или до его создания.
-	void addAnticipationJob(SExecutionContext * aContext);
 
 	// Получение работы из очереди упреждающих задач для другого потока.
 	// Вызывается из любого потока.
@@ -73,12 +75,15 @@ private:
 	std::vector<SExecutionContext *> runningTasks;
 
 	int mJobsCompleted;
-	int mJobsCompleted_a;
+	int mAnticipationJobsCompleted;
 	int mJobsCreated;
-	int mJobsCreated_a;
+	int mAnticipationJobsCreated;
 	int mJobsStealed;
-	int mJobsStealed_a;
+	int mAnticipationJobsStealed;
+	int mAnticipationJobsMoved;
+	int mAnticipationJobsCanceled;
 	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
+	LockFreeWorkStealingQueue<SExecutionContext *> mAnticipationJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
