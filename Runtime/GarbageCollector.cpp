@@ -215,6 +215,7 @@ public:
 	// Этот метод выполняется другими потоками для ожидании сканирования корней.
 	virtual void safePoint()
 	{
+		
 		if (mStop.load(std::memory_order_acquire) == 1)
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
