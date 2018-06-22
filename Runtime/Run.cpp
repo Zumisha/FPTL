@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <stack>
 #include <boost/timer/timer.hpp>
+#include <boost/chrono.hpp>
 
 #include "Run.h"
 #include "FScheme.h"
@@ -198,11 +199,16 @@ void EvaluatorUnit::forkAnticipation(SExecutionContext * task)
 
 SExecutionContext *EvaluatorUnit::join()
 {
+	// Перед возможным выполнением новой задачи проверяем, не запланированна ли сборка мусора.
+	// Иначе может получаться ситуация, когда 1 поток пораждает задания и сразу же их берёт на выполнение,
+	// а все остальные ожидают сборки мусора.
+	safePoint();
+
 	SExecutionContext * joinTask = pendingTasks.back();
 
 	if (joinTask->Anticipation.load(std::memory_order_acquire) && !joinTask->Parent->Anticipation.load(std::memory_order_acquire))
 		moveToMainOrder(joinTask);
-
+	
 	while (!joinTask->Ready.load(std::memory_order_acquire))
 	{
 		schedule();
@@ -273,6 +279,8 @@ void EvaluatorUnit::schedule()
 	{
 		context->run(this);
 		mJobsCompleted++;
+		// Выполнили задание - проверяем не запланированна ли сборка мусора.
+		safePoint();
 		return;
 	}
 
@@ -283,6 +291,8 @@ void EvaluatorUnit::schedule()
 		context->run(this);
 		mJobsStealed++;
 		mJobsCompleted++;
+		// Выполнили задание - проверяем не запланированна ли сборка мусора.
+		safePoint();
 		return;
 	}
 	
@@ -292,6 +302,8 @@ void EvaluatorUnit::schedule()
 		context->Working.store(1, std::memory_order_release);
 		context->run(this);
 		mAnticipationJobsCompleted++;
+		// Выполнили задание - проверяем не запланированна ли сборка мусора.
+		safePoint();
 		return;
 	}
 
@@ -303,10 +315,13 @@ void EvaluatorUnit::schedule()
 		context->run(this);
 		mAnticipationJobsStealed++;
 		mAnticipationJobsCompleted++;
+		// Выполнили задание - проверяем не запланированна ли сборка мусора.
+		safePoint();
 		return;
 	}
 
-	//Проверяем, не запланированна ли приостановка для маркировки нужных задач сборщиком мусора.
+	// Если заданий нет - приостанавливаем поток.
+	boost::this_thread::sleep_for(boost::chrono::milliseconds(1));
 	safePoint();
 }
 

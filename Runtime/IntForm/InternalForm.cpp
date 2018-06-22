@@ -1,4 +1,4 @@
-﻿#include "InternalForm.h"
+#include "InternalForm.h"
 #include "Context.h"
 
 #include "../Run.h"
@@ -89,9 +89,6 @@ void SeqAdvance::zeroing(SExecutionContext & ctx)
 
 void CondStart::exec(SExecutionContext & ctx) const
 {
-	// Выполняем системные действия.
-	ctx.evaluator()->safePoint();
-
 	ctx.controlStack.push_back(ctx.arity);
 
 	if (mThen)
@@ -327,7 +324,7 @@ IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 	{
 		fork->stack.push_back(stack.at(i));
 	}
-
+	
 	fork->argNum = argNum;
 	return fork;
 }
