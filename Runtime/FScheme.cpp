@@ -21,6 +21,7 @@ FSequentialNode::FSequentialNode(FSchemeNode * aFirst, FSchemeNode * aSecond)
 {
 }
 
+// Метод старого eveluator'а.
 void FSequentialNode::execute(SExecutionContext & aCtx) const
 {
 	// Запоминаем предыдущие параметры.
@@ -64,6 +65,7 @@ FConditionNode::FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBran
 	}
 }
 
+// Метод старого eveluator'а.
 void FConditionNode::execute(SExecutionContext & aCtx) const
 {
 	static DataValue falseConst = DataBuilders::createBoolean(false);
@@ -119,6 +121,7 @@ FParallelNode::FParallelNode(FSchemeNode * aLeft, FSchemeNode * aRight)
 {
 }
 
+// Метод старого eveluator'а.
 void FParallelNode::execute(SExecutionContext & aCtx) const
 {
 	if (mLeft->isLong() && mRight->isLong())
@@ -195,6 +198,7 @@ FSchemeNode * FScheme::definition(const std::string & aName) const
 	return mDefinitions.at(aName);
 }
 
+// Метод старого eveluator'а.
 void FScheme::execute(SExecutionContext & aCtx) const
 {
 	mFirstNode->execute(aCtx);
@@ -263,6 +267,7 @@ void FScheme::optimizeTailCall()
 }
 
 //-----------------------------------------------------------------------------------
+// Метод старого eveluator'а.
 void FFunctionNode::execute(SExecutionContext & aCtx) const
 {
 	call(this, &aCtx);
@@ -294,6 +299,7 @@ void FFunctionNode::call(const FFunctionNode * aNode, SExecutionContext * aCtx)
 }
 
 //-----------------------------------------------------------------------------------
+// Метод старого eveluator'а.
 void FTakeNode::execute(SExecutionContext & aCtx) const
 {
 	aCtx.push(aCtx.getArg(mIndex));
@@ -305,6 +311,7 @@ void FTakeNode::accept(FSchemeVisitor * aVisitor) const
 }
 
 //-----------------------------------------------------------------------------------
+// Метод старого eveluator'а.
 void FConstantNode::execute(SExecutionContext & aCtx) const
 {
 	aCtx.push(mData);
@@ -321,6 +328,7 @@ FStringConstant::FStringConstant(const std::string & aStr, short aLine, short aC
 {
 }
 
+// Метод старого eveluator'а.
 void FStringConstant::execute(SExecutionContext & aCtx) const
 {
 	aCtx.push(StringBuilder::create(aCtx, mStr));

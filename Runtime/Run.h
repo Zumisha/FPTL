@@ -29,8 +29,20 @@ public:
 	// Запуск независимого процесса выполнения задания.
 	void fork(SExecutionContext * task);
 
-	// Ожидание завершения процесса выполнения задания.
+	// Запуск независимого процесса выполнения упреждающего задания.
+	void forkAnticipation(SExecutionContext * task);
+
+	// Переместить задачу и все подзадачи в основную очередь.
+	void moveToMainOrder(SExecutionContext * movingTask);
+
+	// Ожидание завершения процесса выполнения последнего в очереди задания.
 	SExecutionContext * join();
+
+	//Отмена задания, стоящего в списке ожидающих выполнения на позиции pos с конца.
+	void cancelFromPendingEnd(int pos = 1);
+
+	//Отмена задания и всех его дочерних заданий.
+	void cancel(SExecutionContext *cancelTask);
 
 	// Проверка на необходимость выполнения системного действия (сборка мусора и т.п.).
 	void safePoint();
@@ -42,6 +54,10 @@ public:
 	// Получение работы для другого потока.
 	// Вызывается из любого потока.
 	SExecutionContext * stealJob();
+
+	// Получение работы из очереди упреждающих задач для другого потока.
+	// Вызывается из любого потока.
+	SExecutionContext * stealAnticipationJob();
 
 	// Поиск и выполнение задания.
 	void schedule();
@@ -55,16 +71,19 @@ public:
 	void popTask();
 
 private:
-	void traceRoots();
-
-private:
 	std::vector<SExecutionContext *> pendingTasks;
 	std::vector<SExecutionContext *> runningTasks;
 
 	int mJobsCompleted;
+	int mAnticipationJobsCompleted;
 	int mJobsCreated;
+	int mAnticipationJobsCreated;
 	int mJobsStealed;
+	int mAnticipationJobsStealed;
+	int mAnticipationJobsMoved;
+	int mAnticipationJobsCanceled;
 	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
+	LockFreeWorkStealingQueue<SExecutionContext *> mAnticipationJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
@@ -77,8 +96,7 @@ class SchemeEvaluator : public DataRootExplorer
 public:
 	SchemeEvaluator();
 
-	void setGcConfig(const GcConfig & config)
-	{ mGcConfig = config; }
+	void setGcConfig(const GcConfig & config){ mGcConfig = config; }
 
 	// Запуск вычисления схемы.
 	void runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInputGenerator, int aNumEvaluators);
@@ -90,6 +108,9 @@ public:
 
 	// Взять задание у других вычислителей. Возвращает 0, если не получилось.
 	SExecutionContext * findJob(const EvaluatorUnit * aUnit);
+
+	// Взять упреждающую задачу у других вычислителей. Возвращает 0, если не получилось.
+	SExecutionContext * findAnticipationJob(const EvaluatorUnit * aUnit);
 
 	virtual void markRoots(ObjectMarker * marker);
 

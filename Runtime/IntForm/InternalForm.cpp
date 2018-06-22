@@ -1,4 +1,4 @@
-#include "InternalForm.h"
+п»ї#include "InternalForm.h"
 #include "Context.h"
 
 #include "../Run.h"
@@ -18,28 +18,40 @@ void ParFork::exec(SExecutionContext & ctx) const
 	mLeft->exec(ctx);
 }
 
+void ParFork::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mLeft);
+	mLeft = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
 void ParJoin::exec(SExecutionContext & ctx) const
 {
-	auto joined = ctx.evaluator()->join();
-
-	// Копируем результат.
-	for (int i = 0; i < joined->arity; ++i)
-	{
-		ctx.push(joined->stack.at(joined->stack.size() - joined->arity + i));
-	}
-
-	delete joined;
-
+	ctx.join();
 	mNext->exec(ctx);
+}
+
+void ParJoin::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void SeqBegin::exec(SExecutionContext & ctx) const
 {
-	// Запоминаем предыдущие параметры.
+	// Р—Р°РїРѕРјРёРЅР°РµРј РїСЂРµРґС‹РґСѓС‰РёРµ РїР°СЂР°РјРµС‚СЂС‹.
 	ctx.controlStack.emplace_back(ctx.argPos, ctx.stack.size(), ctx.argNum, ctx.arity);
 	ctx.arity = 0;
 
 	mNext->exec(ctx);
+}
+
+void SeqBegin::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void SeqEnd::exec(SExecutionContext & ctx) const
@@ -47,11 +59,18 @@ void SeqEnd::exec(SExecutionContext & ctx) const
 	ControlValue & cv = ctx.controlStack.back();
 	ctx.controlStack.pop_back();
 
-	// Сворачиваем стек.
+	// РЎРІРѕСЂР°С‡РёРІР°РµРј СЃС‚РµРє.
 	ctx.unwind(cv.ArgPos, cv.OutArity, cv.Size);
 	ctx.argNum = cv.InArity;
 
 	mNext->exec(ctx);
+}
+
+void SeqEnd::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void SeqAdvance::exec(SExecutionContext & ctx) const
@@ -61,25 +80,51 @@ void SeqAdvance::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
+void SeqAdvance::zeroing(SExecutionContext & ctx) 
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
 void CondStart::exec(SExecutionContext & ctx) const
 {
-	// Выполняем системные действия.
+	// Р’С‹РїРѕР»РЅСЏРµРј СЃРёСЃС‚РµРјРЅС‹Рµ РґРµР№СЃС‚РІРёСЏ.
 	ctx.evaluator()->safePoint();
 
 	ctx.controlStack.push_back(ctx.arity);
 
+	if (mThen)
+	{
+		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
+		ctx.evaluator()->forkAnticipation(fork);
+	}
+
+	if (mElse)
+	{
+		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
+		ctx.evaluator()->forkAnticipation(fork);
+	}
+	
 	mCond->exec(ctx);
 }
 
-const DataValue CondChoose::falseConst = DataBuilders::createBoolean(false);
-const DataValue CondChoose::undefined = DataBuilders::createUndefinedValue();
+void CondStart::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mCond);
+	mCond = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
+const DataValue falseConst = DataBuilders::createBoolean(false);
+const DataValue undefined = DataBuilders::createUndefinedValue();
 
 void CondChoose::exec(SExecutionContext & ctx) const
 {
 	auto arity = ctx.controlStack.back().OutArity;
 	ctx.controlStack.pop_back();
 
-	// Запоминаем на верху стека 1 аргумент - результат вычисления предиката.
+	// Р‘РµСЂС‘Рј СЃРІРµСЂС…Сѓ СЃС‚РµРєР° 1 Р°СЂРіСѓРјРµРЅС‚ - СЂРµР·СѓР»СЊС‚Р°С‚ РІС‹С‡РёСЃР»РµРЅРёСЏ РїСЂРµРґРёРєР°С‚Р°.
 	DataValue cond = ctx.stack.back();
 	bool isUndefined = false;
 
@@ -88,7 +133,7 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	{
 		DataValue & arg = ctx.stack.back();
 
-		// Проверяем, содержится ли в кортеже неопределенное значение w для реализации семантики w*a = a*w = w.
+		// РџСЂРѕРІРµСЂСЏРµРј, СЃРѕРґРµСЂР¶РёС‚СЃСЏ Р»Рё РІ РєРѕСЂС‚РµР¶Рµ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ w РґР»СЏ СЂРµР°Р»РёР·Р°С†РёРё СЃРµРјР°РЅС‚РёРєРё w*a = a*w = w.
 		if (arg.getOps() == undefined.getOps())
 		{
 			isUndefined = true;
@@ -96,18 +141,53 @@ void CondChoose::exec(SExecutionContext & ctx) const
 
 		ctx.stack.pop_back();
 	}
-
 	ctx.arity = arity;
 
-	// Проверка условия.
+	// РџСЂРѕРІРµСЂРєР° СѓСЃР»РѕРІРёСЏ.
 	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
 	{
-		mElse->exec(ctx);
+		if (!mThen) // Р•СЃР»Рё РЅРµРЅСѓР¶РЅР°СЏ РІРµС‚РІСЊ РґР»РёРЅРЅР°СЏ - РѕС‚РјРµРЅСЏРµРј РµС‘ РІС‹С‡РёСЃР»РµРЅРёРµ.
+			ctx.evaluator()->cancelFromPendingEnd(1 + !mElse);
+		if (mElse) // Р•СЃР»Рё РІРµСЂРЅР°СЏ РІРµС‚РІСЊ РєРѕСЂРѕС‚РєР°СЏ - РЅР°С‡РёРЅР°РµРј РµС‘ РІС‹С‡РёСЃР»СЏС‚СЊ.
+			mElse->exec(ctx);
+		else
+		{
+			ctx.join();			
+			mNext->exec(ctx);
+		}
 	}
 	else
 	{
-		mThen->exec(ctx);
+		if (!mElse) // Р•СЃР»Рё РЅРµРЅСѓР¶РЅР°СЏ РІРµС‚РІСЊ РґР»РёРЅРЅР°СЏ - РѕС‚РјРµРЅСЏРµРј РµС‘ РІС‹С‡РёСЃР»РµРЅРёРµ.
+			ctx.evaluator()->cancelFromPendingEnd();
+		if (mThen) // Р•СЃР»Рё РІРµСЂРЅР°СЏ РІРµС‚РІСЊ РєРѕСЂРѕС‚РєР°СЏ - РЅР°С‡РёРЅР°РµРј РµС‘ РІС‹С‡РёСЃР»СЏС‚СЊ.
+			mThen->exec(ctx);
+		else
+		{
+			ctx.join();
+			mNext->exec(ctx);
+		}
 	}
+}
+
+void CondChoose::zeroing(SExecutionContext & ctx)
+{
+	// TODO: РїРµСЂРµРїРёСЃР°С‚СЊ, С‡С‚РѕР±С‹ СЂР°Р±РѕС‚Р°Р»Р° РѕРїС‚РёРјРёР·Р°С†РёСЏ С…РІРѕСЃС‚РѕРІРѕР№ СЂРµРєСѓСЂСЃРёРё.
+	if (mThen)
+	{
+		ctx.exchangedNodes.push_back(mThen);
+		mThen = ctx.endIfPtr;
+		ctx.exchangedNodes.back()->zeroing(ctx);
+	}
+	if (mElse)
+	{
+		ctx.exchangedNodes.push_back(mElse);
+		mElse = ctx.endIfPtr;
+		ctx.exchangedNodes.back()->zeroing(ctx);
+	}
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void RecFn::exec(SExecutionContext & ctx) const
@@ -115,6 +195,13 @@ void RecFn::exec(SExecutionContext & ctx) const
 	ctx.controlStack.push_back(mNext.get());
 
 	mFn->exec(ctx);
+}
+
+void RecFn::zeroing(SExecutionContext & ctx)
+{
+	InternalForm *temp = mFn;
+	mFn = ctx.endPtr;
+	temp->zeroing(ctx);
 }
 
 void Ret::exec(SExecutionContext & ctx) const
@@ -125,13 +212,24 @@ void Ret::exec(SExecutionContext & ctx) const
 	next->exec(ctx);
 }
 
+void Ret::zeroing(SExecutionContext & ctx)
+{
+}
+
 void BasicFn::exec(SExecutionContext & ctx) const
 {
-	// Поскольку при вызове базисной функции необходимо обработать исключение, проивзодим вызов
-	// через метод-трамплин, чтобы не повлиять на оптимизацию компилятором хвостовой рекурсии.
+	// РџРѕСЃРєРѕР»СЊРєСѓ РїСЂРё РІС‹Р·РѕРІРµ Р±Р°Р·РёСЃРЅРѕР№ С„СѓРЅРєС†РёРё РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РёСЃРєР»СЋС‡РµРЅРёРµ, РїСЂРѕРёРІР·РѕРґРёРј РІС‹Р·РѕРІ
+	// С‡РµСЂРµР· РјРµС‚РѕРґ-С‚СЂР°РјРїР»РёРЅ, С‡С‚РѕР±С‹ РЅРµ РїРѕРІР»РёСЏС‚СЊ РЅР° РѕРїС‚РёРјРёР·Р°С†РёСЋ РєРѕРјРїРёР»СЏС‚РѕСЂРѕРј С…РІРѕСЃС‚РѕРІРѕР№ СЂРµРєСѓСЂСЃРёРё.
 	callFn(ctx);
 
 	mNext->exec(ctx);
+}
+
+void BasicFn::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void BasicFn::callFn(SExecutionContext & ctx) const
@@ -156,11 +254,25 @@ void GetArg::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
+void GetArg::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
+}
+
 void Constant::exec(SExecutionContext & ctx) const
 {
 	ctx.push(mData);
 	
 	mNext->exec(ctx);
+}
+
+void Constant::zeroing(SExecutionContext & ctx)
+{
+	ctx.exchangedNodes.push_back(mNext);
+	mNext = ctx.endIfPtr;
+	ctx.exchangedNodes.back()->zeroing(ctx);
 }
 
 void Constant::pushString(SExecutionContext & ctx, const std::string & str)
@@ -172,8 +284,12 @@ void EndOp::exec(SExecutionContext & ctx) const
 {
 }
 
+void EndOp::zeroing(SExecutionContext & ctx)
+{
+}
+
 //-----------------------------------------------------------------------------
-IFExecutionContext::IFExecutionContext(const InternalForm * body)
+IFExecutionContext::IFExecutionContext(InternalForm * body)
 	: mInternalForm(body)
 {
 }
@@ -188,16 +304,25 @@ void IFExecutionContext::run(EvaluatorUnit * evaluator)
 
 	mEvaluatorUnit->popTask();
 
-	// Сообщаем о готовности задания.
+	// РЎРѕРѕР±С‰Р°РµРј Рѕ РіРѕС‚РѕРІРЅРѕСЃС‚Рё Р·Р°РґР°РЅРёСЏ.
 	Ready.store(1, std::memory_order_release);
 }
 
-IFExecutionContext * IFExecutionContext::spawn(const InternalForm * forkBody)
+void IFExecutionContext::cancel()
+{
+	endIfPtr = std::make_shared<EndOp>();
+	endPtr = &EndOp();
+	mInternalForm->zeroing(*this);
+}
+
+IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 {
 	IFExecutionContext * fork = new IFExecutionContext(forkBody);
 	fork->Parent = this;
+	fork->Anticipation.store(this->Anticipation.load(std::memory_order_acquire), std::memory_order_release);
+	this->Childs.insert(fork);
 
-	// Копируем стек.
+	// РљРѕРїРёСЂСѓРµРј СЃС‚РµРє.
 	for (int i = argPos; i < (argPos + argNum); i++)
 	{
 		fork->stack.push_back(stack.at(i));

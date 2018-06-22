@@ -20,15 +20,18 @@ public:
 	{}
 
 	virtual void exec(SExecutionContext & ctx) const = 0;
+	virtual void zeroing(SExecutionContext & ctx) = 0;
 };
 
-typedef std::shared_ptr<const InternalForm> IfPtr;
+typedef std::shared_ptr<InternalForm> IfPtr;
 
 //-----------------------------------------------------------------------------
 class ParFork : public InternalForm
 {
 public:
 	virtual void exec(SExecutionContext & ctx) const;
+
+	virtual void zeroing(SExecutionContext & ctx);
 
 	ParFork(const IfPtr & left, const IfPtr & right)
 		: mLeft(left), mRight(right)
@@ -43,6 +46,8 @@ class ParJoin : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
+	virtual void zeroing(SExecutionContext & ctx);
+
 	ParJoin(const IfPtr & next)
 		: mNext(next)
 	{}
@@ -54,6 +59,8 @@ class SeqBegin : public InternalForm
 {
 public:
 	virtual void exec(SExecutionContext & ctx) const;
+
+	virtual void zeroing(SExecutionContext & ctx);
 
 	SeqBegin(const IfPtr & next)
 		: mNext(next)
@@ -67,6 +74,8 @@ class SeqEnd : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
+	virtual void zeroing(SExecutionContext & ctx);
+
 	SeqEnd(const IfPtr & next)
 		: mNext(next)
 	{}
@@ -78,6 +87,8 @@ class SeqAdvance : public InternalForm
 {
 public:
 	virtual void exec(SExecutionContext & ctx) const;
+
+	virtual void zeroing(SExecutionContext & ctx);
 
 	SeqAdvance(const IfPtr & next)
 		: mNext(next)
@@ -91,11 +102,15 @@ class CondStart : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
-	CondStart(const IfPtr & cond)
-		: mCond(cond)
+	virtual void zeroing(SExecutionContext & ctx);
+
+	CondStart(const IfPtr & cond, const IfPtr & thenBr, const IfPtr & elseBr)
+		: mCond(cond), mThen(thenBr), mElse(elseBr)
 	{}
 
 	IfPtr mCond;
+	IfPtr mThen;
+	IfPtr mElse;
 };
 
 class CondChoose : public InternalForm
@@ -103,16 +118,15 @@ class CondChoose : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
-	CondChoose(const IfPtr & thenBr, const IfPtr & elseBr)
-		: mThen(thenBr), mElse(elseBr)
+	virtual void zeroing(SExecutionContext & ctx);
+
+	CondChoose(const IfPtr & thenBr, const IfPtr & elseBr, const IfPtr & next)
+		: mThen(thenBr), mElse(elseBr), mNext(next)
 	{}
 
 	IfPtr mThen;
 	IfPtr mElse;
-
-private:
-	static const DataValue falseConst;
-	static const DataValue undefined;
+	IfPtr mNext;
 };
 
 class RecFn : public InternalForm
@@ -120,13 +134,15 @@ class RecFn : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
+	virtual void zeroing(SExecutionContext & ctx);
+
 	RecFn(const IfPtr & next, const std::string & name)
 		: mFn(nullptr),
 		mNext(next),
 		mName(name)
 	{}
 
-	const InternalForm * mFn;
+	InternalForm * mFn;
 	IfPtr mNext;
 	std::string mName;
 };
@@ -136,6 +152,8 @@ class Ret : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
+	virtual void zeroing(SExecutionContext & ctx);
+
 	Ret()
 	{}
 };
@@ -144,6 +162,8 @@ class BasicFn : public InternalForm
 {
 public:
 	virtual void exec(SExecutionContext & ctx) const;
+
+	virtual void zeroing(SExecutionContext & ctx);
 
 	BasicFn(const IfPtr & next, const std::string & name, const std::pair<int, int> & pos, const TFunction & fn)
 		: mNext(next), mName(name), mPos(pos), mFn(fn)
@@ -163,6 +183,8 @@ class GetArg : public InternalForm
 public:
 	virtual void exec(SExecutionContext & ctx) const;
 
+	virtual void zeroing(SExecutionContext & ctx);
+
 	GetArg(const IfPtr & next, int argNum)
 		: mNext(next), mArgNum(argNum)
 	{}
@@ -175,6 +197,8 @@ class Constant : public InternalForm
 {
 public:
 	virtual void exec(SExecutionContext & ctx) const;
+
+	virtual void zeroing(SExecutionContext & ctx);
 
 	Constant(const IfPtr & next, const DataValue & data)
 		: mNext(next), mData(data)
@@ -190,8 +214,9 @@ class EndOp : public InternalForm
 {
 public:
 	virtual void exec(SExecutionContext & ctx) const;
-};
 
+	virtual void zeroing(SExecutionContext & ctx);
+};
 //-----------------------------------------------------------------------------
 class FunctionalProgram
 {

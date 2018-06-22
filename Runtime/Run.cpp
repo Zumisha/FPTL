@@ -17,11 +17,14 @@ namespace FPTL { namespace Runtime {
 SExecutionContext::SExecutionContext()
 	: Scheme(nullptr),
 	Parent(nullptr),
-	mEvaluatorUnit(nullptr),
-	arity(0),
-	argPos(0),
 	Ready(0),
-	argNum(0)
+	Working(0),
+	Anticipation(0),
+	NewAnticipationLevel(false),
+	argPos(0),
+	arity(0),
+	argNum(0),
+	mEvaluatorUnit(nullptr)
 {
 	stack.reserve(10);
 	controlStack.reserve(10);
@@ -32,6 +35,7 @@ bool SExecutionContext::isReady() const
 	return Ready.load(std::memory_order_acquire) == 1;
 }
 
+// Метод старого eveluator'а.
 SExecutionContext * SExecutionContext::spawn(FSchemeNode * aScheme)
 {
 	SExecutionContext * fork = new SExecutionContext();
@@ -58,6 +62,7 @@ CollectedHeap & SExecutionContext::heap() const
 	return mEvaluatorUnit->heap();
 }
 
+// Метод старого eveluator'а.
 void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
 {
 	assert(!Ready.load(std::memory_order_acquire));
@@ -103,12 +108,30 @@ void SExecutionContext::unwind(size_t aArgPosOld, int aArity, size_t aPos)
 	arity += aArity;
 }
 
+void SExecutionContext::join()
+{
+	auto joined = mEvaluatorUnit->join();
+
+	// Копируем результат.
+	for (int i = 0; i < joined->arity; ++i)
+	{
+		push(joined->stack.at(joined->stack.size() - joined->arity + i));
+	}
+
+	delete joined;
+}
+
 //-----------------------------------------------------------------------------
 EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	: mEvaluator(aSchemeEvaluator),
 	  mJobsCompleted(0),
+	  mAnticipationJobsCompleted(0),
 	  mJobsCreated(0),
+	  mAnticipationJobsCreated(0),
 	  mJobsStealed(0),
+	  mAnticipationJobsStealed(0),
+	  mAnticipationJobsMoved(0),
+	  mAnticipationJobsCanceled(0),
 	  mHeap(aSchemeEvaluator->garbageCollector()),
 	  mCollector(aSchemeEvaluator->garbageCollector())
 {
@@ -127,6 +150,13 @@ SExecutionContext * EvaluatorUnit::stealJob()
 	return elem;
 }
 
+SExecutionContext * EvaluatorUnit::stealAnticipationJob()
+{
+	SExecutionContext * elem = 0;
+	mAnticipationJobQueue.steal(elem);
+	return elem;
+}
+
 void EvaluatorUnit::evaluateScheme()
 {
 	while (true)
@@ -134,7 +164,6 @@ void EvaluatorUnit::evaluateScheme()
         try
         {
             boost::this_thread::interruption_point();
-        
             schedule();
         }
         catch (boost::thread_interrupted)
@@ -148,7 +177,7 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "\nJobs processed by thread id = " << boost::this_thread::get_id() << " " << mJobsCompleted << " stealed " << mJobsStealed;
+	ss << "\n\nThread ID = " << boost::this_thread::get_id() << ". Jobs compleated: " << mJobsCompleted << ", stealed: " << mJobsStealed << ".\nAnticipation jobs created:" << mAnticipationJobsCreated << ", compleated: " << mAnticipationJobsCompleted << ", stealed: " << mAnticipationJobsStealed << ", moved: " << mAnticipationJobsMoved << ", canceled: " << mAnticipationJobsCanceled << ".";
 	std::cout << ss.str();
 }
 
@@ -158,17 +187,76 @@ void EvaluatorUnit::fork(SExecutionContext * task)
 	addJob(task);
 }
 
-SExecutionContext * EvaluatorUnit::join()
+void EvaluatorUnit::forkAnticipation(SExecutionContext * task)
+{
+	pendingTasks.push_back(task);
+	task->NewAnticipationLevel = true;
+	task->Anticipation.store(1, std::memory_order_release);
+	mAnticipationJobQueue.push(task);
+	mAnticipationJobsCreated++;
+}
+
+SExecutionContext *EvaluatorUnit::join()
 {
 	SExecutionContext * joinTask = pendingTasks.back();
+
+	if (joinTask->Anticipation.load(std::memory_order_acquire) && !joinTask->Parent->Anticipation.load(std::memory_order_acquire))
+		moveToMainOrder(joinTask);
 
 	while (!joinTask->Ready.load(std::memory_order_acquire))
 	{
 		schedule();
 	}
 
+	joinTask->Parent->Childs.erase(joinTask);
 	pendingTasks.pop_back();
 	return joinTask;
+}
+
+void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
+{
+	movingTask->Anticipation.store(0, std::memory_order_release);
+	if (!movingTask->Ready && !movingTask->Working)
+	{
+		mJobQueue.push(movingTask);
+		mAnticipationJobsMoved++;
+	}
+	for (SExecutionContext * child : movingTask->Childs)
+	{
+		if (!child->NewAnticipationLevel)
+			moveToMainOrder(child);
+	}
+}
+
+void EvaluatorUnit::cancelFromPendingEnd(int backPos)
+{
+	SExecutionContext * cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
+	cancel(cancelTask);
+	cancelTask->Parent->Childs.erase(cancelTask);
+	//Убираем из очереди ожидающих выполнения задач.
+	pendingTasks.erase(pendingTasks.end() - backPos);
+}
+
+void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
+{
+	static boost::mutex outputMutex;
+	boost::lock_guard<boost::mutex> guard(outputMutex);
+	if (!cancelingTask->Ready)
+	{	// Если задание ещё не выполнено, выставляем флаг готовности, чтобы никто не начал выполнение.
+		cancelingTask->Ready = 1;
+		guard.~lock_guard();
+		// Если уже выполняется - запускаем процесс остановки.
+		if (cancelingTask->Working.load(std::memory_order_acquire))
+		{
+			cancelingTask->cancel();
+		}
+		mAnticipationJobsCanceled++;
+	}
+	guard.~lock_guard();
+	for (SExecutionContext * child : cancelingTask->Childs)
+	{
+		child->cancel();
+	}
 }
 
 void EvaluatorUnit::safePoint()
@@ -178,9 +266,9 @@ void EvaluatorUnit::safePoint()
 
 void EvaluatorUnit::schedule()
 {
-	// Берем задание из своей очереди.
 	SExecutionContext * context = 0;
-		
+
+	// Берем задание из своей очереди.
 	if (mJobQueue.pop(context))
 	{
 		context->run(this);
@@ -188,19 +276,38 @@ void EvaluatorUnit::schedule()
 		return;
 	}
 
-	// Если это не удалось, берем у кого-нибудь другого.
-	context = mEvaluator->findJob(this);
-	
+	// Если это не удалось, ищем у кого-нибудь другого.
+	context = mEvaluator->findJob(this);	
 	if (context)
 	{
 		context->run(this);
 		mJobsStealed++;
 		mJobsCompleted++;
+		return;
 	}
-	else
+	
+	// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
+	if (mAnticipationJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
 	{
-		safePoint();
+		context->Working.store(1, std::memory_order_release);
+		context->run(this);
+		mAnticipationJobsCompleted++;
+		return;
 	}
+
+	// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно отменено.
+	context = mEvaluator->findAnticipationJob(this);
+	if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+	{
+		context->Working.store(1, std::memory_order_release);
+		context->run(this);
+		mAnticipationJobsStealed++;
+		mAnticipationJobsCompleted++;
+		return;
+	}
+
+	//Проверяем, не запланированна ли приостановка для маркировки нужных задач сборщиком мусора.
+	safePoint();
 }
 
 CollectedHeap & EvaluatorUnit::heap() const
@@ -213,11 +320,10 @@ void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 	// Помечаем корни у всех заданий, взятых на выполнение текщим юнитом.
 	for (SExecutionContext * ctx : runningTasks)
 	{
-		std::for_each(ctx->stack.begin(), ctx->stack.end(),
-			[marker](DataValue & data) {
-				data.getOps()->mark(data, marker);
-			}
-		);
+		for (auto & data : ctx->stack)
+		{
+			data.getOps()->mark(data, marker);
+		}
 	}
 
 	// Помечаем корни у всех форкнутых заданий, которые были выполнены.
@@ -225,11 +331,10 @@ void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 	{
 		if (ctx->isReady())
 		{
-			std::for_each(ctx->stack.begin(), ctx->stack.end(),
-				[marker](DataValue & data) {
-					data.getOps()->mark(data, marker);
-				}
-			);
+			for (auto & data : ctx->stack)
+			{
+				data.getOps()->mark(data, marker);
+			}
 		}
 	}
 }
@@ -269,7 +374,22 @@ SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
 			}
 		}
 	}
+	return 0;
+}
 
+SExecutionContext * SchemeEvaluator::findAnticipationJob(const EvaluatorUnit * aUnit)
+{
+	for (size_t i = 0; i < mEvaluatorUnits.size(); i++)
+	{
+		if (mEvaluatorUnits[i] != aUnit)
+		{
+			SExecutionContext * job = mEvaluatorUnits[i]->stealAnticipationJob();
+			if (job)
+			{
+				return job;
+			}
+		}
+	}
 	return 0;
 }
 
@@ -286,6 +406,7 @@ GarbageCollector * SchemeEvaluator::garbageCollector() const
 	return mGarbageCollector.get();
 }
 
+// Метод старого eveluator'а.
 void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInput, int aNumEvaluators)
 {
 	if (aNumEvaluators >= 32)

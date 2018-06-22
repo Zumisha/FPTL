@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <stack>
+#include <set>
 
 #include <atomic>
 #include <boost/intrusive/slist.hpp>
@@ -23,11 +24,30 @@ struct SExecutionContext
 	// Указатель на схему.
 	FSchemeNode * Scheme;
 
-	// Указатель на дочерний контекст.
+	// Указатель на родительский контекст.
 	SExecutionContext * Parent;
+
+	// Указатели на порождённые задачи.
+	std::set<SExecutionContext *> Childs;
 
 	// Флаг готовности задания.
 	std::atomic<int> Ready;
+
+	// Флаг выполнения задания.
+	std::atomic<int> Working;
+
+	// Флаг упреждения.
+	std::atomic<int> Anticipation;
+
+	// Флаг нового уровня упреждения.
+	bool NewAnticipationLevel;
+
+	// Экземпляр завершающего узла, чтобы не создавать множественные при отмене.
+	std::shared_ptr<InternalForm> endIfPtr;
+	InternalForm *endPtr;
+
+	//Вектор для сохранения указателей на заменённые при остановке узлы, чтобы они не удалились преждевременно.
+	std::vector<std::shared_ptr<InternalForm>> exchangedNodes;
 
 	// Стек для работы с кортежами.
 	std::vector<DataValue> stack;
@@ -52,9 +72,12 @@ struct SExecutionContext
 	void push(const DataValue & aData);
 	void advance();
 	void unwind(size_t aArgPosOld, int aArity, size_t aPos);
+	void join();
 
 	// Запуск выполнения.
 	virtual void run(EvaluatorUnit * aEvaluatorUnit);
+
+	virtual void cancel() {}
 
 	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
 	SExecutionContext * spawn(FSchemeNode * aFirstNode);
