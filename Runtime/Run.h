@@ -27,10 +27,7 @@ public:
 	void evaluateScheme();
 
 	// Запуск независимого процесса выполнения задания.
-	void fork(SExecutionContext * task);
-
-	// Запуск независимого процесса выполнения упреждающего задания.
-	void forkAnticipation(SExecutionContext * task);
+	void addForkJob(SExecutionContext * task);
 
 	// Переместить задачу и все подзадачи в основную очередь.
 	void moveToMainOrder(SExecutionContext * movingTask);

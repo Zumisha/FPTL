@@ -62,19 +62,27 @@ void Generator::visit(const FConditionNode * node)
 {
 	IfPtr thenBr = 0, elseBr = 0, thenBrFork = 0, elseBrFork = 0, cond;
 
-	if (node->condition()->isLong() && node->trueBranch()->isLong())
-		thenBrFork = createSpan(node->trueBranch(), std::make_shared<EndOp>());
-	else
+	if (!node->condition()->isLong())
+	{
 		thenBr = createSpan(node->trueBranch(), mTail);
-
-	if (node->condition()->isLong() && node->falseBranch()->isLong())
-		elseBrFork = createSpan(node->falseBranch(), std::make_shared<EndOp>());
-	else
 		elseBr = createSpan(node->falseBranch(), mTail);
+	}
+	else
+	{
+		if (node->trueBranch()->isLong())
+			thenBrFork = createSpan(node->trueBranch(), std::make_shared<EndOp>());
+		else 
+			thenBr = createSpan(node->trueBranch(), mTail);
 
-	auto join = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
+		if (node->falseBranch()->isLong())
+			elseBrFork = createSpan(node->falseBranch(), std::make_shared<EndOp>());
+		else 
+			elseBr = createSpan(node->falseBranch(), mTail);
+	}
 
-	cond = createSpan(node->condition(), join);
+	auto choose = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
+
+	cond = createSpan(node->condition(), choose);
 
 	mResult = std::make_shared<CondStart>(cond, thenBrFork, elseBrFork);
 }

@@ -130,7 +130,7 @@ void FParallelNode::execute(SExecutionContext & aCtx) const
 		SExecutionContext * fork = aCtx.spawn(mRight);
 
 		auto evaluator = aCtx.evaluator();
-		evaluator->fork(fork);
+		evaluator->addForkJob(fork);
 
 		mLeft->execute(aCtx);
 

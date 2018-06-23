@@ -21,7 +21,7 @@ SExecutionContext::SExecutionContext()
 	Ready(0),
 	Working(0),
 	Anticipation(0),
-	NewAnticipationLevel(false),
+	NewAnticipationLevel(0),
 	argPos(0),
 	arity(0),
 	argNum(0),
@@ -182,19 +182,18 @@ void EvaluatorUnit::evaluateScheme()
 	std::cout << ss.str();
 }
 
-void EvaluatorUnit::fork(SExecutionContext * task)
+void EvaluatorUnit::addForkJob(SExecutionContext * task)
 {
 	pendingTasks.push_back(task);
-	addJob(task);
-}
-
-void EvaluatorUnit::forkAnticipation(SExecutionContext * task)
-{
-	pendingTasks.push_back(task);
-	task->NewAnticipationLevel = true;
-	task->Anticipation.store(1, std::memory_order_release);
-	mAnticipationJobQueue.push(task);
-	mAnticipationJobsCreated++;
+	if (task->Anticipation.load(std::memory_order_acquire))
+	{
+		mAnticipationJobQueue.push(task);
+		mAnticipationJobsCreated++;
+	}
+	else
+	{
+		addJob(task);
+	}
 }
 
 SExecutionContext *EvaluatorUnit::join()
@@ -221,24 +220,28 @@ SExecutionContext *EvaluatorUnit::join()
 
 void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 {
-	movingTask->Anticipation.store(0, std::memory_order_release);
-	if (!movingTask->Ready && !movingTask->Working)
+	if (movingTask->Parent->Anticipation.load(std::memory_order_acquire))
 	{
-		mJobQueue.push(movingTask);
-		mAnticipationJobsMoved++;
+		movingTask->Anticipation.store(0, std::memory_order_release);
+		if (!movingTask->Ready && !movingTask->Working)
+		{
+			mJobQueue.push(movingTask);
+			mAnticipationJobsMoved++;
+		}
+		for (SExecutionContext * child : movingTask->Childs)
+		{
+			if (!child->NewAnticipationLevel)
+				moveToMainOrder(child);
+		}
 	}
-	for (SExecutionContext * child : movingTask->Childs)
-	{
-		if (!child->NewAnticipationLevel)
-			moveToMainOrder(child);
-	}
+	movingTask->NewAnticipationLevel.store(0, std::memory_order_release);
 }
 
 void EvaluatorUnit::cancelFromPendingEnd(int backPos)
 {
 	SExecutionContext * cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
-	cancel(cancelTask);
 	cancelTask->Parent->Childs.erase(cancelTask);
+	cancel(cancelTask);
 	//Убираем из очереди ожидающих выполнения задач.
 	pendingTasks.erase(pendingTasks.end() - backPos);
 }
