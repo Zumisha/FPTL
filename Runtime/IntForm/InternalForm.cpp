@@ -13,7 +13,7 @@ void ParFork::exec(SExecutionContext & ctx) const
 {
 	auto fork = static_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
 
-	ctx.evaluator()->fork(fork);
+	ctx.evaluator()->addForkJob(fork);
 
 	mLeft->exec(ctx);
 }
@@ -94,13 +94,17 @@ void CondStart::exec(SExecutionContext & ctx) const
 	if (mThen)
 	{
 		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
-		ctx.evaluator()->forkAnticipation(fork);
+		fork->NewAnticipationLevel = 1;
+		fork->Anticipation = 1;
+		ctx.evaluator()->addForkJob(fork);
 	}
 
 	if (mElse)
 	{
 		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
-		ctx.evaluator()->forkAnticipation(fork);
+		fork->NewAnticipationLevel = 1;
+		fork->Anticipation = 1;
+		ctx.evaluator()->addForkJob(fork);
 	}
 	
 	mCond->exec(ctx);
@@ -125,6 +129,7 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	DataValue cond = ctx.stack.back();
 	bool isUndefined = false;
 
+	//Не работает. Неправильно определяется количество аргументов во входном кортеже.
 	int numArgs = ctx.arity - arity;
 	for (int i = 0; i < numArgs; ++i)
 	{
@@ -253,6 +258,7 @@ void GetArg::exec(SExecutionContext & ctx) const
 
 void GetArg::zeroing(SExecutionContext & ctx)
 {
+	//mArgNum = 0;
 	ctx.exchangedNodes.push_back(mNext);
 	mNext = ctx.endIfPtr;
 	ctx.exchangedNodes.back()->zeroing(ctx);
@@ -316,7 +322,7 @@ IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 {
 	IFExecutionContext * fork = new IFExecutionContext(forkBody);
 	fork->Parent = this;
-	fork->Anticipation.store(this->Anticipation.load(std::memory_order_acquire), std::memory_order_release);
+	fork->Anticipation = this->Anticipation.load(std::memory_order_acquire);
 	this->Childs.insert(fork);
 
 	// Копируем стек.

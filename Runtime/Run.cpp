@@ -3,6 +3,8 @@
 #include <iostream>
 #include <unordered_set>
 #include <stack>
+#include <mutex>
+#include <string>
 #include <boost/timer/timer.hpp>
 #include <boost/chrono.hpp>
 
@@ -21,7 +23,7 @@ SExecutionContext::SExecutionContext()
 	Ready(0),
 	Working(0),
 	Anticipation(0),
-	NewAnticipationLevel(false),
+	NewAnticipationLevel(0),
 	argPos(0),
 	arity(0),
 	argNum(0),
@@ -182,19 +184,20 @@ void EvaluatorUnit::evaluateScheme()
 	std::cout << ss.str();
 }
 
-void EvaluatorUnit::fork(SExecutionContext * task)
+void EvaluatorUnit::addForkJob(SExecutionContext * task)
 {
 	pendingTasks.push_back(task);
-	addJob(task);
-}
-
-void EvaluatorUnit::forkAnticipation(SExecutionContext * task)
-{
-	pendingTasks.push_back(task);
-	task->NewAnticipationLevel = true;
-	task->Anticipation.store(1, std::memory_order_release);
-	mAnticipationJobQueue.push(task);
-	mAnticipationJobsCreated++;
+	if (task->Anticipation.load(std::memory_order_acquire))
+	{
+		mAnticipationJobQueue.push(task);
+		mAnticipationJobsCreated++;
+		//std::cout << "\nAnt task created.\n";
+	}
+	else
+	{
+		addJob(task);
+		//std::cout << "\nTask created.\n";
+	}
 }
 
 SExecutionContext *EvaluatorUnit::join()
@@ -221,44 +224,53 @@ SExecutionContext *EvaluatorUnit::join()
 
 void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 {
-	movingTask->Anticipation.store(0, std::memory_order_release);
-	if (!movingTask->Ready && !movingTask->Working)
+	if (movingTask->Parent->Anticipation.load(std::memory_order_acquire))
 	{
-		mJobQueue.push(movingTask);
-		mAnticipationJobsMoved++;
+		movingTask->Anticipation.store(0, std::memory_order_release);
+		if (!movingTask->Ready && !movingTask->Working)
+		{
+			mJobQueue.push(movingTask);
+			mAnticipationJobsMoved++;
+			//std::cout << "\nTask moved.\n";
+		}
+		for (SExecutionContext * child : movingTask->Childs)
+		{
+			if (!child->NewAnticipationLevel)
+				moveToMainOrder(child);
+		}
 	}
-	for (SExecutionContext * child : movingTask->Childs)
-	{
-		if (!child->NewAnticipationLevel)
-			moveToMainOrder(child);
-	}
+	movingTask->NewAnticipationLevel.store(0, std::memory_order_release);
 }
 
 void EvaluatorUnit::cancelFromPendingEnd(int backPos)
 {
 	SExecutionContext * cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
-	cancel(cancelTask);
 	cancelTask->Parent->Childs.erase(cancelTask);
+	cancel(cancelTask);
 	//Убираем из очереди ожидающих выполнения задач.
 	pendingTasks.erase(pendingTasks.end() - backPos);
 }
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 {
-	static boost::mutex outputMutex;
-	boost::lock_guard<boost::mutex> guard(outputMutex);
+	static std::mutex outputMutex;
+	outputMutex.lock();
 	if (!cancelingTask->Ready)
 	{	// Если задание ещё не выполнено, выставляем флаг готовности, чтобы никто не начал выполнение.
 		cancelingTask->Ready = 1;
-		guard.~lock_guard();
+		outputMutex.unlock();
 		// Если уже выполняется - запускаем процесс остановки.
 		if (cancelingTask->Working.load(std::memory_order_acquire))
 		{
 			cancelingTask->cancel();
 		}
 		mAnticipationJobsCanceled++;
+		//std::cout << "\nTask canceld.\n";
 	}
-	guard.~lock_guard();
+	else
+	{
+		outputMutex.unlock();
+	}
 	for (SExecutionContext * child : cancelingTask->Childs)
 	{
 		child->cancel();

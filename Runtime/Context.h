@@ -40,7 +40,7 @@ struct SExecutionContext
 	std::atomic<int> Anticipation;
 
 	// Флаг нового уровня упреждения.
-	bool NewAnticipationLevel;
+	std::atomic<int> NewAnticipationLevel;
 
 	// Экземпляр завершающего узла, чтобы не создавать множественные при отмене.
 	std::shared_ptr<InternalForm> endIfPtr;

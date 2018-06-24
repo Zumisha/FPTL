@@ -3,6 +3,7 @@
 #include <regex>
 #include <fstream>
 #include <iterator>
+#include <random>
 
 #include "FScheme.h"
 #include "StandartLibrary.h"
@@ -127,7 +128,9 @@ void greaterOrEqual(SExecutionContext & aCtx)
 // Генерирует случайное вещественное число в диапазоне от 0 до 1.
 void rand(SExecutionContext & aCtx)
 {
-	aCtx.push(DataBuilders::createDouble((double)std::rand() / RAND_MAX));
+	static thread_local std::mt19937_64 gen;
+	static const std::uniform_real_distribution<> real_distrib;
+	aCtx.push(DataBuilders::createDouble(real_distrib(gen)));
 }
 
 void sqrt(SExecutionContext & aCtx)
