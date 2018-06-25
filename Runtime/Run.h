@@ -30,7 +30,10 @@ public:
 	void addForkJob(SExecutionContext * task);
 
 	// Переместить задачу и все подзадачи в основную очередь.
-	void moveToMainOrder(SExecutionContext * movingTask);
+	void StartMoving(SExecutionContext * movingTask);
+
+	// Переместить задачу и все подзадачи в основную очередь.
+	void MoveJob(SExecutionContext * movingTask);
 
 	// Ожидание завершения процесса выполнения последнего в очереди задания.
 	SExecutionContext * join();
@@ -55,6 +58,10 @@ public:
 	// Получение работы из очереди упреждающих задач для другого потока.
 	// Вызывается из любого потока.
 	SExecutionContext * stealAnticipationJob();
+
+	// Получение работы из очереди упреждающих задач следующего уровня вложенности для другого потока.
+	// Вызывается из любого потока.
+	SExecutionContext * stealNextLevelAnticipationJob();
 
 	// Поиск и выполнение задания.
 	void schedule();
@@ -81,6 +88,7 @@ private:
 	int mAnticipationJobsCanceled;
 	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
 	LockFreeWorkStealingQueue<SExecutionContext *> mAnticipationJobQueue;
+	LockFreeWorkStealingQueue<SExecutionContext *> mNextLevelAnticipationJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
@@ -108,6 +116,9 @@ public:
 
 	// Взять упреждающую задачу у других вычислителей. Возвращает 0, если не получилось.
 	SExecutionContext * findAnticipationJob(const EvaluatorUnit * aUnit);
+
+	// Взять упреждающую задачу более высокого уровня вложенности упреждения у других вычислителей. Возвращает 0, если не получилось.
+	SExecutionContext * findNextLevelAnticipationJob(const EvaluatorUnit * aUnit);
 
 	virtual void markRoots(ObjectMarker * marker);
 

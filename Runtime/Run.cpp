@@ -160,6 +160,13 @@ SExecutionContext * EvaluatorUnit::stealAnticipationJob()
 	return elem;
 }
 
+SExecutionContext * EvaluatorUnit::stealNextLevelAnticipationJob()
+{
+	SExecutionContext * elem = 0;
+	mNextLevelAnticipationJobQueue.pop(elem);
+	return elem;
+}
+
 void EvaluatorUnit::evaluateScheme()
 {
 	while (true)
@@ -187,30 +194,34 @@ void EvaluatorUnit::evaluateScheme()
 void EvaluatorUnit::addForkJob(SExecutionContext * task)
 {
 	pendingTasks.push_back(task);
-	if (task->Anticipation.load(std::memory_order_acquire))
+	switch (task->Anticipation)
 	{
+	case 0:
+		addJob(task);
+		//std::cout << "\nTask created.\n";
+		break;
+	case 1:
 		mAnticipationJobQueue.push(task);
 		mAnticipationJobsCreated++;
 		//std::cout << "\nAnt task created.\n";
-	}
-	else
-	{
-		addJob(task);
-		//std::cout << "\nTask created.\n";
+		break;
+	case 2:
+		mNextLevelAnticipationJobQueue.push(task);
+		mAnticipationJobsCreated++;
 	}
 }
 
 SExecutionContext *EvaluatorUnit::join()
 {
 	// Перед возможным выполнением новой задачи проверяем, не запланированна ли сборка мусора.
-	// Иначе может получаться ситуация, когда 1 поток пораждает задания и сразу же их берёт на выполнение,
+	// Иначе может получаться ситуация, когда 1 поток пораждает задания и сразу же их берёт на выполнение через join,
 	// а все остальные ожидают сборки мусора.
 	safePoint();
 
 	SExecutionContext * joinTask = pendingTasks.back();
 
-	if (joinTask->Anticipation.load(std::memory_order_acquire) && !joinTask->Parent->Anticipation.load(std::memory_order_acquire))
-		moveToMainOrder(joinTask);
+	if (joinTask->NewAnticipationLevel.load(std::memory_order_acquire))
+		StartMoving(joinTask);
 	
 	while (!joinTask->Ready.load(std::memory_order_acquire))
 	{
@@ -222,10 +233,17 @@ SExecutionContext *EvaluatorUnit::join()
 	return joinTask;
 }
 
-void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
+void EvaluatorUnit::StartMoving(SExecutionContext * movingTask)
 {
-	if (movingTask->Parent->Anticipation.load(std::memory_order_acquire))
+	movingTask->NewAnticipationLevel.store(0, std::memory_order_release);
+	MoveJob(movingTask);
+}
+
+void EvaluatorUnit::MoveJob(SExecutionContext * movingTask)
+{
+	switch (movingTask->Parent->Anticipation.load(std::memory_order_acquire))
 	{
+	case 0:
 		movingTask->Anticipation.store(0, std::memory_order_release);
 		if (!movingTask->Ready && !movingTask->Working)
 		{
@@ -236,10 +254,33 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 		for (SExecutionContext * child : movingTask->Childs)
 		{
 			if (!child->NewAnticipationLevel)
-				moveToMainOrder(child);
+				MoveJob(child);
+			else
+			{
+				child->Anticipation.store(1, std::memory_order_release);
+				if (!child->Ready && !child->Working)
+				{
+					mJobQueue.push(child);
+					mAnticipationJobsMoved++;
+					//std::cout << "\nTask moved.\n";
+				}
+			}
+		}
+		break;
+	case 1:
+		movingTask->Anticipation.store(1, std::memory_order_release);
+		if (!movingTask->Ready && !movingTask->Working)
+		{
+			mAnticipationJobQueue.push(movingTask);
+			mAnticipationJobsMoved++;
+			//std::cout << "\nTask moved.\n";
+		}
+		for (SExecutionContext * child : movingTask->Childs)
+		{
+			if (!child->NewAnticipationLevel)
+				MoveJob(child);
 		}
 	}
-	movingTask->NewAnticipationLevel.store(0, std::memory_order_release);
 }
 
 void EvaluatorUnit::cancelFromPendingEnd(int backPos)
@@ -253,12 +294,12 @@ void EvaluatorUnit::cancelFromPendingEnd(int backPos)
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 {
-	static std::mutex outputMutex;
-	outputMutex.lock();
+	static std::mutex cancelMutex;
+	cancelMutex.lock();
 	if (!cancelingTask->Ready)
 	{	// Если задание ещё не выполнено, выставляем флаг готовности, чтобы никто не начал выполнение.
 		cancelingTask->Ready = 1;
-		outputMutex.unlock();
+		cancelMutex.unlock();
 		// Если уже выполняется - запускаем процесс остановки.
 		if (cancelingTask->Working.load(std::memory_order_acquire))
 		{
@@ -269,7 +310,7 @@ void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 	}
 	else
 	{
-		outputMutex.unlock();
+		cancelMutex.unlock();
 	}
 	for (SExecutionContext * child : cancelingTask->Childs)
 	{
@@ -322,6 +363,30 @@ void EvaluatorUnit::schedule()
 	// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно отменено.
 	context = mEvaluator->findAnticipationJob(this);
 	if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+	{
+		context->Working.store(1, std::memory_order_release);
+		context->run(this);
+		mAnticipationJobsStealed++;
+		mAnticipationJobsCompleted++;
+		// Выполнили задание - проверяем не запланированна ли сборка мусора.
+		safePoint();
+		return;
+	}
+
+	// Если не нашли, берём задание из своей очереди более высокого уровня вложенности упреждения и выполняем, если оно не отменено.
+	if (mNextLevelAnticipationJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire) == 2)
+	{
+		context->Working.store(1, std::memory_order_release);
+		context->run(this);
+		mAnticipationJobsCompleted++;
+		// Выполнили задание - проверяем не запланированна ли сборка мусора.
+		safePoint();
+		return;
+	}
+
+	// Если не удалось, ищем упреждающую задачу более высокого уровня вложенности упреждения у кого-нибудь другого и выполняем, если оно отменено.
+	context = mEvaluator->findNextLevelAnticipationJob(this);
+	if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire) == 2)
 	{
 		context->Working.store(1, std::memory_order_release);
 		context->run(this);
@@ -411,6 +476,22 @@ SExecutionContext * SchemeEvaluator::findAnticipationJob(const EvaluatorUnit * a
 		if (mEvaluatorUnits[i] != aUnit)
 		{
 			SExecutionContext * job = mEvaluatorUnits[i]->stealAnticipationJob();
+			if (job)
+			{
+				return job;
+			}
+		}
+	}
+	return 0;
+}
+
+SExecutionContext * SchemeEvaluator::findNextLevelAnticipationJob(const EvaluatorUnit * aUnit)
+{
+	for (size_t i = 0; i < mEvaluatorUnits.size(); i++)
+	{
+		if (mEvaluatorUnits[i] != aUnit)
+		{
+			SExecutionContext * job = mEvaluatorUnits[i]->stealNextLevelAnticipationJob();
 			if (job)
 			{
 				return job;

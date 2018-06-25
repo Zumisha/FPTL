@@ -95,7 +95,7 @@ void CondStart::exec(SExecutionContext & ctx) const
 	{
 		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
 		fork->NewAnticipationLevel = 1;
-		fork->Anticipation = 1;
+		fork->Anticipation = 1 + fork->Anticipation ? 1 : 0;
 		ctx.evaluator()->addForkJob(fork);
 	}
 
@@ -103,7 +103,7 @@ void CondStart::exec(SExecutionContext & ctx) const
 	{
 		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
 		fork->NewAnticipationLevel = 1;
-		fork->Anticipation = 1;
+		fork->Anticipation = 1 + fork->Anticipation ? 1 : 0;
 		ctx.evaluator()->addForkJob(fork);
 	}
 	
