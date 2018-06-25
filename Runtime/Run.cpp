@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <stack>
+#include <mutex>
 #include <boost/timer/timer.hpp>
 #include <boost/chrono.hpp>
 
@@ -248,12 +249,12 @@ void EvaluatorUnit::cancelFromPendingEnd(int backPos)
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 {
-	static boost::mutex outputMutex;
-	boost::lock_guard<boost::mutex> guard(outputMutex);
+	static std::mutex outputMutex;
+	outputMutex.lock();
 	if (!cancelingTask->Ready)
 	{	// Если задание ещё не выполнено, выставляем флаг готовности, чтобы никто не начал выполнение.
 		cancelingTask->Ready = 1;
-		guard.~lock_guard();
+		outputMutex.unlock();
 		// Если уже выполняется - запускаем процесс остановки.
 		if (cancelingTask->Working.load(std::memory_order_acquire))
 		{
@@ -261,7 +262,10 @@ void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 		}
 		mAnticipationJobsCanceled++;
 	}
-	guard.~lock_guard();
+	else
+	{
+		outputMutex.unlock();
+	}
 	for (SExecutionContext * child : cancelingTask->Childs)
 	{
 		child->cancel();
