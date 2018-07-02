@@ -1,7 +1,4 @@
 ﻿// NodeVisitor.cpp - выполняет передачу вызова от конкретного узла к абстрактному.
-#include <algorithm>
-#include <functional>
-
 #include "NodeVisitor.h"
 #include "Nodes.h"
 

@@ -116,9 +116,9 @@ public:
 class CondChoose : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	CondChoose(const IfPtr & thenBr, const IfPtr & elseBr, const IfPtr & next)
 		: mThen(thenBr), mElse(elseBr), mNext(next)
@@ -132,9 +132,9 @@ public:
 class RecFn : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	RecFn(const IfPtr & next, const std::string & name)
 		: mFn(nullptr),
@@ -150,9 +150,9 @@ public:
 class Ret : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	Ret()
 	{}
@@ -161,9 +161,9 @@ public:
 class BasicFn : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	BasicFn(const IfPtr & next, const std::string & name, const std::pair<int, int> & pos, const TFunction & fn)
 		: mNext(next), mName(name), mPos(pos), mFn(fn)
@@ -181,11 +181,11 @@ private:
 class GetArg : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
-	GetArg(const IfPtr & next, int argNum)
+	GetArg(const IfPtr & next, const int argNum)
 		: mNext(next), mArgNum(argNum)
 	{}
 
@@ -196,9 +196,9 @@ public:
 class Constant : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	Constant(const IfPtr & next, const DataValue & data)
 		: mNext(next), mData(data)
@@ -213,9 +213,9 @@ public:
 class EndOp : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 };
 //-----------------------------------------------------------------------------
 class FunctionalProgram

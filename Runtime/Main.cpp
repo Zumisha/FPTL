@@ -3,7 +3,6 @@
 #include <boost/program_options.hpp>
 
 #include "../Parser/Support.h"
-#include "../Parser/Tokenizer.h"
 #include "FSchemeGenerator.h"
 #include "Run.h"
 #include "IntForm/Generator.h"
@@ -25,7 +24,7 @@ template <typename T> void setOption(const po::variable_value & val, std::functi
 	}
 }
 
-void run(const char * programPath, int numCores, po::variables_map & vm)
+void run(const char * programPath, const int numCores, po::variables_map & vm)
 {
 	std::ifstream inpFile(programPath);
 
@@ -39,21 +38,14 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 	std::copy(std::istreambuf_iterator<char>(inpFile), std::istreambuf_iterator<char>(), std::back_inserter(inputStr));
 
 	Support support;
-	std::stringstream input(inputStr);
-	Tokenizer tokenizer(input);
-	ASTNode * astRoot = support.getInternalForm(&tokenizer);
-
-	if (astRoot)
-	{
-		std::cout << "No syntax errors found.\n";
-	}
-
+	ASTNode * astRoot = support.getInternalForm(inputStr);
 	support.getErrorList(std::cout);
 
 	// Генерируем внутренне представление.
 	if (astRoot)
 	{
-		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n\n";
+		std::cout << "No syntax errors found.\n";
+		std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
@@ -75,9 +67,6 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 
 		Runtime::IFExecutionContext ctx(internalForm->main().get());
 		evaluator.run(ctx, numCores);
-
-		// Старый eveluator. Использовать для сравнения производительности
-		//evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
 	}
 
 	delete astRoot;
@@ -113,7 +102,7 @@ int main(int argc, char ** argv)
 	po::options_description desc("Avilable options");
 	desc.add_options()
 		("source-file", po::value<std::string>(&programFile)->required(), "fptl program file")
-		("num-cores", po::value<int>(&numCores)->default_value(1), "number of cores")
+		("num-cores", po::value<int>(&numCores)->default_value(1), "number of worker threads")
 		("disable-gc", po::bool_switch(), "disable garbage collector")
 		("verbose-gc", po::bool_switch(), "print garbage collector info")
 		("young-gen", po::value<size_t>(), "young generation size in MiB")

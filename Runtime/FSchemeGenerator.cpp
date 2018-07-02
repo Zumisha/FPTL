@@ -30,12 +30,14 @@ FFunctionNode * FSchemeGenerator::newFunctionNode(const F &aFunction, const Pars
 
 //-----------------------------------------------------------------------------
 FSchemeGenerator::FSchemeGenerator()
-	: mScheme(0),
-	  mSchemeInput(0),
-	  mLibrary(new StandartLibrary),
-	  mConstructorGenerator(new ConstructorGenerator)
-{
-}
+		: mTree(nullptr), 
+		  mScheme(nullptr),
+		  mSchemeInput(nullptr), 
+		  mProgram(nullptr),
+		  mConstructorGenerator(new ConstructorGenerator),
+		  mLibrary(new StandartLibrary)
+	{
+	}
 
 //-----------------------------------------------------------------------------
 FSchemeGenerator::~FSchemeGenerator()
@@ -74,16 +76,16 @@ ConstructorGenerator * FSchemeGenerator::getConstructorGenerator() const
 //-----------------------------------------------------------------------------
 void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 {
-	FSchemeNode * node = 0;
+	FSchemeNode * node = nullptr;
 
-	Parser::Ident name = aNode->getConstant();
+	const Parser::Ident name = aNode->getConstant();
 
 	switch (aNode->getType())
 	{
 		// Целочисленная константа.
 		case Parser::ASTNode::IntConstant:
 		{
-			long constant = std::atoi(aNode->getConstant().getStr().c_str());
+			const long constant = std::atoi(aNode->getConstant().getStr().c_str());
 			node = new FConstantNode(TypeInfo("integer"), DataBuilders::createInt(constant), name.Line, name.Col);
 			break;
 		}
@@ -91,7 +93,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Динное целое. НАТИВНО НЕ ПОДДЕРЖИВАЕТСЯ.
 		case Parser::ASTNode::LongLongConstant:
 		{
-			auto value = boost::lexical_cast<double>(aNode->getConstant().getStr());
+			const auto value = boost::lexical_cast<double>(aNode->getConstant().getStr());
 			node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(value), name.Line, name.Col);
 			break;
 		}
@@ -100,7 +102,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		case Parser::ASTNode::FloatConstant:
 		case Parser::ASTNode::DoubleConstant:
 		{
-			double constant = std::atof(aNode->getConstant().getStr().c_str());
+			const double constant = std::atof(aNode->getConstant().getStr().c_str());
 			node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(constant), name.Line, name.Col);
 			break;
 		}
@@ -108,15 +110,15 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Строковая константа.
 		case Parser::ASTNode::StringConstant:
 		{
-			std::string str = aNode->getConstant().getStr();
+			const std::string str = aNode->getConstant().getStr();
 			node = new FStringConstant(str, name.Line, name.Col);
 			break;
 		}
 
 		// Выбор элемента из кортежа.
 		case Parser::ASTNode::TupleElemNumber:
-		{			
-			int elemNumber = std::atoi(aNode->getConstant().getStr().c_str()) - 1;
+		{
+			const int elemNumber = std::atoi(aNode->getConstant().getStr().c_str()) - 1;
 			assert(elemNumber >= 0);
 
 			node = new FTakeNode(elemNumber, name.Line, name.Col);
@@ -247,7 +249,7 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 
 			// Трансформируем дерево, чтобы оно ветвилось только в левую сторону, 
 			// чтобы при выполнении за каждым advance шел unwind.
-			auto seqNode = dynamic_cast<FSequentialNode *>(second);
+			const auto seqNode = dynamic_cast<FSequentialNode *>(second);
 
 			if (seqNode)
 			{
@@ -323,7 +325,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 	} 
 	else
 	{
-		auto name = aFuncTermName->getName().getStr();
+		const auto name = aFuncTermName->getName().getStr();
 		if (target->getType() == Parser::ASTNode::Definition || target->getType() == Parser::ASTNode::FunctionBlock)
 		{
 			// Делаем подстановку нерекурсивного уравнения.
@@ -360,7 +362,7 @@ void FSchemeGenerator::processBuildInFunction(Parser::NameRefNode * aFunctionNam
 	Parser::Ident name = aFunctionNameNode->getName();
 	
 	// Ищем функцию в библиотеке.
-	auto function = newFunctionNode(mLibrary->getFunction(name.getStr()), name);
+	const auto function = newFunctionNode(mLibrary->getFunction(name.getStr()), name);
 
 	mNodeStack.push(function);
 }

@@ -21,6 +21,7 @@ class CollectedHeap;
 // Контекст выполняения.
 struct SExecutionContext
 {
+	virtual ~SExecutionContext() = default;
 	// Указатель на схему.
 	FSchemeNode * Scheme;
 
@@ -29,6 +30,8 @@ struct SExecutionContext
 
 	// Указатели на порождённые задачи.
 	std::set<SExecutionContext *> Childs;
+
+	//int id;
 
 	// Флаг готовности задания.
 	std::atomic<int> Ready;
@@ -41,6 +44,8 @@ struct SExecutionContext
 
 	// Флаг нового уровня упреждения.
 	std::atomic<int> NewAnticipationLevel;
+
+	std::atomic<int> Canceled;
 
 	// Экземпляр завершающего узла, чтобы не создавать множественные при отмене.
 	std::shared_ptr<InternalForm> endIfPtr;

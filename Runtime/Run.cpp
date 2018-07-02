@@ -18,20 +18,23 @@ namespace FPTL { namespace Runtime {
 
 //-----------------------------------------------------------------------------
 SExecutionContext::SExecutionContext()
-	: Scheme(nullptr),
-	Parent(nullptr),
-	Ready(0),
-	Working(0),
-	Anticipation(0),
-	NewAnticipationLevel(0),
-	argPos(0),
-	arity(0),
-	argNum(0),
-	mEvaluatorUnit(nullptr)
-{
-	stack.reserve(10);
-	controlStack.reserve(10);
-}
+		: Scheme(nullptr),
+		  Parent(nullptr),
+		  //id(0),
+		  Ready(0),
+		  Working(0),
+		  Anticipation(0),
+		  NewAnticipationLevel(0),
+		  Canceled(0),
+	      endPtr(nullptr),
+		  argPos(0),
+		  arity(0),
+		  argNum(0),
+		  mEvaluatorUnit(nullptr)
+	{
+		stack.reserve(10);
+		controlStack.reserve(10);
+	}
 
 bool SExecutionContext::isReady() const
 {
@@ -114,7 +117,7 @@ void SExecutionContext::unwind(size_t aArgPosOld, int aArity, size_t aPos)
 void SExecutionContext::join()
 {
 	auto joined = mEvaluatorUnit->join();
-
+	if (!joined->Canceled)
 	// Копируем результат.
 	for (int i = 0; i < joined->arity; ++i)
 	{
@@ -126,8 +129,7 @@ void SExecutionContext::join()
 
 //-----------------------------------------------------------------------------
 EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
-	: mEvaluator(aSchemeEvaluator),
-	  mJobsCompleted(0),
+	: mJobsCompleted(0),
 	  mAnticipationJobsCompleted(0),
 	  mJobsCreated(0),
 	  mAnticipationJobsCreated(0),
@@ -135,6 +137,7 @@ EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	  mAnticipationJobsStealed(0),
 	  mAnticipationJobsMoved(0),
 	  mAnticipationJobsCanceled(0),
+	  mEvaluator(aSchemeEvaluator),
 	  mHeap(aSchemeEvaluator->garbageCollector()),
 	  mCollector(aSchemeEvaluator->garbageCollector())
 {
@@ -148,14 +151,14 @@ void EvaluatorUnit::addJob(SExecutionContext * aContext)
 
 SExecutionContext * EvaluatorUnit::stealJob()
 {
-	SExecutionContext * elem = 0;
+	SExecutionContext * elem = nullptr;
 	mJobQueue.steal(elem);
 	return elem;
 }
 
 SExecutionContext * EvaluatorUnit::stealAnticipationJob()
 {
-	SExecutionContext * elem = 0;
+	SExecutionContext * elem = nullptr;
 	mAnticipationJobQueue.steal(elem);
 	return elem;
 }
@@ -191,12 +194,16 @@ void EvaluatorUnit::addForkJob(SExecutionContext * task)
 	{
 		mAnticipationJobQueue.push(task);
 		mAnticipationJobsCreated++;
-		//std::cout << "\nAnt task created.\n";
+		/*std::stringstream ss;
+		ss << "Job ant " << task->id << " created.\n";
+		std::cout << ss.str();*/
 	}
 	else
 	{
 		addJob(task);
-		//std::cout << "\nTask created.\n";
+		/*std::stringstream ss;
+		ss << "Job " << task->id << " created.\n";
+		std::cout << ss.str();*/
 	}
 }
 
@@ -242,49 +249,52 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 	movingTask->NewAnticipationLevel.store(0, std::memory_order_release);
 }
 
-void EvaluatorUnit::cancelFromPendingEnd(int backPos)
+void EvaluatorUnit::cancelFromPendingEnd(const int backPos)
 {
+	static std::mutex outputMutex;
 	SExecutionContext * cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
 	cancelTask->Parent->Childs.erase(cancelTask);
+	outputMutex.lock();
 	cancel(cancelTask);
+	outputMutex.unlock();
 	//Убираем из очереди ожидающих выполнения задач.
 	pendingTasks.erase(pendingTasks.end() - backPos);
 }
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 {
-	static std::mutex outputMutex;
-	outputMutex.lock();
+	/*std::stringstream ss;
+	ss << "Job " << cancelingTask->id << " start cancel.\n";
+	std::cout << ss.str();*/
+	cancelingTask->Parent->Childs.erase(cancelingTask);
+	cancelingTask->Canceled = 1;
 	if (!cancelingTask->Ready)
 	{	// Если задание ещё не выполнено, выставляем флаг готовности, чтобы никто не начал выполнение.
 		cancelingTask->Ready = 1;
-		outputMutex.unlock();
 		// Если уже выполняется - запускаем процесс остановки.
 		if (cancelingTask->Working.load(std::memory_order_acquire))
 		{
 			cancelingTask->cancel();
 		}
 		mAnticipationJobsCanceled++;
-		//std::cout << "\nTask canceld.\n";
-	}
-	else
-	{
-		outputMutex.unlock();
+		/*std::stringstream ss;
+		ss << "Job " << cancelingTask->id << " canceled.\n";
+		std::cout << ss.str();*/
 	}
 	for (SExecutionContext * child : cancelingTask->Childs)
 	{
-		child->cancel();
+		cancel(child);
 	}
 }
 
-void EvaluatorUnit::safePoint()
+void EvaluatorUnit::safePoint() const
 {
 	mCollector->safePoint();
 }
 
 void EvaluatorUnit::schedule()
 {
-	SExecutionContext * context = 0;
+	SExecutionContext * context = nullptr;
 
 	// Берем задание из своей очереди.
 	if (mJobQueue.pop(context))
@@ -312,8 +322,14 @@ void EvaluatorUnit::schedule()
 	if (mAnticipationJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
 	{
 		context->Working.store(1, std::memory_order_release);
+		/*std::stringstream ss;
+		ss << "Job " << context->id << " started.\n";
+		std::cout << ss.str();*/
 		context->run(this);
 		mAnticipationJobsCompleted++;
+		/*std::stringstream s;
+		s << "Job " << context->id << " compleated.\n";
+		std::cout << s.str();*/
 		// Выполнили задание - проверяем не запланированна ли сборка мусора.
 		safePoint();
 		return;
@@ -324,9 +340,15 @@ void EvaluatorUnit::schedule()
 	if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
 	{
 		context->Working.store(1, std::memory_order_release);
+		/*std::stringstream ss;
+		ss << "Job " << context->id << " started.\n";
+		std::cout << ss.str();*/
 		context->run(this);
 		mAnticipationJobsStealed++;
 		mAnticipationJobsCompleted++;
+		/*std::stringstream s;
+		s << "Job " << context->id << " compleated.\n";
+		std::cout << s.str();*/
 		// Выполнили задание - проверяем не запланированна ли сборка мусора.
 		safePoint();
 		return;
@@ -401,7 +423,7 @@ SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 SExecutionContext * SchemeEvaluator::findAnticipationJob(const EvaluatorUnit * aUnit)
@@ -417,7 +439,7 @@ SExecutionContext * SchemeEvaluator::findAnticipationJob(const EvaluatorUnit * a
 			}
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 void SchemeEvaluator::markRoots(ObjectMarker * marker)
@@ -442,7 +464,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 		std::cerr << "Too many evaluators. Using default " << aNumEvaluators << "\n";
 	}
 
-	int evaluatorUnits = aNumEvaluators;
+	const int evaluatorUnits = aNumEvaluators;
 
 	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this, mGcConfig);
 	mGarbageCollector.reset(collector);
@@ -495,14 +517,14 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 	mThreadGroup.join_all();
 }
 
-struct ControlContext : public SExecutionContext
+struct ControlContext : SExecutionContext
 {
 	ControlContext(SExecutionContext * target, SchemeEvaluator * evaluator)
 		: mTarget(target),
 		mEvaluator(evaluator)
 	{}
 
-	virtual void run(EvaluatorUnit * evaluatorUnit)
+	void run(EvaluatorUnit * evaluatorUnit) override
 	{
 		boost::timer::cpu_timer timer;
 
@@ -512,7 +534,7 @@ struct ControlContext : public SExecutionContext
 		elapsed_times = timer.elapsed();
 	}
 
-	boost::timer::cpu_times getWorkTime()
+	boost::timer::cpu_times getWorkTime() const
 	{
 		return elapsed_times;
 	}
@@ -523,7 +545,7 @@ private:
 	boost::timer::cpu_times elapsed_times;
 };
 
-void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
+void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators)
 {
 	GarbageCollector * collector = GarbageCollector::getCollector(numEvaluators, this, mGcConfig);
 	mGarbageCollector.reset(collector);
@@ -544,11 +566,10 @@ void SchemeEvaluator::run(SExecutionContext & program, int numEvaluators)
 	mStopMutex.lock();
 
 	// Создаем потоки.
-	for (int i = 0; i < numEvaluators; i++)
+	for (size_t i = 0; i < numEvaluators; ++i)
 	{
 		mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
 	}
-
 	mStopMutex.unlock();
 
 	mThreadGroup.join_all();

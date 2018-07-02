@@ -324,6 +324,7 @@ IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 	fork->Parent = this;
 	fork->Anticipation = this->Anticipation.load(std::memory_order_acquire);
 	this->Childs.insert(fork);
+	//fork->id = this->id + 1;
 
 	// Копируем стек.
 	for (int i = argPos; i < (argPos + argNum); i++)

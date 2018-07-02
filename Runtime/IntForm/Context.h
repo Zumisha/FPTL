@@ -14,11 +14,11 @@ class IFExecutionContext : public SExecutionContext
 public:
 	IFExecutionContext(InternalForm * body);
 
-	virtual void run(EvaluatorUnit * evaluator);
+	void run(EvaluatorUnit * evaluator) override;
 
 	IFExecutionContext * spawn(InternalForm * fork);
 
-	virtual void cancel();
+	void cancel() override;
 };
 
 
