@@ -12,8 +12,6 @@
 namespace FPTL {
 namespace Runtime {
 
-namespace BFNames = Parser::BuildInFunctions;
-
 //-----------------------------------------------------------------------------
 // TODO: эти 2 функции больше не нужны.
 template <typename F>
@@ -50,27 +48,9 @@ FSchemeGenerator::~FSchemeGenerator()
 	delete mConstructorGenerator;
 }
 
-//-----------------------------------------------------------------------------
-FSchemeNode * FSchemeGenerator::getFScheme()
-{
-	return mScheme;
-}
-
-//-----------------------------------------------------------------------------
-FSchemeNode * FSchemeGenerator::getSchemeInput()
-{
-	return mSchemeInput;
-}
-
 FSchemeNode * FSchemeGenerator::getProgram()
 {
 	return mProgram;
-}
-
-//-----------------------------------------------------------------------------
-ConstructorGenerator * FSchemeGenerator::getConstructorGenerator() const
-{
-	return mConstructorGenerator;
 }
 
 //-----------------------------------------------------------------------------

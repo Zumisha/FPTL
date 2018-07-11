@@ -118,17 +118,17 @@ void SExecutionContext::join()
 {
 	auto joined = mEvaluatorUnit->join();
 	if (!joined->Canceled)
-	// Копируем результат.
-	for (int i = 0; i < joined->arity; ++i)
-	{
-		push(joined->stack.at(joined->stack.size() - joined->arity + i));
-	}
+		// Копируем результат.
+		for (int i = 0; i < joined->arity; ++i)
+		{
+			push(joined->stack.at(joined->stack.size() - joined->arity + i));
+		}
 
 	delete joined;
 }
 
 //-----------------------------------------------------------------------------
-EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
+EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator, const bool disableAnt)
 	: mJobsCompleted(0),
 	  mAnticipationJobsCompleted(0),
 	  mJobsCreated(0),
@@ -139,7 +139,8 @@ EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	  mAnticipationJobsCanceled(0),
 	  mEvaluator(aSchemeEvaluator),
 	  mHeap(aSchemeEvaluator->garbageCollector()),
-	  mCollector(aSchemeEvaluator->garbageCollector())
+	  mCollector(aSchemeEvaluator->garbageCollector()),
+	  disableAnticipatory(disableAnt)
 {
 }
 
@@ -159,7 +160,7 @@ SExecutionContext * EvaluatorUnit::stealJob()
 SExecutionContext * EvaluatorUnit::stealAnticipationJob()
 {
 	SExecutionContext * elem = nullptr;
-	mAnticipationJobQueue.steal(elem);
+	mAnticipationJobQueue.pop(elem);
 	return elem;
 }
 
@@ -183,7 +184,9 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "\n\nThread ID = " << boost::this_thread::get_id() << ". Jobs compleated: " << mJobsCompleted << ", stealed: " << mJobsStealed << ".\nAnticipation jobs created:" << mAnticipationJobsCreated << ", compleated: " << mAnticipationJobsCompleted << ", stealed: " << mAnticipationJobsStealed << ", moved: " << mAnticipationJobsMoved << ", canceled: " << mAnticipationJobsCanceled << ".";
+	ss << "\n\nThread ID = " << boost::this_thread::get_id() << ". Jobs compleated: " << mJobsCompleted << ", stealed: " << mJobsStealed << ".";
+	if (!disableAnticipatory)
+		ss << "\nAnticipation jobs created : " << mAnticipationJobsCreated << ", compleated : " << mAnticipationJobsCompleted << ", stealed : " << mAnticipationJobsStealed << ", moved : " << mAnticipationJobsMoved << ", canceled : " << mAnticipationJobsCanceled << ".";
 	std::cout << ss.str();
 }
 
@@ -317,41 +320,44 @@ void EvaluatorUnit::schedule()
 		safePoint();
 		return;
 	}
-	
-	// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
-	if (mAnticipationJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
-	{
-		context->Working.store(1, std::memory_order_release);
-		/*std::stringstream ss;
-		ss << "Job " << context->id << " started.\n";
-		std::cout << ss.str();*/
-		context->run(this);
-		mAnticipationJobsCompleted++;
-		/*std::stringstream s;
-		s << "Job " << context->id << " compleated.\n";
-		std::cout << s.str();*/
-		// Выполнили задание - проверяем не запланированна ли сборка мусора.
-		safePoint();
-		return;
-	}
 
-	// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно отменено.
-	context = mEvaluator->findAnticipationJob(this);
-	if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+	if (!disableAnticipatory)
 	{
-		context->Working.store(1, std::memory_order_release);
-		/*std::stringstream ss;
-		ss << "Job " << context->id << " started.\n";
-		std::cout << ss.str();*/
-		context->run(this);
-		mAnticipationJobsStealed++;
-		mAnticipationJobsCompleted++;
-		/*std::stringstream s;
-		s << "Job " << context->id << " compleated.\n";
-		std::cout << s.str();*/
-		// Выполнили задание - проверяем не запланированна ли сборка мусора.
-		safePoint();
-		return;
+		// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
+		if (mAnticipationJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+		{
+			context->Working.store(1, std::memory_order_release);
+			/*std::stringstream ss;
+			ss << "Job " << context->id << " started.\n";
+			std::cout << ss.str();*/
+			context->run(this);
+			mAnticipationJobsCompleted++;
+			/*std::stringstream s;
+			s << "Job " << context->id << " compleated.\n";
+			std::cout << s.str();*/
+			// Выполнили задание - проверяем не запланированна ли сборка мусора.
+			safePoint();
+			return;
+		}
+
+		// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно отменено.
+		context = mEvaluator->findAnticipationJob(this);
+		if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+		{
+			context->Working.store(1, std::memory_order_release);
+			/*std::stringstream ss;
+			ss << "Job " << context->id << " started.\n";
+			std::cout << ss.str();*/
+			context->run(this);
+			mAnticipationJobsStealed++;
+			mAnticipationJobsCompleted++;
+			/*std::stringstream s;
+			s << "Job " << context->id << " compleated.\n";
+			std::cout << s.str();*/
+			// Выполнили задание - проверяем не запланированна ли сборка мусора.
+			safePoint();
+			return;
+		}
 	}
 
 	// Если заданий нет - приостанавливаем поток.
@@ -472,7 +478,7 @@ void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode *
 	// Создаем юниты выполнения.
 	for (int i = 0; i < evaluatorUnits; i++)
 	{
-		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
+		mEvaluatorUnits.push_back(new EvaluatorUnit(this, true));
 	}
 
 	// Создаем задание и назначем его первому вычислителю.
@@ -545,7 +551,7 @@ private:
 	boost::timer::cpu_times elapsed_times;
 };
 
-void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators)
+void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators, const bool disableAnt)
 {
 	GarbageCollector * collector = GarbageCollector::getCollector(numEvaluators, this, mGcConfig);
 	mGarbageCollector.reset(collector);
@@ -553,7 +559,7 @@ void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators)
 	// Создаем юниты выполнения.
 	for (int i = 0; i < numEvaluators; i++)
 	{
-		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
+		mEvaluatorUnits.push_back(new EvaluatorUnit(this, disableAnt));
 	}
 
 	std::cout.precision(15);

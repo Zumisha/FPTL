@@ -21,7 +21,7 @@ class EvaluatorUnit
 public:
 	friend struct SExecutionContext;
 
-	EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator);
+	EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator, bool disableAnt);
 
 	// Основная процедура, в которой произдводятс вычисления.
 	void evaluateScheme();
@@ -84,6 +84,7 @@ private:
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
+	bool disableAnticipatory;
 };
 
 // Производит вычисления программы, заданной функциональной схемой.
@@ -98,12 +99,12 @@ public:
 	// Запуск вычисления схемы.
 	void runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInputGenerator, int aNumEvaluators);
 
-	void run(SExecutionContext & program, int numEvaluators);
+	void run(SExecutionContext & program, int numEvaluators, bool disableAnt);
 
-	// Прерывать вычисления.
+	// Прервать вычисления.
 	void stop();
 
-	// Взять задание у других вычислителей. Возвращает 0, если не получилось.
+	// Взять задание у других вычислителей. Возвращает нулевой указатель, если не получилось.
 	SExecutionContext * findJob(const EvaluatorUnit * aUnit);
 
 	// Взять упреждающую задачу у других вычислителей. Возвращает 0, если не получилось.

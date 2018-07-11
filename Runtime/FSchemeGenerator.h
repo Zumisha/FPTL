@@ -33,11 +33,7 @@ public:
 	void visit(Parser::ConstantNode * aConstantNode) override;
 
 	// Получение результата.
-	FSchemeNode * getFScheme();
-	FSchemeNode * getSchemeInput();
 	FSchemeNode * getProgram();
-
-	ConstructorGenerator * getConstructorGenerator() const;
 
 private:
 

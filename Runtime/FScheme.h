@@ -41,9 +41,9 @@ class FParallelNode : public FSchemeNode
 public:
 	FParallelNode(FSchemeNode * aLeft, FSchemeNode * aRight);
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * left() const { return mLeft; }
 	FSchemeNode * right() const { return mRight; }
@@ -73,9 +73,9 @@ public:
 		  mLine(aLine)
 	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	static void call(const FFunctionNode * aNode, SExecutionContext * aCtx);
 
@@ -100,9 +100,9 @@ class FSequentialNode : public FSchemeNode
 public:
 	FSequentialNode(FSchemeNode * aFirst, FSchemeNode * aSecond);
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * first() const { return mFirst; }
 	FSchemeNode * second() const { return mSecond; }
@@ -119,9 +119,9 @@ public:
 
 	FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBranch, FSchemeNode * aFalseBranch);
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * condition() const { return mCondition; }
 	FSchemeNode * trueBranch() const { return mTrueBranch; }
@@ -145,9 +145,9 @@ public:
 		mCol(aCol)
 	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	int index() const { return mIndex; }
 	int col() const { return mCol; }
@@ -172,9 +172,9 @@ public:
 		mCol(aCol)
 	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	TypeInfo type() const { return mType; }
 	DataValue data() const { return mData; }
@@ -191,7 +191,7 @@ class FStringConstant : public FConstantNode
 public:
 	FStringConstant(const std::string & aStr, short aLine, short aCol);
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
 	std::string str() const { return mStr; }
 
@@ -207,9 +207,9 @@ public:
 	FScheme(FSchemeNode * aFirstNode);
 	FScheme(FSchemeNode * aFirstNode, const std::string & aName);
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void execute(SExecutionContext & aCtx) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	void setFirstNode(FSchemeNode * aFirstNode);
 	void setDefinitions(const std::map<std::string, FSchemeNode *> & aDefinitions);

@@ -70,16 +70,17 @@ public:
 	void visit(const FTakeNode * aNode) override;
 	void visit(const FConstantNode * aNode) override;
 
-	static FunctionalProgram * generate(FSchemeNode * node);
+	static FunctionalProgram * generate(FSchemeNode * node, const bool disableAnt);
 
 private:
 	IfPtr createSpan(FSchemeNode * node, const IfPtr & mTail);
 
-private:
 	GeneratorContext mCtx;
 
 	IfPtr mTail;
 	IfPtr mResult;
+
+	bool disableAnt;
 };
 
 }}
