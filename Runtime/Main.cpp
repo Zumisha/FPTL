@@ -3,7 +3,6 @@
 #include <boost/program_options.hpp>
 
 #include "../Parser/Support.h"
-#include "../Parser/Tokenizer.h"
 #include "FSchemeGenerator.h"
 #include "Run.h"
 #include "IntForm/Generator.h"
@@ -25,7 +24,7 @@ template <typename T> void setOption(const po::variable_value & val, std::functi
 	}
 }
 
-void run(const char * programPath, int numCores, po::variables_map & vm)
+void run(const char * programPath, const int numCores, po::variables_map & vm)
 {
 	std::ifstream inpFile(programPath);
 
@@ -39,32 +38,28 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 	std::copy(std::istreambuf_iterator<char>(inpFile), std::istreambuf_iterator<char>(), std::back_inserter(inputStr));
 
 	Support support;
-	std::stringstream input(inputStr);
-	Tokenizer tokenizer(input);
-	ASTNode * astRoot = support.getInternalForm(&tokenizer);
-
-	if (astRoot)
-	{
-		std::cout << "No syntax errors found.\n";
-	}
-
+	ASTNode * astRoot = support.getInternalForm(inputStr);
 	support.getErrorList(std::cout);
 
 	// Генерируем внутренне представление.
 	if (astRoot)
 	{
-		std::cout << "Running program: " << programPath << " on " << numCores << " cores...\n\n";
+		std::cout << "No syntax errors found.\n";
+		std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
+		const bool disableAnt = vm["disable-ant"].as<bool>() || (numCores==1);
+		if (disableAnt)
+			std::cout << "Anticipatory computing disabled.\n\n";
 
-		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram()));
+		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), disableAnt));
 
 		Runtime::SchemeEvaluator evaluator;
 
 		Runtime::GcConfig gcConfig;
-		
+
 		setOption<bool>(vm["disable-gc"], [&](bool v) {gcConfig.setEnabled(!v); });
 		setOption<bool>(vm["verbose-gc"], [&](bool v) {gcConfig.setVerbose(v); });
 		setOption<size_t>(vm["young-gen"], [&](size_t s) {gcConfig.setYoungGenSize(s * 1024 * 1024); });
@@ -74,10 +69,7 @@ void run(const char * programPath, int numCores, po::variables_map & vm)
 		evaluator.setGcConfig(gcConfig);
 
 		Runtime::IFExecutionContext ctx(internalForm->main().get());
-		evaluator.run(ctx, numCores);
-
-		// Старый eveluator. Использовать для сравнения производительности
-		//evaluator.runScheme(schemeGenerator.getFScheme(), schemeGenerator.getSchemeInput(), numCores);
+		evaluator.run(ctx, numCores, disableAnt);
 	}
 
 	delete astRoot;
@@ -113,7 +105,8 @@ int main(int argc, char ** argv)
 	po::options_description desc("Avilable options");
 	desc.add_options()
 		("source-file", po::value<std::string>(&programFile)->required(), "fptl program file")
-		("num-cores", po::value<int>(&numCores)->default_value(1), "number of cores")
+		("num-cores", po::value<int>(&numCores)->default_value(1), "number of worker threads")
+		("disable-ant", po::bool_switch(), "disable anticipatory computing")
 		("disable-gc", po::bool_switch(), "disable garbage collector")
 		("verbose-gc", po::bool_switch(), "print garbage collector info")
 		("young-gen", po::value<size_t>(), "young generation size in MiB")

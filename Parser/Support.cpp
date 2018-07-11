@@ -1,16 +1,17 @@
-﻿#include <cassert>
-
-#include "Support.h"
+﻿#include "Support.h"
 #include "Generated/Parser.tab.hh"
 #include "SemanticCheck.h"
 #include "Nodes.h"
 #include "BuildInFunctionNames.h"
+#include <memory>
+#include <string>
+#include "../Parser/Tokenizer.h"
 
 namespace FPTL { namespace Parser {
 
 //-------------------------------------------------------------------------------------------
-ErrorMessage::ErrorMessage( ErrTypes::ErrType aErr, Ident aIdent )
-	: mIdent(aIdent), mErr(aErr)
+ErrorMessage::ErrorMessage(const ErrTypes::ErrType aErr, const Ident aIdent )
+	: mErr(aErr), mIdent(aIdent)
 {}
 
 //-------------------------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Support::~Support()
 }
 
 //-------------------------------------------------------------------------------------------
-void Support::semanticError( ErrTypes::ErrType aErr, Ident aIdent )
+void Support::semanticError(const ErrTypes::ErrType aErr, const Ident aIdent )
 {
 	mErrorList.push_back( ErrorMessage( aErr, aIdent ) );
 	mWasError = true;
@@ -110,7 +111,7 @@ void Support::initializeKeywordTable( void )
 }
 
 //-------------------------------------------------------------------------------------------
-void Support::registerKeyword( const std::string & aName, int aId )
+void Support::registerKeyword( const std::string & aName, const int aId )
 {
 	mNameTable[aName] = aId;
 }
@@ -132,14 +133,14 @@ int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 //
 // newIdent - добавление идентификатора в таблицу имен.
 //
-void Support::newIdent( const std::string & aName, int aId, Ident & aIdent )
+void Support::newIdent( const std::string & aName, const int aId, Ident & aIdent )
 {
 	mNameTable[aName] = aId;
 	aIdent.Ptr = &mNameTable.find( aName )->first;
 }
 
 //-------------------------------------------------------------------------------------------
-Ident Support::newConstant( const std::string & aConstant, int aLine, int aCol )
+Ident Support::newConstant( const std::string & aConstant, const int aLine, const int aCol )
 {
 	Ident ident;
 	ident.Col = aCol;
@@ -149,9 +150,9 @@ Ident Support::newConstant( const std::string & aConstant, int aLine, int aCol )
 }
 
 //-------------------------------------------------------------------------------------------
-const char * Support::getErrorString( ErrTypes::ErrType aErr ) const
+const char * Support::getErrorString(const ErrTypes::ErrType aErr )
 {
-	const char * msg = 0;
+	const char * msg = nullptr;
 	switch( aErr )
 	{
 	case ErrTypes::GeneralSyntaxError:                  msg = "general syntax error"; break;
@@ -182,7 +183,7 @@ const char * Support::getErrorString( ErrTypes::ErrType aErr ) const
 void Support::getErrorList( std::ostream & aOutStream )
 {
 	std::vector<ErrorMessage> processed;
-	for( std::list<ErrorMessage>::iterator errMsg = mErrorList.begin(); errMsg != mErrorList.end(); ++errMsg )
+	for(auto errMsg = mErrorList.begin(); errMsg != mErrorList.end(); ++errMsg )
 	{
 		if (std::find(processed.begin(), processed.end(), *errMsg) == processed.end()) {
 			aOutStream << "Error : " << getErrorString(errMsg->mErr) << " : "
@@ -212,11 +213,12 @@ Ident Support::getTopIdent() const
 	return mIdentStack.back();
 }
 
-extern bool checkTypes(ASTNode * aNode);
-
 //-------------------------------------------------------------------------------------------
-ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
+ASTNode * Support::getInternalForm(const std::string inputStr)
 {
+	std::stringstream input(inputStr);
+	Tokenizer tokenizer(input);
+
 	// Сбрасываем состояние.
 	mIdentStack.clear();
 	mNameTable.clear();
@@ -224,20 +226,20 @@ ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
 
 	initializeKeywordTable();
 
-	ASTNode * root = 0;
+	ASTNode * root = nullptr;
 
-	BisonParser parser( this, aTokenizer, root );
+	BisonParser parser( this, &tokenizer, root );
 
 	//parser.set_debug_stream(std::cerr);
 	//parser.set_debug_level(1);
 
-	int result = parser.parse();
+	const int result = parser.parse();
 
 	std::auto_ptr<ASTNode> rootPtr(root);
 
 	if (result)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	NamesChecker checkNames( this );
@@ -245,7 +247,7 @@ ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
 
 	if (mWasError)
 	{
-		return 0;
+		return nullptr;
 	}
 
 	RecursionFinder recursionFinder;
@@ -253,13 +255,8 @@ ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
 
 	if (mWasError)
 	{
-		return 0;
+		return nullptr;
 	}
-
-	// Проверка типов.
-	/*FunctionalProgram * fp = dynamic_cast<FunctionalProgram *>(root);
-
-	checkTypes(fp->getScheme());*/
 
 	return rootPtr.release();
 }

@@ -62,7 +62,7 @@ void Generator::visit(const FConditionNode * node)
 {
 	IfPtr thenBr = 0, elseBr = 0, thenBrFork = 0, elseBrFork = 0, cond;
 
-	if (!node->condition()->isLong())
+	if (disableAnt || !node->condition()->isLong())
 	{
 		thenBr = createSpan(node->trueBranch(), mTail);
 		elseBr = createSpan(node->falseBranch(), mTail);
@@ -134,10 +134,11 @@ void Generator::visit(const FConstantNode * node)
 	}
 }
 
-FunctionalProgram * Generator::generate(FSchemeNode * node)
+FunctionalProgram * Generator::generate(FSchemeNode * node, const bool disableAnt)
 {
 	Generator generator;
-	auto main = generator.createSpan(node, std::make_shared<EndOp>());
+	generator.disableAnt = disableAnt;
+	const auto main = generator.createSpan(node, std::make_shared<EndOp>());
 
 	generator.mCtx.resolveRec();
 

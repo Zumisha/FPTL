@@ -11,17 +11,19 @@ namespace FPTL { namespace Parser {
 
 //-------------------------------------------------------------------------------------------
 Tokenizer::Tokenizer(std::istream & input)
-	: yyFlexLexer( input, std::cout ),
-	mLine(1),
-	mCol(0),
-	mTokenBegin(0),
-	mLastTokenLen(0),
-	mPrevTokenLine(0)
-{
-}
+		: yyFlexLexer(input, std::cout),
+		  mSupport(nullptr),
+		  mVal(nullptr),
+		  mLine(1),
+		  mCol(0),
+		  mPrevTokenLine(0),
+		  mTokenBegin(0),
+		  mLastTokenLen(0)
+	{
+	}
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formDecimalConstant()
+ConstantNode * Tokenizer::formDecimalConstant() const
 {
 	// Проверяем диапазон.
 	try
@@ -37,9 +39,9 @@ ConstantNode * Tokenizer::formDecimalConstant()
 }
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formLongLongConstant()
+ConstantNode * Tokenizer::formLongLongConstant() const
 {
-	std::regex rx("(\\d+)[Ll][Ll]");
+	const std::regex rx("(\\d+)[Ll][Ll]");
 	std::cmatch match;
 
 	std::regex_search(YYText(), match, rx); 
@@ -58,7 +60,7 @@ ConstantNode * Tokenizer::formLongLongConstant()
 }
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formFPConstant( bool aForceFloat )
+ConstantNode * Tokenizer::formFPConstant(const bool aForceFloat ) const
 {
 	std::string str = YYText();
 
@@ -81,7 +83,7 @@ ConstantNode * Tokenizer::formFPConstant( bool aForceFloat )
 }
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formStringConstant(void)
+ConstantNode * Tokenizer::formStringConstant(void) const
 {
 	std::string str = YYText();
 	str = std::string( str.begin() + str.find_first_of('\"') + 1, str.begin() + str.find_last_of('\"') );
@@ -132,7 +134,7 @@ int Tokenizer::processCommentBlock(void)
 }
 
 //-------------------------------------------------------------------------------------------
-int Tokenizer::processIdentifier(void)
+int Tokenizer::processIdentifier(void) const
 {
 	mVal->scIdent.Col = mCol;
 	mVal->scIdent.Line = mLine;
@@ -171,7 +173,7 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 	mTokenBegin += mLastTokenLen;
 	do
 	{
-		token = (BisonParser::token_type)yylex();
+		token = static_cast<BisonParser::token_type>(yylex());
 		if( token == '\n' )
 		{
 			mCol++;
@@ -189,7 +191,7 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 Ident Tokenizer::getErrorIdent() const
 {
 	static std::string nullStr;
-	Ident ident = { static_cast<short>(mCol), static_cast<short>(mLine), &nullStr };
+	const Ident ident = { static_cast<short>(mCol), static_cast<short>(mLine), &nullStr };
 	return ident;
 }
 

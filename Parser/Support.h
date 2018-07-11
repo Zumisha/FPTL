@@ -5,7 +5,6 @@
 #include <list>
 #include <unordered_set>
 #include <unordered_map>
-#include <memory>
 #include "Ident.h"
 #include "NodeVisitor.h"
 
@@ -91,7 +90,7 @@ namespace FPTL
 
 		void               semanticError( ErrTypes::ErrType aErr, Ident aIdent );
 
-		const char *       getErrorString( ErrTypes::ErrType aErr ) const;
+		static const char *       getErrorString( ErrTypes::ErrType aErr );
 		void               getErrorList( std::ostream & aOutStream );
 
 		// Методы для работы с таблицей имен.
@@ -104,7 +103,7 @@ namespace FPTL
 		Ident              newConstant( const std::string & aConstant, int aLine, int aCol );
 
 		// Проводит синтксический разбор, семантическую проверку и возвращает AST-дерево.
-		ASTNode *          getInternalForm( class Tokenizer * aTokenizer );
+		ASTNode *          getInternalForm(std::string inputStr);
 
 		// Вспомогательные методы для парсера.
 		void               pushIdent( const Ident & aIdent );

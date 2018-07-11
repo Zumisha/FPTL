@@ -29,13 +29,13 @@ namespace Parser {
 
 		// Вспомогательные методы, вызываемые из yylex.
 
-		ConstantNode * formDecimalConstant();
-		ConstantNode * formLongLongConstant();
-		ConstantNode * formFPConstant( bool aForceFloat );
-		ConstantNode * formStringConstant();
+		ConstantNode * formDecimalConstant() const;
+		ConstantNode * formLongLongConstant() const;
+		ConstantNode * formFPConstant( bool aForceFloat ) const;
+		ConstantNode * formStringConstant() const;
 
 		int	processCommentBlock();
-		int	processIdentifier();
+		int	processIdentifier() const;
 
 	private:
 		Support * mSupport;

@@ -62,24 +62,25 @@ class Generator : public FSchemeVisitor
 public:
 	Generator();
 
-	virtual void visit(const FFunctionNode * aNode);
-	virtual void visit(const FParallelNode * aNode);
-	virtual void visit(const FSequentialNode * aNode);
-	virtual void visit(const FConditionNode * aNode);
-	virtual void visit(const FScheme * aScheme);
-	virtual void visit(const FTakeNode * aNode);
-	virtual void visit(const FConstantNode * aNode);
+	void visit(const FFunctionNode * aNode) override;
+	void visit(const FParallelNode * aNode) override;
+	void visit(const FSequentialNode * aNode) override;
+	void visit(const FConditionNode * aNode) override;
+	void visit(const FScheme * aScheme) override;
+	void visit(const FTakeNode * aNode) override;
+	void visit(const FConstantNode * aNode) override;
 
-	static FunctionalProgram * generate(FSchemeNode * node);
+	static FunctionalProgram * generate(FSchemeNode * node, const bool disableAnt);
 
 private:
 	IfPtr createSpan(FSchemeNode * node, const IfPtr & mTail);
 
-private:
 	GeneratorContext mCtx;
 
 	IfPtr mTail;
 	IfPtr mResult;
+
+	bool disableAnt;
 };
 
 }}

@@ -129,7 +129,6 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	DataValue cond = ctx.stack.back();
 	bool isUndefined = false;
 
-	//Не работает. Неправильно определяется количество аргументов во входном кортеже.
 	int numArgs = ctx.arity - arity;
 	for (int i = 0; i < numArgs; ++i)
 	{
