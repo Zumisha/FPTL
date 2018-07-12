@@ -128,7 +128,8 @@ void greaterOrEqual(SExecutionContext & aCtx)
 // Генерирует случайное вещественное число в диапазоне от 0 до 1.
 void rand(SExecutionContext & aCtx)
 {
-	static thread_local std::mt19937_64 gen;
+	static thread_local std::random_device rd;
+	static thread_local std::mt19937_64 gen(rd());
 	static const std::uniform_real_distribution<> real_distrib;
 	aCtx.push(DataBuilders::createDouble(real_distrib(gen)));
 }
