@@ -80,12 +80,9 @@ struct SExecutionContext
 	void join();
 
 	// Запуск выполнения.
-	virtual void run(EvaluatorUnit * aEvaluatorUnit);
+	virtual void run(EvaluatorUnit * aEvaluatorUnit) = 0;
 
 	virtual void cancel() {}
-
-	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
-	SExecutionContext * spawn(FSchemeNode * aFirstNode);
 
 	EvaluatorUnit * evaluator() const;
 	CollectedHeap & heap() const;

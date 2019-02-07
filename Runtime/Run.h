@@ -4,7 +4,6 @@
 
 #include <boost/thread.hpp>
 
-#include "WorkStealingQueue.h"
 #include "LockFreeWorkStealingQueue.h"
 #include "CollectedHeap.h"
 #include "GarbageCollector.h"
@@ -96,9 +95,6 @@ public:
 
 	void setGcConfig(const GcConfig & config){ mGcConfig = config; }
 
-	// Запуск вычисления схемы.
-	void runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInputGenerator, int aNumEvaluators);
-
 	void run(SExecutionContext & program, int numEvaluators, bool disableAnt);
 
 	// Прервать вычисления.
@@ -110,7 +106,7 @@ public:
 	// Взять упреждающую задачу у других вычислителей. Возвращает 0, если не получилось.
 	SExecutionContext * findAnticipationJob(const EvaluatorUnit * aUnit);
 
-	virtual void markRoots(ObjectMarker * marker);
+	void markRoots(ObjectMarker * marker) override;
 
 	GarbageCollector * garbageCollector() const;
 
