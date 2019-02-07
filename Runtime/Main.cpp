@@ -50,7 +50,7 @@ void run(const char * programPath, const int numCores, po::variables_map & vm)
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
-		const bool disableAnt = vm["disable-ant"].as<bool>() || (numCores==1);
+		const bool disableAnt = !vm["enable-ant"].as<bool>() || (numCores==1);
 		if (disableAnt)
 			std::cout << "Anticipatory computing disabled.\n\n";
 
@@ -106,7 +106,7 @@ int main(int argc, char ** argv)
 	desc.add_options()
 		("source-file", po::value<std::string>(&programFile)->required(), "fptl program file")
 		("num-cores", po::value<int>(&numCores)->default_value(1), "number of worker threads")
-		("disable-ant", po::bool_switch(), "disable anticipatory computing")
+		("enable-ant", po::bool_switch(), "enable anticipatory computing")
 		("disable-gc", po::bool_switch(), "disable garbage collector")
 		("verbose-gc", po::bool_switch(), "print garbage collector info")
 		("young-gen", po::value<size_t>(), "young generation size in MiB")

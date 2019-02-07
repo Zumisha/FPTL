@@ -266,7 +266,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\Thirdparty\jemalloc-5.0.1\include\msvc_compat;..\Thirdparty\jemalloc-5.0.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include\msvc_compat;..\Thirdparty\jemalloc-5.0.1\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
