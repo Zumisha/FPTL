@@ -25,8 +25,6 @@ public:
 	FSchemeNode(bool aIsLong);
 	virtual ~FSchemeNode() {}
 
-	virtual void execute(SExecutionContext & aCtx) const = 0;
-
 	virtual void accept(FSchemeVisitor * aVisitor) const = 0;
 
 	bool isLong() const { return mIsLong; }
@@ -40,8 +38,6 @@ class FParallelNode : public FSchemeNode
 {
 public:
 	FParallelNode(FSchemeNode * aLeft, FSchemeNode * aRight);
-
-	void execute(SExecutionContext & aCtx) const override;
 
 	void accept(FSchemeVisitor * aVisitor) const override;
 
@@ -73,8 +69,6 @@ public:
 		  mLine(aLine)
 	{}
 
-	void execute(SExecutionContext & aCtx) const override;
-
 	void accept(FSchemeVisitor * aVisitor) const override;
 
 	static void call(const FFunctionNode * aNode, SExecutionContext * aCtx);
@@ -100,8 +94,6 @@ class FSequentialNode : public FSchemeNode
 public:
 	FSequentialNode(FSchemeNode * aFirst, FSchemeNode * aSecond);
 
-	void execute(SExecutionContext & aCtx) const override;
-
 	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * first() const { return mFirst; }
@@ -118,8 +110,6 @@ class FConditionNode : public FSchemeNode
 public:
 
 	FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBranch, FSchemeNode * aFalseBranch);
-
-	void execute(SExecutionContext & aCtx) const override;
 
 	void accept(FSchemeVisitor * aVisitor) const override;
 
@@ -144,8 +134,6 @@ public:
 		mLine(aLine),
 		mCol(aCol)
 	{}
-
-	void execute(SExecutionContext & aCtx) const override;
 
 	void accept(FSchemeVisitor * aVisitor) const override;
 
@@ -172,8 +160,6 @@ public:
 		mCol(aCol)
 	{}
 
-	void execute(SExecutionContext & aCtx) const override;
-
 	void accept(FSchemeVisitor * aVisitor) const override;
 
 	TypeInfo type() const { return mType; }
@@ -191,8 +177,6 @@ class FStringConstant : public FConstantNode
 public:
 	FStringConstant(const std::string & aStr, short aLine, short aCol);
 
-	void execute(SExecutionContext & aCtx) const override;
-
 	std::string str() const { return mStr; }
 
 private:
@@ -207,8 +191,6 @@ public:
 	FScheme(FSchemeNode * aFirstNode);
 	FScheme(FSchemeNode * aFirstNode, const std::string & aName);
 
-	void execute(SExecutionContext & aCtx) const override;
-
 	void accept(FSchemeVisitor * aVisitor) const override;
 
 	void setFirstNode(FSchemeNode * aFirstNode);
@@ -221,8 +203,6 @@ public:
 	FSchemeNode * definition(const std::string & aName) const;
 
 private:
-	void optimizeTailCall();
-
 	FSchemeNode * mFirstNode;
 	std::string mName;
 	std::map<std::string, FSchemeNode *> mDefinitions;

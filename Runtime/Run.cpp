@@ -40,23 +40,6 @@ bool SExecutionContext::isReady() const
 	return Ready.load(std::memory_order_acquire) == 1;
 }
 
-// Метод старого eveluator'а.
-SExecutionContext * SExecutionContext::spawn(FSchemeNode * aScheme)
-{
-	SExecutionContext * fork = new SExecutionContext();
-	fork->Scheme = aScheme;
-	fork->Parent = this;
-
-	// Копируем стек.
-	for (int i = argPos; i < (argPos + argNum); i++)
-	{
-		fork->stack.push_back(stack.at(i));
-	}
-
-	fork->argNum = argNum;
-	return fork;
-}
-
 EvaluatorUnit * SExecutionContext::evaluator() const
 {
 	return mEvaluatorUnit;
@@ -65,22 +48,6 @@ EvaluatorUnit * SExecutionContext::evaluator() const
 CollectedHeap & SExecutionContext::heap() const
 {
 	return mEvaluatorUnit->heap();
-}
-
-// Метод старого eveluator'а.
-void SExecutionContext::run(EvaluatorUnit * aEvaluatorUnit)
-{
-	assert(!Ready.load(std::memory_order_acquire));
-	assert(!mEvaluatorUnit);
-	mEvaluatorUnit = aEvaluatorUnit;
-	mEvaluatorUnit->runningTasks.push_back(this);
-
-	Scheme->execute(*this);
-
-	mEvaluatorUnit->runningTasks.pop_back();
-
-	// Сообщаем о готовности задания.
-	Ready.store(1, std::memory_order_release);
 }
 
 const DataValue & SExecutionContext::getArg(int aIndex) const
@@ -320,7 +287,7 @@ void EvaluatorUnit::schedule()
 			return;
 		}
 
-		// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно отменено.
+		// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно не отменено.
 		context = mEvaluator->findAnticipationJob(this);
 		if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
 		{
@@ -435,68 +402,6 @@ GarbageCollector * SchemeEvaluator::garbageCollector() const
 	return mGarbageCollector.get();
 }
 
-// Метод старого eveluator'а.
-void SchemeEvaluator::runScheme(const FSchemeNode * aScheme, const FSchemeNode * aInput, int aNumEvaluators)
-{
-	if (aNumEvaluators >= 32)
-	{
-		aNumEvaluators = 32;
-		std::cerr << "Too many evaluators. Using default " << aNumEvaluators << "\n";
-	}
-
-	const int evaluatorUnits = aNumEvaluators;
-
-	GarbageCollector * collector = GarbageCollector::getCollector(evaluatorUnits, this, mGcConfig);
-	mGarbageCollector.reset(collector);
-
-	// Создаем юниты выполнения.
-	for (int i = 0; i < evaluatorUnits; i++)
-	{
-		mEvaluatorUnits.push_back(new EvaluatorUnit(this, true));
-	}
-
-	// Создаем задание и назначем его первому вычислителю.
-	SExecutionContext * context = new SExecutionContext();
-
-	FFunctionNode startNode(
-		[this, aScheme, aInput, context, collector](SExecutionContext & aCtx)
-		{
-			if (aInput)
-			{
-				aInput->execute(aCtx);
-			}
-
-			aCtx.advance();
-
-			boost::timer::cpu_timer timer;
-
-			aScheme->execute(aCtx);
-
-			collector->runGc();
-			stop();
-
-			std::cout << "\nTime : " << boost::timer::format(timer.elapsed()) << "\n";
-		}
-	);
-
-	context->Scheme = &startNode;
-	mEvaluatorUnits[0]->addJob(context);
-    
-    // Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
-    mStopMutex.lock();
-
-	// Создаем потоки.
-	for (int i = 0; i < evaluatorUnits; i++)
-	{
-		mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
-	}
-    
-    mStopMutex.unlock();
-
-	// Ждем завершения вычислений.
-	mThreadGroup.join_all();
-}
-
 struct ControlContext : SExecutionContext
 {
 	ControlContext(SExecutionContext * target, SchemeEvaluator * evaluator)
@@ -531,7 +436,7 @@ void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators, 
 	mGarbageCollector.reset(collector);
 
 	// Создаем юниты выполнения.
-	for (int i = 0; i < numEvaluators; i++)
+	for (size_t i = 0; i < numEvaluators; i++)
 	{
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this, disableAnt));
 	}
@@ -557,7 +462,7 @@ void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators, 
 	std::for_each(mEvaluatorUnits.begin(), mEvaluatorUnits.end(), [](auto unit) { delete unit; });
 	mEvaluatorUnits.clear();
 
-	std::cout << "\n\nTime : " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws\n");
+	std::cout << "\n\nTime: " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws\n");
 }
 
 //-----------------------------------------------------------------------------

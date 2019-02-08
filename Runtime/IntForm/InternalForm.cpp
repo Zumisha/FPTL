@@ -257,7 +257,6 @@ void GetArg::exec(SExecutionContext & ctx) const
 
 void GetArg::zeroing(SExecutionContext & ctx)
 {
-	//mArgNum = 0;
 	ctx.exchangedNodes.push_back(mNext);
 	mNext = ctx.endIfPtr;
 	ctx.exchangedNodes.back()->zeroing(ctx);
