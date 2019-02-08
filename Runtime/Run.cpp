@@ -150,9 +150,9 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "\n\nThread ID = " << boost::this_thread::get_id() << ". Jobs compleated: " << mJobsCompleted << ", stealed: " << mJobsStealed << ".";
+	ss << "\n\033[4;37mThread ID\033[0m = " << boost::this_thread::get_id() << ". Jobs \033[1;36mcreated:\033[0m " << mJobsCreated << ", \033[1;32mcompleated:\033[0m " << mJobsCompleted << ", \033[1;35mstealed:\033[0m " << mJobsStealed << ".";
 	if (!disableAnticipatory)
-		ss << "\nAnticipation jobs created : " << mAnticipationJobsCreated << ", compleated : " << mAnticipationJobsCompleted << ", stealed : " << mAnticipationJobsStealed << ", moved : " << mAnticipationJobsMoved << ", canceled : " << mAnticipationJobsCanceled << ".";
+		ss << "\nAnticipation jobs \033[1;36mcreated:\033[0m " << mAnticipationJobsCreated << ", \033[1;32mcompleated:\033[0m " << mAnticipationJobsCompleted << ", \033[1;35mstealed:\033[0m " << mAnticipationJobsStealed << ", \033[1;33mmoved:\033[0m " << mAnticipationJobsMoved << ", \033[1;31mcanceled:\033[0m " << mAnticipationJobsCanceled << ".\033[0m";
 	std::cout << ss.str();
 }
 
