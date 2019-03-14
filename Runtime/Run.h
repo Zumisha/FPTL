@@ -22,15 +22,15 @@ class EvalConfig
 public:
 	EvalConfig() :
 		mOutput(new Utils::FormatedOutput()),
-		mDisableProactive(true),
+		mProactive(false),
 		mNumCores(1)
 	{}
 
 	void SetOutput(Utils::FormatedOutput & fo)
 	{ mOutput = fo; }
 
-	void SetAnticipatory(bool state)
-	{ mDisableProactive = !state; }
+	void SetProactive(bool state)
+	{ mProactive = state; }
 
 	void SetNumCores(int numCores)
 	{ mNumCores = numCores; }
@@ -39,14 +39,14 @@ public:
 	{ return mOutput; }
 
 	bool Proactive()
-	{ return mDisableProactive; }
+	{ return mProactive; }
 
 	int NumCores()
 	{ return mNumCores; }
 
 private:
 	Utils::FormatedOutput mOutput;
-	bool mDisableProactive;
+	bool mProactive;
 	int mNumCores;
 };
 

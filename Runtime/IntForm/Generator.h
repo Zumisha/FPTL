@@ -80,7 +80,7 @@ private:
 	IfPtr mTail;
 	IfPtr mResult;
 
-	bool disableAnt;
+	bool Proactive;
 };
 
 }}

@@ -52,13 +52,13 @@ void run(const char * programPath, po::variables_map & vm)
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
-		const bool disableProactive = !vm["proactive"].as<bool>() || (numCores==1);
+		const bool Proactive = vm["proactive"].as<bool>() && (numCores!=1);
 		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 
-		if (disableProactive)
+		if (!Proactive)
 			std::cout << "Proactive calculations " << fo.Underlined("disabled") << "\n\n";
 
-		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), disableProactive));
+		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), Proactive));
 
 		Runtime::SchemeEvaluator evaluator;
 
@@ -72,7 +72,7 @@ void run(const char * programPath, po::variables_map & vm)
 
 		Runtime::EvalConfig evalConfig;
 		evalConfig.SetNumCores(numCores);
-		evalConfig.SetAnticipatory(disableProactive);
+		evalConfig.SetProactive(Proactive);
 		evalConfig.SetOutput(fo);
 		evaluator.setEvalConfig(evalConfig);
 
