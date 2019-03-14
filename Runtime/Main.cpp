@@ -24,7 +24,7 @@ template <typename T> void setOption(const po::variable_value & val, std::functi
 	}
 }
 
-void run(const char * programPath, const int numCores, po::variables_map & vm)
+void run(const char * programPath, po::variables_map & vm)
 {
 	std::ifstream inpFile(programPath);
 
@@ -45,31 +45,39 @@ void run(const char * programPath, const int numCores, po::variables_map & vm)
 	if (astRoot)
 	{
 		std::cout << "No syntax errors found.\n";
+
+		size_t numCores = vm["num-cores"].as<int>();
 		std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
 
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
-		const bool disableAnt = !vm["enable-ant"].as<bool>() || (numCores==1);
-		if (disableAnt)
-			std::cout << "Anticipatory computing disabled.\n\n";
+		const bool disableProactive = !vm["proactive"].as<bool>() || (numCores==1);
+		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 
-		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), disableAnt));
+		if (disableProactive)
+			std::cout << "Proactive calculations " << fo.Underlined("disabled") << "\n\n";
+
+		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), disableProactive));
 
 		Runtime::SchemeEvaluator evaluator;
 
 		Runtime::GcConfig gcConfig;
-
 		setOption<bool>(vm["disable-gc"], [&](bool v) {gcConfig.setEnabled(!v); });
 		setOption<bool>(vm["verbose-gc"], [&](bool v) {gcConfig.setVerbose(v); });
-		setOption<size_t>(vm["young-gen"], [&](size_t s) {gcConfig.setYoungGenSize(s * 1024 * 1024); });
-		setOption<size_t>(vm["old-gen"], [&](size_t s) {gcConfig.setOldGenSize(s * 1024 * 1024); });
+		setOption<int>(vm["young-gen"], [&](int s) {gcConfig.setYoungGenSize(s * 1024 * 1024); });
+		setOption<int>(vm["old-gen"], [&](int s) {gcConfig.setOldGenSize(s * 1024 * 1024); });
 		setOption<double>(vm["old-gen-ratio"], [&](double r) {gcConfig.setOldGenThreashold(r); });
-
 		evaluator.setGcConfig(gcConfig);
 
+		Runtime::EvalConfig evalConfig;
+		evalConfig.SetNumCores(numCores);
+		evalConfig.SetAnticipatory(disableProactive);
+		evalConfig.SetOutput(fo);
+		evaluator.setEvalConfig(evalConfig);
+
 		Runtime::IFExecutionContext ctx(internalForm->main().get());
-		evaluator.run(ctx, numCores, disableAnt);
+		evaluator.run(ctx);
 	}
 
 	delete astRoot;
@@ -97,30 +105,68 @@ void operator delete[](void * ptr)
 	::je_free(ptr);
 }
 
+bool optionsVerification(po::variables_map &vm)
+{
+	bool noErrors = true;
+	if (vm["num-cores"].as<int>() <= 0)
+	{
+		std::cout << "Number of work threads must be positive integer!" << "\n\n";
+		noErrors = false;
+	}
+	if (vm["young-gen"].as<int>() <= 0)
+	{
+		std::cout << "Young generation size must be positive integer!" << "\n\n";
+		noErrors = false;
+	}
+	if (vm["old-gen"].as<int>() <= 0)
+	{
+		std::cout << "Old generation size must be positive integer!" << "\n\n";
+		noErrors = false;
+	}
+	if (vm["old-gen-ratio"].as<double>() <= 0 || vm["old-gen-ratio"].as<double>() > 1)
+	{
+		std::cout << "Old gen usage ratio must be in the interval (0, 1]!" << "\n\n";
+		noErrors = false;
+	}
+	return noErrors;
+}
+
 int main(int argc, char ** argv)
 {
  	std::string programFile;
-	int numCores;
 
-	po::options_description desc("Avilable options");
+	po::positional_options_description posOpt;
+	posOpt.add("source-file", 1);
+
+	po::options_description desc("Avilable options:");
 	desc.add_options()
-		("source-file", po::value<std::string>(&programFile)->required(), "fptl program file")
-		("num-cores", po::value<int>(&numCores)->default_value(1), "number of worker threads")
-		("enable-ant", po::bool_switch(), "enable anticipatory computing")
-		("disable-gc", po::bool_switch(), "disable garbage collector")
-		("verbose-gc", po::bool_switch(), "print garbage collector info")
-		("young-gen", po::value<size_t>(), "young generation size in MiB")
-		("old-gen", po::value<size_t>(), "old generation size in MiB")
-		("old-gen-ratio", po::value<double>(), "old gen usage ratio to start full GC")
+		("help,h", "Provides information about startup options.")
+		("source-file,s", po::value<std::string>(&programFile)->required(), "Path to FPTL program file.")
+		("num-cores,n", po::value<int>()->default_value(1), "Number of work threads.")
+		("proactive", po::bool_switch(), "Enable proactive calculations.")
+		("ansi", po::bool_switch(), "Allow ANSI text formatting.")
+		("disable-gc", po::bool_switch(), "Disable garbage collector.")
+		("verbose-gc", po::bool_switch(), "Displays information about the work of the garbage collector.")
+		("young-gen", po::value<int>()->default_value(20), "Young generation size in MiB.")
+		("old-gen", po::value<int>()->default_value(100), "Old generation size in MiB.")
+		("old-gen-ratio", po::value<double>()->default_value(0.75), "Old gen usage ratio to start full GC.")
 		;
 
 	try
 	{
 		po::variables_map vm;
-		po::store(po::parse_command_line(argc, argv, desc), vm);
+		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);
 		po::notify(vm);
 
-		FPTL::Parser::run(programFile.c_str(), numCores, vm);
+		if (vm.count("help")) 
+		{
+			std::cout << desc << "\n";
+			return 1;
+		}
+
+		if (!optionsVerification(vm)) return 1;
+
+		FPTL::Parser::run(programFile.c_str(), vm);
 	}
 	catch (std::exception & e)
 	{

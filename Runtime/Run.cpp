@@ -14,7 +14,8 @@
 
 #undef max
 
-namespace FPTL { namespace Runtime {
+namespace FPTL { 
+namespace Runtime {
 
 //-----------------------------------------------------------------------------
 SExecutionContext::SExecutionContext()
@@ -22,8 +23,8 @@ SExecutionContext::SExecutionContext()
 		  Parent(nullptr),
 		  Ready(0),
 		  Working(0),
-		  Anticipation(0),
-		  NewAnticipationLevel(0),
+		  Proactive(0),
+		  NewProactiveLevel(0),
 		  Canceled(0),
 	      endPtr(nullptr),
 		  argPos(0),
@@ -94,19 +95,18 @@ void SExecutionContext::join()
 }
 
 //-----------------------------------------------------------------------------
-EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator, const bool disableAnt)
+EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	: mJobsCompleted(0),
-	  mAnticipationJobsCompleted(0),
+	  mProactiveJobsCompleted(0),
 	  mJobsCreated(0),
-	  mAnticipationJobsCreated(0),
+	  mProactiveJobsCreated(0),
 	  mJobsStealed(0),
-	  mAnticipationJobsStealed(0),
-	  mAnticipationJobsMoved(0),
-	  mAnticipationJobsCanceled(0),
+	  mProactiveJobsStealed(0),
+	  mProactiveJobsMoved(0),
+	  mProactiveJobsCanceled(0),
 	  mEvaluator(aSchemeEvaluator),
 	  mHeap(aSchemeEvaluator->garbageCollector()),
-	  mCollector(aSchemeEvaluator->garbageCollector()),
-	  disableAnticipatory(disableAnt)
+	  mCollector(aSchemeEvaluator->garbageCollector())
 {
 }
 
@@ -123,10 +123,10 @@ SExecutionContext * EvaluatorUnit::stealJob()
 	return elem;
 }
 
-SExecutionContext * EvaluatorUnit::stealAnticipationJob()
+SExecutionContext * EvaluatorUnit::stealProactiveJob()
 {
 	SExecutionContext * elem = nullptr;
-	mAnticipationJobQueue.pop(elem);
+	mProactiveJobQueue.pop(elem);
 	return elem;
 }
 
@@ -150,19 +150,23 @@ void EvaluatorUnit::evaluateScheme()
 
 	// Выводим статистику.
 	std::stringstream ss;
-	ss << "\n\033[4;37mThread ID\033[0m = " << boost::this_thread::get_id() << ". Jobs \033[1;36mcreated:\033[0m " << mJobsCreated << ", \033[1;32mcompleated:\033[0m " << mJobsCompleted << ", \033[1;35mstealed:\033[0m " << mJobsStealed << ".";
-	if (!disableAnticipatory)
-		ss << "\nAnticipation jobs \033[1;36mcreated:\033[0m " << mAnticipationJobsCreated << ", \033[1;32mcompleated:\033[0m " << mAnticipationJobsCompleted << ", \033[1;35mstealed:\033[0m " << mAnticipationJobsStealed << ", \033[1;33mmoved:\033[0m " << mAnticipationJobsMoved << ", \033[1;31mcanceled:\033[0m " << mAnticipationJobsCanceled << ".\033[0m";
+	Utils::FormatedOutput fo =  mEvaluator->getEvalConfig().Output();
+
+	ss << "\n" << fo.Underlined("Thread ID") << " = " << boost::this_thread::get_id() << ". Jobs " << fo.Bold(fo.Cyan("created: ")) << mJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mJobsCompleted << ", " << fo.Bold(fo.Magenta("stealed: ")) << mJobsStealed << ".";
+	
+	if (mEvaluator->getEvalConfig().Proactive())
+		ss << "\nProactive jobs " << fo.Bold(fo.Cyan("created: ")) << mProactiveJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mProactiveJobsCompleted << ", " << fo.Bold(fo.Magenta("stealed: ")) << mProactiveJobsStealed << ", " << fo.Bold(fo.Yellow("moved: ")) << mProactiveJobsMoved << ", " << fo.Bold(fo.Red("canceled: ")) << mProactiveJobsCanceled << ".";
+	
 	std::cout << ss.str();
 }
 
 void EvaluatorUnit::addForkJob(SExecutionContext * task)
 {
 	pendingTasks.push_back(task);
-	if (task->Anticipation.load(std::memory_order_acquire))
+	if (task->Proactive.load(std::memory_order_acquire))
 	{
-		mAnticipationJobQueue.push(task);
-		mAnticipationJobsCreated++;
+		mProactiveJobQueue.push(task);
+		mProactiveJobsCreated++;
 	}
 	else
 	{
@@ -179,7 +183,7 @@ SExecutionContext *EvaluatorUnit::join()
 
 	SExecutionContext * joinTask = pendingTasks.back();
 
-	if (joinTask->Anticipation.load(std::memory_order_acquire) && !joinTask->Parent->Anticipation.load(std::memory_order_acquire))
+	if (joinTask->Proactive.load(std::memory_order_acquire) && !joinTask->Parent->Proactive.load(std::memory_order_acquire))
 		moveToMainOrder(joinTask);
 	
 	while (!joinTask->Ready.load(std::memory_order_acquire))
@@ -194,21 +198,21 @@ SExecutionContext *EvaluatorUnit::join()
 
 void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 {
-	if (movingTask->Parent->Anticipation.load(std::memory_order_acquire))
+	if (movingTask->Parent->Proactive.load(std::memory_order_acquire))
 	{
-		movingTask->Anticipation.store(0, std::memory_order_release);
+		movingTask->Proactive.store(0, std::memory_order_release);
 		if (!movingTask->Ready && !movingTask->Working)
 		{
 			mJobQueue.push(movingTask);
-			mAnticipationJobsMoved++;
+			mProactiveJobsMoved++;
 		}
 		for (SExecutionContext * child : movingTask->Childs)
 		{
-			if (!child->NewAnticipationLevel)
+			if (!child->NewProactiveLevel)
 				moveToMainOrder(child);
 		}
 	}
-	movingTask->NewAnticipationLevel.store(0, std::memory_order_release);
+	movingTask->NewProactiveLevel.store(0, std::memory_order_release);
 }
 
 void EvaluatorUnit::cancelFromPendingEnd(const int backPos)
@@ -235,7 +239,7 @@ void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 		{
 			cancelingTask->cancel();
 		}
-		mAnticipationJobsCanceled++;
+		mProactiveJobsCanceled++;
 	}
 	for (SExecutionContext * child : cancelingTask->Childs)
 	{
@@ -274,27 +278,27 @@ void EvaluatorUnit::schedule()
 		return;
 	}
 
-	if (!disableAnticipatory)
+	if (mEvaluator->getEvalConfig().Proactive())
 	{
 		// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
-		if (mAnticipationJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+		if (mProactiveJobQueue.pop(context) && !context->Ready.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))
 		{
 			context->Working.store(1, std::memory_order_release);
 			context->run(this);
-			mAnticipationJobsCompleted++;
+			mProactiveJobsCompleted++;
 			// Выполнили задание - проверяем не запланированна ли сборка мусора.
 			safePoint();
 			return;
 		}
 
 		// Если не удалось, ищем упреждающую задачу у кого-нибудь другого и выполняем, если оно не отменено.
-		context = mEvaluator->findAnticipationJob(this);
-		if (context && !context->Ready.load(std::memory_order_acquire) && context->Anticipation.load(std::memory_order_acquire))
+		context = mEvaluator->findProactiveJob(this);
+		if (context && !context->Ready.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))
 		{
 			context->Working.store(1, std::memory_order_release);
 			context->run(this);
-			mAnticipationJobsStealed++;
-			mAnticipationJobsCompleted++;
+			mProactiveJobsStealed++;
+			mProactiveJobsCompleted++;
 			// Выполнили задание - проверяем не запланированна ли сборка мусора.
 			safePoint();
 			return;
@@ -373,13 +377,13 @@ SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
 	return nullptr;
 }
 
-SExecutionContext * SchemeEvaluator::findAnticipationJob(const EvaluatorUnit * aUnit)
+SExecutionContext * SchemeEvaluator::findProactiveJob(const EvaluatorUnit * aUnit)
 {
 	for (size_t i = 0; i < mEvaluatorUnits.size(); i++)
 	{
 		if (mEvaluatorUnits[i] != aUnit)
 		{
-			SExecutionContext * job = mEvaluatorUnits[i]->stealAnticipationJob();
+			SExecutionContext * job = mEvaluatorUnits[i]->stealProactiveJob();
 			if (job)
 			{
 				return job;
@@ -430,15 +434,15 @@ private:
 	boost::timer::cpu_times elapsed_times;
 };
 
-void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators, const bool disableAnt)
+void SchemeEvaluator::run(SExecutionContext & program)
 {
-	GarbageCollector * collector = GarbageCollector::getCollector(numEvaluators, this, mGcConfig);
+	GarbageCollector * collector = GarbageCollector::getCollector(mEvalConfig.NumCores(), this, mGcConfig);
 	mGarbageCollector.reset(collector);
 
 	// Создаем юниты выполнения.
-	for (size_t i = 0; i < numEvaluators; i++)
+	for (size_t i = 0; i < mEvalConfig.NumCores(); i++)
 	{
-		mEvaluatorUnits.push_back(new EvaluatorUnit(this, disableAnt));
+		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
 
 	std::cout.precision(15);
@@ -451,7 +455,7 @@ void SchemeEvaluator::run(SExecutionContext & program, const int numEvaluators, 
 	mStopMutex.lock();
 
 	// Создаем потоки.
-	for (size_t i = 0; i < numEvaluators; ++i)
+	for (size_t i = 0; i < mEvalConfig.NumCores(); ++i)
 	{
 		mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
 	}

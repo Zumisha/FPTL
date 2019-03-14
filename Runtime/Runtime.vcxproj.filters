@@ -33,6 +33,12 @@
     <Filter Include="Source Files\Runtime\IntForm">
       <UniqueIdentifier>{7df96ea4-bc7f-47d4-a759-ec017e2b6205}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{99328511-0271-4f7e-b37d-dde9b45c0010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{d586f75f-ba1e-46e2-bb53-c5dd60d55025}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Parser\AST.cpp">
@@ -87,12 +93,6 @@
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="StandartLibrary.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="CodeGenerator.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="PythonInterop.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="DataTypes\Array.cpp">
@@ -193,9 +193,6 @@
     <ClInclude Include="ADT.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="GarbageCollector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BlockingQueue.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
@@ -215,6 +212,12 @@
       <Filter>Header Files\Runtime\IntForm</Filter>
     </ClInclude>
     <ClInclude Include="LockFreeWorkStealingQueue.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\FormatedOutput.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GarbageCollector.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
   </ItemGroup>

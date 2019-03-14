@@ -94,16 +94,16 @@ void CondStart::exec(SExecutionContext & ctx) const
 	if (mThen)
 	{
 		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
-		fork->NewAnticipationLevel = 1;
-		fork->Anticipation = 1;
+		fork->NewProactiveLevel = 1;
+		fork->Proactive = 1;
 		ctx.evaluator()->addForkJob(fork);
 	}
 
 	if (mElse)
 	{
 		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
-		fork->NewAnticipationLevel = 1;
-		fork->Anticipation = 1;
+		fork->NewProactiveLevel = 1;
+		fork->Proactive = 1;
 		ctx.evaluator()->addForkJob(fork);
 	}
 	
@@ -320,7 +320,7 @@ IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 {
 	IFExecutionContext * fork = new IFExecutionContext(forkBody);
 	fork->Parent = this;
-	fork->Anticipation = this->Anticipation.load(std::memory_order_acquire);
+	fork->Proactive = this->Proactive.load(std::memory_order_acquire);
 	this->Childs.insert(fork);
 
 	// Копируем стек.

@@ -62,14 +62,10 @@ public:
 	{ return mVerbose; }
 
 	void setOldGenThreashold(double ratio)
-	{
-		mOldGenThreashold = mOldGenSize * ratio;
-	}
+	{ mOldGenThreashold = mOldGenSize * ratio; }
 
 	size_t oldGenGCThreashold() const
-	{
-		return mOldGenThreashold;
-	}
+	{ return mOldGenThreashold; }
 
 private:
 	size_t mYoungGenSize;

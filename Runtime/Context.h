@@ -38,10 +38,10 @@ struct SExecutionContext
 	std::atomic<int> Working;
 
 	// Флаг упреждения.
-	std::atomic<int> Anticipation;
+	std::atomic<int> Proactive;
 
 	// Флаг нового уровня упреждения.
-	std::atomic<int> NewAnticipationLevel;
+	std::atomic<int> NewProactiveLevel;
 
 	std::atomic<int> Canceled;
 

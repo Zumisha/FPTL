@@ -30,6 +30,7 @@
     <ProjectGuid>{69D57EAD-F1A4-475D-9AF6-38950E12D608}</ProjectGuid>
     <RootNamespace>Runtime</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -295,14 +296,6 @@
     <ClCompile Include="..\Parser\Semantic.cpp" />
     <ClCompile Include="..\Parser\Support.cpp" />
     <ClCompile Include="..\Parser\Tokenizer.cpp" />
-    <ClCompile Include="CodeGenerator.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="CollectedHeap.cpp" />
     <ClCompile Include="ConstructorGenerator.cpp" />
     <ClCompile Include="Data.cpp" />
@@ -316,18 +309,13 @@
     <ClCompile Include="IntForm\InternalForm.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NodeDeleter.cpp" />
-    <ClCompile Include="PythonInterop.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Run.cpp" />
     <ClCompile Include="StandartLibrary.cpp" />
     <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
+    <ClInclude Include="..\Utils\FormatedOutput.h" />
     <ClInclude Include="ADT.h" />
     <ClInclude Include="Array.h" />
     <ClInclude Include="BlockingQueue.h" />

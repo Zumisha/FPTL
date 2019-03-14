@@ -7,12 +7,48 @@
 #include "LockFreeWorkStealingQueue.h"
 #include "CollectedHeap.h"
 #include "GarbageCollector.h"
+#include "Utils/FormatedOutput.h"
 
-namespace FPTL { namespace Runtime {
+namespace FPTL {
+namespace Runtime {
 
 struct SExecutionContext;
 class FSchemeNode;
 class SchemeEvaluator;
+
+//----------------------------------------------------------------------------
+class EvalConfig
+{
+public:
+	EvalConfig() :
+		mOutput(new Utils::FormatedOutput()),
+		mDisableProactive(true),
+		mNumCores(1)
+	{}
+
+	void SetOutput(Utils::FormatedOutput & fo)
+	{ mOutput = fo; }
+
+	void SetAnticipatory(bool state)
+	{ mDisableProactive = !state; }
+
+	void SetNumCores(int numCores)
+	{ mNumCores = numCores; }
+
+	Utils::FormatedOutput Output()
+	{ return mOutput; }
+
+	bool Proactive()
+	{ return mDisableProactive; }
+
+	int NumCores()
+	{ return mNumCores; }
+
+private:
+	Utils::FormatedOutput mOutput;
+	bool mDisableProactive;
+	int mNumCores;
+};
 
 // Вычислитель схемы, привязан к конкретному потоку.
 class EvaluatorUnit
@@ -20,7 +56,7 @@ class EvaluatorUnit
 public:
 	friend struct SExecutionContext;
 
-	EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator, bool disableAnt);
+	EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator);
 
 	// Основная процедура, в которой произдводятс вычисления.
 	void evaluateScheme();
@@ -53,7 +89,7 @@ public:
 
 	// Получение работы из очереди упреждающих задач для другого потока.
 	// Вызывается из любого потока.
-	SExecutionContext * stealAnticipationJob();
+	SExecutionContext * stealProactiveJob();
 
 	// Поиск и выполнение задания.
 	void schedule();
@@ -71,19 +107,18 @@ private:
 	std::vector<SExecutionContext *> runningTasks;
 
 	int mJobsCompleted;
-	int mAnticipationJobsCompleted;
+	int mProactiveJobsCompleted;
 	int mJobsCreated;
-	int mAnticipationJobsCreated;
+	int mProactiveJobsCreated;
 	int mJobsStealed;
-	int mAnticipationJobsStealed;
-	int mAnticipationJobsMoved;
-	int mAnticipationJobsCanceled;
+	int mProactiveJobsStealed;
+	int mProactiveJobsMoved;
+	int mProactiveJobsCanceled;
 	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
-	LockFreeWorkStealingQueue<SExecutionContext *> mAnticipationJobQueue;
+	LockFreeWorkStealingQueue<SExecutionContext *> mProactiveJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
-	bool disableAnticipatory;
 };
 
 // Производит вычисления программы, заданной функциональной схемой.
@@ -95,7 +130,11 @@ public:
 
 	void setGcConfig(const GcConfig & config){ mGcConfig = config; }
 
-	void run(SExecutionContext & program, int numEvaluators, bool disableAnt);
+	void setEvalConfig(const EvalConfig & config) { mEvalConfig = config; }
+
+	EvalConfig getEvalConfig() { return mEvalConfig; }
+
+	void run(SExecutionContext & program);
 
 	// Прервать вычисления.
 	void stop();
@@ -104,7 +143,7 @@ public:
 	SExecutionContext * findJob(const EvaluatorUnit * aUnit);
 
 	// Взять упреждающую задачу у других вычислителей. Возвращает 0, если не получилось.
-	SExecutionContext * findAnticipationJob(const EvaluatorUnit * aUnit);
+	SExecutionContext * findProactiveJob(const EvaluatorUnit * aUnit);
 
 	void markRoots(ObjectMarker * marker) override;
 
@@ -116,6 +155,7 @@ private:
     boost::mutex mStopMutex;
 	std::unique_ptr<GarbageCollector> mGarbageCollector;
 	GcConfig mGcConfig;
+	EvalConfig mEvalConfig;
 };
 
 }} // FPTL::Runtime
