@@ -1,0 +1,34 @@
+1) Запустить "x64 Native Tools Command Prompt for VS 2017".
+(меню "Пуск / Все программы/Visual Studio")
+
+2) Перейти в папку boost. Например: "cd /d C:\Libraries\boost_1_66_0".
+
+3) Выполнить команду: "bootstrap".
+Система сборки Boost подготовит необходимый инструментарий.
+
+4) Выполнить команды на сборку дебажных либ.
+
+Для x32:
+.\b2 toolset=msvc address-model=32 -j8 threading=multi link=static runtime-link=shared variant=debug runtime-debugging=on
+
+Для x64:
+.\b2 toolset=msvc address-model=64 -j8 threading=multi link=static runtime-link=shared variant=debug runtime-debugging=on
+
+5) Выполнить команды на сборку релизных либ.
+
+Для x32:
+.\b2 toolset=msvc address-model=32 -j8 threading=multi link=static runtime-link=shared variant=release runtime-debugging=off
+
+Для x64:
+.\b2 toolset=msvc address-model=64 -j8 threading=multi link=static runtime-link=shared variant=release runtime-debugging=off
+
+6) Удалить папку boost_path\bin.v2 (в ней хранятся временные файлы сборки).
+
+7) Добавить в системные переменные (переменные среды) путь к папке boost.
+
+8) Прописать в свойствах проекта в дополнительные каталоги включаемых файлов путь к папке boost с помощью созданной системной переменной.
+Например: $(BOOST_PATH).
+
+*************************************************************************************************
+Подробнее об опциях сборки:
+https://boostorg.github.io/build/manual/develop/index.html

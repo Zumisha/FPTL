@@ -217,12 +217,8 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 
 void EvaluatorUnit::cancelFromPendingEnd(const int backPos)
 {
-	static std::mutex outputMutex;
 	SExecutionContext * cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
-	cancelTask->Parent->Childs.erase(cancelTask);
-	outputMutex.lock();
 	cancel(cancelTask);
-	outputMutex.unlock();
 	//Убираем из очереди ожидающих выполнения задач.
 	pendingTasks.erase(pendingTasks.end() - backPos);
 }

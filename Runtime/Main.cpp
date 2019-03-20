@@ -11,18 +11,12 @@
 
 #include "jemalloc/jemalloc.h"
 
+#define BUILD_DATE __DATE__ " " __TIME__
+
 namespace po = boost::program_options;
 
 namespace FPTL {
 namespace Parser {
-
-template <typename T> void setOption(const po::variable_value & val, std::function<void(T)> setter)
-{
-	if (!val.empty())
-	{
-		setter(val.as<T>());
-	}
-}
 
 void run(const char * programPath, po::variables_map & vm)
 {
@@ -52,22 +46,22 @@ void run(const char * programPath, po::variables_map & vm)
 		Runtime::FSchemeGenerator schemeGenerator;
 		schemeGenerator.process(astRoot);
 
-		const bool Proactive = vm["proactive"].as<bool>() && (numCores!=1);
 		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 
+		const bool Proactive = vm["proactive"].as<bool>() && (numCores!=1);
 		if (!Proactive)
-			std::cout << "Proactive calculations " << fo.Underlined("disabled") << "\n\n";
+			std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
 
 		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), Proactive));
 
 		Runtime::SchemeEvaluator evaluator;
 
 		Runtime::GcConfig gcConfig;
-		setOption<bool>(vm["disable-gc"], [&](bool v) {gcConfig.setEnabled(!v); });
-		setOption<bool>(vm["verbose-gc"], [&](bool v) {gcConfig.setVerbose(v); });
-		setOption<int>(vm["young-gen"], [&](int s) {gcConfig.setYoungGenSize(s * 1024 * 1024); });
-		setOption<int>(vm["old-gen"], [&](int s) {gcConfig.setOldGenSize(s * 1024 * 1024); });
-		setOption<double>(vm["old-gen-ratio"], [&](double r) {gcConfig.setOldGenThreashold(r); });
+		gcConfig.setEnabled(!vm["disable-gc"].as<bool>());
+		gcConfig.setVerbose(vm["verbose-gc"].as<bool>());
+		gcConfig.setYoungGenSize(vm["young-gen"].as<int>() * 1024 * 1024);
+		gcConfig.setOldGenSize(vm["old-gen"].as<int>() * 1024 * 1024);
+		gcConfig.setOldGenThreashold(vm["old-gen-ratio"].as<double>());
 		evaluator.setGcConfig(gcConfig);
 
 		Runtime::EvalConfig evalConfig;
@@ -105,30 +99,46 @@ void operator delete[](void * ptr)
 	::je_free(ptr);
 }
 
-bool optionsVerification(po::variables_map &vm)
+bool optionsVerification(po::variables_map &vm, Utils::FormatedOutput fo)
 {
 	bool noErrors = true;
 	if (vm["num-cores"].as<int>() <= 0)
 	{
-		std::cout << "Number of work threads must be positive integer!" << "\n\n";
+		std::cout << "Number of work threads " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
 		noErrors = false;
 	}
 	if (vm["young-gen"].as<int>() <= 0)
 	{
-		std::cout << "Young generation size must be positive integer!" << "\n\n";
+		std::cout << "Young generation size " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
 		noErrors = false;
 	}
 	if (vm["old-gen"].as<int>() <= 0)
 	{
-		std::cout << "Old generation size must be positive integer!" << "\n\n";
+		std::cout << "Old generation size " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
 		noErrors = false;
 	}
 	if (vm["old-gen-ratio"].as<double>() <= 0 || vm["old-gen-ratio"].as<double>() > 1)
 	{
-		std::cout << "Old gen usage ratio must be in the interval (0, 1]!" << "\n\n";
+		std::cout << "Old gen usage ratio " << fo.Bold(fo.Red("must be in the interval (0, 1]!")) << "\n\n";
 		noErrors = false;
 	}
 	return noErrors;
+}
+
+bool infoOptions(po::variables_map &vm, po::options_description desc, Utils::FormatedOutput fo)
+{
+	bool options = false;
+	if (vm.count("version"))
+	{
+		std::cout << "Version of the interpreter from " << fo.Bold(fo.Green(BUILD_DATE)) << ".\n\n";
+		options = false;
+	}
+	if (vm.count("help"))
+	{
+		std::cout << desc << "\n";
+		options = true;
+	}
+	return options;
 }
 
 int main(int argc, char ** argv)
@@ -141,6 +151,7 @@ int main(int argc, char ** argv)
 	po::options_description desc("Avilable options:");
 	desc.add_options()
 		("help,h", "Provides information about startup options.")
+		("version,v", "Displays the date and time of the interpreter build.")
 		("source-file,s", po::value<std::string>(&programFile)->required(), "Path to FPTL program file.")
 		("num-cores,n", po::value<int>()->default_value(1), "Number of work threads.")
 		("proactive", po::bool_switch(), "Enable proactive calculations.")
@@ -155,16 +166,10 @@ int main(int argc, char ** argv)
 	try
 	{
 		po::variables_map vm;
-		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);
+		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);		
+		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
+		if (!optionsVerification(vm, fo) | infoOptions(vm, desc, fo)) return 1;
 		po::notify(vm);
-
-		if (vm.count("help")) 
-		{
-			std::cout << desc << "\n";
-			return 1;
-		}
-
-		if (!optionsVerification(vm)) return 1;
 
 		FPTL::Parser::run(programFile.c_str(), vm);
 	}

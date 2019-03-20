@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <boost/thread.hpp>
+#include <boost/lockfree/stack.hpp>
 
 #include "LockFreeWorkStealingQueue.h"
 #include "CollectedHeap.h"
@@ -115,7 +116,7 @@ private:
 	int mProactiveJobsMoved;
 	int mProactiveJobsCanceled;
 	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
-	LockFreeWorkStealingQueue<SExecutionContext *> mProactiveJobQueue;
+	boost::lockfree::stack<SExecutionContext *> mProactiveJobQueue;
 	SchemeEvaluator * mEvaluator;
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;

@@ -1,0 +1,30 @@
+1.	Установить Cygwin 64-bit с пакетами:
+   * autoconf
+   * autogen
+   * gawk
+   * grep
+   * sed
+
+2.	Добавить Cygwin\bin в переменные среды windows.
+	Это можно сделать, если ввести в командной строке от имени администратора:
+	setx /m path "%path%;ПУТЬ"
+	или воспользовавшись оконными интерфейсами.
+	После этого перезагрузить компьютер, чтобы изменения вступили в силу.
+
+3.	Открыть "x64 Native Tools Command Prompt for VS 2017".
+   (x86/x64 Native Tools Command Prompt for VS 2017 не подходит)
+
+4.	Создать заголовочные файлы.
+	Перейти в каталог с jemalloc и выполнить команду:
+	sh -c "CC=cl ./autogen.sh"
+
+5.	Открыть проект jemalloc в Visual Studio (msvc\jemalloc_vc2017.sln) и собрать.
+
+6.	Указать пути к хедерам: 
+C:\Libraries\jemalloc-4.5.0\include
+C:\Libraries\jemalloc-4.5.0\include\msvc_compat
+Подключать: #include "jemalloc/jemalloc.h"
+
+7.	Указать путь к папке с jemalloc.lib (или jemallocd.lib для дебаг версии) в свойствах своего проекта.
+
+8.	Скопировать jemalloc.dll (или jemallocd.dll для дебаг версии) в папку с исполняемым файлом своего проекта.
