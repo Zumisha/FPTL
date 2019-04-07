@@ -10,6 +10,8 @@
 #include "../Parser/BuildInFunctionNames.h"
 #include "String.h"
 #include "Array.h"
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/lock_guard.hpp>
 
 namespace FPTL {
 namespace Runtime {
@@ -208,6 +210,9 @@ void print(SExecutionContext & aCtx)
 {
 	auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
 
+	static boost::mutex outputMutex;
+	boost::lock_guard<boost::mutex> guard(outputMutex);
+
 	for (int i = 0; i < numArgs; ++i)
 	{
 		auto & arg = aCtx.getArg(i);
@@ -222,6 +227,9 @@ void print(SExecutionContext & aCtx)
 void printType(SExecutionContext & aCtx)
 {
 	auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
+
+	static boost::mutex outputMutex;
+	boost::lock_guard<boost::mutex> guard(outputMutex);
 
 	for (int i = 0; i < numArgs; ++i)
 	{
