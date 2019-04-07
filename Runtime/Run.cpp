@@ -84,7 +84,7 @@ void SExecutionContext::unwind(size_t aArgPosOld, int aArity, size_t aPos)
 void SExecutionContext::join()
 {
 	auto joined = mEvaluatorUnit->join();
-	if (!joined->Canceled)
+	if (!joined->Canceled.load(std::memory_order_acquire))
 		// Копируем результат.
 		for (int i = 0; i < joined->arity; ++i)
 		{
@@ -106,7 +106,8 @@ EvaluatorUnit::EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator)
 	  mProactiveJobsCanceled(0),
 	  mEvaluator(aSchemeEvaluator),
 	  mHeap(aSchemeEvaluator->garbageCollector()),
-	  mCollector(aSchemeEvaluator->garbageCollector())
+	  mCollector(aSchemeEvaluator->garbageCollector()),
+	  mProactiveJobQueue(32)
 {
 }
 
@@ -176,22 +177,25 @@ void EvaluatorUnit::addForkJob(SExecutionContext * task)
 
 SExecutionContext *EvaluatorUnit::join()
 {
-	// Перед возможным выполнением новой задачи проверяем, не запланированна ли сборка мусора.
-	// Иначе может получаться ситуация, когда 1 поток пораждает задания и сразу же их берёт на выполнение,
+	// Перед возможным выполнением новой задачи проверяем, не запланирована ли сборка мусора.
+	// Иначе может получаться ситуация, когда 1 поток порождает задания и сразу же их берёт на выполнение,
 	// а все остальные ожидают сборки мусора.
 	safePoint();
 
 	SExecutionContext * joinTask = pendingTasks.back();
 
-	if (joinTask->Proactive.load(std::memory_order_acquire) && !joinTask->Parent->Proactive.load(std::memory_order_acquire))
-		moveToMainOrder(joinTask);
+	if (joinTask->Proactive.load(std::memory_order_acquire))
+	{
+		joinTask->NewProactiveLevel.store(0, std::memory_order_release);
+		if (!joinTask->Parent->Proactive.load(std::memory_order_acquire)) moveToMainOrder(joinTask);
+	}
 	
 	while (!joinTask->Ready.load(std::memory_order_acquire))
 	{
 		schedule();
 	}
 
-	joinTask->Parent->Childs.erase(joinTask);
+	//joinTask->Parent->Childs.erase(joinTask);
 	pendingTasks.pop_back();
 	return joinTask;
 }
@@ -201,14 +205,14 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 	if (movingTask->Parent->Proactive.load(std::memory_order_acquire))
 	{
 		movingTask->Proactive.store(0, std::memory_order_release);
-		if (!movingTask->Ready && !movingTask->Working)
+		if (!movingTask->Ready.load(std::memory_order_acquire) && !movingTask->Working.load(std::memory_order_acquire))
 		{
 			mJobQueue.push(movingTask);
 			mProactiveJobsMoved++;
 		}
 		for (SExecutionContext * child : movingTask->Childs)
 		{
-			if (!child->NewProactiveLevel)
+			if (!child->NewProactiveLevel.load(std::memory_order_acquire))
 				moveToMainOrder(child);
 		}
 	}
@@ -225,11 +229,11 @@ void EvaluatorUnit::cancelFromPendingEnd(const int backPos)
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 {
-	cancelingTask->Parent->Childs.erase(cancelingTask);
-	cancelingTask->Canceled = 1;
-	if (!cancelingTask->Ready)
+	//cancelingTask->Parent->Childs.erase(cancelingTask);
+	cancelingTask->Canceled.store(1, std::memory_order_release);
+	if (!cancelingTask->Ready.load(std::memory_order_acquire))
 	{	// Если задание ещё не выполнено, выставляем флаг готовности, чтобы никто не начал выполнение.
-		cancelingTask->Ready = 1;
+		cancelingTask->Ready.store(1, std::memory_order_release);
 		// Если уже выполняется - запускаем процесс остановки.
 		if (cancelingTask->Working.load(std::memory_order_acquire))
 		{

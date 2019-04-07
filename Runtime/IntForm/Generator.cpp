@@ -60,7 +60,7 @@ void Generator::visit(const FSequentialNode * node)
 
 void Generator::visit(const FConditionNode * node)
 {
-	IfPtr thenBr = 0, elseBr = 0, thenBrFork = 0, elseBrFork = 0, cond;
+	IfPtr thenBr = 0, elseBr = 0, thenBrFork = 0, elseBrFork = 0;
 
 	if (!Proactive || !node->condition()->isLong())
 	{
@@ -82,7 +82,7 @@ void Generator::visit(const FConditionNode * node)
 
 	auto choose = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
 
-	cond = createSpan(node->condition(), choose);
+	IfPtr cond = createSpan(node->condition(), choose);
 
 	mResult = std::make_shared<CondStart>(cond, thenBrFork, elseBrFork);
 }

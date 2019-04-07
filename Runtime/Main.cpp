@@ -143,12 +143,14 @@ bool infoOptions(po::variables_map &vm, po::options_description desc, Utils::For
 
 int main(int argc, char ** argv)
 {
+	//setlocale(LC_ALL, "en_US.UTF-8");
+
  	std::string programFile;
 
 	po::positional_options_description posOpt;
 	posOpt.add("source-file", 1);
 
-	po::options_description desc("Avilable options:");
+	po::options_description desc("Available options:");
 	desc.add_options()
 		("help,h", "Provides information about startup options.")
 		("version,v", "Displays the date and time of the interpreter build.")

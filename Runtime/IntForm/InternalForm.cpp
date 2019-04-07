@@ -147,6 +147,7 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	// Проверка условия.
 	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
 	{
+
 		if (!mThen) // Если ненужная ветвь длинная - отменяем её вычисление.
 			ctx.evaluator()->cancelFromPendingEnd(1 + !mElse);
 		if (mElse) // Если верная ветвь короткая - начинаем её вычислять.
@@ -320,7 +321,7 @@ IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 {
 	IFExecutionContext * fork = new IFExecutionContext(forkBody);
 	fork->Parent = this;
-	fork->Proactive = this->Proactive.load(std::memory_order_acquire);
+	fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
 	this->Childs.insert(fork);
 
 	// Копируем стек.

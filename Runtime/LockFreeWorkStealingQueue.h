@@ -13,11 +13,11 @@ namespace FPTL {
 		public:
 			LockFreeWorkStealingQueue();
 
-			//Добавление задачи в основную очередь
+			// Добавление задачи в конец очереди
 			void push(const T & aElem);
-			//Удаление задачи из основной очереди
+			// Удаление задачи из начала очереди
 			bool pop(T & aElem);
-			//Кража задачи из основной очереди
+			// Кража задачи из конца очереди
 			bool steal(T & aElem);
 
 		private:
