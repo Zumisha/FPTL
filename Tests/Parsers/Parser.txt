@@ -1,0 +1,48 @@
+Data Attr {
+	Attr = string * string.c_attr;
+}
+
+Data AttrList {
+	AttrList = c_nil ++  Attr * AttrList.c_attrList;
+}
+
+Data Tag {
+	AST = string * AttrList.c_tag;
+}
+
+Scheme Parser {
+	@ = Tag.[2].print;
+	
+	Tag = Seq(Token("<"), Seq(Ident, Seq(AttrList, Token(">"), Action0), Action1), Action2);
+	Action0 = [1];
+	Action1 = ([1]*[2]).c_tag;
+	Action2 = [2];
+	
+	AttrList = Or(SingleAttr, AttrAttrList);
+	SingleAttr = Attr.(id -> [1]*([2]*c_nil).c_attrList);
+
+	AttrAttrList = Seq(Attr, AttrList, Action4);
+	Action4 = ([1]*[2]).c_attrList;
+	
+	Attr = Seq(Ident, Seq(Token("="), StringValue, Action5), Action6);
+	Action5 = [2];
+	Action6 = ([1]*[2]).c_attr;
+	
+	StringValue = Token("\"[^\"]*\"");
+	Ident = Token("[a-zA-Z][0-9A-Za-z]*");
+	
+	Fun Seq[Op1, Op2, Action] {
+		@ = Op1.(id -> ([2]*[1].Op2).(id -> ([2]*([1]*[3]).Action)));
+	}
+	
+	Fun Or[Op1, Op2] {
+		@ = Op1 -> (Op2 -> (Op1*Op2).(([1].length * [3].length).less -> [1]*[2], [3]*[4]), Op1), Op2;
+	}
+	
+	Fun Token[ch] {
+		@ = ([1]*ch).getToken.(id -> ([2]*[1]));
+	}
+}
+
+Application
+% Parser(" <tagName attr1=\"1\" attr2=\"2\" attr3=\"3\"> ")
