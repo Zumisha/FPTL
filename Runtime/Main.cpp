@@ -2,14 +2,15 @@
 #include <fstream>
 #include <boost/program_options.hpp>
 
+#include "jemalloc/jemalloc.h"
+
 #include "../Parser/Support.h"
 #include "FSchemeGenerator.h"
 #include "Run.h"
 #include "IntForm/Generator.h"
 #include "IntForm/InternalForm.h"
 #include "IntForm/Context.h"
-
-#include "jemalloc/jemalloc.h"
+#include "Parser/AST.h"
 
 #define BUILD_DATE __DATE__ " " __TIME__
 

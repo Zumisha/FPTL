@@ -1,7 +1,7 @@
-﻿#pragma once
+#pragma once
 
 #include "Data.h"
-#include "Context.h"
+#include "../Context.h"
 
 namespace FPTL
 {

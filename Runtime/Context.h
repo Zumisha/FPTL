@@ -1,13 +1,11 @@
 ﻿#pragma once
 
 #include <vector>
-#include <stack>
 #include <set>
-
 #include <atomic>
 #include <boost/intrusive/slist.hpp>
 
-#include "Data.h"
+#include "DataTypes/Data.h"
 #include "IntForm/ControlValue.h"
 
 namespace FPTL {

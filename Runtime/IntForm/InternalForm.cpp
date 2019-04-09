@@ -1,14 +1,14 @@
+#include <iostream>
+
 #include "InternalForm.h"
 #include "Context.h"
-
 #include "../Run.h"
-#include "../String.h"
+#include "../DataTypes/String.h"
 
 namespace FPTL {
 namespace Runtime {
 
 //-----------------------------------------------------------------------------
-
 void ParFork::exec(SExecutionContext & ctx) const
 {
 	auto fork = static_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
@@ -20,9 +20,7 @@ void ParFork::exec(SExecutionContext & ctx) const
 
 void ParFork::zeroing(SExecutionContext & ctx)
 {
-	ctx.exchangedNodes.push_back(mLeft);
-	mLeft = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mLeft);
 }
 
 void ParJoin::exec(SExecutionContext & ctx) const
@@ -33,9 +31,7 @@ void ParJoin::exec(SExecutionContext & ctx) const
 
 void ParJoin::zeroing(SExecutionContext & ctx)
 {
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mNext);
 }
 
 void SeqBegin::exec(SExecutionContext & ctx) const
@@ -49,9 +45,7 @@ void SeqBegin::exec(SExecutionContext & ctx) const
 
 void SeqBegin::zeroing(SExecutionContext & ctx)
 {
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mNext);
 }
 
 void SeqEnd::exec(SExecutionContext & ctx) const
@@ -68,9 +62,7 @@ void SeqEnd::exec(SExecutionContext & ctx) const
 
 void SeqEnd::zeroing(SExecutionContext & ctx)
 {
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mNext);
 }
 
 void SeqAdvance::exec(SExecutionContext & ctx) const
@@ -82,9 +74,7 @@ void SeqAdvance::exec(SExecutionContext & ctx) const
 
 void SeqAdvance::zeroing(SExecutionContext & ctx) 
 {
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mNext);
 }
 
 void CondStart::exec(SExecutionContext & ctx) const
@@ -112,9 +102,7 @@ void CondStart::exec(SExecutionContext & ctx) const
 
 void CondStart::zeroing(SExecutionContext & ctx)
 {
-	ctx.exchangedNodes.push_back(mCond);
-	mCond = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mCond);
 }
 
 const DataValue falseConst = DataBuilders::createBoolean(false);
@@ -174,22 +162,15 @@ void CondChoose::exec(SExecutionContext & ctx) const
 
 void CondChoose::zeroing(SExecutionContext & ctx)
 {
-	// TODO: переписать, чтобы работала оптимизация хвостовой рекурсии.
 	if (mThen)
 	{
-		ctx.exchangedNodes.push_back(mThen);
-		mThen = ctx.endIfPtr;
-		ctx.exchangedNodes.back()->zeroing(ctx);
+		cancel(ctx, mThen);
 	}
 	if (mElse)
 	{
-		ctx.exchangedNodes.push_back(mElse);
-		mElse = ctx.endIfPtr;
-		ctx.exchangedNodes.back()->zeroing(ctx);
+		cancel(ctx, mElse);
 	}
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	cancel(ctx, mNext);
 }
 
 void RecFn::exec(SExecutionContext & ctx) const
@@ -201,9 +182,6 @@ void RecFn::exec(SExecutionContext & ctx) const
 
 void RecFn::zeroing(SExecutionContext & ctx)
 {
-	InternalForm *temp = mFn;
-	mFn = ctx.endPtr;
-	temp->zeroing(ctx);
 }
 
 void Ret::exec(SExecutionContext & ctx) const
@@ -227,13 +205,6 @@ void BasicFn::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
-void BasicFn::zeroing(SExecutionContext & ctx)
-{
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
-}
-
 void BasicFn::callFn(SExecutionContext & ctx) const
 {
 	try
@@ -243,10 +214,15 @@ void BasicFn::callFn(SExecutionContext & ctx) const
 	catch (std::exception & thrown)
 	{
 		std::stringstream error;
-		error << "Runtime error in function '" << mName << "' line: " << mPos.second << " column: " << mPos.first << ": " << thrown.what() << std::endl;
+		error << "Line: " << mPos.second << ". Column: " << mPos.first << ". Runtime error in function \'" << mName << "\': " << thrown.what() << ".\n" <<std::endl;
 		std::cerr << error.str();
 		throw;
 	}
+}
+
+void BasicFn::zeroing(SExecutionContext & ctx)
+{
+	cancel(ctx, mNext);
 }
 
 void GetArg::exec(SExecutionContext & ctx) const
@@ -258,9 +234,8 @@ void GetArg::exec(SExecutionContext & ctx) const
 
 void GetArg::zeroing(SExecutionContext & ctx)
 {
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
+	//mArgNum = 0;
+	//cancel(ctx, mNext);
 }
 
 void Constant::exec(SExecutionContext & ctx) const
@@ -270,16 +245,14 @@ void Constant::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
-void Constant::zeroing(SExecutionContext & ctx)
-{
-	ctx.exchangedNodes.push_back(mNext);
-	mNext = ctx.endIfPtr;
-	ctx.exchangedNodes.back()->zeroing(ctx);
-}
-
 void Constant::pushString(SExecutionContext & ctx, const std::string & str)
 {
 	ctx.push(StringBuilder::create(ctx, str));
+}
+
+void Constant::zeroing(SExecutionContext & ctx)
+{
+	cancel(ctx, mNext);
 }
 
 void EndOp::exec(SExecutionContext & ctx) const

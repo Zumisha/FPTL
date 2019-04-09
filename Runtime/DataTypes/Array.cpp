@@ -1,6 +1,6 @@
-﻿#include <boost/format.hpp>
+#include <boost/format.hpp>
 
-#include "../Array.h"
+#include "Array.h"
 #include "../GarbageCollector.h"
 #include "../CollectedHeap.h"
 

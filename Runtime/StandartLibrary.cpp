@@ -8,8 +8,8 @@
 #include "FScheme.h"
 #include "StandartLibrary.h"
 #include "../Parser/BuildInFunctionNames.h"
-#include "String.h"
-#include "Array.h"
+#include "DataTypes/String.h"
+#include "DataTypes/Array.h"
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 

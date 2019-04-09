@@ -8,7 +8,7 @@ namespace FPTL
 		struct DataValueArray;
 		class DataValue;
 
-		// Внутреннее представление абстрактного типа данных (boxed tuple).
+		// Р’РЅСѓС‚СЂРµРЅРЅРµРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ Р°Р±СЃС‚СЂР°РєС‚РЅРѕРіРѕ С‚РёРїР° РґР°РЅРЅС‹С… (boxed tuple).
 		struct ADTValue
 		{
 			const Constructor * ctor;

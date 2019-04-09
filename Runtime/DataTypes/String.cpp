@@ -1,10 +1,9 @@
-﻿
-#include "../Data.h"
-#include "../String.h"
+
+#include "Data.h"
+#include "String.h"
 #include "../CollectedHeap.h"
 #include "../GarbageCollector.h"
 
-#include <cstring>
 #include <cassert>
 
 #include <boost/lexical_cast.hpp>

@@ -5,13 +5,13 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
-#include <iostream>
 
 namespace FPTL {
 namespace Runtime {
 
 struct SExecutionContext;
 
+typedef std::shared_ptr<InternalForm> IfPtr;
 //-----------------------------------------------------------------------------
 class InternalForm
 {
@@ -21,17 +21,20 @@ public:
 
 	virtual void exec(SExecutionContext & ctx) const = 0;
 	virtual void zeroing(SExecutionContext & ctx) = 0;
+	void cancel(SExecutionContext & ctx, IfPtr child)
+	{
+		ctx.exchangedNodes.push_back(child);
+		child = ctx.endIfPtr;
+		ctx.exchangedNodes.back()->zeroing(ctx);
+	}
 };
-
-typedef std::shared_ptr<InternalForm> IfPtr;
-
 //-----------------------------------------------------------------------------
 class ParFork : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	ParFork(const IfPtr & left, const IfPtr & right)
 		: mLeft(left), mRight(right)
@@ -190,7 +193,7 @@ public:
 	{}
 
 	IfPtr mNext;
-	const int mArgNum;
+	int mArgNum;
 };
 
 class Constant : public InternalForm

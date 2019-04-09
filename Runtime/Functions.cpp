@@ -1,7 +1,7 @@
-﻿#include <cassert>
+﻿#include <sstream>
 
-#include "Data.h"
-#include "ADT.h"
+#include "DataTypes/Data.h"
+#include "DataTypes/ADT.h"
 #include "Functions.h"
 #include "CollectedHeap.h"
 #include "GarbageCollector.h"
