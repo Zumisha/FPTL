@@ -94,7 +94,7 @@ public:
 	{
 		return aVal.mString;
 	}
-
+	
 	// Арифметические функции.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
@@ -125,7 +125,7 @@ public:
 	{
 		throw invalidOperation("abs");
 	}
-
+	
 	// Функции сравнения.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{

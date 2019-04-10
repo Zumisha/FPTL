@@ -4,9 +4,7 @@
 
 #include "FSchemeGenerator.h"
 #include "ConstructorGenerator.h"
-#include "../Parser/BuildInFunctionNames.h"
 #include "StandartLibrary.h"
-#include "String.h"
 #include "NodeDeleter.h"
 
 namespace FPTL {

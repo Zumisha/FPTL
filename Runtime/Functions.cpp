@@ -301,6 +301,11 @@ void FunctionLibrary::addFunction(const std::string & aFunctionName, const TFunc
 	mFunctions.insert(std::make_pair(aFunctionName, aFunction));
 }
 
+void FunctionLibrary::addFunctions(std::map<std::string, TFunction> Functions)
+{
+	mFunctions.insert(Functions.begin(), Functions.end());
+}
+
 TFunction FunctionLibrary::getFunction(const std::string & aFunctionName) const
 {
 	if (mFunctions.find(aFunctionName) != mFunctions.end())

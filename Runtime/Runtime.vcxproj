@@ -230,7 +230,6 @@
     <ClCompile Include="StandartLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
     <ClInclude Include="..\Utils\FormatedOutput.h" />
     <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="CollectedHeap.h" />

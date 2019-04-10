@@ -160,9 +160,6 @@
     <ClInclude Include="..\Parser\Tokenizer.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="..\Parser\BuildInFunctionNames.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
     <ClInclude Include="ConstructorGenerator.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>

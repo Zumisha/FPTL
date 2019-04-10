@@ -8,10 +8,12 @@
 namespace FPTL {
 namespace Runtime {
 
+
 class StandartLibrary : public FunctionLibrary
 {
 public:
 	StandartLibrary();
+	static const std::map<std::string, TFunction> mFunctions;
 };
 
 }} // FPTL::Runtime

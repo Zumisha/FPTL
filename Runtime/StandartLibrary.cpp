@@ -7,7 +7,6 @@
 
 #include "FScheme.h"
 #include "StandartLibrary.h"
-#include "../Parser/BuildInFunctionNames.h"
 #include "DataTypes/String.h"
 #include "DataTypes/Array.h"
 #include <boost/thread/mutex.hpp>
@@ -65,6 +64,26 @@ void mod(SExecutionContext & aCtx)
 	auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->mod(lhs, rhs));
+}
+
+void not(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	
+}
+
+void and(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+	
+}
+
+void or (SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+	
 }
 
 void equals(SExecutionContext & aCtx)
@@ -274,19 +293,25 @@ void toDouble(SExecutionContext & aCtx)
 // Конкатенация строк.
 void concat(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	auto lhsStr = lhs.getOps()->toString(lhs);
-	auto rhsStr = rhs.getOps()->toString(rhs);
-
-	int length = lhsStr->length() + rhsStr->length();
+	int length = 0;
+	for (int i = 0; i < aCtx.argNum; ++i)
+	{
+		auto & arg = aCtx.getArg(i);
+		auto inStr = arg.getOps()->toString(arg);
+		length += inStr->length();
+	}
 
 	auto val = StringBuilder::create(aCtx, length);
 	char * str = val.mString->getChars();
+	int curPos = 0;
 
-	std::memcpy(str, lhsStr->getChars(), lhsStr->length());
-	std::memcpy(str + lhsStr->length(), rhsStr->getChars(), rhsStr->length());
+	for (int i = 0; i < aCtx.argNum; ++i)
+	{
+		auto & arg = aCtx.getArg(i);
+		auto inStr = arg.getOps()->toString(arg);
+		std::memcpy(str + curPos, inStr->getChars(), inStr->length());
+		curPos += inStr->length();
+	}
 
 	aCtx.push(val);
 }
@@ -463,61 +488,90 @@ void setArrayElement(SExecutionContext & aCtx)
 	aCtx.push(arrVal);
 }
 
+void getArrayLength(SExecutionContext & aCtx)
+{
+	auto & arrVal = aCtx.getArg(0);
+	aCtx.push(DataBuilders::createInt(ArrayValue::getLen(arrVal)));
+}
+
+void ArrayConcat(SExecutionContext & aCtx)
+{
+	aCtx.push(ArrayValue::concat(aCtx));
+}
+
+void tupleLength(SExecutionContext & aCtx)
+{
+	aCtx.push(DataBuilders::createInt(aCtx.argNum));
+}
+
 } // anonymous namespace
+
+const std::map<std::string, TFunction> StandartLibrary::mFunctions =
+{
+	// Работа с кортежем.
+	{"id", &id},
+	{"tupleLen", &tupleLength},
+
+	// Арифметические.
+	{"add",&add},
+	{"sub", &sub},
+	{"mul", &mul},
+	{"div", &div},
+	{"mod", &mod},
+	{"abs", &abs},
+	{"sqrt", &sqrt},
+	{"exp", &exp},
+	{"ln", &log},
+	{"round", &round},
+	{"sin", &sin},
+	{"cos", &cos},
+	{"tan", &tan},
+	{"asin", &asin},
+	{"atan", &atan},
+	{"Pi", &loadPi},
+	{"E", &loadE},
+	{"rand", &rand},
+
+	//Логические.
+	//{"not", &not},
+	//{"and", &and},
+	//{"or", &or},
+	{"equal", &equals},
+	{"nequal", &notEqual},
+	{"greater", &greater},
+	{"gequal", &greaterOrEqual},
+	{"less", &less},
+	{"lequal", &lessOrEqual},
+
+	// Работа со строками.
+	{"length", &length},
+	{"cat", &concat},
+	{"search", &search},
+	{"replace", &replace},
+	{"match", &match},
+	{"getToken", &getToken},
+
+	// Преобразования типов.
+	{"toInt", &toInteger},
+	{"toReal", &toDouble},
+	{"toString", &toString},
+
+	// Ввод / вывод.
+	{"print", &print},
+	{"printType", &printType},
+	{"readFile", &readFile},
+
+	// Работа с массивами.
+	{"arrayCreate", &createArray},
+	{"arrayGet", &getArrayElement},
+	{"arraySet", &setArrayElement},
+	{"arrayLen", &getArrayLength},
+	{"arrayCat", &ArrayConcat}
+};
 
 StandartLibrary::StandartLibrary() : FunctionLibrary("StdLib")
 {
-	addFunction(FPTL::Parser::BuildInFunctions::Id, &id);
-
-	// Арифметические операции.
-	addFunction(FPTL::Parser::BuildInFunctions::Add, &add);
-	addFunction(FPTL::Parser::BuildInFunctions::Subtract, &sub);
-	addFunction(FPTL::Parser::BuildInFunctions::Multiply, &mul);
-	addFunction(FPTL::Parser::BuildInFunctions::Divide, &div);
-	addFunction(FPTL::Parser::BuildInFunctions::Modulus, &mod);
-	addFunction(FPTL::Parser::BuildInFunctions::Equal, &equals);
-	addFunction(FPTL::Parser::BuildInFunctions::Less, &less);
-	addFunction(FPTL::Parser::BuildInFunctions::Greater, &greater);
-	addFunction(FPTL::Parser::BuildInFunctions::GreaterOrEqual, &greaterOrEqual);
-	addFunction(FPTL::Parser::BuildInFunctions::LessOrEqual, &lessOrEqual);
-	addFunction(FPTL::Parser::BuildInFunctions::NotEqual, &notEqual);
-	addFunction(FPTL::Parser::BuildInFunctions::Abs, &abs);
-
-	// Трансцендентные функции.
-	addFunction(FPTL::Parser::BuildInFunctions::Rand, &rand);
-	addFunction(FPTL::Parser::BuildInFunctions::Sqrt, &sqrt);
-	addFunction(FPTL::Parser::BuildInFunctions::Sin, &sin);
-	addFunction(FPTL::Parser::BuildInFunctions::Cos, &cos);
-	addFunction(FPTL::Parser::BuildInFunctions::Tan, &tan);
-	addFunction(FPTL::Parser::BuildInFunctions::Asin, &asin);
-	addFunction(FPTL::Parser::BuildInFunctions::Atan, &atan);
-	addFunction(FPTL::Parser::BuildInFunctions::Exp, &exp);
-	addFunction(FPTL::Parser::BuildInFunctions::Ln, &log);
-	addFunction(FPTL::Parser::BuildInFunctions::Round, &round);
-	addFunction(FPTL::Parser::BuildInFunctions::Pi, &loadPi);
-	addFunction(FPTL::Parser::BuildInFunctions::E, &loadE);
-
-	addFunction(FPTL::Parser::BuildInFunctions::Print, &print);
-	addFunction(FPTL::Parser::BuildInFunctions::PrintType, &printType);
-
-	// Преобразование типов.
-	addFunction(FPTL::Parser::BuildInFunctions::toString, &toString);
-	addFunction(FPTL::Parser::BuildInFunctions::toInt, &toInteger);
-	addFunction(FPTL::Parser::BuildInFunctions::toReal, &toDouble);
-
-	// Работа со строками.
-	addFunction(FPTL::Parser::BuildInFunctions::Cat, &concat);
-	addFunction(FPTL::Parser::BuildInFunctions::Length, &length);
-	addFunction(FPTL::Parser::BuildInFunctions::Search, &search);
-	addFunction(FPTL::Parser::BuildInFunctions::readFile, &readFile);
-	addFunction(FPTL::Parser::BuildInFunctions::Match, &match);
-	addFunction(FPTL::Parser::BuildInFunctions::Replace, &replace);
-	addFunction(FPTL::Parser::BuildInFunctions::GetToken, &getToken);
-
-	// Работа с массивами.
-	addFunction(FPTL::Parser::BuildInFunctions::arrCreate, &createArray);
-	addFunction(FPTL::Parser::BuildInFunctions::arrGetElem, &getArrayElement);
-	addFunction(FPTL::Parser::BuildInFunctions::arrSetElem, &setArrayElement);
+	addFunctions(mFunctions);
 }
 
 }} // FPTL::Runtime

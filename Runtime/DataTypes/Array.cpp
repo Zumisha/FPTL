@@ -49,7 +49,7 @@ public:
 
 	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
 	{
-		if (marker->markAlive(aVal.mArray, ArrayValue::size(aVal.mArray->length)))
+		if (marker->markAlive(aVal.mArray, ArrayValue::byteSize(aVal.mArray->length)))
 		{
 			for (int i = 0; i < aVal.mArray->length; i++)
 			{
@@ -98,9 +98,10 @@ DataValue ArrayValue::create(SExecutionContext & ctx, int length, const DataValu
 		throw std::exception("Array length must be positive integer number.");
 	}
 
+	// Выделяем память в контролируемой куче под хранение массива.
 	auto val = ctx.heap().alloc<ArrayValue>(
 		[initial, length](void * m) { return new(m) ArrayValue(initial.getOps(), length); },
-		size(length)
+		byteSize(length)
 	);
 
 	// Создаем массив и заполняем его начальным значением.
@@ -112,13 +113,18 @@ DataValue ArrayValue::create(SExecutionContext & ctx, int length, const DataValu
 	return res;
 }
 
-//-----------------------------------------------------------------------------
-DataValue ArrayValue::get(const DataValue & arr, int pos)
+void ArrayValue::arrayValueCheck(const DataValue & arr)
 {
 	if (arr.getOps() != ArrayOps::get())
 	{
-		throw std::runtime_error("Invalid operation on not array value.");
+		throw notArrayValue();
 	}
+}
+
+//-----------------------------------------------------------------------------
+DataValue ArrayValue::get(const DataValue & arr, int pos)
+{
+	arrayValueCheck(arr);
 
 	ArrayValue * trg = arr.mArray;
 
@@ -133,10 +139,7 @@ DataValue ArrayValue::get(const DataValue & arr, int pos)
 //-----------------------------------------------------------------------------
 void ArrayValue::set(DataValue & arr, int pos, const DataValue & val)
 {
-	if (arr.getOps() != ArrayOps::get())
-	{
-		throw std::runtime_error("Invalid operation on not array value.");
-	}
+	arrayValueCheck(arr);
 
 	ArrayValue * trg = arr.mArray;
 
@@ -156,9 +159,60 @@ void ArrayValue::set(DataValue & arr, int pos, const DataValue & val)
 	trg->arrayData[pos] = val;
 }
 
-size_t ArrayValue::size(int length)
+size_t ArrayValue::byteSize(int length)
 {
 	return sizeof(ArrayValue) + sizeof(DataValue) * length;
+}
+
+int ArrayValue::getLen(const DataValue & arr)
+{
+	arrayValueCheck(arr);
+	return arr.mArray->length;
+}
+
+DataValue ArrayValue::concat(SExecutionContext & ctx)
+{
+	for (int i = 0; i < ctx.argNum; ++i)
+	{
+		arrayValueCheck(ctx.getArg(i));
+	}
+
+	auto firstArr = ctx.getArg(0);
+	auto ops = ctx.getArg(0).mArray->ops;
+	auto Type = ops->getType(firstArr.mArray->arrayData[0]);
+	int len = firstArr.mArray->length;
+
+	for (int i = 1; i < ctx.argNum; ++i)
+	{
+		auto rArr = ctx.getArg(i);
+		if (rArr.mArray->ops != ops)
+		{
+			auto rType = rArr.mArray->ops->getType(rArr.mArray->arrayData[0]);
+			std::string str = boost::str(boost::format("Cannot concat an array of type %1% with an array of type %2%") % Type->TypeName % rType->TypeName);
+			throw std::runtime_error(str);
+		}
+		len += rArr.mArray->length;
+	}
+
+	// Выделяем память в контролируемой куче под хранение массива.
+	auto val = ctx.heap().alloc<ArrayValue>(
+		[ops, len](void * m) { return new(m) ArrayValue(ops, len); },
+		byteSize(len)
+		);
+
+	// Создаем массив и заполняем его.
+	val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
+	int curPos = 0;
+	for (int i = 0; i < ctx.argNum; ++i)
+	{
+		auto arr = ctx.getArg(i);
+		memcpy(val->arrayData + curPos, arr.mArray->arrayData, arr.mArray->length * sizeof(ArrayValue));
+		curPos += arr.mArray->length;
+	}
+
+	DataValue res = DataBuilders::createVal(ArrayOps::get());
+	res.mArray = val.ptr();
+	return res;
 }
 
 //-----------------------------------------------------------------------------

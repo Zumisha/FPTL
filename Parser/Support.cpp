@@ -2,10 +2,11 @@
 #include "Generated/Parser.tab.hh"
 #include "SemanticCheck.h"
 #include "Nodes.h"
-#include "BuildInFunctionNames.h"
+#include "Runtime/StandartLibrary.h"
 #include <memory>
 #include <string>
 #include "../Parser/Tokenizer.h"
+#include "Runtime/Run.h"
 
 namespace FPTL { namespace Parser {
 
@@ -56,58 +57,10 @@ void Support::initializeKeywordTable( void )
 	registerKeyword("true", BisonParser::token::T_TRUE);
 	registerKeyword("false", BisonParser::token::T_FALSE);
 
-	// Встроенные функции.
-	auto regBF = [&](const char * aName)
+	for (auto fName : Runtime::StandartLibrary::mFunctions)
 	{
-		registerKeyword(aName, BisonParser::token::BFNAME);
-	};
-
-	regBF(BuildInFunctions::Id);
-	regBF(BuildInFunctions::Add);
-	regBF(BuildInFunctions::Subtract);
-	regBF(BuildInFunctions::Multiply);
-	regBF(BuildInFunctions::Divide);
-	regBF(BuildInFunctions::Modulus);
-	regBF(BuildInFunctions::Equal);
-	regBF(BuildInFunctions::NotEqual);
-	regBF(BuildInFunctions::Greater);
-	regBF(BuildInFunctions::Less);
-	regBF(BuildInFunctions::GreaterOrEqual);
-	regBF(BuildInFunctions::LessOrEqual);
-
-	regBF(BuildInFunctions::Sqrt);
-	regBF(BuildInFunctions::Sin);
-	regBF(BuildInFunctions::Cos);
-	regBF(BuildInFunctions::Tan);
-	regBF(BuildInFunctions::Asin);
-	regBF(BuildInFunctions::Atan);
-	regBF(BuildInFunctions::Round);
-	regBF(BuildInFunctions::Exp);
-	regBF(BuildInFunctions::Ln);
-	regBF(BuildInFunctions::Abs);
-	regBF(BuildInFunctions::Pi);
-
-	regBF(BuildInFunctions::Rand);
-	regBF(BuildInFunctions::Print);
-	regBF(BuildInFunctions::PrintType);
-
-	regBF(BuildInFunctions::Cat);
-	regBF(BuildInFunctions::Search);
-	regBF(BuildInFunctions::Match);
-	regBF(BuildInFunctions::Replace);
-	regBF(BuildInFunctions::GetToken);
-	regBF(BuildInFunctions::Length);
-
-	regBF(BuildInFunctions::toString);
-	regBF(BuildInFunctions::toInt);
-	regBF(BuildInFunctions::toReal);
-	regBF(BuildInFunctions::toLongInt);
-
-	regBF(BuildInFunctions::readFile);
-
-	regBF(BuildInFunctions::arrCreate);
-	regBF(BuildInFunctions::arrGetElem);
-	regBF(BuildInFunctions::arrSetElem);
+		registerKeyword(fName.first, BisonParser::token::BFNAME);
+	}
 }
 
 //-------------------------------------------------------------------------------------------
