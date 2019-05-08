@@ -6,7 +6,7 @@
 #include <stack>
 
 #include "../Parser/NodeVisitor.h"
-#include "Types.h"
+#include "DataTypes/Types.h"
 
 namespace FPTL { namespace Runtime {
 

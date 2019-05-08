@@ -69,6 +69,8 @@ public:
 
 	void addFunction(const std::string & aFunctionName, const TFunction & aFunction);
 
+	void addFunctions(std::map<std::string, TFunction> Functions);
+
 	std::vector<std::string> getFunctionNames() const;
 
 	TFunction getFunction(const std::string & aName) const;

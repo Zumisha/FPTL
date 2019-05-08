@@ -1,10 +1,9 @@
-﻿
-#include "../Data.h"
-#include "../String.h"
+
+#include "Data.h"
+#include "String.h"
 #include "../CollectedHeap.h"
 #include "../GarbageCollector.h"
 
-#include <cstring>
 #include <cassert>
 
 #include <boost/lexical_cast.hpp>
@@ -74,10 +73,10 @@ public:
 		throw invalidOperation("toDouble");
 	}
 
-	virtual TypeInfo * getType(const DataValue & aVal) const
+	virtual TypeInfo getType(const DataValue & aVal) const
 	{
 		static TypeInfo info("string");
-		return &info;
+		return info;
 	}
 
 	// Преобразование типов.
@@ -95,7 +94,7 @@ public:
 	{
 		return aVal.mString;
 	}
-
+	
 	// Арифметические функции.
 	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
 	{
@@ -126,7 +125,7 @@ public:
 	{
 		throw invalidOperation("abs");
 	}
-
+	
 	// Функции сравнения.
 	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
 	{

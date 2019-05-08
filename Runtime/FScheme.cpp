@@ -108,26 +108,6 @@ void FFunctionNode::accept(FSchemeVisitor * aVisitor) const
 	aVisitor->visit(this);
 }
 
-void FFunctionNode::call(const FFunctionNode * aNode, SExecutionContext * aCtx)
-{
-	try
-	{
-		aNode->mFunction(*aCtx);
-	}
-	catch (const std::exception & e)
-	{
-		std::stringstream error;
-		error << "Runtime error in function '" << aNode->mName << "' line: " << aNode->mLine << " column: " <<aNode->mColumn << ": " << e.what() << std::endl;
-		
-		// TODO: выводить дамп последнего кортежа, к которому применялась операция (printType).
-
-		std::cerr << error.str();
-
-		// Добавить на стек неорпделенность.
-		aCtx->push(DataBuilders::createUndefinedValue());
-	}
-}
-
 //-----------------------------------------------------------------------------------
 void FTakeNode::accept(FSchemeVisitor * aVisitor) const
 {

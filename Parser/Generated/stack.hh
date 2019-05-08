@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.2.
+// A Bison parser, made by GNU Bison 3.1.
 
 // Stack handling for Bison parsers in C++
 
-// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,9 +40,10 @@
 
 # include <vector>
 
-#line 2 "parser.yy" // stack.hh:133
+#line 2 "parser.yy" // stack.hh:132
 namespace FPTL { namespace Parser {
-#line 46 "stack.hh" // stack.hh:133
+#line 46 "stack.hh" // stack.hh:132
+  /// A stack with random access from its top.
   template <class T, class S = std::vector<T> >
   class stack
   {
@@ -50,27 +51,31 @@ namespace FPTL { namespace Parser {
     // Hide our reversed order.
     typedef typename S::reverse_iterator iterator;
     typedef typename S::const_reverse_iterator const_iterator;
+    typedef typename S::size_type size_type;
 
     stack ()
-      : seq_ ()
     {
+      seq_.reserve (200);
     }
 
-    stack (unsigned int n)
+    stack (size_type n)
       : seq_ (n)
-    {
-    }
+    {}
 
-    inline
+    /// Random access.
+    ///
+    /// Index 0 returns the topmost element.
     T&
-    operator[] (unsigned int i)
+    operator[] (size_type i)
     {
       return seq_[seq_.size () - 1 - i];
     }
 
-    inline
+    /// Random access.
+    ///
+    /// Index 0 returns the topmost element.
     const T&
-    operator[] (unsigned int i) const
+    operator[] (size_type i) const
     {
       return seq_[seq_.size () - 1 - i];
     }
@@ -78,7 +83,6 @@ namespace FPTL { namespace Parser {
     /// Steal the contents of \a t.
     ///
     /// Close to move-semantics.
-    inline
     void
     push (T& t)
     {
@@ -86,9 +90,8 @@ namespace FPTL { namespace Parser {
       operator[](0).move (t);
     }
 
-    inline
     void
-    pop (unsigned int n = 1)
+    pop (size_type n = 1)
     {
       for (; n; --n)
         seq_.pop_back ();
@@ -100,21 +103,18 @@ namespace FPTL { namespace Parser {
       seq_.clear ();
     }
 
-    inline
-    typename S::size_type
+    size_type
     size () const
     {
       return seq_.size ();
     }
 
-    inline
     const_iterator
     begin () const
     {
       return seq_.rbegin ();
     }
 
-    inline
     const_iterator
     end () const
     {
@@ -133,26 +133,25 @@ namespace FPTL { namespace Parser {
   class slice
   {
   public:
-    slice (const S& stack, unsigned int range)
+    typedef typename S::size_type size_type;
+    slice (const S& stack, size_type range)
       : stack_ (stack)
       , range_ (range)
-    {
-    }
+    {}
 
-    inline
     const T&
-    operator [] (unsigned int i) const
+    operator[] (size_type i) const
     {
       return stack_[range_ - i];
     }
 
   private:
     const S& stack_;
-    unsigned int range_;
+    size_type range_;
   };
 
-#line 2 "parser.yy" // stack.hh:133
+#line 2 "parser.yy" // stack.hh:132
 } } // FPTL::Parser
-#line 157 "stack.hh" // stack.hh:133
+#line 156 "stack.hh" // stack.hh:132
 
 #endif // !YY_YY_STACK_HH_INCLUDED

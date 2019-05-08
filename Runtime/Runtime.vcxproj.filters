@@ -33,6 +33,15 @@
     <Filter Include="Source Files\Runtime\IntForm">
       <UniqueIdentifier>{7df96ea4-bc7f-47d4-a759-ec017e2b6205}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{99328511-0271-4f7e-b37d-dde9b45c0010}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{d586f75f-ba1e-46e2-bb53-c5dd60d55025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Runtime\Data">
+      <UniqueIdentifier>{46db1307-03ba-467d-b373-1b6aaa4271c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Parser\AST.cpp">
@@ -62,9 +71,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
-    <ClCompile Include="Types.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
     <ClCompile Include="Functions.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
@@ -77,9 +83,6 @@
     <ClCompile Include="DataTypes\String.cpp">
       <Filter>Source Files\Runtime\Data</Filter>
     </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Source Files\Runtime\Data</Filter>
-    </ClCompile>
     <ClCompile Include="ConstructorGenerator.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
@@ -87,12 +90,6 @@
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="StandartLibrary.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="CodeGenerator.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="PythonInterop.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="DataTypes\Array.cpp">
@@ -112,6 +109,30 @@
     </ClCompile>
     <ClCompile Include="IntForm\InternalForm.cpp">
       <Filter>Source Files\Runtime\IntForm</Filter>
+    </ClCompile>
+    <ClCompile Include="Context.cpp">
+      <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="EvaluatorUnit.cpp">
+      <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Types.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Data.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Bool.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Double.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Int.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Undefined.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,13 +160,7 @@
     <ClInclude Include="..\Parser\Tokenizer.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="..\Parser\BuildInFunctionNames.h">
-      <Filter>Header Files\Parser</Filter>
-    </ClInclude>
     <ClInclude Include="ConstructorGenerator.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Data.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="FScheme.h">
@@ -155,9 +170,6 @@
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="Functions.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="Run.h">
@@ -172,16 +184,7 @@
     <ClInclude Include="FSchemeVisitor.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="CodeGenerator.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
     <ClInclude Include="Context.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="String.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Array.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="NodeDeleter.h">
@@ -189,12 +192,6 @@
     </ClInclude>
     <ClInclude Include="CollectedHeap.h">
       <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="ADT.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="GarbageCollector.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BlockingQueue.h">
       <Filter>Header Files\Runtime</Filter>
@@ -216,6 +213,27 @@
     </ClInclude>
     <ClInclude Include="LockFreeWorkStealingQueue.h">
       <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utils\FormatedOutput.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="GarbageCollector.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Data.h">
+      <Filter>Header Files\Runtime\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\String.h">
+      <Filter>Header Files\Runtime\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Types.h">
+      <Filter>Header Files\Runtime\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\ADT.h">
+      <Filter>Header Files\Runtime\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Array.h">
+      <Filter>Header Files\Runtime\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
-﻿#include <cassert>
+﻿#include <sstream>
 
-#include "Data.h"
-#include "ADT.h"
+#include "DataTypes/Data.h"
+#include "DataTypes/ADT.h"
 #include "Functions.h"
 #include "CollectedHeap.h"
 #include "GarbageCollector.h"
@@ -51,9 +51,9 @@ public:
 		return &ops;
 	}
 
-	virtual TypeInfo * getType(const DataValue & aVal) const
+	virtual TypeInfo getType(const DataValue & aVal) const
 	{
-		return aVal.mADT.ctor->targetType();
+		return *aVal.mADT.ctor->targetType();
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
@@ -231,10 +231,10 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		{
 			auto & arg = aCtx.getArg(i);
 
-			if (!TypeInfo::matchType(arg.getOps()->getType(arg), &mReferenceType[i], params))
+			if (!TypeInfo::matchType(&arg.getOps()->getType(arg), &mReferenceType[i], params))
 			{
 				throw std::runtime_error(std::string("type missmath: ")
-					+ arg.getOps()->getType(arg)->TypeName + " expecting: " + mReferenceType[i].TypeName);
+					+ arg.getOps()->getType(arg).TypeName + " expecting: " + mReferenceType[i].TypeName);
 			}
 
 			values->values[i] = arg;
@@ -299,6 +299,11 @@ FunctionLibrary::FunctionLibrary(const std::string & aLibraryName)
 void FunctionLibrary::addFunction(const std::string & aFunctionName, const TFunction & aFunction)
 {
 	mFunctions.insert(std::make_pair(aFunctionName, aFunction));
+}
+
+void FunctionLibrary::addFunctions(std::map<std::string, TFunction> Functions)
+{
+	mFunctions.insert(Functions.begin(), Functions.end());
 }
 
 TFunction FunctionLibrary::getFunction(const std::string & aFunctionName) const

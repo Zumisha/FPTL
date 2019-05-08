@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.2.
+// A Bison parser, made by GNU Bison 3.1.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2013 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 #ifndef YY_YY_PARSER_TAB_HH_INCLUDED
 # define YY_YY_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 6 "parser.yy" // lalr1.cc:372
+#line 6 "parser.yy" // lalr1.cc:380
 
 #include "../Ident.h"
 
@@ -60,13 +60,14 @@
 	} // Parser
 	} // FPTL
 
-#line 64 "parser.tab.hh" // lalr1.cc:372
+#line 64 "parser.tab.hh" // lalr1.cc:380
 
 
-# include <vector>
+# include <cstdlib> // std::abort
 # include <iostream>
 # include <stdexcept>
 # include <string>
+# include <vector>
 # include "stack.hh"
 
 
@@ -105,7 +106,7 @@
 # define YYUSE(E) /* empty */
 #endif
 
-#if defined __GNUC__ && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN \
     _Pragma ("GCC diagnostic push") \
@@ -124,14 +125,21 @@
 # define YY_INITIAL_VALUE(Value) /* Nothing. */
 #endif
 
+# ifndef YY_NULLPTR
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULLPTR nullptr
+#  else
+#   define YY_NULLPTR 0
+#  endif
+# endif
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
 #endif
 
-#line 2 "parser.yy" // lalr1.cc:372
+#line 2 "parser.yy" // lalr1.cc:380
 namespace FPTL { namespace Parser {
-#line 135 "parser.tab.hh" // lalr1.cc:372
+#line 143 "parser.tab.hh" // lalr1.cc:380
 
 
 
@@ -145,7 +153,7 @@ namespace FPTL { namespace Parser {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 37 "parser.yy" // lalr1.cc:372
+    #line 37 "parser.yy" // lalr1.cc:380
 
 	Ident			   scToken;
 	Ident			   scIdent;
@@ -156,7 +164,7 @@ namespace FPTL { namespace Parser {
 	DefinitionNode *   scDef;
 	NameRefNode *      scName;
 
-#line 160 "parser.tab.hh" // lalr1.cc:372
+#line 168 "parser.tab.hh" // lalr1.cc:380
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -215,8 +223,11 @@ namespace FPTL { namespace Parser {
     /// (External) token type, as returned by yylex.
     typedef token::yytokentype token_type;
 
-    /// Internal symbol number.
+    /// Symbol type: an internal symbol number.
     typedef int symbol_number_type;
+
+    /// The symbol type number to denote an empty symbol.
+    enum { empty_symbol = -2 };
 
     /// Internal symbol number for tokens (subsumed by symbol_number_type).
     typedef unsigned char token_number_type;
@@ -246,7 +257,14 @@ namespace FPTL { namespace Parser {
       basic_symbol (typename Base::kind_type t,
                     const semantic_type& v);
 
+      /// Destroy the symbol.
       ~basic_symbol ();
+
+      /// Destroy contents, and record that is empty.
+      void clear ();
+
+      /// Whether empty.
+      bool empty () const;
 
       /// Destructive move, \a s is emptied into this.
       void move (basic_symbol& s);
@@ -274,21 +292,23 @@ namespace FPTL { namespace Parser {
       /// Constructor from (external) token numbers.
       by_type (kind_type t);
 
+      /// Record that this symbol is empty.
+      void clear ();
+
       /// Steal the symbol type from \a that.
       void move (by_type& that);
 
       /// The (internal) type number (corresponding to \a type).
-      /// -1 when this symbol is empty.
+      /// \a empty when empty.
       symbol_number_type type_get () const;
 
       /// The token.
       token_type token () const;
 
-      enum { empty = 0 };
-
       /// The symbol type.
-      /// -1 when this symbol is empty.
-      token_number_type type;
+      /// \a empty_symbol when empty.
+      /// An int, not token_number_type, to be able to store empty_symbol.
+      int type;
     };
 
     /// "External" symbols: returned by the scanner.
@@ -334,9 +354,9 @@ namespace FPTL { namespace Parser {
 
     /// Generate an error message.
     /// \param yystate   the state where the error occurred.
-    /// \param yytoken   the lookahead token type, or yyempty_.
+    /// \param yyla      the lookahead token.
     virtual std::string yysyntax_error_ (state_type yystate,
-                                         symbol_number_type yytoken) const;
+                                         const symbol_type& yyla) const;
 
     /// Compute post-reduction state.
     /// \param yystate   the current state
@@ -351,7 +371,7 @@ namespace FPTL { namespace Parser {
     /// \param yyvalue   the value to check
     static bool yy_table_value_is_error_ (int yyvalue);
 
-    static const short int yypact_ninf_;
+    static const short yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -360,7 +380,7 @@ namespace FPTL { namespace Parser {
     // Tables.
   // YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
   // STATE-NUM.
-  static const short int yypact_[];
+  static const short yypact_[];
 
   // YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
   // Performed when YYTABLE does not specify something else to do.  Zero
@@ -368,17 +388,17 @@ namespace FPTL { namespace Parser {
   static const unsigned char yydefact_[];
 
   // YYPGOTO[NTERM-NUM].
-  static const short int yypgoto_[];
+  static const short yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
-  static const short int yydefgoto_[];
+  static const short yydefgoto_[];
 
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const short int yytable_[];
+  static const short yytable_[];
 
-  static const short int yycheck_[];
+  static const short yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -396,7 +416,7 @@ namespace FPTL { namespace Parser {
     static const char* const yytname_[];
 
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned short int yyrline_[];
+  static const unsigned short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -436,16 +456,21 @@ namespace FPTL { namespace Parser {
       /// Copy constructor.
       by_state (const by_state& other);
 
+      /// Record that this symbol is empty.
+      void clear ();
+
       /// Steal the symbol type from \a that.
       void move (by_state& that);
 
       /// The (internal) type number (corresponding to \a state).
-      /// "empty" when empty.
+      /// \a empty_symbol when empty.
       symbol_number_type type_get () const;
 
-      enum { empty = 0 };
+      /// The state number used to denote an empty symbol.
+      enum { empty_state = -1 };
 
       /// The state.
+      /// \a empty when empty.
       state_type state;
     };
 
@@ -456,6 +481,8 @@ namespace FPTL { namespace Parser {
       typedef basic_symbol<by_state> super_type;
       /// Construct an empty symbol.
       stack_symbol_type ();
+      /// Copy construct (for efficiency).
+      stack_symbol_type (const stack_symbol_type& that);
       /// Steal the contents from \a sym to build this.
       stack_symbol_type (state_type s, symbol_type& sym);
       /// Assignment, needed by push_back.
@@ -484,15 +511,14 @@ namespace FPTL { namespace Parser {
     void yypush_ (const char* m, state_type s, symbol_type& sym);
 
     /// Pop \a n symbols the three stacks.
-    void yypop_ (unsigned int n = 1);
+    void yypop_ (unsigned n = 1);
 
-    // Constants.
+    /// Constants.
     enum
     {
       yyeof_ = 0,
       yylast_ = 236,     ///< Last index in yytable_.
       yynnts_ = 59,  ///< Number of nonterminal symbols.
-      yyempty_ = -2,
       yyfinal_ = 11, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -507,9 +533,9 @@ namespace FPTL { namespace Parser {
   };
 
 
-#line 2 "parser.yy" // lalr1.cc:372
+#line 2 "parser.yy" // lalr1.cc:380
 } } // FPTL::Parser
-#line 513 "parser.tab.hh" // lalr1.cc:372
+#line 539 "parser.tab.hh" // lalr1.cc:380
 
 
 

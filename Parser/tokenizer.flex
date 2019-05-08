@@ -14,8 +14,8 @@
 
 %}
 
-White 			[ \t\r]
-NewLine 		[\n]
+White 			[ \t]
+NewLine 		[\n\r]
 
 ShortComment 	"//"(.)*\n
 
