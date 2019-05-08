@@ -1638,165 +1638,157 @@ namespace FPTL { namespace Parser {
 #line 601 "parser.yy" // lalr1.cc:870
     {
 		ConstantNode * number = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
-		if (number->isNatural())
-		{
-			(yylhs.value.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
-			delete number;
-		}
-		else
-		{
-			pSupport->semanticError(ErrTypes::InvalidTupleIndex, number->getConstant());
-			(yylhs.value.scNode) = 0;
-		}
+		(yylhs.value.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
+		delete number;
 	}
-#line 1653 "parser.tab.cc" // lalr1.cc:870
+#line 1645 "parser.tab.cc" // lalr1.cc:870
     break;
 
   case 95:
-#line 620 "parser.yy" // lalr1.cc:870
+#line 612 "parser.yy" // lalr1.cc:870
     {
 			(yylhs.value.scNode) = new ConstantNode( ASTNode::TrueValue, (yystack_[0].value.scToken) );
+		}
+#line 1653 "parser.tab.cc" // lalr1.cc:870
+    break;
+
+  case 96:
+#line 616 "parser.yy" // lalr1.cc:870
+    {
+			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
 		}
 #line 1661 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 96:
+  case 97:
 #line 624 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction );
 		}
 #line 1669 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 97:
-#line 632 "parser.yy" // lalr1.cc:870
+  case 98:
+#line 631 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction );
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, 0 );
 		}
 #line 1677 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 98:
-#line 639 "parser.yy" // lalr1.cc:870
+  case 99:
+#line 635 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, 0 );
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), 0 );
 		}
 #line 1685 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 99:
-#line 643 "parser.yy" // lalr1.cc:870
+  case 100:
+#line 639 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), 0 );
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, (yystack_[1].value.scList) ); 
 		}
 #line 1693 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 100:
-#line 647 "parser.yy" // lalr1.cc:870
+  case 101:
+#line 643 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, (yystack_[1].value.scList) ); 
+			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 		}
 #line 1701 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 101:
-#line 651 "parser.yy" // lalr1.cc:870
-    {
-			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
-		}
-#line 1709 "parser.tab.cc" // lalr1.cc:870
-    break;
-
   case 102:
-#line 658 "parser.yy" // lalr1.cc:870
+#line 650 "parser.yy" // lalr1.cc:870
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::InputVarDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 		}
-#line 1718 "parser.tab.cc" // lalr1.cc:870
+#line 1710 "parser.tab.cc" // lalr1.cc:870
     break;
 
   case 103:
-#line 663 "parser.yy" // lalr1.cc:870
+#line 655 "parser.yy" // lalr1.cc:870
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
+		}
+#line 1718 "parser.tab.cc" // lalr1.cc:870
+    break;
+
+  case 104:
+#line 662 "parser.yy" // lalr1.cc:870
+    {
+			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 		}
 #line 1726 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 104:
-#line 670 "parser.yy" // lalr1.cc:870
-    {
-			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
+  case 106:
+#line 671 "parser.yy" // lalr1.cc:870
+    { 
+			(yylhs.value.scName) = new NameRefNode((yystack_[0].value.scIdent), ASTNode::RunningSchemeName);
 		}
 #line 1734 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 106:
-#line 679 "parser.yy" // lalr1.cc:870
-    { 
-			(yylhs.value.scName) = new NameRefNode((yystack_[0].value.scIdent), ASTNode::RunningSchemeName);
+  case 107:
+#line 678 "parser.yy" // lalr1.cc:870
+    {
+			(yylhs.value.scNode) = (yystack_[0].value.scNode);
 		}
 #line 1742 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 107:
-#line 686 "parser.yy" // lalr1.cc:870
+  case 108:
+#line 682 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scNode) = (yystack_[0].value.scNode);
+			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode));
 		}
 #line 1750 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 108:
-#line 690 "parser.yy" // lalr1.cc:870
+  case 109:
+#line 689 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode));
+			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName );
 		}
 #line 1758 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 109:
-#line 697 "parser.yy" // lalr1.cc:870
-    {
-			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName );
-		}
-#line 1766 "parser.tab.cc" // lalr1.cc:870
-    break;
-
   case 112:
-#line 707 "parser.yy" // lalr1.cc:870
+#line 699 "parser.yy" // lalr1.cc:870
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1772 "parser.tab.cc" // lalr1.cc:870
+#line 1764 "parser.tab.cc" // lalr1.cc:870
     break;
 
   case 113:
-#line 709 "parser.yy" // lalr1.cc:870
+#line 701 "parser.yy" // lalr1.cc:870
     {
 			(yylhs.value.scNode) = (yystack_[1].value.scNode);
+		}
+#line 1772 "parser.tab.cc" // lalr1.cc:870
+    break;
+
+  case 115:
+#line 709 "parser.yy" // lalr1.cc:870
+    {
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName) );
 		}
 #line 1780 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 115:
+  case 117:
 #line 717 "parser.yy" // lalr1.cc:870
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName) );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 		}
 #line 1788 "parser.tab.cc" // lalr1.cc:870
     break;
 
-  case 117:
-#line 725 "parser.yy" // lalr1.cc:870
-    {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
-		}
-#line 1796 "parser.tab.cc" // lalr1.cc:870
-    break;
 
-
-#line 1800 "parser.tab.cc" // lalr1.cc:870
+#line 1792 "parser.tab.cc" // lalr1.cc:870
             default:
               break;
             }
@@ -2206,9 +2198,9 @@ namespace FPTL { namespace Parser {
      470,   476,   481,   488,   492,   493,   498,   499,   506,   507,
      514,   515,   519,   526,   527,   534,   538,   543,   542,   552,
      551,   563,   567,   571,   572,   574,   579,   586,   593,   595,
-     596,   600,   616,   617,   618,   619,   623,   631,   638,   642,
-     646,   650,   657,   662,   669,   675,   678,   685,   689,   696,
-     700,   705,   706,   708,   715,   716,   723,   724,   730
+     596,   600,   608,   609,   610,   611,   615,   623,   630,   634,
+     638,   642,   649,   654,   661,   667,   670,   677,   681,   688,
+     692,   697,   698,   700,   707,   708,   715,   716,   722
   };
 
   // Print the state stack on the debug stream.
@@ -2292,4 +2284,4 @@ namespace FPTL { namespace Parser {
 
 #line 2 "parser.yy" // lalr1.cc:1182
 } } // FPTL::Parser
-#line 2296 "parser.tab.cc" // lalr1.cc:1182
+#line 2288 "parser.tab.cc" // lalr1.cc:1182

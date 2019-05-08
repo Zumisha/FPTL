@@ -38,10 +38,10 @@ public:
 		return nullptr;
 	}
 
-	virtual TypeInfo * getType(const DataValue &) const
+	virtual TypeInfo getType(const DataValue &) const
 	{
 		static TypeInfo info("boolean");
-		return &info;
+		return info;
 	}
 
 	// Функции сравнения. Оба аргумента обязаны быть типа boolean.

@@ -3,10 +3,6 @@
 #ifndef FSCHEME_H
 #define FSCHEME_H
 
-#include <iostream>
-#include <sstream>
-#include <set>
-
 #include "Functions.h"
 #include "Context.h"
 
@@ -70,8 +66,6 @@ public:
 	{}
 
 	void accept(FSchemeVisitor * aVisitor) const override;
-
-	static void call(const FFunctionNode * aNode, SExecutionContext * aCtx);
 
 	std::string name() const { return mName; }
 	int col() const { return mColumn; }
@@ -140,6 +134,7 @@ public:
 	int index() const { return mIndex; }
 	int col() const { return mCol; }
 	int line() const { return mLine; }
+	std::pair<int, int> pos() const { return{ mCol, mLine }; }
 
 private:
 	int mIndex;

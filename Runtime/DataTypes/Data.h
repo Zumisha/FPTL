@@ -60,7 +60,7 @@ class UndefinedValue : public DataValue
 class Ops
 {
 public:
-	virtual TypeInfo * getType(const DataValue & aVal) const = 0;
+	virtual TypeInfo getType(const DataValue & aVal) const = 0;
 	
 	// Добавлять сюда методы по мере добавления новых типов.
 	virtual Ops * combine(const Ops * aOther) const = 0;

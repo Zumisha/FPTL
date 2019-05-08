@@ -37,10 +37,10 @@ public:
 		return get();
 	}
 
-	virtual TypeInfo * getType(const DataValue &) const
+	virtual TypeInfo getType(const DataValue &) const
 	{
 		static TypeInfo info("double");
-		return &info;
+		return info;
 	}
 
 	// Функции преобразования.

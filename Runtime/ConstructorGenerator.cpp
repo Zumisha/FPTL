@@ -52,14 +52,12 @@ void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
 
 			Parser::DataNode * data = static_cast<Parser::DataNode *>(aNameReference->getTarget());
 
-			std::for_each(data->getTypeParams()->begin(), data->getTypeParams()->end(),
-				[&newType, this, &i](Parser::ASTNode * aParam)
-				{
-					Parser::NameRefNode * paramName = static_cast<Parser::NameRefNode *>(aParam);
-					newType.Parameters[paramName->getName().getStr()] = mTypeTuple[i];
-					i++;
-				}
-			);
+			for (auto element : *data->getTypeParams())
+			{
+				Parser::NameRefNode * paramName = static_cast<Parser::NameRefNode *>(element);
+				newType.Parameters[paramName->getName().getStr()] = mTypeTuple[i];
+				i++;
+			}
 
 			mTypeTuple = mStack.top();
 			mStack.pop();

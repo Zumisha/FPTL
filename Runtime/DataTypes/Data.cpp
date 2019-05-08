@@ -109,7 +109,7 @@ void BaseOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 DataValue BaseOps::invalidOperation() const
 {
 	std::stringstream error;
-	error << "invalid operation on type " << *getType(DataValue());
+	error << "invalid operation on type " << getType(DataValue());
 	throw std::runtime_error(error.str());
 }
 

@@ -96,9 +96,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Выбор элемента из кортежа.
 		case Parser::ASTNode::TupleElemNumber:
 		{
-			const int elemNumber = std::atoi(aNode->getConstant().getStr().c_str()) - 1;
-			assert(elemNumber >= 0);
-
+			const int elemNumber = std::atoi(aNode->getConstant().getStr().c_str());
 			node = new FTakeNode(elemNumber, name.Line, name.Col);
 			break;
 		}
@@ -363,12 +361,10 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 
 	// Сохраняеи список определений.
 	std::map<std::string, FSchemeNode *> definitionMap;
-	std::for_each(mDefinitions.begin(), mDefinitions.end(), [&](const std::pair<std::string, FScheme *> & elem) -> void
-		{
-			// FIXME: нужно добавлять только те функции, которые есть в aFunctionNode, а не в контексте!
-			definitionMap.insert(std::make_pair(elem.first, elem.second));
-		}
-	);
+	for (auto elem : mDefinitions)
+	{
+		definitionMap.insert(std::make_pair(elem.first, elem.second));
+	}
 
 	FScheme * me = mDefinitions.at(name.getStr());
 	me->setDefinitions(definitionMap);

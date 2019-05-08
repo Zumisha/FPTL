@@ -38,10 +38,10 @@ public:
 		return (Ops *)aOps;
 	}
 
-	virtual TypeInfo * getType(const DataValue &) const
+	virtual TypeInfo getType(const DataValue &) const
 	{
 		static TypeInfo info("int");
-		return &info;
+		return info;
 	}
 
 	// Преобразования типов.

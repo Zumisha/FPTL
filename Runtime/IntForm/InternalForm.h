@@ -188,12 +188,15 @@ public:
 
 	void zeroing(SExecutionContext & ctx) override;
 
-	GetArg(const IfPtr & next, const int argNum)
-		: mNext(next), mArgNum(argNum)
+	GetArg(const IfPtr & next, const int argNum, const std::pair<int, int> & pos)
+		: mNext(next), mArgNum(argNum), mPos(pos)
 	{}
+private:
+	void validateArgNum(SExecutionContext & ctx, int argNum) const;
 
 	IfPtr mNext;
 	int mArgNum;
+	std::pair<int, int> mPos;
 };
 
 class Constant : public InternalForm

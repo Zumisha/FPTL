@@ -36,10 +36,10 @@ public:
 		return get();
 	}
 
-	virtual TypeInfo * getType(const DataValue &) const
+	virtual TypeInfo getType(const DataValue &) const
 	{
 		static TypeInfo info("undefined");
-		return &info;
+		return info;
 	}
 
 	// Функция сравнения со значением true определена.

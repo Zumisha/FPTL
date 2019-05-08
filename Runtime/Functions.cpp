@@ -51,9 +51,9 @@ public:
 		return &ops;
 	}
 
-	virtual TypeInfo * getType(const DataValue & aVal) const
+	virtual TypeInfo getType(const DataValue & aVal) const
 	{
-		return aVal.mADT.ctor->targetType();
+		return *aVal.mADT.ctor->targetType();
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
@@ -231,10 +231,10 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		{
 			auto & arg = aCtx.getArg(i);
 
-			if (!TypeInfo::matchType(arg.getOps()->getType(arg), &mReferenceType[i], params))
+			if (!TypeInfo::matchType(&arg.getOps()->getType(arg), &mReferenceType[i], params))
 			{
 				throw std::runtime_error(std::string("type missmath: ")
-					+ arg.getOps()->getType(arg)->TypeName + " expecting: " + mReferenceType[i].TypeName);
+					+ arg.getOps()->getType(arg).TypeName + " expecting: " + mReferenceType[i].TypeName);
 			}
 
 			values->values[i] = arg;

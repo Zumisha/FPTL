@@ -26,6 +26,91 @@ void id(SExecutionContext & aCtx)
 	}
 }
 
+void tupleLength(SExecutionContext & aCtx)
+{
+	aCtx.push(DataBuilders::createInt(aCtx.argNum));
+}
+
+void not(SExecutionContext & aCtx)
+{
+	auto & arg = aCtx.getArg(0);
+
+}
+
+void and(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+}
+
+void or (SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+}
+
+void equal(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(lhs.getOps()->combine(rhs.getOps())->equal(lhs, rhs));
+}
+
+void notEqual(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(
+		DataBuilders::createBoolean(
+			!lhs.getOps()->combine(rhs.getOps())->equal(lhs, rhs).mIntVal
+		)
+	);
+}
+
+void greater(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(lhs.getOps()->combine(rhs.getOps())->greater(lhs, rhs));
+}
+
+void greaterOrEqual(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(
+		DataBuilders::createBoolean(
+			!lhs.getOps()->combine(rhs.getOps())->less(lhs, rhs).mIntVal
+		)
+	);
+}
+
+void less(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(lhs.getOps()->combine(rhs.getOps())->less(lhs, rhs));
+}
+
+void lessOrEqual(SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(
+		DataBuilders::createBoolean(
+			!lhs.getOps()->combine(rhs.getOps())->greater(lhs, rhs).mIntVal
+		)
+	);
+}
+
 void add(SExecutionContext & aCtx)
 {
 	auto & lhs = aCtx.getArg(0);
@@ -64,86 +149,6 @@ void mod(SExecutionContext & aCtx)
 	auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->mod(lhs, rhs));
-}
-
-void not(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	
-}
-
-void and(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-	
-}
-
-void or (SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-	
-}
-
-void equals(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	aCtx.push(lhs.getOps()->combine(rhs.getOps())->equal(lhs, rhs));
-}
-
-void less(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	aCtx.push(lhs.getOps()->combine(rhs.getOps())->less(lhs, rhs));
-}
-
-void greater(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	aCtx.push(lhs.getOps()->combine(rhs.getOps())->greater(lhs, rhs));
-}
-
-void notEqual(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	aCtx.push(
-		DataBuilders::createBoolean(
-			!lhs.getOps()->combine(rhs.getOps())->equal(lhs, rhs).mIntVal
-		)
-	);
-}
-
-void lessOrEqual(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	aCtx.push(
-		DataBuilders::createBoolean(
-			!lhs.getOps()->combine(rhs.getOps())->greater(lhs, rhs).mIntVal
-		)
-	);
-}
-
-void greaterOrEqual(SExecutionContext & aCtx)
-{
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
-
-	aCtx.push(
-		DataBuilders::createBoolean(
-			!lhs.getOps()->combine(rhs.getOps())->less(lhs, rhs).mIntVal
-		)
-	);
 }
 
 // Генерирует случайное вещественное число в диапазоне от 0 до 1.
@@ -227,40 +232,18 @@ void abs(SExecutionContext & aCtx)
 
 void print(SExecutionContext & aCtx)
 {
-	auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
-
 	static boost::mutex outputMutex;
 	boost::lock_guard<boost::mutex> guard(outputMutex);
 
-	for (int i = 0; i < numArgs; ++i)
-	{
-		auto & arg = aCtx.getArg(i);
-		arg.getOps()->print(arg, std::cout);
-		if (i + 1 < numArgs)
-		{
-			std::cout << "*";
-		}
-	}
+	aCtx.print(std::cout);
 }
 
 void printType(SExecutionContext & aCtx)
 {
-	auto numArgs = aCtx.stack.size() - aCtx.argPos - aCtx.arity;
-
 	static boost::mutex outputMutex;
 	boost::lock_guard<boost::mutex> guard(outputMutex);
 
-	for (int i = 0; i < numArgs; ++i)
-	{
-		auto & arg = aCtx.getArg(i);
-
-		std::cout << arg.getOps()->getType(arg)->TypeName;
-
-		if (i + 1 < numArgs)
-		{
-			std::cout << "*";
-		}
-	}
+	aCtx.printTypes(std::cout);
 }
 
 // Преобразование в строку.
@@ -499,11 +482,6 @@ void ArrayConcat(SExecutionContext & aCtx)
 	aCtx.push(ArrayValue::concat(aCtx));
 }
 
-void tupleLength(SExecutionContext & aCtx)
-{
-	aCtx.push(DataBuilders::createInt(aCtx.argNum));
-}
-
 } // anonymous namespace
 
 const std::map<std::string, TFunction> StandartLibrary::mFunctions =
@@ -536,7 +514,7 @@ const std::map<std::string, TFunction> StandartLibrary::mFunctions =
 	//{"not", &not},
 	//{"and", &and},
 	//{"or", &or},
-	{"equal", &equals},
+	{"equal", &equal},
 	{"nequal", &notEqual},
 	{"greater", &greater},
 	{"gequal", &greaterOrEqual},

@@ -45,7 +45,6 @@ struct SExecutionContext
 
 	// Экземпляр завершающего узла, чтобы не создавать множественные при отмене.
 	std::shared_ptr<InternalForm> endIfPtr;
-	InternalForm *endPtr;
 
 	//Вектор для сохранения указателей на заменённые при остановке узлы, чтобы они не удалились преждевременно.
 	std::vector<std::shared_ptr<InternalForm>> exchangedNodes;
@@ -74,6 +73,8 @@ struct SExecutionContext
 	void advance();
 	void unwind(size_t aArgPosOld, int aArity, size_t aPos);
 	void join();
+	void print(std::ostream & aStream) const;
+	void printTypes(std::ostream & aStream) const;
 
 	// Запуск выполнения.
 	virtual void run(EvaluatorUnit * aEvaluatorUnit) = 0;

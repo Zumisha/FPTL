@@ -11,7 +11,7 @@
 
 namespace FPTL { namespace Runtime {
 
-typedef std::unordered_map<std::string, struct TypeInfo *> TParametersMap;
+typedef std::unordered_map<std::string, struct TypeInfo> TParametersMap;
 
 //------------------------------------------------------------------------------------------
 // Информация о типе. Не требует сборки мусора, т.к. каждая структура храниться в TypeInfoRegistry.
@@ -27,9 +27,9 @@ struct TypeInfo
 	{}
 	TypeInfo(const std::string & aTypeName, const TParametersMap & aParameters) : TypeName(aTypeName)
 	{
-		for (auto i = aParameters.begin(); i != aParameters.end(); ++i)
+		for (auto param : aParameters)
 		{
-			Parameters.insert(std::make_pair(i->first, *i->second));
+			Parameters.insert(std::make_pair(param.first, param.second));
 		}
 	}
 
@@ -39,7 +39,7 @@ struct TypeInfo
 	// Вывод типовой информации.
 	friend std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo);
 
-	void addParameter(const std::string & aName, const TypeInfo & aParam)
+	void addParameter(const std::string aName, TypeInfo aParam)
 	{
 		Parameters.insert(std::make_pair(aName, aParam));
 	}

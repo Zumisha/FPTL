@@ -12,7 +12,6 @@ namespace Runtime {
 		  Proactive(0),
 		  NewProactiveLevel(0),
 		  Canceled(0),
-	      endPtr(nullptr),
 		  argPos(0),
 		  arity(0),
 		  argNum(0),
@@ -80,4 +79,31 @@ void SExecutionContext::join()
 	delete joined;
 }
 
+	void SExecutionContext::print(std::ostream & aStream) const
+	{
+		if (argNum == 0) return;
+		auto & arg = getArg(0);
+		arg.getOps()->print(arg, aStream);
+		for (int i = 1; i < argNum; ++i)
+		{
+			aStream << " * ";
+			auto & arg = getArg(i);
+			arg.getOps()->print(arg, aStream);
+		}
+	}
+
+	void SExecutionContext::printTypes(std::ostream& aStream) const
+	{
+		if (argNum == 0) return;
+		DataValue arg = getArg(0);
+		TypeInfo argType = arg.getOps()->getType(arg);
+		aStream << argType;
+		for (int i = 1; i < argNum; ++i)
+		{
+			aStream << " * ";
+			DataValue arg = getArg(i);
+			TypeInfo argType = arg.getOps()->getType(arg);
+			aStream << argType;
+		}
+	}
 }}

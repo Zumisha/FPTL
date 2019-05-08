@@ -19,35 +19,37 @@ public:
 		return &ops;
 	}
 
-	// Информация о конкретном типе массива во время выполнения не сохраняется.
-	virtual TypeInfo * getType(const DataValue & aVal) const
+	TypeInfo getType(const DataValue & aVal) const override
 	{
-		static TypeInfo info = typeInfo();
-		return &info;
+		TypeInfo info("array");
+		ArrayValue * trg = aVal.mArray;
+		auto elType = trg->ops->getType(trg->arrayData[0]);
+		info.addParameter(elType.TypeName, elType);
+		return info;
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
-	virtual Ops * combine(const Ops * aOther) const
+	Ops * combine(const Ops * aOther) const override
 	{
 		throw invalidOperation("combine");
 	}
 
-	virtual Ops * withOps(class IntegerOps const * aOps) const
+	Ops * withOps(class IntegerOps const * aOps) const override
 	{
 		throw invalidOperation("toInt");
 	}
 
-	virtual Ops * withOps(class BooleanOps const * aOps) const
+	Ops * withOps(class BooleanOps const * aOps) const override
 	{
 		throw invalidOperation("toBoolean");
 	}
 
-	virtual Ops * withOps(class DoubleOps const * aOps) const
+	Ops * withOps(class DoubleOps const * aOps) const override
 	{
 		throw invalidOperation("toDouble");
 	}
 
-	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
+	void mark(const DataValue & aVal, ObjectMarker * marker) const override
 	{
 		if (marker->markAlive(aVal.mArray, ArrayValue::byteSize(aVal.mArray->length)))
 		{
@@ -58,8 +60,8 @@ public:
 		}
 	}
 
-	// Вывод содержимое массива.
-	virtual void print(const DataValue & aVal, std::ostream & aStream) const
+	// Вывод содержимого массива.
+	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		aStream << "[";
 		ArrayValue * arr = aVal.mArray;
@@ -77,13 +79,6 @@ public:
 	}
 
 private:
-	static TypeInfo typeInfo()
-	{
-		TypeInfo info("array");
-		info.addParameter("'t", TypeInfo("'t"));
-		return info;
-	}
-
 	std::runtime_error invalidOperation(const std::string & name) const
 	{
 		return std::runtime_error(boost::str(boost::format("Invalid operation on array: %1%.") % name));
@@ -152,7 +147,7 @@ void ArrayValue::set(DataValue & arr, int pos, const DataValue & val)
 	{
 		auto srcType = val.getOps()->getType(val);
 		auto dstType = trg->ops->getType(trg->arrayData[0]);
-		std::string str = boost::str(boost::format("Cannot assign %1% to an array of type %2%") % srcType->TypeName % dstType->TypeName);
+		std::string str = boost::str(boost::format("Cannot assign %1% to an array of type %2%") % srcType.TypeName % dstType.TypeName);
 		throw std::runtime_error(str);
 	}
 
@@ -188,7 +183,7 @@ DataValue ArrayValue::concat(SExecutionContext & ctx)
 		if (rArr.mArray->ops != ops)
 		{
 			auto rType = rArr.mArray->ops->getType(rArr.mArray->arrayData[0]);
-			std::string str = boost::str(boost::format("Cannot concat an array of type %1% with an array of type %2%") % Type->TypeName % rType->TypeName);
+			std::string str = boost::str(boost::format("Cannot concat an array of type %1% with an array of type %2%") % Type.TypeName % rType.TypeName);
 			throw std::runtime_error(str);
 		}
 		len += rArr.mArray->length;

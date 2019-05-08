@@ -73,10 +73,10 @@ public:
 		throw invalidOperation("toDouble");
 	}
 
-	virtual TypeInfo * getType(const DataValue & aVal) const
+	virtual TypeInfo getType(const DataValue & aVal) const
 	{
 		static TypeInfo info("string");
-		return &info;
+		return info;
 	}
 
 	// Преобразование типов.

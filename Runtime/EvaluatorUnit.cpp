@@ -53,6 +53,10 @@ void EvaluatorUnit::evaluateScheme()
 		{
 			break;
 		}
+		catch (std::exception & e)
+		{
+			std::cout << e.what() << std::endl;
+		}
 	}
 
 	static boost::mutex outputMutex;

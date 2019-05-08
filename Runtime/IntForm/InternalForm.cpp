@@ -4,6 +4,8 @@
 #include "Context.h"
 #include "../Run.h"
 #include "../DataTypes/String.h"
+#include "Runtime/StandartLibrary.h"
+#include "Runtime/FScheme.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -135,7 +137,6 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	// Проверка условия.
 	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
 	{
-
 		if (!mThen) // Если ненужная ветвь длинная - отменяем её вычисление.
 			ctx.evaluator()->cancelFromPendingEnd(1 + !mElse);
 		if (mElse) // Если верная ветвь короткая - начинаем её вычислять.
@@ -214,9 +215,13 @@ void BasicFn::callFn(SExecutionContext & ctx) const
 	catch (std::exception & thrown)
 	{
 		std::stringstream error;
-		error << "Line: " << mPos.second << ". Column: " << mPos.first << ". Runtime error in function \'" << mName << "\': " << thrown.what() << ".\n" <<std::endl;
+		error << "Runtime error. " << thrown.what() << std::endl;
+		error << "In function \'" << mName << "\'. " << "Line: " << mPos.second << ". Column: " << mPos.first << std::endl;
+		error << "Input tuple types: ";
+		ctx.printTypes(error);
+		error << std::endl;
 		std::cerr << error.str();
-		throw;
+		throw new std::runtime_error(error.str());
 	}
 }
 
@@ -227,10 +232,27 @@ void BasicFn::zeroing(SExecutionContext & ctx)
 
 void GetArg::exec(SExecutionContext & ctx) const
 {
-	ctx.push(ctx.getArg(mArgNum));
+	int argNum;
+	if (mArgNum < 0) argNum = ctx.argNum + mArgNum;
+	else argNum = mArgNum - 1;
+	validateArgNum(ctx, argNum);
+	ctx.push(ctx.getArg(argNum));
 
 	mNext->exec(ctx);
 }
+
+void GetArg::validateArgNum(SExecutionContext& ctx, int argNum) const
+{
+	//ToDo Перенести в статический анализатор, когда он будет.
+	if (argNum >= ctx.argNum || argNum < 0)
+	{
+		std::stringstream error;
+		error << "Line: " << mPos.second << ". Column: " << mPos.first << ". Attempt to get the [" << mArgNum << "] argument in a tuple of size " << ctx.argNum << ".\n";
+		std::cerr << error.str();
+		throw new std::runtime_error(error.str());
+	}
+}
+
 
 void GetArg::zeroing(SExecutionContext & ctx)
 {
@@ -286,24 +308,31 @@ void IFExecutionContext::run(EvaluatorUnit * evaluator)
 void IFExecutionContext::cancel()
 {
 	endIfPtr = std::make_shared<EndOp>();
-	endPtr = &EndOp();
 	mInternalForm->zeroing(*this);
 }
 
 IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
 {
-	IFExecutionContext * fork = new IFExecutionContext(forkBody);
-	fork->Parent = this;
-	fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
-	this->Childs.insert(fork);
-
-	// Копируем стек.
-	for (int i = argPos; i < (argPos + argNum); i++)
+	IFExecutionContext * fork;
+	if (!this->Canceled.load(std::memory_order_acquire))
 	{
-		fork->stack.push_back(stack.at(i));
+		fork = new IFExecutionContext(forkBody);
+		fork->Parent = this;
+		fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
+		this->Childs.insert(fork);
+
+		// Копируем стек.
+		for (int i = argPos; i < (argPos + argNum); i++)
+		{
+			fork->stack.push_back(stack.at(i));
+		}
+
+		fork->argNum = argNum;
 	}
-	
-	fork->argNum = argNum;
+	else
+	{
+		fork = new IFExecutionContext(new EndOp());
+	}
 	return fork;
 }
 

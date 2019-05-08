@@ -109,7 +109,7 @@ void Generator::visit(const FFunctionNode * node)
 
 void Generator::visit(const FTakeNode * node)
 {
-	mResult = std::make_shared<GetArg>(mTail, node->index());
+	mResult = std::make_shared<GetArg>(mTail, node->index() , node->pos());
 }
 
 void Generator::visit(const FConstantNode * node)

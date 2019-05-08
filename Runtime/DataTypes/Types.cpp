@@ -18,13 +18,13 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 		{
 			TParametersMap parameterMap;
 
-			if (!matchType(aTypeInfo, it->second, parameterMap))
+			if (!matchType(aTypeInfo, &it->second, parameterMap))
 			{
 				return false;
 			}
 		}
 
-		aParametersMap.insert(std::make_pair(aRef->TypeName, const_cast<TypeInfo *>(aTypeInfo)));
+		aParametersMap.insert(std::make_pair(aRef->TypeName, *aTypeInfo));
 			
 		return true;
 	}
@@ -60,18 +60,20 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo)
 {
 	aStream << aTypeInfo.TypeName;
-
 	if (!aTypeInfo.Parameters.empty())
 	{
 		aStream << "[";
-
-		std::for_each(aTypeInfo.Parameters.begin(), aTypeInfo.Parameters.end(),
-			[&aStream](const std::pair<std::string, TypeInfo> & aRecord)
+		const auto size = aTypeInfo.Parameters.size();
+		size_t i = 0;
+		for (auto param : aTypeInfo.Parameters)
+		{
+			aStream << param.second;
+			if (i + 1 < size)
 			{
-				aStream << aRecord.first << "=" << aRecord.second;
+				aStream << ", ";
 			}
-		);
-
+			++i;
+		}
 		aStream << "]";
 	}
 
