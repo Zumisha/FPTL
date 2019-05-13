@@ -59,7 +59,7 @@ struct SExecutionContext
 	int arity;
 
 	// Количество аргументов во входном кортеже.
-	int argNum;
+	size_t argNum;
 
 	std::vector<ControlValue> controlStack;
 
@@ -88,37 +88,20 @@ protected:
 	EvaluatorUnit * mEvaluatorUnit;
 };
 
-// Интерфейс объектов с автоматическим управлением памятью.
-// Все наследника этого класса обязаны иметь тривиальный деструктор.
-class Collectable :
-	public boost::intrusive::slist_base_hook<>
+//-----------------------------------------------------------------------------
+
+class IFExecutionContext : public SExecutionContext
 {
-	friend class CollectedHeap;
-	friend class ObjectMarker;
+	InternalForm * mInternalForm;
 
 public:
-	enum Age
-	{
-		YOUNG = 0,
-		OLD   = 1
-	};
+	IFExecutionContext(InternalForm * body);
 
-private:
-	struct MetaInfo
-	{
-		Age age : 30;
-		unsigned int marked : 2;
-	};
+	void run(EvaluatorUnit * evaluator) override;
 
-	MetaInfo meta;
+	IFExecutionContext * spawn(InternalForm * fork);
 
-public:
-	Collectable()
-		: meta({YOUNG, 0})
-	{}
-
-	bool isMarked() const
-	{ return meta.marked == 1; }
+	void cancel() override;
 };
 
 } // Runtime

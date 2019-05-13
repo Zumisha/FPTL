@@ -34,7 +34,7 @@ public:
 		mYoungGenSize(DEFAULT_YOUNG_GEN_SIZE),
 		mOldGenSize(5 * DEFAULT_YOUNG_GEN_SIZE),
 		mVerbose(false),
-		mOldGenThreashold(mOldGenSize * 0.75)
+		mOldGenThreashold(mOldGenSize * static_cast<size_t>(0.75))
 	{}
 
 	void setEnabled(bool state)
@@ -62,7 +62,7 @@ public:
 	{ return mVerbose; }
 
 	void setOldGenThreashold(double ratio)
-	{ mOldGenThreashold = mOldGenSize * ratio; }
+	{ mOldGenThreashold = mOldGenSize * static_cast<size_t>(ratio); }
 
 	size_t oldGenGCThreashold() const
 	{ return mOldGenThreashold; }
@@ -95,6 +95,7 @@ public:
 class DataRootExplorer
 {
 public:
+	virtual ~DataRootExplorer() = default;
 	virtual void markRoots(ObjectMarker * marker) = 0;
 };
 

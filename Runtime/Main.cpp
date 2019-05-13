@@ -9,8 +9,8 @@
 #include "Run.h"
 #include "IntForm/Generator.h"
 #include "IntForm/InternalForm.h"
-#include "IntForm/Context.h"
 #include "Parser/AST.h"
+#include "Context.h"
 
 #define BUILD_DATE __DATE__ " " __TIME__
 
@@ -44,8 +44,7 @@ void run(const char * programPath, po::variables_map & vm)
 		size_t numCores = vm["num-cores"].as<int>();
 		std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
 
-		Runtime::FSchemeGenerator schemeGenerator;
-		schemeGenerator.process(astRoot);
+		Runtime::FSchemeGenerator schemeGenerator(astRoot);
 
 		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 
@@ -145,6 +144,7 @@ bool infoOptions(po::variables_map &vm, po::options_description desc, Utils::For
 int main(int argc, char ** argv)
 {
 	//setlocale(LC_ALL, "ru-ru");
+	std::cout.precision(15);
 
  	std::string programFile;
 
@@ -166,21 +166,28 @@ int main(int argc, char ** argv)
 		("old-gen-ratio", po::value<double>()->default_value(0.75), "Old gen usage ratio to start full GC.")
 		;
 
+	po::variables_map vm;
 	try
 	{
-		po::variables_map vm;
 		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);		
 		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
-		if (!optionsVerification(vm, fo) | infoOptions(vm, desc, fo)) return 1;
+		if (!optionsVerification(vm, fo) || infoOptions(vm, desc, fo)) return 1;
 		po::notify(vm);
-
-		FPTL::Parser::run(programFile.c_str(), vm);
 	}
 	catch (std::exception & e)
 	{
-		std::cout
-			<< e.what() << std::endl
-			<< desc << std::endl;
+		std::cout << "Error: " << e.what() << std::endl
+			<< "\nUse --help or -h to display all available options." << std::endl;
+		return 1;
+	}
+
+	try
+	{
+		FPTL::Parser::run(programFile.c_str(), vm);
+	}
+	catch (...)
+	{
+		return 1;
 	}
 
 	return 0;

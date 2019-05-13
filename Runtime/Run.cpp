@@ -78,8 +78,22 @@ struct ControlContext : SExecutionContext
 	void run(EvaluatorUnit * evaluatorUnit) override
 	{
 		boost::timer::cpu_timer timer;
-
-		mTarget->run(evaluatorUnit);
+		try
+		{
+			mTarget->run(evaluatorUnit);
+		}
+		catch (std::runtime_error & e)
+		{
+			std::cerr << "Runtime error: " << e.what() << std::endl;
+		}
+		catch (std::exception & e)
+		{
+			std::cerr << "Exception: " << e.what() << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "Unknown error.";
+		}
 		mEvaluator->stop();
 
 		elapsed_times = timer.elapsed();
@@ -107,7 +121,6 @@ void SchemeEvaluator::run(SExecutionContext & program)
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
 	}
 
-	std::cout.precision(15);
 	ControlContext controlContext(&program, this);
 
 	// Добавляем задание в очередь к первому потоку.

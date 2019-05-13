@@ -3,7 +3,7 @@
 #ifndef STANDART_LIBRARY_H
 #define STANDART_LIBRARY_H
 
-#include "Functions.h"
+#include "FunctionLibrary.h"
 
 namespace FPTL {
 namespace Runtime {

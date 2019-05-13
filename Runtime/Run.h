@@ -16,8 +16,10 @@ namespace Runtime {
 struct SExecutionContext;
 class FSchemeNode;
 class SchemeEvaluator;
+class CollectedHeap;
 
 //----------------------------------------------------------------------------
+
 class EvalConfig
 {
 public:
@@ -28,28 +30,42 @@ public:
 	{}
 
 	void SetOutput(Utils::FormatedOutput & fo)
-	{ mOutput = fo; }
+	{
+		mOutput = fo;
+	}
 
 	void SetProactive(bool state)
-	{ mProactive = state; }
+	{
+		mProactive = state;
+	}
 
 	void SetNumCores(int numCores)
-	{ mNumCores = numCores; }
+	{
+		mNumCores = numCores;
+	}
 
 	Utils::FormatedOutput Output()
-	{ return mOutput; }
+	{
+		return mOutput;
+	}
 
 	bool Proactive()
-	{ return mProactive; }
+	{
+		return mProactive;
+	}
 
 	int NumCores()
-	{ return mNumCores; }
+	{
+		return mNumCores;
+	}
 
 private:
 	Utils::FormatedOutput mOutput;
 	bool mProactive;
 	int mNumCores;
 };
+
+//----------------------------------------------------------------------------------
 
 // Вычислитель схемы, привязан к конкретному потоку.
 class EvaluatorUnit
@@ -121,6 +137,8 @@ private:
 	mutable CollectedHeap mHeap;
 	GarbageCollector * mCollector;
 };
+
+//----------------------------------------------------------------------------------
 
 // Производит вычисления программы, заданной функциональной схемой.
 // Порождает, владеет и управляет всеми потоками.

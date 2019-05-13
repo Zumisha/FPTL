@@ -18,6 +18,8 @@ public:
 
 	ConstructorGenerator();
 
+	void ConstructorGenerator::work(Parser::FunctionalProgram * aFuncProgram);
+
 	virtual void visit(Parser::DataNode * aData);
 	virtual void visit(Parser::NameRefNode * aNameReference);
 	virtual void visit(Parser::DefinitionNode * aDefinition);

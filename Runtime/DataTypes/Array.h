@@ -2,6 +2,7 @@
 
 #include "Data.h"
 #include "../Context.h"
+#include "Runtime/CollectedHeap.h"
 
 namespace FPTL
 {
@@ -13,7 +14,7 @@ namespace Runtime
 struct ArrayValue : public Collectable
 {
 	const Ops * ops;
-	const int length;
+	const size_t length;
 
 	DataValue * arrayData;
 
@@ -33,7 +34,7 @@ struct ArrayValue : public Collectable
 
 	static size_t byteSize(int length);
 
-	static int getLen(const DataValue & arr);
+	static size_t getLen(const DataValue & arr);
 
 	static DataValue concat(SExecutionContext & ctx);
 

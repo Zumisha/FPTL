@@ -34,7 +34,7 @@ struct TypeInfo
 	}
 
 	// Производит проверку составного типа aTypeInfo c эталоном aRef.
-	static bool matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TParametersMap & aParametersMap);
+	static bool matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, TParametersMap & aParametersMap);
 
 	// Вывод типовой информации.
 	friend std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo);

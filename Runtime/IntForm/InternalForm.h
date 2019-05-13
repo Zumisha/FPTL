@@ -1,15 +1,13 @@
 ﻿#pragma once
 
-#include "../Functions.h"
-
 #include <string>
 #include <memory>
 #include <unordered_map>
 
+#include "Runtime/FunctionLibrary.h"
+
 namespace FPTL {
 namespace Runtime {
-
-struct SExecutionContext;
 
 typedef std::shared_ptr<InternalForm> IfPtr;
 //-----------------------------------------------------------------------------
@@ -21,7 +19,8 @@ public:
 
 	virtual void exec(SExecutionContext & ctx) const = 0;
 	virtual void zeroing(SExecutionContext & ctx) = 0;
-	void cancel(SExecutionContext & ctx, IfPtr child)
+
+	static void cancel(SExecutionContext & ctx, IfPtr child)
 	{
 		ctx.exchangedNodes.push_back(child);
 		child = ctx.endIfPtr;
@@ -47,9 +46,9 @@ public:
 class ParJoin : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	ParJoin(const IfPtr & next)
 		: mNext(next)
@@ -61,9 +60,9 @@ public:
 class SeqBegin : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	SeqBegin(const IfPtr & next)
 		: mNext(next)
@@ -75,9 +74,9 @@ public:
 class SeqEnd : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	SeqEnd(const IfPtr & next)
 		: mNext(next)
@@ -89,9 +88,9 @@ public:
 class SeqAdvance : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	SeqAdvance(const IfPtr & next)
 		: mNext(next)
@@ -103,9 +102,9 @@ public:
 class CondStart : public InternalForm
 {
 public:
-	virtual void exec(SExecutionContext & ctx) const;
+	void exec(SExecutionContext & ctx) const override;
 
-	virtual void zeroing(SExecutionContext & ctx);
+	void zeroing(SExecutionContext & ctx) override;
 
 	CondStart(const IfPtr & cond, const IfPtr & thenBr, const IfPtr & elseBr)
 		: mCond(cond), mThen(thenBr), mElse(elseBr)
@@ -192,7 +191,7 @@ public:
 		: mNext(next), mArgNum(argNum), mPos(pos)
 	{}
 private:
-	void validateArgNum(SExecutionContext & ctx, int argNum) const;
+	const DataValue& TryGetArg(SExecutionContext & ctx, int argNum) const;
 
 	IfPtr mNext;
 	int mArgNum;

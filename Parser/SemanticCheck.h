@@ -48,7 +48,7 @@ class NamesChecker : public NodeVisitor
 
 public:
 
-	NamesChecker( Support * aSupport );
+	NamesChecker( Support * aSupport, ASTNode * aNode);
 
 	void visit( DataNode * aDataNode );
 	void visit( FunctionNode * aFunctionNode );
@@ -76,6 +76,10 @@ private:
 class RecursionFinder : public NodeVisitor
 {
 public:
+	RecursionFinder(ASTNode * root)
+	{
+		process(root);
+	}
 
 	void visit( DefinitionNode * aDefinitionNode )
 	{

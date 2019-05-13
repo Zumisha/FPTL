@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Context.h"
+#include "Runtime/CollectedHeap.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -11,8 +12,8 @@ struct StringData;
 struct StringValue : public Collectable
 {
 	StringData * data;
-	int begin;
-	int end;
+	size_t begin;
+	size_t end;
 
 	char * getChars() const;
 	char * contents() const;
@@ -26,7 +27,7 @@ class StringBuilder
 {
 public:
 	static DataValue create(SExecutionContext & aCtx, const std::string & aData);
-	static DataValue create(SExecutionContext & aCtx, int aSize);
+	static DataValue create(SExecutionContext & aCtx, size_t aSize);
 	static DataValue create(SExecutionContext & aCtx, const StringValue * aOther, int aBegin, int aEnd);
 };
 

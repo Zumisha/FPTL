@@ -1,11 +1,13 @@
-﻿#include "Support.h"
+﻿#include <memory>
+#include <string>
+
 #include "Generated/Parser.tab.hh"
+
+#include "Support.h"
 #include "SemanticCheck.h"
 #include "Nodes.h"
 #include "Runtime/StandartLibrary.h"
-#include <memory>
-#include <string>
-#include "../Parser/Tokenizer.h"
+#include "Tokenizer.h"
 #include "Runtime/Run.h"
 
 namespace FPTL { namespace Parser {
@@ -195,21 +197,14 @@ ASTNode * Support::getInternalForm(const std::string inputStr)
 		return nullptr;
 	}
 
-	NamesChecker checkNames( this );
-	checkNames.process( root );
+	NamesChecker checkNames( this, root);
 
 	if (mWasError)
 	{
 		return nullptr;
 	}
 
-	RecursionFinder recursionFinder;
-	recursionFinder.process( root );
-
-	if (mWasError)
-	{
-		return nullptr;
-	}
+	RecursionFinder recursionFinder(root);
 
 	return rootPtr.release();
 }

@@ -2,7 +2,6 @@
 #include <sstream>
 
 #include "Data.h"
-#include "../Functions.h"
 
 namespace FPTL {
 namespace Runtime {

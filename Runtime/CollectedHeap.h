@@ -11,6 +11,43 @@ namespace Runtime {
 class GarbageCollector;
 
 //-------------------------------------------------------------------------------
+
+// Интерфейс объектов с автоматическим управлением памятью.
+// Все наследника этого класса обязаны иметь тривиальный деструктор.
+class Collectable : public boost::intrusive::slist_base_hook<>
+{
+	friend class CollectedHeap;
+	friend class ObjectMarker;
+
+public:
+	enum Age
+	{
+		YOUNG = 0,
+		OLD = 1
+	};
+
+private:
+	struct MetaInfo
+	{
+		Age age : 30;
+		unsigned int marked : 2;
+	};
+
+	MetaInfo meta;
+
+public:
+	Collectable()
+		: meta({ YOUNG, 0 })
+	{}
+
+	bool isMarked() const
+	{
+		return meta.marked == 1;
+	}
+};
+
+//-------------------------------------------------------------------------------
+
 class CollectedHeap
 {
 public:

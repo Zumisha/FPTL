@@ -9,31 +9,17 @@
 
 namespace FPTL {
 namespace Runtime {
-
 //-----------------------------------------------------------------------------
-// TODO: эти 2 функции больше не нужны.
-template <typename F>
-FFunctionNode * FSchemeGenerator::newFunctionNode(const F &aFunction)
+FSchemeGenerator::FSchemeGenerator(Parser::ASTNode * astRoot)
+	: mTree(nullptr),
+	mScheme(nullptr),
+	mSchemeInput(nullptr),
+	mProgram(nullptr),
+	mConstructorGenerator(new ConstructorGenerator),
+	mLibrary(new StandartLibrary)
 {
-	return new FFunctionNode(aFunction);
+	process(astRoot);
 }
-
-template <typename F>
-FFunctionNode * FSchemeGenerator::newFunctionNode(const F &aFunction, const Parser::Ident & aIdent)
-{
-	return new FFunctionNode(aFunction, aIdent.getStr(), aIdent.Line, aIdent.Col);
-}
-
-//-----------------------------------------------------------------------------
-FSchemeGenerator::FSchemeGenerator()
-		: mTree(nullptr), 
-		  mScheme(nullptr),
-		  mSchemeInput(nullptr), 
-		  mProgram(nullptr),
-		  mConstructorGenerator(new ConstructorGenerator),
-		  mLibrary(new StandartLibrary)
-	{
-	}
 
 //-----------------------------------------------------------------------------
 FSchemeGenerator::~FSchemeGenerator()
@@ -139,7 +125,8 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 		case Parser::ASTNode::ConstructorName:
 		{
 			Constructor * ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
-			FSchemeNode * node = newFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), aNameRefNode->getName());
+			Parser::Ident name = aNameRefNode->getName();
+			FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), name.getStr(), name.Line, name.Col);
 			mNodeStack.push(node);
 			break;
 		}
@@ -147,7 +134,8 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 		case Parser::ASTNode::DestructorName:
 		{
 			Constructor * ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
-			FSchemeNode * node = newFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1));
+			Parser::Ident name = aNameRefNode->getName();
+			FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), "~" + name.getStr(), name.Line, name.Col);
 			mNodeStack.push(node);
 			break;
 		}
@@ -199,7 +187,7 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 			mNodeStack.pop();
 
 			Parser::ASTNode * middle = aExpressionNode->getMiddle();
-			FSchemeNode * elseBranch = 0;
+			FSchemeNode * elseBranch = nullptr;
 			if (middle)
 			{
 				elseBranch = mNodeStack.top();
@@ -253,6 +241,8 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 
 			break;
 		}
+	default: 
+		throw std::logic_error("unknown node type");
 	}
 }
 
@@ -338,7 +328,7 @@ void FSchemeGenerator::processBuildInFunction(Parser::NameRefNode * aFunctionNam
 	Parser::Ident name = aFunctionNameNode->getName();
 	
 	// Ищем функцию в библиотеке.
-	const auto function = newFunctionNode(mLibrary->getFunction(name.getStr()), name);
+	const auto function = new FFunctionNode(mLibrary->getFunction(name.getStr()), name.getStr(), name.Line, name.Col);
 
 	mNodeStack.push(function);
 }
@@ -382,11 +372,8 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 //-----------------------------------------------------------------------------
 void FSchemeGenerator::visit(Parser::FunctionalProgram * aFuncProgram)
 {
-	// Обрабатываем блоки данных.
-	if (aFuncProgram->getDataDefinitions())
-	{
-		mConstructorGenerator->process(aFuncProgram->getDataDefinitions());
-	}
+	// Обрабатываем блоки данных.	
+	mConstructorGenerator->work(aFuncProgram);
 
 	// Обрабатываем только схему.
 	process(aFuncProgram->getScheme());

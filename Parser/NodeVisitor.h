@@ -36,6 +36,8 @@ public:
 	virtual void visit(ExpressionNode * aExpressionNode);
 	virtual void visit(ConstantNode * aConstantNode);
 
+protected:
+
 	// Начинает обход дерева.
 	void process(ASTNode * aNode );
 };

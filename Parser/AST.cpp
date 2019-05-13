@@ -1,7 +1,4 @@
-﻿#include <cassert>
-#include "AST.h"
-#include "Support.h"
-#include "NodeVisitor.h"
+﻿#include "AST.h"
 
 namespace FPTL {
 namespace Parser {

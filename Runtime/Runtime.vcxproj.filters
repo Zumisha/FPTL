@@ -71,9 +71,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
-    <ClCompile Include="Functions.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
     <ClCompile Include="FScheme.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
@@ -84,9 +81,6 @@
       <Filter>Source Files\Runtime\Data</Filter>
     </ClCompile>
     <ClCompile Include="ConstructorGenerator.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="Run.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="StandartLibrary.cpp">
@@ -110,9 +104,6 @@
     <ClCompile Include="IntForm\InternalForm.cpp">
       <Filter>Source Files\Runtime\IntForm</Filter>
     </ClCompile>
-    <ClCompile Include="Context.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
     <ClCompile Include="EvaluatorUnit.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
@@ -133,6 +124,18 @@
     </ClCompile>
     <ClCompile Include="DataTypes\Undefined.cpp">
       <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="ADT.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="FunctionLibrary.cpp">
+      <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="Context.cpp">
+      <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="Run.cpp">
+      <Filter>Source Files\Runtime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,12 +172,6 @@
     <ClInclude Include="FSchemeGenerator.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="Functions.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Run.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
     <ClInclude Include="WorkStealingQueue.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
@@ -182,9 +179,6 @@
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="FSchemeVisitor.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="Context.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="NodeDeleter.h">
@@ -206,9 +200,6 @@
       <Filter>Header Files\Runtime\IntForm</Filter>
     </ClInclude>
     <ClInclude Include="IntForm\ControlValue.h">
-      <Filter>Header Files\Runtime\IntForm</Filter>
-    </ClInclude>
-    <ClInclude Include="IntForm\Context.h">
       <Filter>Header Files\Runtime\IntForm</Filter>
     </ClInclude>
     <ClInclude Include="LockFreeWorkStealingQueue.h">
@@ -234,6 +225,18 @@
     </ClInclude>
     <ClInclude Include="DataTypes\Array.h">
       <Filter>Header Files\Runtime\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionLibrary.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="Context.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="EvaluatorUnit.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="Run.h">
+      <Filter>Header Files\Runtime</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

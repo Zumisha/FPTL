@@ -208,7 +208,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, const std::string & aD
 	return val;
 }
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
+DataValue StringBuilder::create(SExecutionContext & aCtx, size_t aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 

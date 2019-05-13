@@ -1,10 +1,13 @@
+#include <boost/timer/timer.hpp>
+
 #include "Context.h"
 #include "Run.h"
+#include "IntForm/InternalForm.h"
 
 namespace FPTL {
 namespace Runtime {
 
-	SExecutionContext::SExecutionContext()
+SExecutionContext::SExecutionContext()
 		: Scheme(nullptr),
 		  Parent(nullptr),
 		  Ready(0),
@@ -38,6 +41,13 @@ CollectedHeap & SExecutionContext::heap() const
 
 const DataValue & SExecutionContext::getArg(int aIndex) const
 {
+	// ToDo: производить статический анализ.
+	if (aIndex >= argNum || aIndex < 0)
+	{
+		std::stringstream error;
+		error << "attempt to get the [" << aIndex + 1 << "] argument in a tuple of size " << argNum << ".";
+		throw std::runtime_error(error.str());
+	}
 	return stack.at(argPos + aIndex);
 }
 
@@ -94,16 +104,79 @@ void SExecutionContext::join()
 
 	void SExecutionContext::printTypes(std::ostream& aStream) const
 	{
-		if (argNum == 0) return;
-		DataValue arg = getArg(0);
-		TypeInfo argType = arg.getOps()->getType(arg);
-		aStream << argType;
-		for (int i = 1; i < argNum; ++i)
+		aStream << "(";
+		if (argNum != 0)
 		{
-			aStream << " * ";
-			DataValue arg = getArg(i);
+			DataValue arg = getArg(0);
 			TypeInfo argType = arg.getOps()->getType(arg);
 			aStream << argType;
+			for (int i = 1; i < argNum; ++i)
+			{
+				aStream << " * ";
+				DataValue arg = getArg(i);
+				TypeInfo argType = arg.getOps()->getType(arg);
+				aStream << argType;
+			}
 		}
+		aStream << ")";
+	}
+
+	//-----------------------------------------------------------------------------
+
+	IFExecutionContext::IFExecutionContext(InternalForm * body)
+		: mInternalForm(body)
+	{
+	}
+
+
+	void IFExecutionContext::run(EvaluatorUnit * evaluator)
+	{
+		//try
+		{
+			mEvaluatorUnit = evaluator;
+			mEvaluatorUnit->pushTask(this);
+
+			mInternalForm->exec(*this);
+
+			mEvaluatorUnit->popTask();
+
+			// Сообщаем о готовности задания.
+			Ready.store(1, std::memory_order_release);
+		}
+		/*catch (std::exception & e)
+		{
+			evaluator->mEvaluator->stop();
+		}*/
+	}
+
+	void IFExecutionContext::cancel()
+	{
+		endIfPtr = std::make_shared<EndOp>();
+		mInternalForm->zeroing(*this);
+	}
+
+	IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
+	{
+		IFExecutionContext * fork;
+		if (!this->Canceled.load(std::memory_order_acquire))
+		{
+			fork = new IFExecutionContext(forkBody);
+			fork->Parent = this;
+			fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
+			this->Childs.insert(fork);
+
+			// Копируем стек.
+			for (size_t i = argPos; i < (argPos + argNum); i++)
+			{
+				fork->stack.push_back(stack.at(i));
+			}
+
+			fork->argNum = argNum;
+		}
+		else
+		{
+			fork = new IFExecutionContext(new EndOp());
+		}
+		return fork;
 	}
 }}

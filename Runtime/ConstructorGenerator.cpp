@@ -2,13 +2,23 @@
 
 #include "../Parser/Nodes.h"
 #include "ConstructorGenerator.h"
-#include "Functions.h"
+#include "DataTypes/ADT.h"
 
 namespace FPTL { namespace Runtime {
 
 //-------------------------------------------------------------------------------------------
 ConstructorGenerator::ConstructorGenerator()
 {
+}
+
+//------------------------------------------------------------------------------------------
+
+void ConstructorGenerator::work(Parser::FunctionalProgram * aFuncProgram)
+{
+	if (aFuncProgram->getDataDefinitions())
+	{
+		process(aFuncProgram->getDataDefinitions());
+	}
 }
 
 //-------------------------------------------------------------------------------------------

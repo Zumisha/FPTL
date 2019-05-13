@@ -3,8 +3,8 @@
 #ifndef FSCHEME_H
 #define FSCHEME_H
 
-#include "Functions.h"
 #include "Context.h"
+#include "FunctionLibrary.h"
 
 namespace FPTL {
 namespace Runtime {

@@ -53,7 +53,7 @@ public:
 	{
 		if (marker->markAlive(aVal.mArray, ArrayValue::byteSize(aVal.mArray->length)))
 		{
-			for (int i = 0; i < aVal.mArray->length; i++)
+			for (size_t i = 0; i < aVal.mArray->length; i++)
 			{
 				marker->addChild(&aVal.mArray->arrayData[i]);
 			}
@@ -123,7 +123,7 @@ DataValue ArrayValue::get(const DataValue & arr, int pos)
 
 	ArrayValue * trg = arr.mArray;
 
-	if (unsigned(pos) >= trg->length)
+	if (static_cast<size_t>(pos) >= trg->length)
 	{
 		throw outOfRange();
 	}
@@ -138,7 +138,7 @@ void ArrayValue::set(DataValue & arr, int pos, const DataValue & val)
 
 	ArrayValue * trg = arr.mArray;
 
-	if (unsigned(pos) >= trg->length)
+	if (static_cast<size_t>(pos) >= trg->length)
 	{
 		throw outOfRange();
 	}
@@ -159,7 +159,7 @@ size_t ArrayValue::byteSize(int length)
 	return sizeof(ArrayValue) + sizeof(DataValue) * length;
 }
 
-int ArrayValue::getLen(const DataValue & arr)
+size_t ArrayValue::getLen(const DataValue & arr)
 {
 	arrayValueCheck(arr);
 	return arr.mArray->length;
@@ -175,7 +175,7 @@ DataValue ArrayValue::concat(SExecutionContext & ctx)
 	auto firstArr = ctx.getArg(0);
 	auto ops = ctx.getArg(0).mArray->ops;
 	auto Type = ops->getType(firstArr.mArray->arrayData[0]);
-	int len = firstArr.mArray->length;
+	size_t len = firstArr.mArray->length;
 
 	for (int i = 1; i < ctx.argNum; ++i)
 	{
@@ -197,10 +197,10 @@ DataValue ArrayValue::concat(SExecutionContext & ctx)
 
 	// Создаем массив и заполняем его.
 	val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
-	int curPos = 0;
-	for (int i = 0; i < ctx.argNum; ++i)
+	size_t curPos = 0;
+	for (size_t i = 0; i < ctx.argNum; ++i)
 	{
-		auto arr = ctx.getArg(i);
+		const auto arr = ctx.getArg(i);
 		memcpy(val->arrayData + curPos, arr.mArray->arrayData, arr.mArray->length * sizeof(ArrayValue));
 		curPos += arr.mArray->length;
 	}

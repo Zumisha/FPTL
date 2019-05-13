@@ -221,7 +221,8 @@
     <ClCompile Include="EvaluatorUnit.cpp" />
     <ClCompile Include="FScheme.cpp" />
     <ClCompile Include="FSchemeGenerator.cpp" />
-    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="ADT.cpp" />
+    <ClCompile Include="FunctionLibrary.cpp" />
     <ClCompile Include="GarbageCollector.cpp" />
     <ClCompile Include="IntForm\Generator.cpp" />
     <ClCompile Include="IntForm\InternalForm.cpp" />
@@ -241,13 +242,13 @@
     <ClInclude Include="DataTypes\Data.h" />
     <ClInclude Include="DataTypes\String.h" />
     <ClInclude Include="DataTypes\Types.h" />
+    <ClInclude Include="EvaluatorUnit.h" />
     <ClInclude Include="FScheme.h" />
     <ClInclude Include="FSchemeGenerator.h" />
     <ClInclude Include="FSchemeVisitor.h" />
-    <ClInclude Include="Functions.h" />
+    <ClInclude Include="FunctionLibrary.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GcAwarePtr.h" />
-    <ClInclude Include="IntForm\Context.h" />
     <ClInclude Include="IntForm\ControlValue.h" />
     <ClInclude Include="IntForm\Generator.h" />
     <ClInclude Include="IntForm\InternalForm.h" />

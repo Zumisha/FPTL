@@ -1,10 +1,9 @@
-﻿#include "FScheme.h"
+﻿#include <iostream>
+#include <cassert>
+
+#include "FScheme.h"
 #include "FSchemeVisitor.h"
 #include "Run.h"
-#include "String.h"
-
-#include <iostream>
-#include <cassert>
 
 namespace FPTL { namespace Runtime {
 

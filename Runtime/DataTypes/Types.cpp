@@ -1,11 +1,10 @@
 #include "Types.h"
-#include "../Functions.h"
 
 #include <boost/functional/hash.hpp>
 
 namespace FPTL { namespace Runtime {
 
-bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TParametersMap & aParametersMap)
+bool TypeInfo::matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, TParametersMap & aParametersMap)
 {
 	if (aRef->TypeName[0] == '\'')
 	{
@@ -24,13 +23,13 @@ bool TypeInfo::matchType(const TypeInfo * aTypeInfo, const TypeInfo * aRef, TPar
 			}
 		}
 
-		aParametersMap.insert(std::make_pair(aRef->TypeName, *aTypeInfo));
+		aParametersMap.insert(std::make_pair(aRef->TypeName, aTypeInfo));
 			
 		return true;
 	}
 	else
 	{
-		if (aRef->TypeName == aTypeInfo->TypeName)
+		if (aRef->TypeName == aTypeInfo.TypeName)
 		{
 			// Отключил проверку параметров, т.к. в конкретном экземпляре ADT-значения она не сохраняется (Java-style).
 			/*if (aTypeInfo->Parameters.empty())

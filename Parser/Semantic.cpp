@@ -5,8 +5,10 @@
 namespace FPTL { namespace Parser {
 
 //---------------------------------------------------------------------------
-NamesChecker::NamesChecker( Support * aSupport ) : mSupport(aSupport)
-{}
+NamesChecker::NamesChecker( Support * aSupport, ASTNode * root) : mSupport(aSupport)
+{
+	process(root);
+}
 
 //---------------------------------------------------------------------------
 void NamesChecker::visit( DataNode * aDataNode )

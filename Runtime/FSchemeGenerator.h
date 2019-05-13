@@ -7,7 +7,6 @@
 #include <stack>
 
 #include "../Parser/NodeVisitor.h"
-#include "Functions.h"
 #include "FScheme.h"
 
 namespace FPTL {
@@ -22,7 +21,7 @@ class FSchemeGenerator : public Parser::NodeVisitor
 {
 public:
 
-	FSchemeGenerator();
+	FSchemeGenerator(Parser::ASTNode * astRoot);
 	~FSchemeGenerator();
 
 	void visit(Parser::FunctionalProgram * aFuncProgram) override;
@@ -39,9 +38,6 @@ private:
 
 	void processBuildInFunction(Parser::NameRefNode * aFunctionName);
 	void processFunctionalTerm(Parser::NameRefNode * aFuncTermName);
-
-	template <typename F> static FFunctionNode * newFunctionNode(const F &aFunction);
-	template <typename F> static FFunctionNode * newFunctionNode(const F &aFunction, const Parser::Ident & aIdent);
 
 	Parser::ASTNode * mTree;
 

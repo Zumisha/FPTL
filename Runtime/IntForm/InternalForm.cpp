@@ -1,11 +1,9 @@
-#include <iostream>
-
 #include "InternalForm.h"
-#include "Context.h"
-#include "../Run.h"
 #include "../DataTypes/String.h"
 #include "Runtime/StandartLibrary.h"
 #include "Runtime/FScheme.h"
+#include "Runtime/Run.h"
+#include "Runtime/Context.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -215,13 +213,12 @@ void BasicFn::callFn(SExecutionContext & ctx) const
 	catch (std::exception & thrown)
 	{
 		std::stringstream error;
-		error << "Runtime error. " << thrown.what() << std::endl;
-		error << "In function \'" << mName << "\'. " << "Line: " << mPos.second << ". Column: " << mPos.first << std::endl;
-		error << "Input tuple types: ";
+		error << thrown.what() << std::endl
+		<< "In function \"" << mName << "\"." << "Line: " << mPos.second << ". Column: " << mPos.first << "." << std::endl
+		<< "Input tuple type: ";
 		ctx.printTypes(error);
 		error << std::endl;
-		std::cerr << error.str();
-		throw new std::runtime_error(error.str());
+		throw std::runtime_error(error.str());
 	}
 }
 
@@ -235,29 +232,32 @@ void GetArg::exec(SExecutionContext & ctx) const
 	int argNum;
 	if (mArgNum < 0) argNum = ctx.argNum + mArgNum;
 	else argNum = mArgNum - 1;
-	validateArgNum(ctx, argNum);
-	ctx.push(ctx.getArg(argNum));
-
+	ctx.push(TryGetArg(ctx, argNum));
 	mNext->exec(ctx);
 }
 
-void GetArg::validateArgNum(SExecutionContext& ctx, int argNum) const
+const DataValue& GetArg::TryGetArg(SExecutionContext& ctx, int argNum) const
 {
-	//ToDo Перенести в статический анализатор, когда он будет.
-	if (argNum >= ctx.argNum || argNum < 0)
+	try
+	{
+		return ctx.getArg(argNum);
+	}
+	catch (std::exception & thrown)
 	{
 		std::stringstream error;
-		error << "Line: " << mPos.second << ". Column: " << mPos.first << ". Attempt to get the [" << mArgNum << "] argument in a tuple of size " << ctx.argNum << ".\n";
-		std::cerr << error.str();
-		throw new std::runtime_error(error.str());
+		error << thrown.what() << std::endl
+			<< "Line: " << mPos.second << ". Column: " << mPos.first << "." << std::endl
+			<< "Input tuple type: ";
+		ctx.printTypes(error);
+		error << std::endl;
+		throw std::runtime_error(error.str());
 	}
 }
 
 
 void GetArg::zeroing(SExecutionContext & ctx)
 {
-	//mArgNum = 0;
-	//cancel(ctx, mNext);
+	cancel(ctx, mNext);
 }
 
 void Constant::exec(SExecutionContext & ctx) const
@@ -283,57 +283,6 @@ void EndOp::exec(SExecutionContext & ctx) const
 
 void EndOp::zeroing(SExecutionContext & ctx)
 {
-}
-
-//-----------------------------------------------------------------------------
-IFExecutionContext::IFExecutionContext(InternalForm * body)
-	: mInternalForm(body)
-{
-}
-
-
-void IFExecutionContext::run(EvaluatorUnit * evaluator)
-{
-	mEvaluatorUnit = evaluator;
-	mEvaluatorUnit->pushTask(this);
-
-	mInternalForm->exec(*this);
-
-	mEvaluatorUnit->popTask();
-
-	// Сообщаем о готовности задания.
-	Ready.store(1, std::memory_order_release);
-}
-
-void IFExecutionContext::cancel()
-{
-	endIfPtr = std::make_shared<EndOp>();
-	mInternalForm->zeroing(*this);
-}
-
-IFExecutionContext * IFExecutionContext::spawn(InternalForm * forkBody)
-{
-	IFExecutionContext * fork;
-	if (!this->Canceled.load(std::memory_order_acquire))
-	{
-		fork = new IFExecutionContext(forkBody);
-		fork->Parent = this;
-		fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
-		this->Childs.insert(fork);
-
-		// Копируем стек.
-		for (int i = argPos; i < (argPos + argNum); i++)
-		{
-			fork->stack.push_back(stack.at(i));
-		}
-
-		fork->argNum = argNum;
-	}
-	else
-	{
-		fork = new IFExecutionContext(new EndOp());
-	}
-	return fork;
 }
 
 }}
