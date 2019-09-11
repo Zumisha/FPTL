@@ -1,4 +1,5 @@
 ﻿#include <sstream>
+#include <utility>
 
 #include "DataTypes/Data.h"
 #include "DataTypes/ADT.h"
@@ -21,12 +22,12 @@ struct DataValueArray : public Collectable
 	}
 };
 
-const DataValue & ADTValue::operator[](int i) const
+const DataValue & ADTValue::operator[](size_t i) const
 {
 	return values->values[i];
 }
 
-DataValue & ADTValue::operator[](int i)
+DataValue & ADTValue::operator[](size_t i)
 {
 	return values->values[i];
 }
@@ -51,122 +52,122 @@ public:
 		return &ops;
 	}
 
-	virtual TypeInfo getType(const DataValue & aVal) const
+	TypeInfo getType(const DataValue & aVal) const override
 	{
-		return *aVal.mADT.ctor->targetType();
+		return *aVal.mADT->ctor->targetType();
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
-	virtual Ops * combine(const Ops * aOther) const
+	Ops * combine(const Ops * aOther) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual Ops * withOps(class Ops const * aOps) const
+	Ops * withOps(class Ops const * aOps) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual Ops * withOps(class IntegerOps const * aOps) const
+	Ops * withOps(class IntegerOps const * aOps) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual Ops * withOps(class BooleanOps const * aOps) const
+	Ops * withOps(class BooleanOps const * aOps) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual Ops * withOps(class DoubleOps const * aOps) const
+	Ops * withOps(class DoubleOps const * aOps) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual Ops * withOps(class StringOps const * aOps) const
+	Ops * withOps(class StringOps const * aOps) const override
 	{
 		throw invalidOperation();
 	}
 
 	// Преобразование типов.
-	virtual int toInt(const DataValue & aVal) const
+	long long toInt(const DataValue & aVal) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual double toDouble(const DataValue & aVal) const
+	double toDouble(const DataValue & aVal) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual StringValue * toString(const DataValue & aVal) const
+	StringValue * toString(const DataValue & aVal) const override
 	{
 		throw invalidOperation();
 	}
 
 	// Арифметические функции.
-	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual DataValue abs(const DataValue & aArg) const
+	DataValue abs(const DataValue & aArg) const override
 	{
 		throw invalidOperation();
 	}
 
 	// Функции сравнения.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		// TODO: возможно эту функцию можно определить.
 		throw invalidOperation();
 	}
 
-	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation();
 	}
 
-	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
+	void mark(const DataValue & aVal, ObjectMarker * marker) const override
 	{
-		if (marker->markAlive(aVal.mADT.values, aVal.mADT.size()))
+		if (marker->markAlive(aVal.mADT->values, aVal.mADT->size()))
 		{
-			for (int i = 0; i < aVal.mADT.ctor->arity(); i++)
+			for (int i = 0; i < aVal.mADT->ctor->arity(); i++)
 			{
-				marker->addChild(&aVal.mADT[i]);
+				marker->addChild(&(*aVal.mADT)[i]);
 			}
 		}
 	}
 
 	// Вывод в поток.
-	virtual void print(const DataValue & aVal, std::ostream & aStream) const
+	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		auto val = aVal.mADT;
-		int arity = val.ctor->arity();
+		int arity = val->ctor->arity();
 
 		if (arity > 0)
 		{
@@ -174,7 +175,7 @@ public:
 
 			for (auto i = 0; i < arity; ++i)
 			{
-				val[i].getOps()->print(val[i], aStream);
+				(*val)[i].getOps()->print((*val)[i], aStream);
 
 				if (i + 1 < arity)
 				{
@@ -185,11 +186,11 @@ public:
 			aStream << ").";
 		}
 
-		aStream << val.ctor->name();
+		aStream << val->ctor->name();
 	}
 
 private:
-	std::exception invalidOperation() const
+	static std::runtime_error invalidOperation()
 	{
 		std::stringstream str;
 		str << "invalid operation on abstract data type";
@@ -198,15 +199,16 @@ private:
 };
 
 //-------------------------------------------------------------------------------
-Constructor::Constructor(const std::string & aConstructorName, const std::string & aTypeName, const TTypeList & aRefType, const std::vector<std::string> & aParameters)
-	: mConstructorName(aConstructorName),
-	mReferenceType(aRefType),
+Constructor::Constructor(std::string aConstructorName, const std::string & aTypeName,
+                         std::vector<TypeInfo> aRefType, const std::vector<std::string> & aParameters)
+	: mConstructorName(std::move(aConstructorName)),
 	mTypeName(aTypeName),
+	mReferenceType(std::move(aRefType)),
 	mTargetType(aTypeName)
 {
 	for (auto &param : aParameters)
 	{
-		mTargetType.addParameter(param, TypeInfo(param));
+		mTargetType.typeParameters.emplace_back(param, TypeInfo(param));
 	}
 }
 
@@ -220,7 +222,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 {
 	// Проверяем соответствие типов входного кортежа сигнатуре конструктора.
 	int argNum = 0;
-	TParametersMap params;
+	std::unordered_map<std::string, struct TypeInfo> params;
 
 	int ar = arity();
 	auto values = aCtx.heap().alloc<DataValueArray>(DataValueArray::size(ar));
@@ -231,14 +233,14 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 
 		if (!TypeInfo::matchType(arg.getOps()->getType(arg), &mReferenceType[i], params))
 		{
-			throw std::runtime_error("type mismatch. Actual:" + arg.getOps()->getType(arg).TypeName + " Expected: " + mReferenceType[i].TypeName + ".");
+			throw std::runtime_error("type mismatch. Actual:" + arg.getOps()->getType(arg).typeName + " Expected: " + mReferenceType[i].typeName + ".");
 		}
 
 		values->values[i] = arg;
 	}
 
 	// С типами все ок, cоздаем абстрактный тип данных.
-	aCtx.push(DataBuilders::createADT(ADTValue(this, values.ptr()), ADTOps::get()));
+	aCtx.push(DataBuilders::createADT(new ADTValue(this, values.ptr()), ADTOps::get()));
 }
 
 //-------------------------------------------------------------------------------
@@ -249,14 +251,14 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 
 	if (arg.getOps() == ADTOps::get())
 	{
-		auto adt = arg.mADT;
+		const auto adt = arg.mADT;
 
-		if (adt.ctor == this)
+		if (adt->ctor == this)
 		{
 			// Разворачиваем кортеж.
 			for (int i = 0; i < arity(); ++i)
 			{
-				aCtx.push(adt[i]);
+				aCtx.push((*adt)[i]);
 			}
 
 			return;
@@ -269,7 +271,7 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 
 //-------------------------------------------------------------------------------
 EmptyConstructor::EmptyConstructor(const std::string & aConstructorName, const std::string & aTypeName)
-	: Constructor(aConstructorName, aTypeName, TTypeList(), std::vector<std::string>()),
+	: Constructor(aConstructorName, aTypeName, std::vector<TypeInfo>(), std::vector<std::string>()),
 	mTypeInfo(aTypeName)
 {
 }

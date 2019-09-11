@@ -1,21 +1,20 @@
 #include "Types.h"
-
-#include <boost/functional/hash.hpp>
+#include <unordered_map>
 
 namespace FPTL { namespace Runtime {
 
-bool TypeInfo::matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, TParametersMap & aParametersMap)
+bool TypeInfo::matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap)
 {
-	if (aRef->TypeName[0] == '\'')
+	if (aRef->typeName[0] == '\'')
 	{
 		// Типовой параметр может быть заменен любым типом.
 		// Проверяем, чтобы один и тот же типовой параметр не был ассоциирован с разными типами.
 
-		TParametersMap::iterator it = aParametersMap.find(aRef->TypeName);
+		auto it = aParametersMap.find(aRef->typeName);
 
 		if (it != aParametersMap.end())
 		{
-			TParametersMap parameterMap;
+			std::unordered_map<std::string, struct TypeInfo> parameterMap;
 
 			if (!matchType(aTypeInfo, &it->second, parameterMap))
 			{
@@ -23,50 +22,45 @@ bool TypeInfo::matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, TParam
 			}
 		}
 
-		aParametersMap.insert(std::make_pair(aRef->TypeName, aTypeInfo));
-			
+		aParametersMap.insert(std::make_pair(aRef->typeName, aTypeInfo));
+
 		return true;
 	}
-	else
+	if (aRef->typeName == aTypeInfo.typeName)
 	{
-		if (aRef->TypeName == aTypeInfo.TypeName)
+		// Отключил проверку параметров, т.к. в конкретном экземпляре ADT-значения она не сохраняется (Java-style).
+		/*if (aTypeInfo->Parameters.empty())
 		{
-			// Отключил проверку параметров, т.к. в конкретном экземпляре ADT-значения она не сохраняется (Java-style).
-			/*if (aTypeInfo->Parameters.empty())
-			{
-				// Тип не имеет параметров или был создан пустым конструктором.
-				return true;
-			}
-
-			// Производим проверку параметров, если они есть.
-			for (auto it = aRef->Parameters.begin(); it != aRef->Parameters.end(); ++it)
-			{
-				if (!matchType(&aTypeInfo->Parameters.at(it->first), &it->second, aParametersMap))
-				{
-					return false;
-				}
-			}*/
-
+			// Тип не имеет параметров или был создан пустым конструктором.
 			return true;
 		}
-	}
 
+		// Производим проверку параметров, если они есть.
+		for (auto it = aRef->Parameters.begin(); it != aRef->Parameters.end(); ++it)
+		{
+			if (!matchType(&aTypeInfo->Parameters.at(it->first), &it->second, aParametersMap))
+			{
+				return false;
+			}
+		}*/
+
+		return true;
+	}
 	// Type mismatch.
 	return false;
 }
 
-//----------------------------------------------------------------------------------------------
 std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo)
 {
-	aStream << aTypeInfo.TypeName;
-	if (!aTypeInfo.Parameters.empty())
+	aStream << aTypeInfo.typeName;
+	if (!aTypeInfo.typeParameters.empty())
 	{
 		aStream << "[";
-		const auto size = aTypeInfo.Parameters.size();
+		const auto size = aTypeInfo.typeParameters.size();
 		size_t i = 0;
-		for (auto param : aTypeInfo.Parameters)
+		for (const auto& param : aTypeInfo.typeParameters)
 		{
-			aStream << param.second;
+			aStream << param;
 			if (i + 1 < size)
 			{
 				aStream << ", ";
@@ -79,6 +73,20 @@ std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo)
 	return aStream;
 }
 
-//----------------------------------------------------------------------------------------------
+bool operator==(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo)
+{
+	if (lTypeInfo.typeName != rTypeInfo.typeName) return false;
+	if (lTypeInfo.typeParameters.size() != rTypeInfo.typeParameters.size()) return false;
+	for (size_t i = 0; i < lTypeInfo.typeParameters.size(); ++i)
+	{
+		if (rTypeInfo.typeParameters[i] != lTypeInfo.typeParameters[i]) return false;
+	}
+	return true;
+}
+
+bool operator!=(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo)
+{
+	return !(lTypeInfo == rTypeInfo);
+}
 
 }} // FPTL::Runtime

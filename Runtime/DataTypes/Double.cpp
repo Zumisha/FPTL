@@ -6,8 +6,7 @@ namespace Runtime {
 
 class DoubleOps : public BaseOps
 {
-	DoubleOps()
-	{}
+	DoubleOps()	= default;
 
 public:
 	static DoubleOps * get()
@@ -16,99 +15,99 @@ public:
 		return &ops;
 	}
 
-	virtual Ops * combine(const Ops * aOther) const
+	Ops * combine(const Ops * aOther) const override
 	{
 		return aOther->withOps(this);
 	}
 
-	virtual Ops * withOps(const IntegerOps * aOther) const
+	Ops * withOps(const IntegerOps * aOther) const override
 	{
 		return get();
 	}
 
-	virtual Ops * withOps(const BooleanOps * aOther) const
+	Ops * withOps(const BooleanOps * aOther) const override
 	{
 		invalidOperation();
 		return nullptr;
 	}
 
-	virtual Ops * withOps(const DoubleOps * aOther) const
+	Ops * withOps(const DoubleOps * aOther) const override
 	{
 		return get();
 	}
 
-	virtual TypeInfo getType(const DataValue &) const
+	TypeInfo getType(const DataValue &) const override
 	{
 		static TypeInfo info("double");
 		return info;
 	}
 
 	// Функции преобразования.
-	virtual int toInt(const DataValue & aVal) const
+	long long toInt(const DataValue & aVal) const override
 	{
-		return (int)aVal.mDoubleVal;
+		return static_cast<long long>(aVal.mDoubleVal);
 	}
 
-	virtual double toDouble(const DataValue & aVal) const
+	double toDouble(const DataValue & aVal) const override
 	{
 		return aVal.mDoubleVal;
 	}
 
 	// Базисные функции.
-	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) + aRhs.getOps()->toDouble(aRhs));
 	}
 
-	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) - aRhs.getOps()->toDouble(aRhs));
 	}
 
-	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) * aRhs.getOps()->toDouble(aRhs));
 	}
 
-	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) / aRhs.getOps()->toDouble(aRhs));
 	}
 
-	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createDouble(fmod(aLhs.getOps()->toDouble(aLhs), aRhs.getOps()->toDouble(aRhs)));
 	}
 
-	virtual DataValue abs(const DataValue & aArg) const
+	DataValue abs(const DataValue & aArg) const override
 	{
 		return DataBuilders::createDouble(std::abs(aArg.mDoubleVal));
 	}
 
 	// Функции сравнения.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) == aRhs.getOps()->toDouble(aRhs));
 	}
 
-	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) < aRhs.getOps()->toDouble(aRhs));
 	}
 
-	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) > aRhs.getOps()->toDouble(aRhs));
 	}
 
 	// Вывод в поток.
-	virtual void print(const DataValue & aVal, std::ostream & aStream) const
+	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		aStream << aVal.mDoubleVal;
 	}
 };
 
-DataValue DataBuilders::createDouble(double aVal)
+DataValue DataBuilders::createDouble(const double aVal)
 {
 	DataValue val(DoubleOps::get());
 	val.mDoubleVal = aVal;

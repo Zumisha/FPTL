@@ -38,66 +38,66 @@ Ops * BaseOps::withOps(StringOps const * aOther) const
 // Базисные функции.
 DataValue BaseOps::add(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 DataValue BaseOps::sub(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 DataValue BaseOps::mul(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 DataValue BaseOps::div(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 DataValue BaseOps::mod(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
-DataValue BaseOps::abs(const DataValue & aArg) const
+DataValue BaseOps::abs(const DataValue & aVal) const
 {
-	return invalidOperation();
+	return invalidOperation(aVal.getOps()->getType(aVal));
 }
 
 // Функции сравнения.
 DataValue BaseOps::equal(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 DataValue BaseOps::less(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 DataValue BaseOps::greater(const DataValue & aLhs, const DataValue & aRhs) const
 {
-	return invalidOperation();
+	return invalidOperation(aRhs.getOps()->getType(aRhs));
 }
 
 // Функции преобразования.
-int BaseOps::toInt(const DataValue & aVal) const
+long long BaseOps::toInt(const DataValue & aVal) const
 {
-	invalidOperation();
+	invalidOperation(aVal.getOps()->getType(aVal));
 	return 0;
 }
 
 double BaseOps::toDouble(const DataValue & aVal) const
 {
-	invalidOperation();
+	invalidOperation(aVal.getOps()->getType(aVal));
 	return 0.0;
 }
 
 StringValue * BaseOps::toString(const DataValue & aVal) const
 {
-	invalidOperation();
+	invalidOperation(aVal.getOps()->getType(aVal));
 	return nullptr;
 }
 
@@ -105,10 +105,17 @@ void BaseOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 {
 }
 
-DataValue BaseOps::invalidOperation() const
+DataValue BaseOps::invalidOperation(const TypeInfo & valType)
 {
 	std::stringstream error;
-	error << "invalid operation on type " << getType(DataValue());
+	error << "invalid operation on type " << valType << ".";
+	throw std::runtime_error(error.str());
+}
+
+DataValue BaseOps::invalidOperation()
+{
+	std::stringstream error;
+	error << "invalid operation on type " << DataValue().getOps() << ".";
 	throw std::runtime_error(error.str());
 }
 
@@ -120,7 +127,7 @@ DataValue DataBuilders::createVal(Ops * aOps)
 	return val;
 }
 
-DataValue DataBuilders::createADT(const ADTValue & aADTVal, Ops * aOps)
+DataValue DataBuilders::createADT(ADTValue* aADTVal, Ops * aOps)
 {
 	DataValue val(aOps);
 	val.mADT = aADTVal;

@@ -58,8 +58,8 @@ void ListNode::accept( NodeVisitor * aVisitor )
 
 ListNode * ListNode::copy() const
 {
-	ListNode * newList = new ListNode( getType() );
-	std::for_each( begin(), end(), [newList](ASTNode * aElem) { newList->push_back(aElem->copy()); } );
+	auto newList = new ListNode( getType() );
+	for (auto aElem : *this) { newList->push_back(aElem->copy()); }
 	return newList;
 }
 
@@ -68,9 +68,9 @@ ListNode * ListNode::copy() const
 DataNode::DataNode( Ident aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors )
 	: ASTNode(DataTypeDefinitionBlock),
 	mTypeName(aTypeName),
+	mConstructors(aConstructors),
 	mTypeDefinitions(aTypeDefs),
-	mTypeParameters(aTypeParams),
-	mConstructors(aConstructors)
+	mTypeParameters(aTypeParams)
 {
 }
 
@@ -89,9 +89,9 @@ void DataNode::accept( NodeVisitor * aVisitor )
 ASTNode * DataNode::copy() const
 {
 	return new DataNode( mTypeName,
-		mTypeDefinitions ? mTypeDefinitions->copy() : 0,
-		mTypeParameters ? mTypeParameters->copy() : 0,
-		mConstructors ? mConstructors->copy() : 0 
+		mTypeDefinitions ? mTypeDefinitions->copy() : nullptr,
+		mTypeParameters ? mTypeParameters->copy() : nullptr,
+		mConstructors ? mConstructors->copy() : nullptr 
 	);
 }
 

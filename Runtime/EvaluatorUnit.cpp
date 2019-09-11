@@ -91,11 +91,11 @@ void EvaluatorUnit::addForkJob(SExecutionContext * task)
 
 SExecutionContext *EvaluatorUnit::join()
 {
-	SExecutionContext * joinTask = pendingTasks.back();
+	auto joinTask = pendingTasks.back();
 
 	if (joinTask->Proactive.load(std::memory_order_acquire))
 	{
-		joinTask->NewProactiveLevel.store(0, std::memory_order_release);
+		joinTask->NewProactiveLevel.store(false, std::memory_order_release);
 		if (!joinTask->Parent->Proactive.load(std::memory_order_acquire)) moveToMainOrder(joinTask);
 	}
 
@@ -113,24 +113,24 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 {
 	if (movingTask->Parent->Proactive.load(std::memory_order_acquire))
 	{
-		movingTask->Proactive.store(0, std::memory_order_release);
+		movingTask->Proactive.store(false, std::memory_order_release);
 		if (!movingTask->Ready.load(std::memory_order_acquire) && !movingTask->Working.load(std::memory_order_acquire))
 		{
 			mJobQueue.push(movingTask);
 			mProactiveJobsMoved++;
 		}
-		for (SExecutionContext * child : movingTask->Childs)
+		for (auto child : movingTask->Childs)
 		{
 			if (!child->NewProactiveLevel.load(std::memory_order_acquire))
 				moveToMainOrder(child);
 		}
 	}
-	movingTask->NewProactiveLevel.store(0, std::memory_order_release);
+	movingTask->NewProactiveLevel.store(false, std::memory_order_release);
 }
 
-void EvaluatorUnit::cancelFromPendingEnd(const int backPos)
+void EvaluatorUnit::cancelFromPendingEnd(const size_t backPos)
 {
-	SExecutionContext * cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
+	const auto cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
 	if (!cancelTask->Canceled.load(std::memory_order_acquire)) cancel(cancelTask);
 
 	while (!cancelTask->Ready.load(std::memory_order_acquire))
@@ -144,7 +144,9 @@ void EvaluatorUnit::cancelFromPendingEnd(const int backPos)
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 {
-	cancelingTask->Canceled.store(1, std::memory_order_release); // Чтобы никто не начал выполнение.
+	// Чтобы никто не начал выполнение.
+	cancelingTask->Canceled.store(true, std::memory_order_release);
+
 	if (!cancelingTask->Ready.load(std::memory_order_acquire))
 	{
 		//cancelingTask->arity = 0;
@@ -154,9 +156,9 @@ void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)
 			cancelingTask->cancel();
 		}
 		mProactiveJobsCanceled++;
-		cancelingTask->Ready.store(1, std::memory_order_release);
+		cancelingTask->Ready.store(true, std::memory_order_release);
 	}
-	for (SExecutionContext * child : cancelingTask->Childs)
+	for (auto child : cancelingTask->Childs)
 	{
 		if (!child->Canceled.load(std::memory_order_acquire)) cancel(child);
 	}
@@ -169,7 +171,7 @@ void EvaluatorUnit::safePoint() const
 
 void EvaluatorUnit::schedule()
 {
-	// Перед выполнением задачи проверяем, не запланированна ли сборка мусора.
+	// Перед выполнением задачи проверяем, не запланирована ли сборка мусора.
 	safePoint();
 
 	SExecutionContext * context = nullptr;
@@ -197,7 +199,7 @@ void EvaluatorUnit::schedule()
 		// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
 		if (mProactiveJobQueue.pop(context) && !context->Canceled.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))
 		{
-			context->Working.store(1, std::memory_order_release);
+			context->Working.store(true, std::memory_order_release);
 			context->run(this);
 			mProactiveJobsCompleted++;
 			return;
@@ -207,7 +209,7 @@ void EvaluatorUnit::schedule()
 		context = mEvaluator->findProactiveJob(this);
 		if (context && !context->Canceled.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))
 		{
-			context->Working.store(1, std::memory_order_release);
+			context->Working.store(true, std::memory_order_release);
 			context->run(this);
 			mProactiveJobsStealed++;
 			mProactiveJobsCompleted++;
@@ -226,8 +228,8 @@ CollectedHeap & EvaluatorUnit::heap() const
 
 void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 {
-	// Помечаем корни у всех заданий, взятых на выполнение текщим юнитом.
-	for (SExecutionContext * ctx : runningTasks)
+	// Помечаем корни у всех заданий, взятых на выполнение текущим юнитом.
+	for (auto ctx : runningTasks)
 	{
 		for (auto & data : ctx->stack)
 		{
@@ -235,8 +237,8 @@ void EvaluatorUnit::markDataRoots(ObjectMarker * marker)
 		}
 	}
 
-	// Помечаем корни у всех форкнутых заданий, которые были выполнены.
-	for (SExecutionContext * ctx : pendingTasks)
+	// Помечаем корни у всех созданных заданий, которые были выполнены.
+	for (auto ctx : pendingTasks)
 	{
 		if (ctx->isReady())
 		{

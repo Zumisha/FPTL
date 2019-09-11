@@ -29,14 +29,14 @@ public:
 	void visit(Parser::NameRefNode * aNameRefNode) override;
 	void visit(Parser::DefinitionNode * aDefinitionNode) override;
 	void visit(Parser::ExpressionNode * aExpressionNode) override;
-	void visit(Parser::ConstantNode * aConstantNode) override;
+	void visit(Parser::ConstantNode * aNode) override;
 
 	// Получение результата.
-	FSchemeNode * getProgram();
+	FSchemeNode * getProgram() const;
 
 private:
 
-	void processBuildInFunction(Parser::NameRefNode * aFunctionName);
+	void processBuildInFunction(Parser::NameRefNode * aFunctionNameNode);
 	void processFunctionalTerm(Parser::NameRefNode * aFuncTermName);
 
 	Parser::ASTNode * mTree;

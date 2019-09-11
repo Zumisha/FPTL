@@ -3,6 +3,7 @@
 #ifndef FSCHEME_H
 #define FSCHEME_H
 
+#include <utility>
 #include "Context.h"
 #include "FunctionLibrary.h"
 
@@ -53,24 +54,23 @@ class FFunctionNode : public FSchemeNode
 {
 public:
 	template <typename F>
-	FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction)
-	{}
+	FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction) {}
 
 	template <typename F>
-	FFunctionNode(const F & aFunction, const std::string & aName, short aLine, short aCol)
-		: FSchemeNode(false),
-		  mFunction(aFunction),
-		  mName(aName),
-		  mColumn(aCol),
-		  mLine(aLine)
+	FFunctionNode(const F & aFunction, const std::string & aName, size_t aLine, size_t aCol) :
+		FSchemeNode(false),
+		mFunction(aFunction),
+		mName(aName),
+		mLine(aLine),
+		mColumn(aCol)
 	{}
 
 	void accept(FSchemeVisitor * aVisitor) const override;
 
 	std::string name() const { return mName; }
-	int col() const { return mColumn; }
-	int line() const { return mLine; }
-	std::pair<int, int> pos() const { return{ mColumn, mLine }; }
+	size_t col() const { return mColumn; }
+	size_t line() const { return mLine; }
+	std::pair<size_t, size_t> pos() const { return{ mColumn, mLine }; }
 	TFunction fn() const { return mFunction; }
 
 private:
@@ -78,8 +78,8 @@ private:
 
 	// Имя функции и позиция в тексте программы.
 	std::string mName;
-	short mLine;
-	short mColumn;
+	size_t mLine;
+	size_t mColumn;
 };
 
 //---------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ private:
 class FTakeNode : public FSchemeNode
 {
 public:
-	FTakeNode(int aIndex, short aLine, short aCol)
+	FTakeNode(long long aIndex, size_t aLine, size_t aCol)
 		: FSchemeNode(false), 
 		mIndex(aIndex),
 		mLine(aLine),
@@ -131,26 +131,25 @@ public:
 
 	void accept(FSchemeVisitor * aVisitor) const override;
 
-	int index() const { return mIndex; }
-	int col() const { return mCol; }
-	int line() const { return mLine; }
-	std::pair<int, int> pos() const { return{ mCol, mLine }; }
+	long long index() const { return mIndex; }
+	size_t col() const { return mCol; }
+	size_t line() const { return mLine; }
+	std::pair<size_t, size_t> pos() const { return{ mCol, mLine }; }
 
 private:
-	int mIndex;
-
-	short mLine;
-	short mCol;
+	long long mIndex;
+	size_t mLine;
+	size_t mCol;
 };
 
 //---------------------------------------------------------------------------------------------
 class FConstantNode : public FSchemeNode
 {
 public:
-	FConstantNode(const TypeInfo & aType, const DataValue & aData, short aLine, short aCol)
-		: FSchemeNode(false),
+	FConstantNode(TypeInfo aType, const DataValue & aData, size_t aLine, size_t aCol) :
+		FSchemeNode(false),
 		mData(aData),
-		mType(aType),
+		mType(std::move(aType)),
 		mLine(aLine),
 		mCol(aCol)
 	{}
@@ -163,14 +162,17 @@ public:
 private:
 	DataValue mData;
 	TypeInfo mType;
-	short mLine;
-	short mCol;
+	size_t mLine;
+	size_t mCol;
 };
 
 class FStringConstant : public FConstantNode
 {
 public:
-	FStringConstant(const std::string & aStr, short aLine, short aCol);
+	FStringConstant(std::string aStr, size_t aLine, size_t aCol) : 
+		FConstantNode(TypeInfo("string"), DataValue(), aLine, aCol),
+		mStr(std::move(aStr))
+	{}
 
 	std::string str() const { return mStr; }
 
@@ -184,7 +186,7 @@ class FScheme : public FSchemeNode
 {
 public:
 	FScheme(FSchemeNode * aFirstNode);
-	FScheme(FSchemeNode * aFirstNode, const std::string & aName);
+	FScheme(FSchemeNode * aFirstNode, std::string aName);
 
 	void accept(FSchemeVisitor * aVisitor) const override;
 

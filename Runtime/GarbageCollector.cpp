@@ -24,7 +24,7 @@ public:
 		: mMaxAge(maxAge)
 	{}
 
-	virtual bool markAlive(Collectable * object, size_t size)
+	bool markAlive(Collectable * object, size_t size) override
 	{
 		if (ObjectMarker::checkAge(object, mMaxAge))
 		{
@@ -38,7 +38,7 @@ public:
 		return false;
 	}
 
-	virtual void addChild(const DataValue * child)
+	void addChild(const DataValue * child) override
 	{
 		mMarkStack.push_back(child);
 	}
@@ -63,7 +63,7 @@ public:
 		mMarkStack.swap(rootMarker.mMarkStack);
 	}
 
-	virtual bool markAlive(Collectable * object, size_t size)
+	bool markAlive(Collectable * object, size_t size) override
 	{
 		if (!object->isMarked() && ObjectMarker::checkAge(object, mMaxAge))
 		{
@@ -75,7 +75,7 @@ public:
 		return false;
 	}
 
-	virtual void addChild(const DataValue * child)
+	void addChild(const DataValue * child) override
 	{
 		mMarkStack.push_back(child);
 	}
@@ -85,13 +85,13 @@ public:
 		return mAliveSize;
 	}
 
-	int traceDataRecursively()
+	size_t traceDataRecursively()
 	{
-		int count = 0;
+		size_t count = 0;
 
 		while (!mMarkStack.empty())
 		{
-			const DataValue * val = mMarkStack.back();
+			const auto val = mMarkStack.back();
 			mMarkStack.pop_back();
 
 			val->getOps()->mark(*val, this);
@@ -132,14 +132,14 @@ private:
 	};
 
 public:
-	GarbageCollectorImpl(int numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+	GarbageCollectorImpl(size_t numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 		: mConfig(config),
 		mStopped(0),
 		mThreads(numMutatorThreads),
-		mStop(0),
 		mRootExplorer(rootExplorer),
-		mQuit(false),
 		mOldGenSize(0),
+		mStop(false),
+		mQuit(false),
 		mCollectOld(false)
 	{
 		mCollectorThread.swap(std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this)));
@@ -153,7 +153,7 @@ public:
 		mAllocated.clear_and_dispose([](Collectable * obj) { delete obj; });
 	}
 
-	virtual void runGc()
+	void runGc() override
 	{
 		if (!mConfig.enabled())
 		{ 
@@ -172,7 +172,7 @@ public:
 			std::unique_lock<std::mutex> lock(mRunMutex);
 
 			// Посылаем команду на остановку других потоков.
-			mStop.store(1, std::memory_order_release);
+			mStop.store(true, std::memory_order_release);
 			mStopped++;
 
 			// Ждем, пока они остановятся.
@@ -199,7 +199,7 @@ public:
 			std::unique_lock<std::mutex> lock(mRunMutex);
 
 			// Возобновляем работу других потоков.
-			mStop.store(0, std::memory_order_relaxed);
+			mStop.store(false, std::memory_order_relaxed);
 			mRunCond.notify_all();
 		}
 
@@ -213,7 +213,7 @@ public:
 	}
 
 	// Этот метод выполняется другими потоками для ожидании сканирования корней.
-	virtual void safePoint()
+	void safePoint() override
 	{
 		if (mStop.load(std::memory_order_acquire) == 1)
 		{
@@ -227,7 +227,7 @@ public:
 		}
 	}
 
-	virtual void registerHeap(CollectedHeap * heap)
+	void registerHeap(CollectedHeap * heap) override
 	{
 		mHeaps.push_back(heap);
 		heap->setLimit(mConfig.youngGenSize());
@@ -252,9 +252,9 @@ private:
 
 			// Маркируем корневые объекты.
 			size_t aliveSize = 0;
-			for (auto object : job->marker.mRoots)
+			for (const auto object : job->marker.mRoots)
 			{
-				Collectable * root = object.first;
+				const auto root = object.first;
 				if (!root->isMarked())
 				{
 					ObjectMarker::setMarked(root, 1);
@@ -265,7 +265,7 @@ private:
 			HeapMarker marker(job->marker, aliveSize);
 
 			// Помечаем доступные вершины.
-			int count = marker.traceDataRecursively();
+			size_t count = marker.traceDataRecursively();
 
 			if (job->fullGc)
 			{
@@ -307,7 +307,7 @@ private:
 				::exit(1);
 			}
 
-			if (mOldGenSize > mConfig.oldGenGCThreashold())
+			if (mOldGenSize > mConfig.oldGenGCThreshold())
 			{
 				mCollectOld = true;
 			}
@@ -317,14 +317,11 @@ private:
 private:
 	GcConfig mConfig;
 
-	// Флаг, сигнализирующий о необходимости остановки.
-	std::atomic<int> mStop;
-
 	// Количество остановившихся потоков.
-	int mStopped;
+	size_t mStopped;
 
 	// Количество потоков мутатора.
-	int mThreads;
+	size_t mThreads;
 
 	std::mutex mGcMutex;
 	std::mutex mRunMutex;
@@ -336,17 +333,20 @@ private:
 
 	// Общие структуры данных.
 	BlockingQueue<std::unique_ptr<GcJob>> mQueue;
+
+	// Флаг, сигнализирующий о необходимости остановки.
+	std::atomic<bool> mStop;
+
 	bool mQuit;
+	bool mCollectOld;
 
 	// Структуры данных потока сборки мусора.
 	std::thread mCollectorThread;
 	CollectedHeap::MemList mAllocated;
-
-	bool mCollectOld;
 };
 
 //-------------------------------------------------------------------------------
-GarbageCollector * GarbageCollector::getCollector(int numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+GarbageCollector * GarbageCollector::getCollector(size_t numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 {
 	return new GarbageCollectorImpl(numThreads, rootExplorer, config);
 }

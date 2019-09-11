@@ -30,11 +30,11 @@ class GcConfig
 
 public:
 	GcConfig() :
-		mEnabled(true),
 		mYoungGenSize(DEFAULT_YOUNG_GEN_SIZE),
 		mOldGenSize(5 * DEFAULT_YOUNG_GEN_SIZE),
-		mVerbose(false),
-		mOldGenThreashold(mOldGenSize * static_cast<size_t>(0.75))
+		mOldGenThreshold(mOldGenSize * static_cast<size_t>(0.75)),
+		mEnabled(true),
+		mVerbose(false)
 	{}
 
 	void setEnabled(bool state)
@@ -61,18 +61,18 @@ public:
 	bool verbose() const
 	{ return mVerbose; }
 
-	void setOldGenThreashold(double ratio)
-	{ mOldGenThreashold = mOldGenSize * static_cast<size_t>(ratio); }
+	void setOldGenThreshold(double ratio)
+	{ mOldGenThreshold = mOldGenSize * static_cast<size_t>(ratio); }
 
-	size_t oldGenGCThreashold() const
-	{ return mOldGenThreashold; }
+	size_t oldGenGCThreshold() const
+	{ return mOldGenThreshold; }
 
 private:
 	size_t mYoungGenSize;
 	size_t mOldGenSize;
+	size_t mOldGenThreshold;
 	bool mEnabled;
 	bool mVerbose;
-	size_t mOldGenThreashold;
 };
 
 //-----------------------------------------------------------------------------
@@ -85,10 +85,9 @@ public:
 
 	virtual void registerHeap(CollectedHeap * heap) = 0;
 
-	virtual ~GarbageCollector() = 0
-	{}
+	virtual ~GarbageCollector() = default;
 
-	static GarbageCollector * getCollector(int numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config);
+	static GarbageCollector * getCollector(size_t numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config);
 };
 
 //-----------------------------------------------------------------------------

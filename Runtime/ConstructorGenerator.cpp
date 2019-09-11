@@ -48,7 +48,7 @@ void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
 		case Parser::ASTNode::BaseType:
 		case Parser::ASTNode::Type:
 		{
-			mTypeTuple.push_back(TypeInfo(aNameReference->getName().getStr()));
+			mTypeTuple.emplace_back(aNameReference->getName().getStr());
 			break;
 		}
 
@@ -58,14 +58,14 @@ void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
 			TypeInfo newType(aNameReference->getName().getStr());
 			
 			// Добавляем параметры.
-			int i = 0;
+			size_t i = 0;
 
-			Parser::DataNode * data = static_cast<Parser::DataNode *>(aNameReference->getTarget());
+			auto* data = dynamic_cast<Parser::DataNode *>(aNameReference->getTarget());
 
 			for (auto element : *data->getTypeParams())
 			{
-				Parser::NameRefNode * paramName = static_cast<Parser::NameRefNode *>(element);
-				newType.Parameters[paramName->getName().getStr()] = mTypeTuple[i];
+				auto* paramName = static_cast<Parser::NameRefNode *>(element);
+				newType.typeParameters.emplace_back(paramName->getName().getStr(), mTypeTuple[i]);
 				i++;
 			}
 

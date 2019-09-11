@@ -28,11 +28,11 @@ ConstantNode * Tokenizer::formDecimalConstant() const
 	// Проверяем диапазон.
 	try
 	{
-		boost::lexical_cast<int>(YYText());
+		boost::lexical_cast<long long>(YYText());
 	}
 	catch (const std::exception &)
 	{
-		mSupport->semanticError(ErrTypes::InvalidConstant, getErrorIdent());
+		return formLongLongConstant();
 	}
 
 	return new ConstantNode(ASTNode::IntConstant, mSupport->newConstant(YYText(), mLine, mCol));
@@ -49,7 +49,7 @@ ConstantNode * Tokenizer::formLongLongConstant() const
 	// Проверяем диапазон.
 	try
 	{
-		boost::lexical_cast<long long int>(match[1]);
+		boost::lexical_cast<double>(match[1]);
 	}
 	catch (const std::exception &)
 	{
@@ -76,7 +76,7 @@ ConstantNode * Tokenizer::formFPConstant(const bool aForceFloat ) const
 
 	if( aForceFloat )
 	{
-		str = std::string( str.begin(), str.begin() + str.find_first_of("f") );
+		str = std::string( str.begin(), str.begin() + str.find_first_of('f') );
 	}
 
 	return new ConstantNode( ASTNode::FloatConstant, mSupport->newConstant( str, mLine, mCol ) );
@@ -90,7 +90,7 @@ ConstantNode * Tokenizer::formStringConstant(void) const
 
 	// Заменяем escape-символы.
 
-	str = std::regex_replace(str, std::regex("\\\\\\\\"), std::string("\\"));
+	str = std::regex_replace(str, std::regex(R"(\\\\)"), std::string("\\"));
 	str = std::regex_replace(str, std::regex("[\\\\][a]"), std::string("\a"));
 	str = std::regex_replace(str, std::regex("[\\\\][b]"), std::string("\b"));
 	str = std::regex_replace(str, std::regex("[\\\\][f]"), std::string("\f"));
@@ -98,7 +98,7 @@ ConstantNode * Tokenizer::formStringConstant(void) const
 	str = std::regex_replace(str, std::regex("[\\\\][r]"), std::string("\r"));
 	str = std::regex_replace(str, std::regex("[\\\\][t]"), std::string("\t"));
 	str = std::regex_replace(str, std::regex("[\\\\][v]"), std::string("\v"));
-	str = std::regex_replace(str, std::regex("[\\\\]\""), std::string("\""));
+	str = std::regex_replace(str, std::regex(R"([\\]")"), std::string("\""));
 
 	return new ConstantNode( ASTNode::StringConstant, mSupport->newConstant( str, mLine, mCol ));
 }
@@ -134,14 +134,14 @@ int Tokenizer::processCommentBlock(void)
 }
 
 //-------------------------------------------------------------------------------------------
-int Tokenizer::processIdentifier(void) const
+int Tokenizer::processIdentifier() const
 {
 	mVal->scIdent.Col = mCol;
 	mVal->scIdent.Line = mLine;
 
 	const char * token = YYText();
-	int tokenId;
-	if( !(tokenId = mSupport->lookForIdent( token, mVal->scIdent )) )
+	const int tokenId = mSupport->lookForIdent(token, mVal->scIdent);
+	if(!tokenId)
 	{
 		if( token[0] == 'c' && token[1] == '_' )
 		{
@@ -182,8 +182,8 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 
 	mLastTokenLen = YYLeng();
 	mCol += mLastTokenLen;
-	mSupport = 0;
-	mVal = 0;
+	mSupport = nullptr;
+	mVal = nullptr;
 	return token;
 }
 
@@ -191,7 +191,7 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 Ident Tokenizer::getErrorIdent() const
 {
 	static std::string nullStr;
-	const Ident ident = { static_cast<short>(mCol), static_cast<short>(mLine), &nullStr };
+	const Ident ident = { mCol, mLine, &nullStr };
 	return ident;
 }
 

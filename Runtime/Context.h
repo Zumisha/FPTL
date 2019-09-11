@@ -30,18 +30,18 @@ struct SExecutionContext
 	std::set<SExecutionContext *> Childs;
 
 	// Флаг готовности задания.
-	std::atomic<int> Ready;
+	std::atomic<bool> Ready;
 
 	// Флаг выполнения задания.
-	std::atomic<int> Working;
+	std::atomic<bool> Working;
 
 	// Флаг упреждения.
-	std::atomic<int> Proactive;
+	std::atomic<bool> Proactive;
 
 	// Флаг нового уровня упреждения.
-	std::atomic<int> NewProactiveLevel;
+	std::atomic<bool> NewProactiveLevel;
 
-	std::atomic<int> Canceled;
+	std::atomic<bool> Canceled;
 
 	// Экземпляр завершающего узла, чтобы не создавать множественные при отмене.
 	std::shared_ptr<InternalForm> endIfPtr;
@@ -56,7 +56,7 @@ struct SExecutionContext
 	size_t argPos;
 
 	// Теущая арность операции.
-	int arity;
+	size_t arity;
 
 	// Количество аргументов во входном кортеже.
 	size_t argNum;
@@ -68,10 +68,10 @@ struct SExecutionContext
 	bool isReady() const;
 
 	// Методы работы с данными.
-	const DataValue & getArg(int index) const;
+	const DataValue & getArg(size_t aIndex) const;
 	void push(const DataValue & aData);
 	void advance();
-	void unwind(size_t aArgPosOld, int aArity, size_t aPos);
+	void unwind(size_t aArgPosOld, size_t aArity, size_t aPos);
 	void join();
 	void print(std::ostream & aStream) const;
 	void printTypes(std::ostream & aStream) const;

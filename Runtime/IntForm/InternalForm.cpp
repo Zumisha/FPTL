@@ -1,6 +1,6 @@
 #include "InternalForm.h"
 #include "../DataTypes/String.h"
-#include "Runtime/StandartLibrary.h"
+#include "Runtime/StandardLibrary.h"
 #include "Runtime/FScheme.h"
 #include "Runtime/Run.h"
 #include "Runtime/Context.h"
@@ -11,7 +11,7 @@ namespace Runtime {
 //-----------------------------------------------------------------------------
 void ParFork::exec(SExecutionContext & ctx) const
 {
-	auto fork = static_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
+	const auto fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
 
 	ctx.evaluator()->addForkJob(fork);
 
@@ -50,7 +50,7 @@ void SeqBegin::zeroing(SExecutionContext & ctx)
 
 void SeqEnd::exec(SExecutionContext & ctx) const
 {
-	ControlValue & cv = ctx.controlStack.back();
+	auto& cv = ctx.controlStack.back();
 	ctx.controlStack.pop_back();
 
 	// Сворачиваем стек.
@@ -79,21 +79,21 @@ void SeqAdvance::zeroing(SExecutionContext & ctx)
 
 void CondStart::exec(SExecutionContext & ctx) const
 {
-	ctx.controlStack.push_back(ctx.arity);
+	ctx.controlStack.emplace_back(ctx.arity);
 
 	if (mThen)
 	{
-		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
-		fork->NewProactiveLevel = 1;
-		fork->Proactive = 1;
+		IFExecutionContext *fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
+		fork->NewProactiveLevel = true;
+		fork->Proactive = true;
 		ctx.evaluator()->addForkJob(fork);
 	}
 
 	if (mElse)
 	{
-		IFExecutionContext *fork = static_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
-		fork->NewProactiveLevel = 1;
-		fork->Proactive = 1;
+		IFExecutionContext *fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
+		fork->NewProactiveLevel = true;
+		fork->Proactive = true;
 		ctx.evaluator()->addForkJob(fork);
 	}
 	
@@ -110,15 +110,15 @@ const DataValue undefined = DataBuilders::createUndefinedValue();
 
 void CondChoose::exec(SExecutionContext & ctx) const
 {
-	auto arity = ctx.controlStack.back().OutArity;
+	const auto arity = ctx.controlStack.back().OutArity;
 	ctx.controlStack.pop_back();
 
 	// Берём сверху стека 1 аргумент - результат вычисления предиката.
-	DataValue cond = ctx.stack.back();
+	auto cond = ctx.stack.back();
 	bool isUndefined = false;
 
-	int numArgs = ctx.arity - arity;
-	for (int i = 0; i < numArgs; ++i)
+	const size_t numArgs = ctx.arity - arity;
+	for (size_t i = 0; i < numArgs; ++i)
 	{
 		DataValue & arg = ctx.stack.back();
 
@@ -174,7 +174,7 @@ void CondChoose::zeroing(SExecutionContext & ctx)
 
 void RecFn::exec(SExecutionContext & ctx) const
 {
-	ctx.controlStack.push_back(mNext.get());
+	ctx.controlStack.emplace_back(mNext.get());
 
 	mFn->exec(ctx);
 }
@@ -185,7 +185,7 @@ void RecFn::zeroing(SExecutionContext & ctx)
 
 void Ret::exec(SExecutionContext & ctx) const
 {
-	auto next = ctx.controlStack.back().Ptr;
+	const auto next = ctx.controlStack.back().Ptr;
 	ctx.controlStack.pop_back();
 
 	next->exec(ctx);
@@ -214,7 +214,7 @@ void BasicFn::callFn(SExecutionContext & ctx) const
 	{
 		std::stringstream error;
 		error << thrown.what() << std::endl
-		<< "In function \"" << mName << "\"." << "Line: " << mPos.second << ". Column: " << mPos.first << "." << std::endl
+		<< "In function \"" << mName << "\". " << "Line: " << mPos.second << ". Column: " << mPos.first << "." << std::endl
 		<< "Input tuple type: ";
 		ctx.printTypes(error);
 		error << std::endl;
@@ -229,14 +229,14 @@ void BasicFn::zeroing(SExecutionContext & ctx)
 
 void GetArg::exec(SExecutionContext & ctx) const
 {
-	int argNum;
+	size_t argNum;
 	if (mArgNum < 0) argNum = ctx.argNum + mArgNum;
 	else argNum = mArgNum - 1;
 	ctx.push(TryGetArg(ctx, argNum));
 	mNext->exec(ctx);
 }
 
-const DataValue& GetArg::TryGetArg(SExecutionContext& ctx, int argNum) const
+const DataValue& GetArg::TryGetArg(SExecutionContext& ctx, size_t argNum) const
 {
 	try
 	{

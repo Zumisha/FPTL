@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <cassert>
+#include <utility>
 
 #include "FScheme.h"
 #include "FSchemeVisitor.h"
@@ -34,7 +35,7 @@ FConditionNode::FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBran
 {
 	if (!mFalseBranch)
 	{
-		// Если в условной конструкции отсутсвует явно ветка else, считаем что она возвращает UndefinedValue.
+		// Если в условной конструкции отсутствует явно ветка else, считаем что она возвращает UndefinedValue.
 		mFalseBranch = new FFunctionNode([](SExecutionContext & aCtx) { 
 			aCtx.push(DataBuilders::createUndefinedValue());
 		});
@@ -63,8 +64,8 @@ FScheme::FScheme(FSchemeNode * aFirstNode)
 {
 }
 
-FScheme::FScheme(FSchemeNode * aFirstNode, const std::string & aName)
-	: FSchemeNode(true), mFirstNode(aFirstNode), mName(aName)
+FScheme::FScheme(FSchemeNode * aFirstNode, std::string aName)
+	: FSchemeNode(true), mFirstNode(aFirstNode), mName(std::move(aName))
 {
 }
 
@@ -118,9 +119,4 @@ void FConstantNode::accept(FSchemeVisitor * aVisitor) const
 	aVisitor->visit(this);
 }
 
-FStringConstant::FStringConstant(const std::string & aStr, short aLine, short aCol)
-	: FConstantNode(TypeInfo("string"), DataValue(), aLine, aCol),
-	mStr(aStr)
-{
-}
 }} // FPTL::Runtime

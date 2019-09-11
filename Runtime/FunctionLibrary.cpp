@@ -39,11 +39,10 @@ namespace FPTL {
 		{
 			std::vector<std::string> result;
 
-			std::for_each(mFunctions.begin(), mFunctions.end(), [&result](const std::pair<std::string, TFunction> & aElem)
+			for (const auto& aElem : mFunctions)
 			{
 				result.push_back(aElem.first);
 			}
-			);
 
 			return result;
 		}

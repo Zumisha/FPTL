@@ -1,57 +1,36 @@
 #pragma once
 
-// Types.h - внтутреннее представление информации о типах в FPTL.
-
-#include <vector>
+#include <string>
 #include <ostream>
+#include <utility>
+#include <vector>
 #include <unordered_map>
-#include <boost/bind.hpp>
-
-#include "../../Parser/Nodes.h"
 
 namespace FPTL { namespace Runtime {
 
-typedef std::unordered_map<std::string, struct TypeInfo> TParametersMap;
-
 //------------------------------------------------------------------------------------------
-// Информация о типе. Не требует сборки мусора, т.к. каждая структура храниться в TypeInfoRegistry.
 struct TypeInfo
 {
-	std::string TypeName;
+	std::string typeName;
+	std::vector<TypeInfo> typeParameters;
+	// Тк количество типовых параметров редко превышает 2,
+	// линейный поиск по массиву будет быстрее,
+	// чем доступ к элементу в дереве или хеш-таблице.
 
-	std::unordered_map<std::string, TypeInfo> Parameters;
+	TypeInfo() = default;
+	explicit TypeInfo(std::string aTypeName) : typeName(std::move(aTypeName)) {}
+	TypeInfo(std::string aTypeName, const TypeInfo& aParameter) : typeName(std::move(aTypeName)), typeParameters(std::vector<TypeInfo>{aParameter}) {}
+	TypeInfo(std::string aTypeName, std::vector<TypeInfo> aParameters) : typeName(std::move(aTypeName)), typeParameters(std::move(aParameters)) {}
+	
+	static bool matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap);
+	friend std::ostream & operator <<(std::ostream& aStream, const TypeInfo& aTypeInfo);
+	friend bool operator ==(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);
+	friend bool operator !=(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);
 
-	TypeInfo()
-	{}
-	TypeInfo(const std::string & aTypeName) : TypeName(aTypeName)
-	{}
-	TypeInfo(const std::string & aTypeName, const TParametersMap & aParameters) : TypeName(aTypeName)
+	void addParameter(const TypeInfo& aParam)
 	{
-		for (auto param : aParameters)
-		{
-			Parameters.insert(std::make_pair(param.first, param.second));
-		}
-	}
-
-	// Производит проверку составного типа aTypeInfo c эталоном aRef.
-	static bool matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, TParametersMap & aParametersMap);
-
-	// Вывод типовой информации.
-	friend std::ostream & operator <<(std::ostream & aStream, const TypeInfo & aTypeInfo);
-
-	void addParameter(const std::string aName, TypeInfo aParam)
-	{
-		Parameters.insert(std::make_pair(aName, aParam));
-	}
-
-	TypeInfo getParameter(const std::string & aName)
-	{
-		return Parameters.at(aName);
+		typeParameters.push_back(aParam);
 	}
 };
-
-typedef std::vector<TypeInfo> TTypeList;
-
-//------------------------------------------------------------------------------------------
 
 }} // FPTL::Runtime

@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <utility>
 
 #include "Runtime/FunctionLibrary.h"
 
@@ -14,8 +15,7 @@ typedef std::shared_ptr<InternalForm> IfPtr;
 class InternalForm
 {
 public:
-	virtual ~InternalForm()
-	{}
+	virtual ~InternalForm() = default;
 
 	virtual void exec(SExecutionContext & ctx) const = 0;
 	virtual void zeroing(SExecutionContext & ctx) = 0;
@@ -32,12 +32,9 @@ class ParFork : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	ParFork(const IfPtr & left, const IfPtr & right)
-		: mLeft(left), mRight(right)
-	{}
+	ParFork(IfPtr left, IfPtr right) : mLeft(std::move(left)), mRight(std::move(right)) {}
 
 	IfPtr mLeft;
 	IfPtr mRight;
@@ -47,12 +44,9 @@ class ParJoin : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	ParJoin(const IfPtr & next)
-		: mNext(next)
-	{}
+	ParJoin(IfPtr next)	: mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -61,12 +55,9 @@ class SeqBegin : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	SeqBegin(const IfPtr & next)
-		: mNext(next)
-	{}
+	SeqBegin(IfPtr next) : mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -75,12 +66,9 @@ class SeqEnd : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	SeqEnd(const IfPtr & next)
-		: mNext(next)
-	{}
+	SeqEnd(IfPtr next) : mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -89,12 +77,9 @@ class SeqAdvance : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	SeqAdvance(const IfPtr & next)
-		: mNext(next)
-	{}
+	SeqAdvance(IfPtr next) : mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -103,11 +88,12 @@ class CondStart : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	CondStart(const IfPtr & cond, const IfPtr & thenBr, const IfPtr & elseBr)
-		: mCond(cond), mThen(thenBr), mElse(elseBr)
+	CondStart(IfPtr cond, IfPtr thenBr, IfPtr elseBr) : 
+		mCond(std::move(cond)), 
+		mThen(std::move(thenBr)), 
+		mElse(std::move(elseBr)) 
 	{}
 
 	IfPtr mCond;
@@ -119,11 +105,12 @@ class CondChoose : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	CondChoose(const IfPtr & thenBr, const IfPtr & elseBr, const IfPtr & next)
-		: mThen(thenBr), mElse(elseBr), mNext(next)
+	CondChoose(IfPtr thenBr, IfPtr elseBr, IfPtr next) : 
+		mThen(std::move(thenBr)), 
+		mElse(std::move(elseBr)), 
+		mNext(std::move(next))
 	{}
 
 	IfPtr mThen;
@@ -135,13 +122,12 @@ class RecFn : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	RecFn(const IfPtr & next, const std::string & name)
-		: mFn(nullptr),
-		mNext(next),
-		mName(name)
+	RecFn(IfPtr next, std::string name)	: 
+		mFn(nullptr),
+		mNext(std::move(next)),
+		mName(std::move(name))
 	{}
 
 	InternalForm * mFn;
@@ -153,22 +139,22 @@ class Ret : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	Ret()
-	{}
+	Ret() = default;
 };
 
 class BasicFn : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	BasicFn(const IfPtr & next, const std::string & name, const std::pair<int, int> & pos, const TFunction & fn)
-		: mNext(next), mName(name), mPos(pos), mFn(fn)
+	BasicFn(IfPtr next, std::string name, std::pair<size_t, size_t> pos, TFunction fn) : 
+		mNext(std::move(next)), 
+		mName(std::move(name)), 
+		mPos(std::move(pos)), 
+		mFn(std::move(fn))
 	{}
 
 private:
@@ -176,7 +162,7 @@ private:
 
 	IfPtr mNext;
 	const std::string mName;
-	std::pair<int, int> mPos;
+	std::pair<size_t, size_t> mPos;
 	const TFunction mFn;
 };
 
@@ -184,31 +170,25 @@ class GetArg : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 
-	GetArg(const IfPtr & next, const int argNum, const std::pair<int, int> & pos)
-		: mNext(next), mArgNum(argNum), mPos(pos)
+	GetArg(IfPtr next, const long long argNum, std::pair<size_t, size_t> pos)
+		: mNext(std::move(next)), mArgNum(argNum), mPos(std::move(pos))
 	{}
 private:
-	const DataValue& TryGetArg(SExecutionContext & ctx, int argNum) const;
+	const DataValue& TryGetArg(SExecutionContext& ctx, size_t argNum) const;
 
 	IfPtr mNext;
-	int mArgNum;
-	std::pair<int, int> mPos;
+	long long mArgNum;
+	std::pair<size_t, size_t> mPos;
 };
 
 class Constant : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
-
-	Constant(const IfPtr & next, const DataValue & data)
-		: mNext(next), mData(data)
-	{}
-
+	Constant(IfPtr next, const DataValue & data) : mNext(std::move(next)), mData(data) {}
 	static void pushString(SExecutionContext & ctx, const std::string & str);
 
 	IfPtr mNext;
@@ -219,7 +199,6 @@ class EndOp : public InternalForm
 {
 public:
 	void exec(SExecutionContext & ctx) const override;
-
 	void zeroing(SExecutionContext & ctx) override;
 };
 //-----------------------------------------------------------------------------
@@ -228,18 +207,13 @@ class FunctionalProgram
 	friend class Generator;
 
 public:
-	FunctionalProgram(const IfPtr & main)
-		: mMain(main)
-	{}
-
-	IfPtr main() const
-	{ return mMain; }
+	FunctionalProgram(IfPtr main) : mMain(std::move(main)) {}
+	IfPtr main() const { return mMain; }
 
 private:
 	// Здесь обязателен multimap, т.к. определения одной и той же функции может встречаться
 	// несколько раз с разными параметрами (для функционалов).
 	std::unordered_multimap<std::string, IfPtr> mDefinitions;
-
 	IfPtr mMain;
 };
 

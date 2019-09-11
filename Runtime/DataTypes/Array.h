@@ -15,24 +15,25 @@ struct ArrayValue : public Collectable
 {
 	const Ops * ops;
 	const size_t length;
+	const TypeInfo type;
 
 	DataValue * arrayData;
 
-	ArrayValue(const Ops * aOps, const int aLength)
-		: ops(aOps), length(aLength)
+	ArrayValue(const size_t aLength, const DataValue & initial)
+		: ops(initial.getOps()), length(aLength), type(CreateType(initial))
 	{
 	}
 
 	// Конструктор массива.
-	static DataValue create(SExecutionContext & ctx, int size, const DataValue & initial);
+	static DataValue create(SExecutionContext & ctx, size_t length, const DataValue & initial);
 
 	// Получение элемента массива.
-	static DataValue get(const DataValue & arr, int pos);
+	static DataValue get(const DataValue & arr, size_t pos);
 
 	// Установка значения элемента массива.
-	static void set(DataValue & arr, int pos, const DataValue & val);
+	static void set(DataValue & arr, size_t pos, const DataValue & val);
 
-	static size_t byteSize(int length);
+	static size_t byteSize(size_t length);
 
 	static size_t getLen(const DataValue & arr);
 
@@ -41,10 +42,18 @@ struct ArrayValue : public Collectable
 	static void arrayValueCheck(const DataValue & arr);
 
 private:
+	static TypeInfo CreateType(const DataValue & initial)
+	{
+		const auto elType = initial.getOps()->getType(initial);
+		TypeInfo info("array", elType);
+		return info;
+	}
+
 	static std::runtime_error outOfRange()
 	{
 		return std::runtime_error("Array index is out of range.");
 	}
+
 	static std::runtime_error notArrayValue()
 	{
 		return std::runtime_error("Invalid operation on not array value.");

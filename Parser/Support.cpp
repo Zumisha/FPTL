@@ -6,7 +6,7 @@
 #include "Support.h"
 #include "SemanticCheck.h"
 #include "Nodes.h"
-#include "Runtime/StandartLibrary.h"
+#include "Runtime/StandardLibrary.h"
 #include "Tokenizer.h"
 #include "Runtime/Run.h"
 
@@ -23,14 +23,12 @@ Support::Support() : mWasError(false)
 }
 
 //-------------------------------------------------------------------------------------------
-Support::~Support()
-{
-}
+Support::~Support()	= default;
 
-//-------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------------
 void Support::semanticError(const ErrTypes::ErrType aErr, const Ident aIdent )
 {
-	mErrorList.push_back( ErrorMessage( aErr, aIdent ) );
+	mErrorList.emplace_back(aErr, aIdent);
 	mWasError = true;
 }
 
@@ -59,7 +57,7 @@ void Support::initializeKeywordTable( void )
 	registerKeyword("true", BisonParser::token::T_TRUE);
 	registerKeyword("false", BisonParser::token::T_FALSE);
 
-	for (auto fName : Runtime::StandartLibrary::mFunctions)
+	for (auto fName : Runtime::StandardLibrary::mFunctions)
 	{
 		registerKeyword(fName.first, BisonParser::token::BFNAME);
 	}
@@ -76,7 +74,7 @@ void Support::registerKeyword( const std::string & aName, const int aId )
 //
 int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 {
-	std::unordered_map<std::string,int>::iterator pos = mNameTable.find( aName );
+	const auto pos = mNameTable.find( aName );
 	if( pos != mNameTable.end() )
 	{
 		aIdent.Ptr = &pos->first;
@@ -95,9 +93,9 @@ void Support::newIdent( const std::string & aName, const int aId, Ident & aIdent
 }
 
 //-------------------------------------------------------------------------------------------
-Ident Support::newConstant( const std::string & aConstant, const int aLine, const int aCol )
+Ident Support::newConstant( const std::string & aConstant, const size_t aLine, const size_t aCol )
 {
-	Ident ident;
+	Ident ident{};
 	ident.Col = aCol;
 	ident.Line = aLine;
 	ident.Ptr = &*mConstantTable.insert( aConstant ).first;
@@ -138,14 +136,14 @@ const char * Support::getErrorString(const ErrTypes::ErrType aErr )
 void Support::getErrorList( std::ostream & aOutStream )
 {
 	std::vector<ErrorMessage> processed;
-	for(auto errMsg = mErrorList.begin(); errMsg != mErrorList.end(); ++errMsg )
+	for (auto& errMsg : mErrorList)
 	{
-		if (std::find(processed.begin(), processed.end(), *errMsg) == processed.end()) {
-			aOutStream << "Error : " << getErrorString(errMsg->mErr) << " : "
-				<< "\'" << *errMsg->mIdent.Ptr << "\'"
-				<< " line " << errMsg->mIdent.Line
-				<< " ch " << errMsg->mIdent.Col << "\n";
-			processed.push_back(*errMsg);
+		if (std::find(processed.begin(), processed.end(), errMsg) == processed.end()) {
+			aOutStream << "Error : " << getErrorString(errMsg.mErr) << " : "
+				<< "\'" << *errMsg.mIdent.Ptr << "\'"
+				<< " line " << errMsg.mIdent.Line
+				<< " ch " << errMsg.mIdent.Col << "\n";
+			processed.push_back(errMsg);
 		}
 	}
 }
@@ -169,7 +167,7 @@ Ident Support::getTopIdent() const
 }
 
 //-------------------------------------------------------------------------------------------
-ASTNode * Support::getInternalForm(const std::string inputStr)
+ASTNode * Support::getInternalForm(const std::string& inputStr)
 {
 	std::stringstream input(inputStr);
 	Tokenizer tokenizer(input);
@@ -190,7 +188,7 @@ ASTNode * Support::getInternalForm(const std::string inputStr)
 
 	const int result = parser.parse();
 
-	std::auto_ptr<ASTNode> rootPtr(root);
+	std::unique_ptr<ASTNode> rootPtr(root);
 
 	if (result)
 	{

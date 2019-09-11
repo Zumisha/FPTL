@@ -44,9 +44,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Parser\AST.cpp">
-      <Filter>Source Files\Parser</Filter>
-    </ClCompile>
     <ClCompile Include="..\Parser\Generated\Flex\FlexScanner.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
       <Filter>Source Files\Runtime\Data</Filter>
     </ClCompile>
     <ClCompile Include="ConstructorGenerator.cpp">
-      <Filter>Source Files\Runtime</Filter>
-    </ClCompile>
-    <ClCompile Include="StandartLibrary.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
     <ClCompile Include="DataTypes\Array.cpp">
@@ -137,6 +131,9 @@
     <ClCompile Include="Run.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
+    <ClCompile Include="StandardLibrary.cpp">
+      <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Parser\AST.h">
@@ -173,9 +170,6 @@
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="WorkStealingQueue.h">
-      <Filter>Header Files\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="StandartLibrary.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="FSchemeVisitor.h">
@@ -236,6 +230,9 @@
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="Run.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardLibrary.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
   </ItemGroup>

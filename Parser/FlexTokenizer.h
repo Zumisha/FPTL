@@ -25,7 +25,7 @@ namespace Parser {
 
 	private:
 
-		int yylex( void );
+		int yylex() override;
 
 		// Вспомогательные методы, вызываемые из yylex.
 

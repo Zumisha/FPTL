@@ -20,7 +20,7 @@ class DataValue
 	friend class DataBuilders;
 
 public:
-	// Конструктор по умолчани. Создает значение типа "неопределенность".
+	// Конструктор по умолчанию. Создает значение типа "неопределенность".
 	DataValue();
 	DataValue(const DataValue & other)
 	{
@@ -38,12 +38,12 @@ protected:
 public:
 	union
 	{
-		int mIntVal;
+		long long mIntVal;
 		double mDoubleVal;
-		ADTValue mADT;
-		StringValue * mString;
-		ArrayValue * mArray;
-	};
+		ADTValue* mADT;
+		StringValue* mString;
+		ArrayValue* mArray;
+	}; // size = max of members size 
 };
 
 // Неопределенное значение.
@@ -71,7 +71,7 @@ public:
 	virtual Ops * withOps(const Ops * aOther) const = 0;
 
 	// Преобразование типов.
-	virtual int toInt(const DataValue & aVal) const = 0;
+	virtual long long toInt(const DataValue & aVal) const = 0;
 	virtual double toDouble(const DataValue & aVal) const = 0;
 	virtual StringValue * toString(const DataValue & aVal) const = 0;
 
@@ -99,31 +99,32 @@ public:
 class BaseOps : public Ops
 {
 public:
-	virtual Ops * withOps(const Ops * aOther) const;
-	virtual Ops * withOps(class StringOps const * aOther) const;
+	Ops * withOps(const Ops * aOther) const override;
+	Ops * withOps(class StringOps const * aOther) const override;
 
 	// Базисные функции.
-	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue abs(const DataValue & aArg) const;
+	DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue abs(const DataValue & aArg) const override;
 
 	// Функции сравнения.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const;
-	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const;
+	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override;
+	DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override;
 
 	// Функции преобразования.
-	virtual int toInt(const DataValue & aVal) const;
-	virtual double toDouble(const DataValue & aVal) const;
-	virtual StringValue * toString(const DataValue & aVal) const;
+	long long toInt(const DataValue & aVal) const override;
+	double toDouble(const DataValue & aVal) const override;
+	StringValue * toString(const DataValue & aVal) const override;
 
-	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const;
+	void mark(const DataValue & aVal, ObjectMarker * marker) const override;
 
 protected:
-	DataValue invalidOperation() const;
+	static DataValue invalidOperation(const TypeInfo & valType);
+	static DataValue invalidOperation();
 };
 
 // Конструкторы типов данных.
@@ -132,12 +133,12 @@ class DataBuilders
 public:
 	static DataValue createVal(Ops * aOps);
 
-	static DataValue createInt(int aVal);
+	static DataValue createInt(long long aVal);
 	static DataValue createDouble(double aVal);
 	static DataValue createBoolean(bool aVal);
 
 	static UndefinedValue createUndefinedValue();
-	static DataValue createADT(const ADTValue & mADT, Ops * aOps);
+	static DataValue createADT(ADTValue * aADTVal, Ops * aOps);
 };
 
 } // Runtime

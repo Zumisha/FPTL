@@ -19,8 +19,7 @@ class GeneratorContext
 	std::unordered_map<RecFn *, const FScheme *> mCalls;
 
 public:
-	GeneratorContext()
-	{}
+	GeneratorContext() = default;
 
 	bool declareFun(const FScheme * scheme)
 	{
@@ -60,20 +59,20 @@ public:
 class Generator : public FSchemeVisitor
 {
 public:
-	Generator();
+	Generator() = default;
 
-	void visit(const FFunctionNode * aNode) override;
-	void visit(const FParallelNode * aNode) override;
-	void visit(const FSequentialNode * aNode) override;
-	void visit(const FConditionNode * aNode) override;
-	void visit(const FScheme * aScheme) override;
-	void visit(const FTakeNode * aNode) override;
-	void visit(const FConstantNode * aNode) override;
+	void visit(const FFunctionNode * node) override;
+	void visit(const FParallelNode * node) override;
+	void visit(const FSequentialNode * node) override;
+	void visit(const FConditionNode * node) override;
+	void visit(const FScheme * scheme) override;
+	void visit(const FTakeNode * node) override;
+	void visit(const FConstantNode * node) override;
 
-	static FunctionalProgram * generate(FSchemeNode * node, const bool disableAnt);
+	static FunctionalProgram * generate(FSchemeNode * node, const bool Proactive);
 
 private:
-	IfPtr createSpan(FSchemeNode * node, const IfPtr & mTail);
+	IfPtr createSpan(FSchemeNode * node, const IfPtr & tail);
 
 	GeneratorContext mCtx;
 

@@ -16,8 +16,9 @@ class WorkStealingQueue
 {
 public:
 
-	WorkStealingQueue() : mHeadPos(0), mTailPos(0), mSize(32), mQueue(mSize)
-	{}
+	WorkStealingQueue() : WorkStealingQueue(32) {}
+
+	WorkStealingQueue(size_t size) : mHeadPos(0), mTailPos(0), mSize(size), mQueue(size) {}
 
 	void push(const T & aElem)
 	{
@@ -130,12 +131,11 @@ public:
 	}
 
 private:
-
+	boost::mutex mAccessMutex;
+	std::vector<T> mQueue;
+	volatile int mSize;
 	volatile int mHeadPos;
 	volatile int mTailPos;
-	volatile int mSize;
-	std::vector<T> mQueue;
-	boost::mutex mAccessMutex;
 };
 
 }}

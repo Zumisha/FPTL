@@ -25,44 +25,26 @@ class EvalConfig
 public:
 	EvalConfig() :
 		mOutput(new Utils::FormatedOutput()),
-		mProactive(false),
-		mNumCores(1)
+		mNumCores(1),
+		mProactive(false)
 	{}
 
-	void SetOutput(Utils::FormatedOutput & fo)
-	{
-		mOutput = fo;
-	}
+	void SetOutput(Utils::FormatedOutput & fo) { mOutput = fo; }
 
-	void SetProactive(bool state)
-	{
-		mProactive = state;
-	}
+	void SetProactive(bool state) { mProactive = state; }
 
-	void SetNumCores(int numCores)
-	{
-		mNumCores = numCores;
-	}
+	void SetNumCores(size_t numCores) { mNumCores = numCores; }
 
-	Utils::FormatedOutput Output()
-	{
-		return mOutput;
-	}
+	Utils::FormatedOutput Output() const { return mOutput; }
 
-	bool Proactive()
-	{
-		return mProactive;
-	}
+	bool Proactive() const { return mProactive; }
 
-	int NumCores()
-	{
-		return mNumCores;
-	}
+	size_t NumCores() const { return mNumCores; }
 
 private:
 	Utils::FormatedOutput mOutput;
+	size_t mNumCores;
 	bool mProactive;
-	int mNumCores;
 };
 
 //----------------------------------------------------------------------------------
@@ -88,7 +70,7 @@ public:
 	SExecutionContext * join();
 
 	//Отмена задания, стоящего в списке ожидающих выполнения на позиции pos с конца.
-	void cancelFromPendingEnd(int pos = 1);
+	void cancelFromPendingEnd(size_t pos = 1);
 
 	//Отмена задания и всех его дочерних заданий.
 	void cancel(SExecutionContext *cancelTask);
@@ -123,14 +105,14 @@ private:
 	std::vector<SExecutionContext *> pendingTasks;
 	std::vector<SExecutionContext *> runningTasks;
 
-	int mJobsCompleted;
-	int mProactiveJobsCompleted;
-	int mJobsCreated;
-	int mProactiveJobsCreated;
-	int mJobsStealed;
-	int mProactiveJobsStealed;
-	int mProactiveJobsMoved;
-	int mProactiveJobsCanceled;
+	size_t mJobsCompleted;
+	size_t mProactiveJobsCompleted;
+	size_t mJobsCreated;
+	size_t mProactiveJobsCreated;
+	size_t mJobsStealed;
+	size_t mProactiveJobsStealed;
+	size_t mProactiveJobsMoved;
+	size_t mProactiveJobsCanceled;
 	LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
 	boost::lockfree::stack<SExecutionContext *> mProactiveJobQueue;
 	SchemeEvaluator * mEvaluator;
@@ -151,7 +133,7 @@ public:
 
 	void setEvalConfig(const EvalConfig & config) { mEvalConfig = config; }
 
-	EvalConfig getEvalConfig() { return mEvalConfig; }
+	EvalConfig getEvalConfig() const { return mEvalConfig; }
 
 	void run(SExecutionContext & program);
 

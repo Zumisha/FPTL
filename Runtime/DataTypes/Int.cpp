@@ -6,8 +6,7 @@ namespace Runtime {
 
 class IntegerOps : public BaseOps
 {
-	IntegerOps()
-	{}
+	IntegerOps() = default;
 
 public:
 	static IntegerOps * get()
@@ -16,104 +15,104 @@ public:
 		return &ops;
 	}
 
-	virtual Ops * combine(const Ops * aOther) const
+	Ops * combine(const Ops * aOther) const override
 	{
 		return aOther->withOps(this);
 	}
 
-	virtual Ops * withOps(const IntegerOps * aOps) const
+	Ops * withOps(const IntegerOps * aOps) const override
 	{
 		return get();
 	}
 
-	virtual Ops * withOps(const BooleanOps * aOps) const
+	Ops * withOps(const BooleanOps * aOps) const override
 	{
 		invalidOperation();
 		return nullptr;
 	}
 
-	virtual Ops * withOps(const DoubleOps * aOps) const
+	Ops * withOps(const DoubleOps * aOps) const override
 	{
 		// FIXME: сделать возвращаемое значение const.
 		return (Ops *)aOps;
 	}
 
-	virtual TypeInfo getType(const DataValue &) const
+	TypeInfo getType(const DataValue &) const override
 	{
 		static TypeInfo info("int");
 		return info;
 	}
 
 	// Преобразования типов.
-	virtual int toInt(const DataValue & aVal) const
+	long long toInt(const DataValue & aVal) const override
 	{
 		return aVal.mIntVal;
 	}
 
-	virtual double toDouble(const DataValue & aVal) const
+	double toDouble(const DataValue & aVal) const override
 	{
-		return (double)aVal.mIntVal;
+		return static_cast<double>(aVal.mIntVal);
 	}
 
 	// Базисные функции.
-	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createInt(aLhs.mIntVal + aRhs.getOps()->toInt(aRhs));
 	}
 
-	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createInt(aLhs.mIntVal - aRhs.getOps()->toInt(aRhs));
 	}
 
-	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createInt(aLhs.mIntVal * aRhs.getOps()->toInt(aRhs));
 	}
 
-	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		const int Right = aRhs.getOps()->toInt(aRhs);
+		const long long Right = aRhs.getOps()->toInt(aRhs);
 		if (Right == 0) throw std::overflow_error("Divide by zero");
 		return DataBuilders::createInt(aLhs.mIntVal / Right);
 	}
 
-	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		const int Right = aRhs.getOps()->toInt(aRhs);
+		const long long Right = aRhs.getOps()->toInt(aRhs);
 		if (Right == 0) throw std::overflow_error("Divide by zero");
 		return DataBuilders::createInt(aLhs.mIntVal % Right);
 	}
 
-	virtual DataValue abs(const DataValue & aArg) const
+	DataValue abs(const DataValue & aArg) const override
 	{
 		return DataBuilders::createInt(std::abs(aArg.mIntVal));
 	}
 
 	// Функции сравнения.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(aLhs.mIntVal == aRhs.getOps()->toInt(aRhs));
 	}
 
-	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(aLhs.mIntVal < aRhs.getOps()->toInt(aRhs));
 	}
 
-	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(aLhs.mIntVal > aRhs.getOps()->toInt(aRhs));
 	}
 
 	// Вывод в поток.
-	virtual void print(const DataValue & aVal, std::ostream & aStream) const
+	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		aStream << aVal.mIntVal;
 	}
 };
 
-DataValue DataBuilders::createInt(int aVal)
+DataValue DataBuilders::createInt(long long aVal)
 {
 	DataValue val(IntegerOps::get());
 	val.mIntVal = aVal;

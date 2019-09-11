@@ -90,7 +90,7 @@ struct ControlContext : SExecutionContext
 		{
 			std::cerr << "Exception: " << e.what() << std::endl;
 		}
-		catch (...)
+		catch (...) // SEH not catch
 		{
 			std::cerr << "Unknown error.";
 		}

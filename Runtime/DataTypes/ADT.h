@@ -12,9 +12,9 @@ namespace FPTL
 		{
 		public:
 
-			Constructor(const std::string & aConstructorName,
+			Constructor(std::string aConstructorName,
 				const std::string & aTypeName,
-				const TTypeList & aRefType,
+			            std::vector<TypeInfo> aRefType,
 				const std::vector<std::string> & aParameters
 			);
 			virtual ~Constructor();
@@ -23,9 +23,9 @@ namespace FPTL
 			virtual void execDestructor(SExecutionContext & aCtx) const;
 
 			std::string name() const { return mConstructorName; }
-			TTypeList type() const { return mReferenceType; }
+			std::vector<TypeInfo> type() const { return mReferenceType; }
 			TypeInfo * targetType() const { return const_cast<TypeInfo *>(&mTargetType); }
-			int arity() const { return static_cast<int>(mReferenceType.size()); }
+			size_t arity() const { return static_cast<size_t>(mReferenceType.size()); }
 
 		protected:
 
@@ -33,7 +33,7 @@ namespace FPTL
 			std::string mTypeName;
 
 			// Эталонный тип.
-			TTypeList mReferenceType;
+			std::vector<TypeInfo> mReferenceType;
 
 			// Создаваемый тип данных.
 			TypeInfo mTargetType;
@@ -72,8 +72,8 @@ namespace FPTL
 				values = other.values;
 			}
 
-			const DataValue & operator[](int i) const;
-			DataValue & operator[](int i);
+			const DataValue & operator[](size_t i) const;
+			DataValue & operator[](size_t i);
 
 			size_t size() const;
 		};

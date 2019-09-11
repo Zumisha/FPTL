@@ -98,12 +98,12 @@ namespace FPTL
 		void		       initializeKeywordTable( void );
 		void		       registerKeyword( const std::string & aName, int aId );
 		void		       newIdent( const std::string & aName, int aId, Ident & aIdent );
-		int			       lookForIdent( const std::string & aName, Ident & aIdent );
+		int				   lookForIdent( const std::string & aName, Ident & aIdent );
 
-		Ident              newConstant( const std::string & aConstant, int aLine, int aCol );
+		Ident              newConstant( const std::string & aConstant, size_t aLine, size_t aCol );
 
-		// Проводит синтксический разбор, семантическую проверку и возвращает AST-дерево.
-		ASTNode *          getInternalForm(std::string inputStr);
+		// Проводит синтаксический разбор, семантическую проверку и возвращает AST-дерево.
+		ASTNode *          getInternalForm(const std::string& inputStr);
 
 		// Вспомогательные методы для парсера.
 		void               pushIdent( const Ident & aIdent );

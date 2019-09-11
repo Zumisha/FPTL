@@ -17,7 +17,7 @@ struct StringValue : public Collectable
 
 	char * getChars() const;
 	char * contents() const;
-	int length() const;
+	size_t length() const;
 	std::string str() const;
 };
 
@@ -28,7 +28,7 @@ class StringBuilder
 public:
 	static DataValue create(SExecutionContext & aCtx, const std::string & aData);
 	static DataValue create(SExecutionContext & aCtx, size_t aSize);
-	static DataValue create(SExecutionContext & aCtx, const StringValue * aOther, int aBegin, int aEnd);
+	static DataValue create(SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd);
 };
 
 //-----------------------------------------------------------------------------

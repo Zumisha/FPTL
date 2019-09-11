@@ -10,8 +10,8 @@ namespace Parser {
 	// Указатель на запись в таблице имен.
 	struct Ident
 	{
-		short Col;
-		short Line;
+		size_t Col;
+		size_t Line;
 		const std::string * Ptr;
 
 		bool operator==( const Ident & aOther ) const { return Ptr == aOther.Ptr; }

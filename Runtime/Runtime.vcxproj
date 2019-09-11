@@ -129,6 +129,7 @@
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -183,6 +184,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4710;4514;4711;4464;4062</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -199,7 +202,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Parser\AST.cpp" />
     <ClCompile Include="..\Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="..\Parser\Nodes.cpp" />
     <ClCompile Include="..\Parser\NodeVisitor.cpp" />
@@ -229,7 +231,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NodeDeleter.cpp" />
     <ClCompile Include="Run.cpp" />
-    <ClCompile Include="StandartLibrary.cpp" />
+    <ClCompile Include="StandardLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Utils\FormatedOutput.h" />
@@ -255,7 +257,7 @@
     <ClInclude Include="LockFreeWorkStealingQueue.h" />
     <ClInclude Include="NodeDeleter.h" />
     <ClInclude Include="Run.h" />
-    <ClInclude Include="StandartLibrary.h" />
+    <ClInclude Include="StandardLibrary.h" />
     <ClInclude Include="..\Parser\AST.h" />
     <ClInclude Include="..\Parser\FlexTokenizer.h" />
     <ClInclude Include="..\Parser\Ident.h" />

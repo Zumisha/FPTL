@@ -19,6 +19,26 @@ namespace po = boost::program_options;
 namespace FPTL {
 namespace Parser {
 
+	void * operator new  (std::size_t count)
+	{
+		return ::je_malloc(count);
+	}
+
+	void * operator new[](std::size_t count)
+	{
+		return ::je_malloc(count);
+	}
+
+		void operator delete  (void * ptr)
+	{
+		::je_free(ptr);
+	}
+
+	void operator delete[](void * ptr)
+	{
+		::je_free(ptr);
+	}
+
 void run(const char * programPath, po::variables_map & vm)
 {
 	std::ifstream inpFile(programPath);
@@ -41,7 +61,7 @@ void run(const char * programPath, po::variables_map & vm)
 	{
 		std::cout << "No syntax errors found.\n";
 
-		size_t numCores = vm["num-cores"].as<int>();
+		const size_t numCores = vm["num-cores"].as<size_t>();
 		std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
 
 		Runtime::FSchemeGenerator schemeGenerator(astRoot);
@@ -52,16 +72,16 @@ void run(const char * programPath, po::variables_map & vm)
 		if (!Proactive)
 			std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
 
-		std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), Proactive));
+		const std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), Proactive));
 
 		Runtime::SchemeEvaluator evaluator;
 
 		Runtime::GcConfig gcConfig;
 		gcConfig.setEnabled(!vm["disable-gc"].as<bool>());
 		gcConfig.setVerbose(vm["verbose-gc"].as<bool>());
-		gcConfig.setYoungGenSize(vm["young-gen"].as<int>() * 1024 * 1024);
-		gcConfig.setOldGenSize(vm["old-gen"].as<int>() * 1024 * 1024);
-		gcConfig.setOldGenThreashold(vm["old-gen-ratio"].as<double>());
+		gcConfig.setYoungGenSize(vm["young-gen"].as<size_t>() * 1024 * 1024);
+		gcConfig.setOldGenSize(vm["old-gen"].as<size_t>() * 1024 * 1024);
+		gcConfig.setOldGenThreshold(vm["old-gen-ratio"].as<double>());
 		evaluator.setGcConfig(gcConfig);
 
 		Runtime::EvalConfig evalConfig;
@@ -79,40 +99,20 @@ void run(const char * programPath, po::variables_map & vm)
 
 }}
 
-void * operator new  (std::size_t count)
-{
-	return ::je_malloc(count);
-}
-
-void * operator new[](std::size_t count)
-{
-	return ::je_malloc(count);
-}
-
-void operator delete  (void * ptr)
-{
-	::je_free(ptr);
-}
-
-void operator delete[](void * ptr)
-{
-	::je_free(ptr);
-}
-
 bool optionsVerification(po::variables_map &vm, Utils::FormatedOutput fo)
 {
 	bool noErrors = true;
-	if (vm["num-cores"].as<int>() <= 0)
+	if (vm["num-cores"].as<size_t>() <= 0)
 	{
 		std::cout << "Number of work threads " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
 		noErrors = false;
 	}
-	if (vm["young-gen"].as<int>() <= 0)
+	if (vm["young-gen"].as<size_t>() <= 0)
 	{
 		std::cout << "Young generation size " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
 		noErrors = false;
 	}
-	if (vm["old-gen"].as<int>() <= 0)
+	if (vm["old-gen"].as<size_t>() <= 0)
 	{
 		std::cout << "Old generation size " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
 		noErrors = false;
@@ -147,30 +147,32 @@ int main(int argc, char ** argv)
 	std::cout.precision(15);
 
  	std::string programFile;
+	std::vector<std::string> inputTuple;
 
 	po::positional_options_description posOpt;
 	posOpt.add("source-file", 1);
+	posOpt.add("input-tuple", 2);
 
 	po::options_description desc("Available options:");
 	desc.add_options()
 		("help,h", "Provides information about startup options.")
 		("version,v", "Displays the date and time of the interpreter build.")
 		("source-file,s", po::value<std::string>(&programFile)->required(), "Path to FPTL program file.")
-		("num-cores,n", po::value<int>()->default_value(1), "Number of work threads.")
+		("num-cores,n", po::value<size_t>()->default_value(1), "Number of work threads.")
+		("input-tuple,in", po::value<std::vector<std::string>>(&inputTuple)->multitoken(), "Input variables.")
 		("proactive", po::bool_switch(), "Enable proactive calculations.")
 		("ansi", po::bool_switch(), "Allow ANSI text formatting.")
 		("disable-gc", po::bool_switch(), "Disable garbage collector.")
 		("verbose-gc", po::bool_switch(), "Displays information about the work of the garbage collector.")
-		("young-gen", po::value<int>()->default_value(20), "Young generation size in MiB.")
-		("old-gen", po::value<int>()->default_value(100), "Old generation size in MiB.")
-		("old-gen-ratio", po::value<double>()->default_value(0.75), "Old gen usage ratio to start full GC.")
-		;
+		("young-gen", po::value<size_t>()->default_value(20), "Young generation size in MiB.")
+		("old-gen", po::value<size_t>()->default_value(100), "Old generation size in MiB.")
+		("old-gen-ratio", po::value<double>()->default_value(0.75), "Old gen usage ratio to start full GC.");
 
 	po::variables_map vm;
 	try
 	{
-		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);		
-		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
+		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);
+		const Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 		if (!optionsVerification(vm, fo) || infoOptions(vm, desc, fo)) return 1;
 		po::notify(vm);
 	}
@@ -180,13 +182,28 @@ int main(int argc, char ** argv)
 			<< "\nUse --help or -h to display all available options." << std::endl;
 		return 1;
 	}
+	catch (...) // SEH not catch
+	{
+		std::cout << "Congratulations, you found the entrance to Narnia!" << std::endl
+			<< "(Not std::exception error.)" << std::endl;
+		return 1;
+	}
 
 	try
 	{
 		FPTL::Parser::run(programFile.c_str(), vm);
 	}
-	catch (...)
+	catch (std::exception & e)
 	{
+		std::cout << "Error: " << e.what() << std::endl
+			<< "Execution aborted." << std::endl;
+		return 1;
+	}
+	catch (...) // SEH not catch
+	{
+		std::cout << "Congratulations, you found the entrance to Narnia!" << std::endl 
+			<< "(Not std::exception error.)" << std::endl
+			<< "Execution aborted." << std::endl;
 		return 1;
 	}
 

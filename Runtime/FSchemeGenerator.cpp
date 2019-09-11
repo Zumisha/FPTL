@@ -1,11 +1,13 @@
 ﻿#include <cassert>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/bind.hpp>
 
 #include "FSchemeGenerator.h"
 #include "ConstructorGenerator.h"
-#include "StandartLibrary.h"
+#include "StandardLibrary.h"
 #include "NodeDeleter.h"
+#include "../Parser/Nodes.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -16,7 +18,7 @@ FSchemeGenerator::FSchemeGenerator(Parser::ASTNode * astRoot)
 	mSchemeInput(nullptr),
 	mProgram(nullptr),
 	mConstructorGenerator(new ConstructorGenerator),
-	mLibrary(new StandartLibrary)
+	mLibrary(new StandardLibrary)
 {
 	process(astRoot);
 }
@@ -32,7 +34,7 @@ FSchemeGenerator::~FSchemeGenerator()
 	delete mConstructorGenerator;
 }
 
-FSchemeNode * FSchemeGenerator::getProgram()
+FSchemeNode * FSchemeGenerator::getProgram() const
 {
 	return mProgram;
 }
@@ -49,24 +51,17 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Целочисленная константа.
 		case Parser::ASTNode::IntConstant:
 		{
-			const long constant = std::atoi(aNode->getConstant().getStr().c_str());
+			const auto constant = boost::lexical_cast<long long>(aNode->getConstant().getStr().c_str());
 			node = new FConstantNode(TypeInfo("integer"), DataBuilders::createInt(constant), name.Line, name.Col);
 			break;
 		}
 
-		// Динное целое. НАТИВНО НЕ ПОДДЕРЖИВАЕТСЯ.
+		// Вещественная константа, длинное целое.
 		case Parser::ASTNode::LongLongConstant:
-		{
-			const auto value = boost::lexical_cast<double>(aNode->getConstant().getStr());
-			node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(value), name.Line, name.Col);
-			break;
-		}
-
-		// Вещественная константа.
 		case Parser::ASTNode::FloatConstant:
 		case Parser::ASTNode::DoubleConstant:
 		{
-			const double constant = std::atof(aNode->getConstant().getStr().c_str());
+			const auto constant = boost::lexical_cast<double>(aNode->getConstant().getStr().c_str());
 			node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(constant), name.Line, name.Col);
 			break;
 		}
@@ -82,13 +77,12 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Выбор элемента из кортежа.
 		case Parser::ASTNode::TupleElemNumber:
 		{
-			const int elemNumber = std::atoi(aNode->getConstant().getStr().c_str());
+			const auto elemNumber = boost::lexical_cast<long long>(aNode->getConstant().getStr().c_str());
 			node = new FTakeNode(elemNumber, name.Line, name.Col);
 			break;
 		}
 
-		// Булевские константы.
-
+		// Булевы константы.
 		case Parser::ASTNode::TrueValue:
 		case Parser::ASTNode::FalseValue:
 			node = new FConstantNode(TypeInfo("boolean"), DataBuilders::createBoolean(aNode->getType() == Parser::ASTNode::TrueValue), name.Line, name.Col);
@@ -142,7 +136,7 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 
 		case Parser::ASTNode::InputVarName:
 		{
-			Parser::DefinitionNode * inputVarDef = static_cast<Parser::DefinitionNode *>(aNameRefNode->getTarget());
+			auto* inputVarDef = dynamic_cast<Parser::DefinitionNode *>(aNameRefNode->getTarget());
 			process(inputVarDef->getDefinition());
 			break;
 		}
@@ -159,7 +153,7 @@ void FSchemeGenerator::visit(Parser::DefinitionNode * aDefinitionNode)
 	{
 		auto name = aDefinitionNode->getDefinitionName().getStr();
 
-		FScheme * me = new FScheme(nullptr, name);
+		auto* me = new FScheme(nullptr, name);
 		mDefinitions.insert(std::make_pair(name, me));
 
 		NodeVisitor::visit(aDefinitionNode);
@@ -259,6 +253,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 		mDefinitions.clear();
 
 		// Добавляем в текущий лексический контекст функциональные параметры.
+		// ToDo: это ужас - переделать (до этого не использовать dynamic_cast).
 		Parser::ListNode * parameters = static_cast<Parser::FunctionNode *>(target)->getFormalParameters();
 
 		for (auto formalParam = parameters->rbegin(); formalParam != parameters->rend(); ++formalParam)
@@ -266,7 +261,8 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 			FSchemeNode * node = mNodeStack.top();
 			mNodeStack.pop();
 
-			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);			
+			// ToDo: это ужас - переделать (до этого не использовать dynamic_cast).
+			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);
 
 			FScheme * delegateScheme = dynamic_cast<FScheme *>(node);
 			if (!delegateScheme)
@@ -297,7 +293,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 			// Делаем подстановку нерекурсивного уравнения.
 			if (!target->isRecursive() && target->getType() == Parser::ASTNode::Definition)
 			{
-				target = static_cast<Parser::DefinitionNode *>(target)->getDefinition();
+				target = dynamic_cast<Parser::DefinitionNode *>(target)->getDefinition();
 				process(target);
 				return;
 			}
@@ -337,9 +333,9 @@ void FSchemeGenerator::processBuildInFunction(Parser::NameRefNode * aFunctionNam
 void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 {
 	auto name = aFunctionNode->getFuncName();
-	auto mainDef = aFunctionNode->getDefinition(name);
+	const auto mainDef = aFunctionNode->getDefinition(name);
 
-	bool hasParameters = (aFunctionNode->getFormalParameters() != nullptr);
+	const bool hasParameters = (aFunctionNode->getFormalParameters() != nullptr);
 
 	// Сохраняем контекст. Если есть функциональные параметры, контекст сохраняется раньше
 	if (!hasParameters) {
@@ -349,14 +345,14 @@ void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
 
 	process(mainDef);
 
-	// Сохраняеи список определений.
+	// Сохраняем список определений.
 	std::map<std::string, FSchemeNode *> definitionMap;
 	for (auto elem : mDefinitions)
 	{
 		definitionMap.insert(std::make_pair(elem.first, elem.second));
 	}
 
-	FScheme * me = mDefinitions.at(name.getStr());
+	auto me = mDefinitions.at(name.getStr());
 	me->setDefinitions(definitionMap);
 
 	// Восстанавливаем контекст

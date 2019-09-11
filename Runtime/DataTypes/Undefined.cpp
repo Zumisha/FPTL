@@ -16,40 +16,40 @@ public:
 		return &ops;
 	}
 
-	virtual Ops * combine(const Ops * aOther) const
+	Ops * combine(const Ops * aOther) const override
 	{
 		return get();
 	}
 
-	virtual Ops * withOps(const BooleanOps * aOps) const
+	Ops * withOps(const BooleanOps * aOps) const override
 	{
 		return get();
 	}
 
-	virtual Ops * withOps(const IntegerOps * aOps) const
+	Ops * withOps(const IntegerOps * aOps) const override
 	{
 		return get();
 	}
 
-	virtual Ops * withOps(const DoubleOps * aOps) const
+	Ops * withOps(const DoubleOps * aOps) const override
 	{
 		return get();
 	}
 
-	virtual TypeInfo getType(const DataValue &) const
+	TypeInfo getType(const DataValue &) const override
 	{
 		static TypeInfo info("undefined");
 		return info;
 	}
 
 	// Функция сравнения со значением true определена.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		return DataBuilders::createBoolean(false);
 	}
 
 	// Вывод в поток.
-	virtual void print(const DataValue & aVal, std::ostream & aStream) const
+	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		aStream << "undefined";
 	}

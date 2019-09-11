@@ -8,15 +8,11 @@
 namespace FPTL {
 namespace Runtime {
 
-Generator::Generator()
-{
-}
-
 void Generator::visit(const FParallelNode * node)
 {
 	if (node->left()->isLong() && node->right()->isLong())
 	{
-		auto join = std::make_shared<ParJoin>(mTail);
+		const auto join = std::make_shared<ParJoin>(mTail);
 		auto left = createSpan(node->left(), join);
 		auto right = createSpan(node->right(), std::make_shared<EndOp>());
 
@@ -24,8 +20,8 @@ void Generator::visit(const FParallelNode * node)
 	}
 	else
 	{
-		auto right = createSpan(node->right(), mTail);
-		auto left = createSpan(node->left(), right);
+		const auto right = createSpan(node->right(), mTail);
+		const auto left = createSpan(node->left(), right);
 
 		mResult = left;
 	}
@@ -60,7 +56,7 @@ void Generator::visit(const FSequentialNode * node)
 
 void Generator::visit(const FConditionNode * node)
 {
-	IfPtr thenBr = 0, elseBr = 0, thenBrFork = 0, elseBrFork = 0;
+	IfPtr thenBr = nullptr, elseBr = nullptr, thenBrFork = nullptr, elseBrFork = nullptr;
 
 	if (!Proactive || !node->condition()->isLong())
 	{
@@ -95,8 +91,8 @@ void Generator::visit(const FScheme * scheme)
 		auto ret = std::make_shared<Ret>();
 		mCtx.defineFun(scheme, createSpan(scheme->firstNode(), ret));
 	}
-	
-	auto rec = new RecFn(mTail, scheme->name());
+
+	const auto rec = new RecFn(mTail, scheme->name());
 	mResult = IfPtr(rec);
 
 	mCtx.addRec(scheme, rec);
@@ -114,7 +110,7 @@ void Generator::visit(const FTakeNode * node)
 
 void Generator::visit(const FConstantNode * node)
 {
-	auto str = dynamic_cast<const FStringConstant *>(node);
+	const auto str = dynamic_cast<const FStringConstant *>(node);
 	if (str)
 	{
 		// Для строк создаем функцию-констурктор,

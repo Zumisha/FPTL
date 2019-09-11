@@ -21,24 +21,23 @@ namespace FPTL {
 			bool steal(T & aElem);
 
 		private:
+			std::atomic_size_t mHeadPos;
+			std::atomic_size_t mTailPos;
+			size_t mSize;
 
-			std::atomic_int mHeadPos;
-			std::atomic_int mTailPos;
-
-			int mSize;
 			std::vector<T> mQueue;
 		};
 
 		template<typename T>
-		inline LockFreeWorkStealingQueue<T>::LockFreeWorkStealingQueue() : 
+		LockFreeWorkStealingQueue<T>::LockFreeWorkStealingQueue() : 
 			mHeadPos(0), mTailPos(0), mSize(32), mQueue(mSize)
 		{
 		}
 
 		template<typename T>
-		inline void LockFreeWorkStealingQueue<T>::push(const T & aElem)
+		void LockFreeWorkStealingQueue<T>::push(const T & aElem)
 		{
-			int tailPos = mTailPos.load(std::memory_order_acquire);
+			size_t tailPos = mTailPos.load(std::memory_order_acquire);
 
 			if (tailPos < mSize)
 			{
@@ -48,8 +47,7 @@ namespace FPTL {
 			else
 			{
 				// Увеличиваем размер очереди.
-
-				int headPos = -1;
+				size_t headPos;
 
 				// Нужно не дать крадущим потокам делать свою работу.
 				// Для этого подменяем позицию чтения крадущего потока.
@@ -63,7 +61,7 @@ namespace FPTL {
 						break;
 				}
 
-				int numJobs = tailPos - headPos;
+				size_t numJobs = tailPos - headPos;
 
 				if (headPos > 0)
 				{
@@ -89,12 +87,14 @@ namespace FPTL {
 		}
 
 		template<typename T>
-		inline bool LockFreeWorkStealingQueue<T>::pop(T & aElem)
+		bool LockFreeWorkStealingQueue<T>::pop(T & aElem)
 		{
-			int tailPos = mTailPos.load(std::memory_order_acquire) - 1;
+			size_t tailPos = mTailPos.load(std::memory_order_acquire);
+			if (tailPos == 0) return false;
+			tailPos -= 1;
 			mTailPos.store(tailPos, std::memory_order_release);
 			std::atomic_thread_fence(std::memory_order_seq_cst);
-			int headPos = mHeadPos.load(std::memory_order_acquire);
+			size_t headPos = mHeadPos.load(std::memory_order_acquire);
 
 			if (tailPos < headPos)
 			{
@@ -126,10 +126,10 @@ namespace FPTL {
 		}
 
 		template<typename T>
-		inline bool LockFreeWorkStealingQueue<T>::steal(T & aElem)
+		bool LockFreeWorkStealingQueue<T>::steal(T & aElem)
 		{
-			int headPos = mHeadPos.load(std::memory_order_acquire);
-			int tailPos = mTailPos.load(std::memory_order_acquire);
+			size_t headPos = mHeadPos.load(std::memory_order_acquire);
+			const size_t tailPos = mTailPos.load(std::memory_order_acquire);
 
 			if (headPos < tailPos)
 			{

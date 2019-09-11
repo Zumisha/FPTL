@@ -1,6 +1,6 @@
 %defines
 %define api.namespace {FPTL::Parser}
-%define parser_class_name {BisonParser}
+%define api.parser.class {BisonParser}
 
 %code requires
 {

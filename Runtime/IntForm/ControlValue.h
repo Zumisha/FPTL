@@ -12,22 +12,21 @@ union ControlValue
 	{
 		size_t ArgPos;
 		size_t Size;
-		int InArity;
-		int OutArity;
+		size_t InArity;
+		size_t OutArity;
 	};
 
-	ControlValue()
-	{}
+	ControlValue() = default;
 
 	ControlValue(const InternalForm * ptr)
 		: Ptr(ptr)
 	{}
 
-	ControlValue(int arity)
+	ControlValue(size_t arity)
 		: OutArity(arity)
 	{}
 
-	ControlValue(size_t argPos, size_t size, int inArity, int outArity)
+	ControlValue(size_t argPos, size_t size, size_t inArity, size_t outArity)
 		: ArgPos(argPos), Size(size), InArity(inArity), OutArity(outArity)
 	{}
 };

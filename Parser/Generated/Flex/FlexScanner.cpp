@@ -1,6 +1,7 @@
 #line 1 "FlexScanner.cpp"
+#include <cstdint>
 
-#line 3 "FlexScanner.cpp"
+#line 4 "FlexScanner.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -486,14 +487,14 @@ static const flex_int16_t yy_chk[289] =
 #line 1 "tokenizer.flex"
 /* Описание сканнера для генерации с использованием flex. */
 #define YY_NO_UNISTD_H 1
-#line 10 "tokenizer.flex"
 
+#line 14 "tokenizer.flex"
 #include "../../FlexTokenizer.h"
 #include "../../Support.h"
 #include "../../Nodes.h"
 
-#line 495 "FlexScanner.cpp"
 #line 496 "FlexScanner.cpp"
+#line 497 "FlexScanner.cpp"
 
 #define INITIAL 0
 
@@ -625,10 +626,10 @@ YY_DECL
 		}
 
 	{
-#line 31 "tokenizer.flex"
+#line 34 "tokenizer.flex"
 
 
-#line 631 "FlexScanner.cpp"
+#line 632 "FlexScanner.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -687,18 +688,18 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 33 "tokenizer.flex"
+#line 36 "tokenizer.flex"
 { return processCommentBlock(); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 35 "tokenizer.flex"
+#line 38 "tokenizer.flex"
 { return '\n'; }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 36 "tokenizer.flex"
+#line 39 "tokenizer.flex"
 {
 									mCol = 0;
 									mLine++;
@@ -707,17 +708,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 42 "tokenizer.flex"
+#line 45 "tokenizer.flex"
 { return processIdentifier(); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 44 "tokenizer.flex"
+#line 47 "tokenizer.flex"
 { return processIdentifier(); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "tokenizer.flex"
+#line 49 "tokenizer.flex"
 {
 									mVal->scNode = formDecimalConstant();
 									return BisonParser::token::NUMBER;
@@ -725,7 +726,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 51 "tokenizer.flex"
+#line 54 "tokenizer.flex"
 {
                                     mVal->scNode = formLongLongConstant();
 									return BisonParser::token::NUMBER;
@@ -733,7 +734,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 56 "tokenizer.flex"
+#line 59 "tokenizer.flex"
 {
 									mVal->scNode = formFPConstant( false );
 									return BisonParser::token::REALNUMBER;
@@ -741,7 +742,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 61 "tokenizer.flex"
+#line 64 "tokenizer.flex"
 {
 									mVal->scNode = formFPConstant( true );
 									return BisonParser::token::REALNUMBER;
@@ -749,7 +750,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 66 "tokenizer.flex"
+#line 69 "tokenizer.flex"
 {
 									mVal->scNode = formStringConstant();
 									return BisonParser::token::STRING;
@@ -757,39 +758,39 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 72 "tokenizer.flex"
+#line 75 "tokenizer.flex"
 { return BisonParser::token::T_UNION; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 73 "tokenizer.flex"
+#line 76 "tokenizer.flex"
 { return BisonParser::token::T_FARROW; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 74 "tokenizer.flex"
+#line 77 "tokenizer.flex"
 { return BisonParser::token::T_TARROW; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 76 "tokenizer.flex"
+#line 79 "tokenizer.flex"
 { return *YYText(); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 78 "tokenizer.flex"
+#line 81 "tokenizer.flex"
 {
-									Ident errSymb = { static_cast<short>(mCol), static_cast<short>(mLine), 0 };
+									Ident errSymb = { static_cast<size_t>(mCol), static_cast<size_t>(mLine), 0 };
 									mSupport->newIdent( YYText(), 0, errSymb );
 									mSupport->semanticError( ErrTypes::IllegalCharacter, errSymb );
 								}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 83 "tokenizer.flex"
+#line 86 "tokenizer.flex"
 ECHO;
 	YY_BREAK
-#line 792 "FlexScanner.cpp"
+#line 793 "FlexScanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1752,4 +1753,4 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 83 "tokenizer.flex"
+#line 86 "tokenizer.flex"

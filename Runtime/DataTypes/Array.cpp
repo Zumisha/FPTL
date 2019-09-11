@@ -3,6 +3,7 @@
 #include "Array.h"
 #include "../GarbageCollector.h"
 #include "../CollectedHeap.h"
+#include <sstream>
 
 namespace FPTL
 {
@@ -20,12 +21,8 @@ public:
 	}
 
 	TypeInfo getType(const DataValue & aVal) const override
-	{
-		TypeInfo info("array");
-		ArrayValue * trg = aVal.mArray;
-		auto elType = trg->ops->getType(trg->arrayData[0]);
-		info.addParameter(elType.TypeName, elType);
-		return info;
+	{		
+		return aVal.mArray->type;
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
@@ -65,28 +62,28 @@ public:
 	{
 		aStream << "[";
 		ArrayValue * arr = aVal.mArray;
-		for (int i = 0; i < arr->length; ++i)
+		for (size_t i = 0; i < arr->length; ++i)
 		{
 			DataValue & val = arr->arrayData[i];
 			val.getOps()->print(val, aStream);
 
 			if (i < arr->length - 1)
 			{
-				aStream << ",";
+				aStream << ", ";
 			}
 		}		
 		aStream << "]";
 	}
 
 private:
-	std::runtime_error invalidOperation(const std::string & name) const
+	static std::runtime_error invalidOperation(const std::string & name)
 	{
 		return std::runtime_error(boost::str(boost::format("Invalid operation on array: %1%.") % name));
 	}
 };
 
 //-----------------------------------------------------------------------------
-DataValue ArrayValue::create(SExecutionContext & ctx, int length, const DataValue & initial)
+DataValue ArrayValue::create(SExecutionContext & ctx, size_t length, const DataValue & initial)
 {
 	if (length <= 0)
 	{
@@ -95,7 +92,7 @@ DataValue ArrayValue::create(SExecutionContext & ctx, int length, const DataValu
 
 	// Выделяем память в контролируемой куче под хранение массива.
 	auto val = ctx.heap().alloc<ArrayValue>(
-		[initial, length](void * m) { return new(m) ArrayValue(initial.getOps(), length); },
+		[length, initial](void * m) { return new(m) ArrayValue(length, initial); },
 		byteSize(length)
 	);
 
@@ -117,13 +114,13 @@ void ArrayValue::arrayValueCheck(const DataValue & arr)
 }
 
 //-----------------------------------------------------------------------------
-DataValue ArrayValue::get(const DataValue & arr, int pos)
+DataValue ArrayValue::get(const DataValue & arr, size_t pos)
 {
 	arrayValueCheck(arr);
 
 	ArrayValue * trg = arr.mArray;
 
-	if (static_cast<size_t>(pos) >= trg->length)
+	if (pos >= trg->length)
 	{
 		throw outOfRange();
 	}
@@ -132,29 +129,30 @@ DataValue ArrayValue::get(const DataValue & arr, int pos)
 }
 
 //-----------------------------------------------------------------------------
-void ArrayValue::set(DataValue & arr, int pos, const DataValue & val)
+void ArrayValue::set(DataValue & arr, size_t pos, const DataValue & val)
 {
 	arrayValueCheck(arr);
 
 	ArrayValue * trg = arr.mArray;
 
-	if (static_cast<size_t>(pos) >= trg->length)
+	if (pos >= trg->length)
 	{
 		throw outOfRange();
 	}
 
-	if (trg->ops != val.getOps())
+	const auto valType = val.getOps()->getType(val);
+	const auto arrType = trg->ops->getType(trg->arrayData[0]);
+	if (valType != arrType)
 	{
-		auto srcType = val.getOps()->getType(val);
-		auto dstType = trg->ops->getType(trg->arrayData[0]);
-		std::string str = boost::str(boost::format("Cannot assign %1% to an array of type %2%") % srcType.TypeName % dstType.TypeName);
-		throw std::runtime_error(str);
+		std::stringstream error;
+		error << "cannot assign element of type " << valType << " to an array of type " << arrType << ".";
+		throw std::runtime_error(error.str());
 	}
 
 	trg->arrayData[pos] = val;
 }
 
-size_t ArrayValue::byteSize(int length)
+size_t ArrayValue::byteSize(size_t length)
 {
 	return sizeof(ArrayValue) + sizeof(DataValue) * length;
 }
@@ -167,31 +165,30 @@ size_t ArrayValue::getLen(const DataValue & arr)
 
 DataValue ArrayValue::concat(SExecutionContext & ctx)
 {
-	for (int i = 0; i < ctx.argNum; ++i)
+	for (size_t i = 0; i < ctx.argNum; ++i)
 	{
 		arrayValueCheck(ctx.getArg(i));
 	}
 
-	auto firstArr = ctx.getArg(0);
-	auto ops = ctx.getArg(0).mArray->ops;
-	auto Type = ops->getType(firstArr.mArray->arrayData[0]);
-	size_t len = firstArr.mArray->length;
+	auto firstArr = ctx.getArg(0).mArray;
+	const auto type = firstArr->ops->getType(firstArr->arrayData[0]);
+	size_t len = firstArr->length;
 
-	for (int i = 1; i < ctx.argNum; ++i)
+	for (size_t i = 1; i < ctx.argNum; ++i)
 	{
-		auto rArr = ctx.getArg(i);
-		if (rArr.mArray->ops != ops)
+		const auto rArr = ctx.getArg(i).mArray;
+		if (rArr->type != type)
 		{
-			auto rType = rArr.mArray->ops->getType(rArr.mArray->arrayData[0]);
-			std::string str = boost::str(boost::format("Cannot concat an array of type %1% with an array of type %2%") % Type.TypeName % rType.TypeName);
-			throw std::runtime_error(str);
+			std::stringstream error;
+			error << "Cannot concat an array of type " << type << " with an array of type " << rArr->type;
+			throw std::runtime_error(error.str());
 		}
-		len += rArr.mArray->length;
+		len += rArr->length;
 	}
 
 	// Выделяем память в контролируемой куче под хранение массива.
 	auto val = ctx.heap().alloc<ArrayValue>(
-		[ops, len](void * m) { return new(m) ArrayValue(ops, len); },
+		[firstArr, len](void * m) { return new(m) ArrayValue(len, firstArr->arrayData[0]); },
 		byteSize(len)
 		);
 
@@ -200,7 +197,7 @@ DataValue ArrayValue::concat(SExecutionContext & ctx)
 	size_t curPos = 0;
 	for (size_t i = 0; i < ctx.argNum; ++i)
 	{
-		const auto arr = ctx.getArg(i);
+		const auto& arr = ctx.getArg(i);
 		memcpy(val->arrayData + curPos, arr.mArray->arrayData, arr.mArray->length * sizeof(ArrayValue));
 		curPos += arr.mArray->length;
 	}
