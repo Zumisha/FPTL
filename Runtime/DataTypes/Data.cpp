@@ -25,13 +25,13 @@ DataValue::DataValue(const Ops * aOps)
 //-----------------------------------------------------------------------------
 Ops * BaseOps::withOps(const Ops * aOther) const
 {
-	invalidOperation();
+	invalidOperation(getType(DataValue()));
 	return nullptr;
 }
 
 Ops * BaseOps::withOps(StringOps const * aOther) const
 {
-	invalidOperation();
+	invalidOperation(getType(DataValue()));
 	return nullptr;
 }
 
@@ -101,6 +101,17 @@ StringValue * BaseOps::toString(const DataValue & aVal) const
 	return nullptr;
 }
 
+void BaseOps::write(const class DataValue& aVal, std::ostream& aStream) const
+{
+	invalidOperation(aVal.getOps()->getType(aVal));	
+}
+
+DataValue BaseOps::read(std::istream & aStream) const
+{
+	invalidOperation(this->getType(this));
+	return DataValue();
+}
+
 void BaseOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 {
 }
@@ -109,13 +120,6 @@ DataValue BaseOps::invalidOperation(const TypeInfo & valType)
 {
 	std::stringstream error;
 	error << "invalid operation on type " << valType << ".";
-	throw std::runtime_error(error.str());
-}
-
-DataValue BaseOps::invalidOperation()
-{
-	std::stringstream error;
-	error << "invalid operation on type " << DataValue().getOps() << ".";
 	throw std::runtime_error(error.str());
 }
 

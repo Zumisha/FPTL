@@ -140,6 +140,7 @@
       <AdditionalOptions>/STACK:256000000 %(AdditionalOptions)</AdditionalOptions>
       <ForceSymbolReferences>
       </ForceSymbolReferences>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -199,6 +200,7 @@
       </ForceSymbolReferences>
       <Version>
       </Version>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include "../GarbageCollector.h"
 #include "../CollectedHeap.h"
 #include <sstream>
+#include "String.h"
 
 namespace FPTL
 {
@@ -60,8 +61,19 @@ public:
 	// Вывод содержимого массива.
 	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
-		aStream << "[";
 		ArrayValue * arr = aVal.mArray;
+
+		std::string delimiter;
+		if (arr->arrayData[0].getOps() == ArrayOps::get())
+		{
+			delimiter = ",\n";
+		}
+		else
+		{
+			delimiter = ", ";
+		}
+
+		aStream << "[";
 		for (size_t i = 0; i < arr->length; ++i)
 		{
 			DataValue & val = arr->arrayData[i];
@@ -69,10 +81,30 @@ public:
 
 			if (i < arr->length - 1)
 			{
-				aStream << ", ";
+				aStream << delimiter;
 			}
 		}		
 		aStream << "]";
+	}
+
+	void write(const DataValue & aVal, std::ostream & aStream) const override
+	{
+		ArrayValue::arrayValueCheck(aVal);
+
+		ArrayValue * arrVal = aVal.mArray;
+		for (size_t i = 0; i < arrVal->length; ++i)
+		{
+			arrVal->arrayData[0].getOps()->write(arrVal->arrayData[i], aStream);
+			if (i < arrVal->length - 1)
+			{
+				aStream << " ";
+			}
+		}
+	}
+
+	DataValue read(std::istream & aStream) const override
+	{
+		throw invalidOperation("read");
 	}
 
 private:
@@ -85,11 +117,6 @@ private:
 //-----------------------------------------------------------------------------
 DataValue ArrayValue::create(SExecutionContext & ctx, size_t length, const DataValue & initial)
 {
-	if (length <= 0)
-	{
-		throw std::exception("Array length must be positive integer number.");
-	}
-
 	// Выделяем память в контролируемой куче под хранение массива.
 	auto val = ctx.heap().alloc<ArrayValue>(
 		[length, initial](void * m) { return new(m) ArrayValue(length, initial); },
@@ -98,14 +125,53 @@ DataValue ArrayValue::create(SExecutionContext & ctx, size_t length, const DataV
 
 	// Создаем массив и заполняем его начальным значением.
 	val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
-	std::fill_n(val->arrayData, length, initial);
+	if (initial.getOps() == ArrayOps::get())
+	{
+		val->arrayData[0] = initial;
+		for (size_t i = 1; i < length; ++i)
+		{
+			val->arrayData[i] = copy(ctx, initial);
+		}
+	}
+	else
+	{
+		std::fill_n(val->arrayData, length, initial);		
+	}
 
 	DataValue res = DataBuilders::createVal(ArrayOps::get());
 	res.mArray = val.ptr();
 	return res;
 }
 
-void ArrayValue::arrayValueCheck(const DataValue & arr)
+
+DataValue ArrayValue::copy(SExecutionContext & ctx, const DataValue & arr)
+{
+	// Выделяем память в контролируемой куче под хранение массива.
+	auto val = ctx.heap().alloc<ArrayValue>(
+		[arr](void * m) { return new(m) ArrayValue(arr.mArray->length, arr.mArray->arrayData[0]); },
+		byteSize(arr.mArray->length)
+		);
+
+	val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
+
+	if (arr.mArray->arrayData[0].getOps() == ArrayOps::get())
+	{
+		for (size_t i = 0; i < arr.mArray->length; ++i)
+		{
+			val->arrayData[i] = copy(ctx, arr.mArray->arrayData[i]);
+		}
+	}
+	else
+	{
+		memcpy(val->arrayData, arr.mArray->arrayData, arr.mArray->length * sizeof(arr.mArray->arrayData[0]));
+	}
+
+	DataValue res = DataBuilders::createVal(ArrayOps::get());
+	res.mArray = val.ptr();
+	return res;	
+}
+
+inline void ArrayValue::arrayValueCheck(const DataValue & arr)
 {
 	if (arr.getOps() != ArrayOps::get())
 	{
@@ -116,8 +182,6 @@ void ArrayValue::arrayValueCheck(const DataValue & arr)
 //-----------------------------------------------------------------------------
 DataValue ArrayValue::get(const DataValue & arr, size_t pos)
 {
-	arrayValueCheck(arr);
-
 	ArrayValue * trg = arr.mArray;
 
 	if (pos >= trg->length)
@@ -131,8 +195,6 @@ DataValue ArrayValue::get(const DataValue & arr, size_t pos)
 //-----------------------------------------------------------------------------
 void ArrayValue::set(DataValue & arr, size_t pos, const DataValue & val)
 {
-	arrayValueCheck(arr);
-
 	ArrayValue * trg = arr.mArray;
 
 	if (pos >= trg->length)
@@ -152,14 +214,13 @@ void ArrayValue::set(DataValue & arr, size_t pos, const DataValue & val)
 	trg->arrayData[pos] = val;
 }
 
-size_t ArrayValue::byteSize(size_t length)
+inline size_t ArrayValue::byteSize(size_t length)
 {
 	return sizeof(ArrayValue) + sizeof(DataValue) * length;
 }
 
 size_t ArrayValue::getLen(const DataValue & arr)
 {
-	arrayValueCheck(arr);
 	return arr.mArray->length;
 }
 
@@ -205,6 +266,22 @@ DataValue ArrayValue::concat(SExecutionContext & ctx)
 	DataValue res = DataBuilders::createVal(ArrayOps::get());
 	res.mArray = val.ptr();
 	return res;
+}
+
+void ArrayValue::fromString(DataValue & arr, std::istream &aStream)
+{
+	ArrayValue * arrVal = arr.mArray;
+	for (size_t i = 0; i < arrVal->length; ++i)
+	{
+		if (arrVal->arrayData[i].getOps() == ArrayOps::get())
+		{
+			fromString(arrVal->arrayData[i], aStream);
+		}
+		else
+		{
+			arrVal->arrayData[i] = arrVal->arrayData[i].getOps()->read(aStream);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <limits>
 #include <fstream>
 #include <boost/program_options.hpp>
 
@@ -11,6 +12,7 @@
 #include "IntForm/InternalForm.h"
 #include "Parser/AST.h"
 #include "Context.h"
+#include <boost/timer/timer.hpp>
 
 #define BUILD_DATE __DATE__ " " __TIME__
 
@@ -19,62 +21,43 @@ namespace po = boost::program_options;
 namespace FPTL {
 namespace Parser {
 
-	void * operator new  (std::size_t count)
-	{
-		return ::je_malloc(count);
-	}
-
-	void * operator new[](std::size_t count)
-	{
-		return ::je_malloc(count);
-	}
-
-		void operator delete  (void * ptr)
-	{
-		::je_free(ptr);
-	}
-
-	void operator delete[](void * ptr)
-	{
-		::je_free(ptr);
-	}
-
-void run(const char * programPath, po::variables_map & vm)
+void run(std::vector<std::string> &inputTuple, std::string &programPath, po::variables_map & vm)
 {
-	std::ifstream inpFile(programPath);
+	boost::timer::cpu_timer timer;
 
-	if (!inpFile.good())
+	std::ifstream programFile(programPath);
+	if (!programFile.good())
 	{
 		std::cout << "Unable to open file : " << programPath << "\n";
 		return;
 	}
-
-	std::string inputStr;
-	std::copy(std::istreambuf_iterator<char>(inpFile), std::istreambuf_iterator<char>(), std::back_inserter(inputStr));
+	std::string programStr;
+	std::copy(std::istreambuf_iterator<char>(programFile), std::istreambuf_iterator<char>(), std::back_inserter(programStr));
+	programFile.close();
 
 	Support support;
-	ASTNode * astRoot = support.getInternalForm(inputStr);
+	ASTNode * astRoot = support.getInternalForm(inputTuple, programStr);
 	support.getErrorList(std::cout);
 
 	// Генерируем внутренне представление.
 	if (astRoot)
 	{
-		std::cout << "No syntax errors found.\n";
-
+		const bool info = vm["info"].as<bool>();
+		const bool time = vm["time"].as<bool>();
 		const size_t numCores = vm["num-cores"].as<size_t>();
-		std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
-
-		Runtime::FSchemeGenerator schemeGenerator(astRoot);
-
+		const bool Proactive = vm["proactive"].as<bool>() && (numCores != 1);
 		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 
-		const bool Proactive = vm["proactive"].as<bool>() && (numCores!=1);
-		if (!Proactive)
-			std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
+		if (info) std::cout << "No syntax errors found.\n";
+		if (info) std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
+		if (info && !Proactive) std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
 
+		Runtime::FSchemeGenerator schemeGenerator(astRoot);
 		const std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), Proactive));
-
-		Runtime::SchemeEvaluator evaluator;
+		Runtime::IFExecutionContext ctx(internalForm->main().get());
+		const auto interpTime = timer.elapsed();
+		if (time) std::cout << "Interpretation time: " << boost::timer::format(interpTime, 3, "%ws\n");
+		timer.resume();
 
 		Runtime::GcConfig gcConfig;
 		gcConfig.setEnabled(!vm["disable-gc"].as<bool>());
@@ -82,22 +65,46 @@ void run(const char * programPath, po::variables_map & vm)
 		gcConfig.setYoungGenSize(vm["young-gen"].as<size_t>() * 1024 * 1024);
 		gcConfig.setOldGenSize(vm["old-gen"].as<size_t>() * 1024 * 1024);
 		gcConfig.setOldGenThreshold(vm["old-gen-ratio"].as<double>());
-		evaluator.setGcConfig(gcConfig);
 
 		Runtime::EvalConfig evalConfig;
 		evalConfig.SetNumCores(numCores);
+		evalConfig.SetInfo(vm["info"].as<bool>());
 		evalConfig.SetProactive(Proactive);
 		evalConfig.SetOutput(fo);
+
+		Runtime::SchemeEvaluator evaluator;
+		evaluator.setGcConfig(gcConfig);
 		evaluator.setEvalConfig(evalConfig);
 
-		Runtime::IFExecutionContext ctx(internalForm->main().get());
 		evaluator.run(ctx);
+		const auto evalTime = timer.elapsed();
+		if (time) std::cout << "\n\nEvaluation time: " << boost::timer::format(evalTime, 3, "%ws\n");
 	}
 
 	delete astRoot;
 }
 
 }}
+
+void * operator new (const std::size_t count)
+{
+	return ::je_malloc(count);
+}
+
+void * operator new[](const std::size_t count)
+{
+	return ::je_malloc(count);
+}
+
+void operator delete (void * ptr)
+{
+	::je_free(ptr);
+}
+
+void operator delete[](void * ptr)
+{
+	::je_free(ptr);
+}
 
 bool optionsVerification(po::variables_map &vm, Utils::FormatedOutput fo)
 {
@@ -144,14 +151,14 @@ bool infoOptions(po::variables_map &vm, po::options_description desc, Utils::For
 int main(int argc, char ** argv)
 {
 	//setlocale(LC_ALL, "ru-ru");
-	std::cout.precision(15);
+	std::cout.precision(std::numeric_limits<double>::max_digits10);
 
  	std::string programFile;
 	std::vector<std::string> inputTuple;
 
 	po::positional_options_description posOpt;
 	posOpt.add("source-file", 1);
-	posOpt.add("input-tuple", 2);
+	posOpt.add("input-tuple", -1);
 
 	po::options_description desc("Available options:");
 	desc.add_options()
@@ -160,6 +167,8 @@ int main(int argc, char ** argv)
 		("source-file,s", po::value<std::string>(&programFile)->required(), "Path to FPTL program file.")
 		("num-cores,n", po::value<size_t>()->default_value(1), "Number of work threads.")
 		("input-tuple,in", po::value<std::vector<std::string>>(&inputTuple)->multitoken(), "Input variables.")
+		("time,t", po::bool_switch(), "Displays interpretation and evaluation times.")
+		("info,i", po::bool_switch(), "Displays information about the interpretation and evaluation processes.")
 		("proactive", po::bool_switch(), "Enable proactive calculations.")
 		("ansi", po::bool_switch(), "Allow ANSI text formatting.")
 		("disable-gc", po::bool_switch(), "Disable garbage collector.")
@@ -191,7 +200,7 @@ int main(int argc, char ** argv)
 
 	try
 	{
-		FPTL::Parser::run(programFile.c_str(), vm);
+		FPTL::Parser::run(inputTuple, programFile, vm);
 	}
 	catch (std::exception & e)
 	{

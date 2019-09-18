@@ -14,11 +14,11 @@ GC_MAXIMUM_HEAP_SIZE=512000000
 $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>"..\x64\Release\Test.txt" -n 8 --proactive --ansi</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"..\x64\Release\Test.txt" -n 8 -i -t</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>"..\x64\Release\Test.txt" -n 8 --proactive --ansi</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"..\x64\Release\Test.txt" -n 8 --proactive --ansi 8 12.8 \"fdfd\"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

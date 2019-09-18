@@ -36,7 +36,7 @@ public:
 		return get();
 	}
 
-	TypeInfo getType(const DataValue &) const override
+	TypeInfo getType(const DataValue &aVal) const override
 	{
 		static TypeInfo info("undefined");
 		return info;

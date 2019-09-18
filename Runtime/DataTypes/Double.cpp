@@ -27,7 +27,7 @@ public:
 
 	Ops * withOps(const BooleanOps * aOther) const override
 	{
-		invalidOperation();
+		invalidOperation(getType(DataValue()));
 		return nullptr;
 	}
 
@@ -36,7 +36,7 @@ public:
 		return get();
 	}
 
-	TypeInfo getType(const DataValue &) const override
+	TypeInfo getType(const DataValue &aVal) const override
 	{
 		static TypeInfo info("double");
 		return info;
@@ -104,6 +104,18 @@ public:
 	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		aStream << aVal.mDoubleVal;
+	}
+
+	void write(const DataValue & aVal, std::ostream & aStream) const override
+	{
+		aStream << aVal.mDoubleVal;
+	}
+
+	DataValue read(std::istream & aStream) const override
+	{
+		DataValue val(get());
+		aStream >> val.mDoubleVal;
+		return val;
 	}
 };
 

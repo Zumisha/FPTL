@@ -167,11 +167,8 @@ Ident Support::getTopIdent() const
 }
 
 //-------------------------------------------------------------------------------------------
-ASTNode * Support::getInternalForm(const std::string& inputStr)
+ASTNode* Support::getInternalForm(std::vector<std::string> &inputTuple, std::string &programStr)
 {
-	std::stringstream input(inputStr);
-	Tokenizer tokenizer(input);
-
 	// Сбрасываем состояние.
 	mIdentStack.clear();
 	mNameTable.clear();
@@ -179,8 +176,43 @@ ASTNode * Support::getInternalForm(const std::string& inputStr)
 
 	initializeKeywordTable();
 
-	ASTNode * root = nullptr;
+	// Плохая временная реализация получения начального кортежа из параметров запуска.
+	// Изменится с реализацией именованных параметров.
+	if (!inputTuple.empty())
+	{
+		std::string inputTupleStr;
 
+		inputTupleStr += "(" + inputTuple[0];
+		for (size_t i = 1; i < inputTuple.size(); ++i)
+		{
+			inputTupleStr += ", " + inputTuple[i];
+		}
+		inputTupleStr += ")";
+
+		const size_t inPos = programStr.rfind('%');
+		if (inPos != static_cast<size_t>(-1))
+		{
+			std::string end = programStr.substr(inPos);
+			size_t fPos, lPos = end.rfind(')');
+			if (lPos != static_cast<size_t>(-1))
+			{
+				fPos = end.find('(');
+				++lPos;
+			}
+			else
+			{
+				fPos = end.find_first_of("\n\r");
+				if (fPos == static_cast<size_t>(-1)) fPos = end.length();
+				lPos = fPos;
+			}
+			if (fPos != static_cast<size_t>(-1))
+				programStr = programStr.substr(0, inPos) + end.substr(0, fPos) + inputTupleStr + end.substr(lPos, end.length());
+		}
+	}//*/
+
+	std::stringstream program(programStr);
+	Tokenizer tokenizer(program);
+	ASTNode *root = nullptr;
 	BisonParser parser( this, &tokenizer, root );
 
 	//parser.set_debug_stream(std::cerr);

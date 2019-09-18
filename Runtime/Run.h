@@ -26,16 +26,21 @@ public:
 	EvalConfig() :
 		mOutput(new Utils::FormatedOutput()),
 		mNumCores(1),
+		mInfo(false),
 		mProactive(false)
 	{}
 
 	void SetOutput(Utils::FormatedOutput & fo) { mOutput = fo; }
+
+	void SetInfo(bool state) { mInfo = state; }
 
 	void SetProactive(bool state) { mProactive = state; }
 
 	void SetNumCores(size_t numCores) { mNumCores = numCores; }
 
 	Utils::FormatedOutput Output() const { return mOutput; }
+
+	bool Info() const { return mInfo; }
 
 	bool Proactive() const { return mProactive; }
 
@@ -44,6 +49,7 @@ public:
 private:
 	Utils::FormatedOutput mOutput;
 	size_t mNumCores;
+	bool mInfo;
 	bool mProactive;
 };
 

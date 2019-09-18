@@ -22,6 +22,7 @@ class DataValue
 public:
 	// Конструктор по умолчанию. Создает значение типа "неопределенность".
 	DataValue();
+	DataValue(const Ops * aOps);
 	DataValue(const DataValue & other)
 	{
 		*this = other;
@@ -30,8 +31,6 @@ public:
 	const Ops * getOps() const;
 
 protected:
-	DataValue(const Ops * aOps);
-
 	const Ops * mOps;
 
 // Доступ к информационной части открыт для удобства.
@@ -88,11 +87,13 @@ public:
 	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const = 0;
 
-	// Метод для определения достижимых обхектов при сборке мусора.
+	// Метод для определения достижимых объектов при сборке мусора.
 	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const = 0;
 
 	// Вывод в поток.
 	virtual void print(const DataValue & aVal, std::ostream & aStream) const = 0;
+	virtual void write(const DataValue & aVal, std::ostream & aStream) const = 0;
+	virtual DataValue read(std::istream & aStream) const = 0;
 };
 
 // Базовая реализация операций. Кидает исключения на вызов любого метода.
@@ -108,7 +109,7 @@ public:
 	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override;
 	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override;
 	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override;
-	DataValue abs(const DataValue & aArg) const override;
+	DataValue abs(const DataValue & aVal) const override;
 
 	// Функции сравнения.
 	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override;
@@ -122,9 +123,11 @@ public:
 
 	void mark(const DataValue & aVal, ObjectMarker * marker) const override;
 
+	DataValue read(std::istream & aStream) const override;
+	void write(const DataValue & aVal, std::ostream & aStream) const override;
+
 protected:
 	static DataValue invalidOperation(const TypeInfo & valType);
-	static DataValue invalidOperation();
 };
 
 // Конструкторы типов данных.

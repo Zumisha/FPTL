@@ -60,19 +60,22 @@ void EvaluatorUnit::evaluateScheme()
 		}
 	}
 
-	static boost::mutex outputMutex;
-	boost::lock_guard<boost::mutex> guard(outputMutex);
-
 	// Выводим статистику.
-	std::stringstream ss;
-	Utils::FormatedOutput fo = mEvaluator->getEvalConfig().Output();
+	auto evalConf = mEvaluator->getEvalConfig();
+	if (evalConf.Info())
+	{
+		std::stringstream ss;
+		Utils::FormatedOutput fo = evalConf.Output();
+		ss << "\n" << fo.Underlined("Thread ID") << " = " << boost::this_thread::get_id() << ". Jobs " << fo.Bold(fo.Cyan("created: ")) << mJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mJobsStealed << ".";
 
-	ss << "\n" << fo.Underlined("Thread ID") << " = " << boost::this_thread::get_id() << ". Jobs " << fo.Bold(fo.Cyan("created: ")) << mJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mJobsStealed << ".";
-
-	if (mEvaluator->getEvalConfig().Proactive())
-		ss << "\nProactive jobs " << fo.Bold(fo.Cyan("created: ")) << mProactiveJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mProactiveJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mProactiveJobsStealed << ", " << fo.Bold(fo.Yellow("moved: ")) << mProactiveJobsMoved << ", " << fo.Bold(fo.Red("canceled: ")) << mProactiveJobsCanceled << ".";
-
-	std::cout << ss.str();
+		if (evalConf.Proactive())
+		{
+			ss << "\nProactive jobs " << fo.Bold(fo.Cyan("created: ")) << mProactiveJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mProactiveJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mProactiveJobsStealed << ", " << fo.Bold(fo.Yellow("moved: ")) << mProactiveJobsMoved << ", " << fo.Bold(fo.Red("canceled: ")) << mProactiveJobsCanceled << ".";
+		}
+		static boost::mutex outputMutex;
+		boost::lock_guard<boost::mutex> guard(outputMutex);
+		std::cout << ss.str();
+	}
 }
 
 void EvaluatorUnit::addForkJob(SExecutionContext * task)

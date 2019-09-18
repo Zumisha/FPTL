@@ -1,5 +1,6 @@
 #include <ostream>
 #include "Data.h"
+#include "String.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -22,7 +23,7 @@ public:
 
 	Ops * withOps(const IntegerOps * aOps) const override
 	{
-		invalidOperation();
+		invalidOperation(getType(DataValue()));
 		return nullptr;
 	}
 
@@ -33,14 +34,25 @@ public:
 
 	Ops * withOps(const DoubleOps * aOps) const override
 	{
-		invalidOperation();
+		invalidOperation(getType(DataValue()));
 		return nullptr;
 	}
 
-	TypeInfo getType(const DataValue &) const override
+	TypeInfo getType(const DataValue &aVal) const override
 	{
 		static TypeInfo info("boolean");
 		return info;
+	}
+
+	// Преобразования типов.
+	long long toInt(const DataValue & aVal) const override
+	{
+		return (aVal.mIntVal ? 1 : 0);
+	}
+
+	double toDouble(const DataValue & aVal) const override
+	{
+		return (aVal.mIntVal ? 1.0 : 0.0);
 	}
 
 	// Функции сравнения. Оба аргумента обязаны быть типа boolean.
@@ -53,6 +65,19 @@ public:
 	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		aStream << (aVal.mIntVal ? "true" : "false");
+	}
+
+	// Вывод в поток.
+	void write(const DataValue & aVal, std::ostream & aStream) const override
+	{
+		aStream << (aVal.mIntVal ? "1" : "0");
+	}
+
+	DataValue read(std::istream & aStream) const override
+	{
+		DataValue val(get());
+		aStream >> val.mIntVal;
+		return val;
 	}
 };
 

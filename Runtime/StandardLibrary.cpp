@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iterator>
 #include <random>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 #include "StandardLibrary.h"
 #include "DataTypes/String.h"
@@ -37,6 +39,7 @@ void not(SExecutionContext & aCtx)
 {
 	auto & arg = aCtx.getArg(0);
 
+	aCtx.push(DataBuilders::createBoolean(!arg.getOps()->toInt(arg)));
 }
 
 void and(SExecutionContext & aCtx)
@@ -44,13 +47,23 @@ void and(SExecutionContext & aCtx)
 	auto & lhs = aCtx.getArg(0);
 	auto & rhs = aCtx.getArg(1);
 
+	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) * rhs.getOps()->toInt(rhs))));
 }
 
-void or (SExecutionContext & aCtx)
+void or(SExecutionContext & aCtx)
 {
 	auto & lhs = aCtx.getArg(0);
 	auto & rhs = aCtx.getArg(1);
 
+	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) + rhs.getOps()->toInt(rhs))));
+}
+
+void xor (SExecutionContext & aCtx)
+{
+	auto & lhs = aCtx.getArg(0);
+	auto & rhs = aCtx.getArg(1);
+
+	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) ^ rhs.getOps()->toInt(rhs))));
 }
 
 void equal(SExecutionContext & aCtx)
@@ -394,7 +407,10 @@ void getToken(SExecutionContext & aCtx)
 
 	std::cmatch match;
 
-	if (std::regex_search(static_cast<const char *>(src->getChars()), static_cast<const char *>(src->getChars() + src->length()), match, rx))
+	auto first = static_cast<const char *>(src->getChars());
+	auto last = static_cast<const char *>(src->getChars() + src->length());
+
+	if (std::regex_search(first, last, match, rx))
 	{
 		const auto prefix = StringBuilder::create(aCtx, src, match[1].first - src->contents(), match[1].second - src->contents());
 		aCtx.push(prefix);
@@ -417,22 +433,64 @@ void readFile(SExecutionContext & aCtx)
 	const auto fileName = arg.getOps()->toString(arg);
 
 	std::ifstream input;
-	input.exceptions(std::ios::failbit | std::ios::badbit);
-	input.open(fileName->str(), std::ios::binary);
+	input.open(fileName->str());
+	if (input.is_open())
+	{
+		// Вычисляем размер файла.
+		const auto begin = input.tellg();
+		input.seekg(0, std::ios::end);
+		const auto size = input.tellg() - begin;
+		input.seekg(0, std::ios::beg);
 
-	// Вычисляем размер файла.
-	const auto begin = input.tellg();
-	input.seekg(0, std::ios::end);
-	const auto size = input.tellg() - begin;
-	input.seekg(0, std::ios::beg);
+		// Резервируем память под файл.
+		const auto val = StringBuilder::create(aCtx, size);
+		// Читаем данные.
+		std::copy(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>(), val.mString->getChars());
+		aCtx.push(val);
+	}
+	else
+	{
+		aCtx.push(DataBuilders::createUndefinedValue());
+	}
+}
 
-	// Резервируем память под файл.
-	const auto val = StringBuilder::create(aCtx, size);
+void writeToFile(SExecutionContext & aCtx, std::_Iosb<int>::_Openmode mode)
+{
+	// Проверяем имя файла.
+	auto & val = aCtx.getArg(0);
+	auto & file = aCtx.getArg(1);
 
-	// Читаем данные.
-	std::copy(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>(), val.mString->getChars());
+	const auto fileName = file.getOps()->toString(file);
 
-	aCtx.push(val);
+	if (fs::exists(fs::status(fileName->str())))
+	{
+		fs::permissions(fileName->str(),
+			fs::perms::owner_all | fs::perms::group_all,
+			fs::perm_options::add);
+	}
+	std::ofstream output(fileName->str(), mode);
+	output.precision(std::numeric_limits<double>::max_digits10);
+	if (output.is_open())
+	{
+		val.getOps()->write(val, output);
+		aCtx.push(DataBuilders::createBoolean(true));
+	}
+	else
+	{
+		aCtx.push(DataBuilders::createBoolean(false));
+	}
+}
+
+// Создание или перезапись файла.
+void createFile(SExecutionContext & aCtx)
+{
+	writeToFile(aCtx, std::ios::out);
+}
+
+// Запись в конец файла.
+void appendFile(SExecutionContext & aCtx)
+{
+	writeToFile(aCtx, std::ios::app);
 }
 
 // Создание массива.
@@ -453,6 +511,7 @@ void getArrayElement(SExecutionContext & aCtx)
 	auto & arrVal = aCtx.getArg(0);
 	auto & posVal = aCtx.getArg(1);
 
+	ArrayValue::arrayValueCheck(arrVal);
 	const size_t pos = posVal.getOps()->toInt(posVal);
 
 	aCtx.push(ArrayValue::get(arrVal, pos));
@@ -465,6 +524,7 @@ void setArrayElement(SExecutionContext & aCtx)
 	auto & posVal = aCtx.getArg(1);
 	auto & val = aCtx.getArg(2);
 
+	ArrayValue::arrayValueCheck(arrVal);
 	const size_t pos = posVal.getOps()->toInt(posVal);
 
 	ArrayValue::set(const_cast<DataValue &>(arrVal), pos, val);
@@ -475,12 +535,41 @@ void setArrayElement(SExecutionContext & aCtx)
 void getArrayLength(SExecutionContext & aCtx)
 {
 	auto & arrVal = aCtx.getArg(0);
+	ArrayValue::arrayValueCheck(arrVal);
 	aCtx.push(DataBuilders::createInt(ArrayValue::getLen(arrVal)));
 }
 
 void ArrayConcat(SExecutionContext & aCtx)
 {
 	aCtx.push(ArrayValue::concat(aCtx));
+}
+
+void ArrayCopy(SExecutionContext & aCtx)
+{
+	auto & arrVal = aCtx.getArg(0);
+	ArrayValue::arrayValueCheck(arrVal);
+	aCtx.push(ArrayValue::copy(aCtx, arrVal));
+}
+
+// Запись элемента в массив.
+void arrayFromFile(SExecutionContext & aCtx)
+{
+	auto arrVal = aCtx.getArg(0);
+	auto fileVal = aCtx.getArg(1);
+
+	ArrayValue::arrayValueCheck(arrVal);
+	const auto fileName = fileVal.getOps()->toString(fileVal);
+
+	std::ifstream input(fileName->str());
+	if (input.is_open())
+	{
+		ArrayValue::fromString(arrVal, static_cast<std::istream&>(input));
+		aCtx.push(arrVal);
+	}
+	else
+	{
+		aCtx.push(DataBuilders::createUndefinedValue());
+	}
 }
 
 } // anonymous namespace
@@ -512,9 +601,10 @@ const std::map<std::string, TFunction> StandardLibrary::mFunctions =
 	{"rand", &rand},
 
 	//Логические.
-	//{"not", &not},
-	//{"and", &and},
-	//{"or", &or},
+	{"not", &not},
+	{"and", &and},
+	{"or", &or },
+	{"xor", &xor },
 	{"equal", &equal},
 	{"nequal", &notEqual},
 	{"greater", &greater},
@@ -539,13 +629,17 @@ const std::map<std::string, TFunction> StandardLibrary::mFunctions =
 	{"print", &print},
 	{"printType", &printType},
 	{"readFile", &readFile},
+	{"createFile", &createFile},
+	{"appendFile", &appendFile},
 
 	// Работа с массивами.
 	{"arrayCreate", &createArray},
 	{"arrayGet", &getArrayElement},
 	{"arraySet", &setArrayElement},
 	{"arrayLen", &getArrayLength},
-	{"arrayCat", &ArrayConcat}
+	{"arrayCat", &ArrayConcat},
+	{"arrayCopy", &ArrayCopy},
+	{"arrayFromFile", &arrayFromFile}
 };
 
 StandardLibrary::StandardLibrary() : FunctionLibrary("StdLib")

@@ -16,7 +16,7 @@ struct DataValueArray : public Collectable
 {
 	DataValue values[];
 
-	static size_t size(int n)
+	static size_t size(size_t n)
 	{
 		return sizeof(DataValueArray) + n * sizeof(DataValue);
 	}
@@ -60,103 +60,103 @@ public:
 	// Добавлять сюда методы по мере добавления новых типов.
 	Ops * combine(const Ops * aOther) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("combine");
 	}
 
 	Ops * withOps(class Ops const * aOps) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("with Ops");
 	}
 
 	Ops * withOps(class IntegerOps const * aOps) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("with IntegerOps");
 	}
 
 	Ops * withOps(class BooleanOps const * aOps) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("with BooleanOps");
 	}
 
 	Ops * withOps(class DoubleOps const * aOps) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("with DoubleOps");
 	}
 
 	Ops * withOps(class StringOps const * aOps) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("with StringOps");
 	}
 
 	// Преобразование типов.
 	long long toInt(const DataValue & aVal) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("toInt");
 	}
 
 	double toDouble(const DataValue & aVal) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("toDouble");
 	}
 
 	StringValue * toString(const DataValue & aVal) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("toString");
 	}
 
 	// Арифметические функции.
 	DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("add");
 	}
 
 	DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("sub");
 	}
 
 	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("mul");
 	}
 
 	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("div");
 	}
 
 	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("mod");
 	}
 
 	DataValue abs(const DataValue & aArg) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("abs");
 	}
 
 	// Функции сравнения.
 	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		// TODO: возможно эту функцию можно определить.
-		throw invalidOperation();
+		throw invalidOperation("equal");
 	}
 
 	DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("less");
 	}
 
 	DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		throw invalidOperation();
+		throw invalidOperation("greater");
 	}
 
 	void mark(const DataValue & aVal, ObjectMarker * marker) const override
 	{
 		if (marker->markAlive(aVal.mADT->values, aVal.mADT->size()))
 		{
-			for (int i = 0; i < aVal.mADT->ctor->arity(); i++)
+			for (size_t i = 0; i < aVal.mADT->ctor->arity(); i++)
 			{
 				marker->addChild(&(*aVal.mADT)[i]);
 			}
@@ -167,13 +167,13 @@ public:
 	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
 		auto val = aVal.mADT;
-		int arity = val->ctor->arity();
+		size_t arity = val->ctor->arity();
 
 		if (arity > 0)
 		{
 			aStream << "(";
 
-			for (auto i = 0; i < arity; ++i)
+			for (size_t i = 0; i < arity; ++i)
 			{
 				(*val)[i].getOps()->print((*val)[i], aStream);
 
@@ -189,12 +189,22 @@ public:
 		aStream << val->ctor->name();
 	}
 
-private:
-	static std::runtime_error invalidOperation()
+	void write(const DataValue & aVal, std::ostream & aStream) const override
 	{
-		std::stringstream str;
-		str << "invalid operation on abstract data type";
-		return std::runtime_error(str.str());
+		throw invalidOperation("write");
+	}
+
+	DataValue read(std::istream & aStream) const override
+	{
+		throw invalidOperation("read");
+	}
+
+private:
+	static std::runtime_error invalidOperation(const char * aOpName)
+	{
+		std::stringstream message;
+		message << "invalid operation '" << aOpName << "' on type string";
+		return std::runtime_error(message.str());
 	}
 };
 
@@ -213,21 +223,19 @@ Constructor::Constructor(std::string aConstructorName, const std::string & aType
 }
 
 //-------------------------------------------------------------------------------
-Constructor::~Constructor()
-{
-}
+Constructor::~Constructor()	= default;
 
-//-------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------
 void Constructor::execConstructor(SExecutionContext & aCtx) const
 {
 	// Проверяем соответствие типов входного кортежа сигнатуре конструктора.
 	int argNum = 0;
 	std::unordered_map<std::string, struct TypeInfo> params;
 
-	int ar = arity();
+	size_t ar = arity();
 	auto values = aCtx.heap().alloc<DataValueArray>(DataValueArray::size(ar));
 
-	for (auto i = 0; i < ar; ++i)
+	for (size_t i = 0; i < ar; ++i)
 	{
 		auto & arg = aCtx.getArg(i);
 
@@ -256,7 +264,7 @@ void Constructor::execDestructor(SExecutionContext & aCtx) const
 		if (adt->ctor == this)
 		{
 			// Разворачиваем кортеж.
-			for (int i = 0; i < arity(); ++i)
+			for (size_t i = 0; i < arity(); ++i)
 			{
 				aCtx.push((*adt)[i]);
 			}

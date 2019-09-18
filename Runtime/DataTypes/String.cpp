@@ -72,7 +72,7 @@ public:
 		throw invalidOperation("toDouble");
 	}
 
-	TypeInfo getType(const DataValue & aVal) const override
+	TypeInfo getType(const DataValue &aVal) const override
 	{
 		static TypeInfo info("string");
 		return info;
@@ -164,6 +164,16 @@ public:
 	{
 		const auto str = aVal.mString;
 		std::copy(str->getChars(), str->getChars() + str->length(), std::ostreambuf_iterator<char>(aStream));
+	}
+
+	void write(const DataValue & aVal, std::ostream & aStream) const override
+	{
+		aStream << aVal.mString->data->value;
+	}
+
+	DataValue read(std::istream & aStream) const override
+	{
+		throw invalidOperation("read");
 	}
 
 private:

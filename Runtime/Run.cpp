@@ -77,7 +77,6 @@ struct ControlContext : SExecutionContext
 
 	void run(EvaluatorUnit * evaluatorUnit) override
 	{
-		boost::timer::cpu_timer timer;
 		try
 		{
 			mTarget->run(evaluatorUnit);
@@ -95,19 +94,11 @@ struct ControlContext : SExecutionContext
 			std::cerr << "Unknown error.";
 		}
 		mEvaluator->stop();
-
-		elapsed_times = timer.elapsed();
-	}
-
-	boost::timer::cpu_times getWorkTime() const
-	{
-		return elapsed_times;
 	}
 
 private:
 	SExecutionContext * mTarget;
 	SchemeEvaluator * mEvaluator;
-	boost::timer::cpu_times elapsed_times;
 };
 
 void SchemeEvaluator::run(SExecutionContext & program)
@@ -115,7 +106,7 @@ void SchemeEvaluator::run(SExecutionContext & program)
 	GarbageCollector * collector = GarbageCollector::getCollector(mEvalConfig.NumCores(), this, mGcConfig);
 	mGarbageCollector.reset(collector);
 
-	// Создаем юниты выполнения.
+	// Создаем единицы выполнения.
 	for (size_t i = 0; i < mEvalConfig.NumCores(); i++)
 	{
 		mEvaluatorUnits.push_back(new EvaluatorUnit(this));
@@ -128,7 +119,6 @@ void SchemeEvaluator::run(SExecutionContext & program)
 
 	// Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
 	mStopMutex.lock();
-
 	// Создаем потоки.
 	for (size_t i = 0; i < mEvalConfig.NumCores(); ++i)
 	{
@@ -138,10 +128,8 @@ void SchemeEvaluator::run(SExecutionContext & program)
 
 	mThreadGroup.join_all();
 
-	std::for_each(mEvaluatorUnits.begin(), mEvaluatorUnits.end(), [](auto unit) { delete unit; });
+	for (auto unit : mEvaluatorUnits) { delete unit; }
 	mEvaluatorUnits.clear();
-
-	std::cout << "\n\nTime: " << boost::timer::format(controlContext.getWorkTime(), 3, "%ws\n");
 }
 
 //-----------------------------------------------------------------------------

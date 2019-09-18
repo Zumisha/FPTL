@@ -33,13 +33,17 @@ struct ArrayValue : public Collectable
 	// Установка значения элемента массива.
 	static void set(DataValue & arr, size_t pos, const DataValue & val);
 
-	static size_t byteSize(size_t length);
+	inline static size_t byteSize(size_t length);
 
 	static size_t getLen(const DataValue & arr);
 
 	static DataValue concat(SExecutionContext & ctx);
 
-	static void arrayValueCheck(const DataValue & arr);
+	static DataValue copy(SExecutionContext & ctx, const DataValue & arr);
+
+	inline static void arrayValueCheck(const DataValue & arr);
+
+	static void fromString(DataValue & arr, std::istream & aStream);
 
 private:
 	static TypeInfo CreateType(const DataValue & initial)
