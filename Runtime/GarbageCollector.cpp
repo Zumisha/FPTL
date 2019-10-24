@@ -14,7 +14,7 @@
 namespace FPTL {
 namespace Runtime {
 
-typedef std::vector<const DataValue *> MarkList;
+	typedef std::vector<const DataValue *> MarkList;
 
 //-------------------------------------------------------------------------------
 class RootMarker : public ObjectMarker
@@ -276,12 +276,8 @@ private:
 			}
 
 			// Очищаем память.
-			job->allocated
-				.remove_and_dispose_if([](const Collectable & obj) { 
-											return !obj.isMarked();
-										}, [](Collectable * obj) {
-											delete obj;
-										});
+			job->allocated.remove_and_dispose_if([](const Collectable & obj) { return !obj.isMarked(); },
+												[](Collectable * obj) {	delete obj;	});
 
 			// Сбрасываем флаги.
 			for (auto & object : job->allocated)

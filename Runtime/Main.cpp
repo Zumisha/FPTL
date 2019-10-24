@@ -2,6 +2,7 @@
 #include <limits>
 #include <fstream>
 #include <boost/program_options.hpp>
+#include <boost/timer/timer.hpp>
 
 #include "jemalloc/jemalloc.h"
 
@@ -12,9 +13,9 @@
 #include "IntForm/InternalForm.h"
 #include "Parser/AST.h"
 #include "Context.h"
-#include <boost/timer/timer.hpp>
 
 #define BUILD_DATE __DATE__ " " __TIME__
+#define DebugBuild 0
 
 namespace po = boost::program_options;
 
@@ -150,7 +151,7 @@ bool infoOptions(po::variables_map &vm, po::options_description desc, Utils::For
 
 int main(int argc, char ** argv)
 {
-	//setlocale(LC_ALL, "ru-ru");
+	setlocale(LC_ALL, "ru-ru");
 	std::cout.precision(std::numeric_limits<double>::max_digits10);
 
  	std::string programFile;

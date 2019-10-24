@@ -1,8 +1,6 @@
 ﻿#ifndef AST_H
 #define AST_H
 
-#include <vector>
-
 #include "Types.h"
 
 namespace FPTL {
@@ -20,70 +18,69 @@ namespace FPTL {
 			// Варианты узлов абстрактного синтаксического дерева.
 			enum ASTNodeType
 			{
-				Unknown = 0,
+				Unknown = 0,				// Заглушка. Если что-то в парсере реализовано, а дальше нет.
 
-				FunctionalProgramDef,
+				FunctionalProgramDef,		// вся система функциональных уравнений (программа)
 
-				DataTypeDefinitionsBlocks,
-				DataTypeDefinitionBlock,
-				TypeParametersList,
-				ConstructorsDefinitionList,
-				Constructor,
-				ConstructorParametersList,
+				DataTypeDefinitionsBlocks,	// список блоков АТД
+				DataTypeDefinitionBlock,	// блок АТД
+				ConstructorsDefinitionList,	// список определений конструкторов АТД
+				Constructor,				// имя конструктора
+				ConstructorParametersList,	// конструкция, оборачиваемая конструктором
 
-				TypeExpression,
-				TypeExpressionsList,
-				TypesDefinitionList,
-				DefinitionsList,
+				TypeExpression,				// композиция объединения множеств АТД
+				TypeExpressionsList,		// список фактических параметров параметризованного АТД
+				TypesDefinitionList,		// список определений АТД
+				DefinitionsList,			// список функциональных уравнений
 
 				// DefinitionNode
-				TypeParameterDefinition,
-				TypeDefinition,
-				TypeConstructorDefinition,
-				Definition,
-				InputVarDefinition,
-				FunctionParameterDefinition,
+				TypeParametersList,			// список формальных параметров параметризованного АТД
+				TypeParameterDefinition,	// формальный параметр параметризованного АТД
+				TypeDefinition,				// определение АТД
+				TypeConstructorDefinition,	// определение конструктора АТД
+				Definition,					// функциональное уравнение
+				InputVarDefinition,			// определение входного параметра, передаваемого в схему в блоке Application
+				FunctionParameterDefinition,// формальный параметр функционала или схемы
 
-				VariantTerm,
-				ConditionTerm,
-				CompositionTerm,
-				SequentialTerm,
-				FormalParametersList,
-				FunctionBlock,
-				FuncArgumentsList,
+				VariantTerm,				// композиция ортогонального объединения графиков
+				ConditionTerm,				// условная композиция
+				CompositionTerm,			// параллельная композиция
+				SequentialTerm,				// последовательная композиция
+				FormalParametersList,		// список формальных параметров функционала или схемы
+				FunctionBlock,				// блок Fun
+				FuncArgumentsList,			// список фактических параметров функционала или схемы
 
 				// NameRefNode
-				BaseType,
-				Template,
-				Type,               // typeName
-				ConstructorName,
-				DestructorName,
-				BuildInFunction,
-				FuncObjectName,
-				TypeParamName,
-				FuncObjectWithParameters, // ParametrizedCall
-				InputVarName,
-				FuncParameterName,
-				RunningSchemeName,
+				BaseType,					// базовый тип данных
+				Template,					// параметризованный АТД
+				Type,						// АТД
+				ConstructorName,			// конструктор
+				DestructorName,				// деструктор
+				BuildInFunction,			// функция стандартной библиотеки
+				FuncObjectName,				// пользовательская функция
+				TypeParamName,				// фактический параметр параметризованного АТД
+				FuncObjectWithParameters,	// пользовательская функция с параметрами (функционал)
+				InputVarName,				// входной параметр, передаваемый в схему в блоке Application
+				FuncParameterName,			// фактический параметр функционала или схемы
+				RunningSchemeName,			// схема, запускаемая в блоке Application (%)
 
-				Application,
-				InputVarDefinitionList,
-				InputVarList,
-				InputVar,
-
+				Application,				// блок Application
+				InputVarDefinitionList,		// список определений входного параметра, передаваемого в схему в блоке Application
+				InputVarList,				// операция преобразования списка входных параметров, 
+											// передаваемых в схему в блоке Application, в кортеж
 				// ConstantNode
-				TupleElemNumber,
-				DoubleConstant,
-				FloatConstant,
-				StringConstant,
-				IntConstant,
-				LongLongConstant,
-				TrueValue,
-				FalseValue,
+				TupleElemNumber,			// Выбор элемента из кортежа
+				DoubleConstant,				// Real
+				FloatConstant,				// Real
+				StringConstant,				// String
+				IntConstant,				// Integer
+				LongLongConstant,			// Real
+				TrueValue,					// True
+				FalseValue,					// False
 
 				// ExpressionNode
-				ValueComposition,
-				ValueConstructor
+				ValueComposition,			// кортеж значений
+				ValueConstructor			// конструктор какого-либо данного
 			};
 
 			explicit ASTNode(const ASTNodeType aType) : mType(aType), mCyclicIndex(0) {}

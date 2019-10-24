@@ -253,7 +253,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 		mDefinitions.clear();
 
 		// Добавляем в текущий лексический контекст функциональные параметры.
-		// ToDo: это ужас - переделать (до этого не использовать dynamic_cast).
+		// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
 		Parser::ListNode * parameters = static_cast<Parser::FunctionNode *>(target)->getFormalParameters();
 
 		for (auto formalParam = parameters->rbegin(); formalParam != parameters->rend(); ++formalParam)
@@ -261,7 +261,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 			FSchemeNode * node = mNodeStack.top();
 			mNodeStack.pop();
 
-			// ToDo: это ужас - переделать (до этого не использовать dynamic_cast).
+			// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
 			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);
 
 			FScheme * delegateScheme = dynamic_cast<FScheme *>(node);

@@ -58,6 +58,8 @@ class UndefinedValue : public DataValue
 // Интерфейс классов операций над типами данных
 class Ops
 {
+protected:
+	~Ops() = default;
 public:
 	virtual TypeInfo getType(const DataValue & aVal) const = 0;
 	
@@ -100,6 +102,7 @@ public:
 class BaseOps : public Ops
 {
 public:
+	virtual ~BaseOps() = default;
 	Ops * withOps(const Ops * aOther) const override;
 	Ops * withOps(class StringOps const * aOther) const override;
 

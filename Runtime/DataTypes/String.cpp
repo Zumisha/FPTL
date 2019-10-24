@@ -156,7 +156,7 @@ public:
 	void mark(const DataValue & aVal, ObjectMarker * marker) const override
 	{
 		marker->markAlive(aVal.mString, sizeof(StringValue));
-		marker->markAlive(aVal.mString->data, aVal.mString->data->size());
+		marker->markAlive(aVal.mString->data, aVal.mString->data->size() * sizeof(aVal.mString->data[0]));
 	}
 
 	// Вывод в поток.

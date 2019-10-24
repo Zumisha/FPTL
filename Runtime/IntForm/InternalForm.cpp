@@ -199,7 +199,11 @@ void BasicFn::exec(SExecutionContext & ctx) const
 {
 	// Поскольку при вызове базисной функции необходимо обработать исключение, проивзодим вызов
 	// через метод-трамплин, чтобы не повлиять на оптимизацию компилятором хвостовой рекурсии.
+#if(DebugBuild)
 	callFn(ctx);
+#else
+	mFn(ctx);
+#endif
 	mNext->exec(ctx);
 }
 
@@ -231,7 +235,11 @@ void GetArg::exec(SExecutionContext & ctx) const
 	size_t argNum;
 	if (mArgNum < 0) argNum = ctx.argNum + mArgNum;
 	else argNum = mArgNum - 1;
+#if(DebugBuild)
 	ctx.push(TryGetArg(ctx, argNum));
+#else
+	ctx.push(ctx.getArg(argNum));
+#endif
 	mNext->exec(ctx);
 }
 

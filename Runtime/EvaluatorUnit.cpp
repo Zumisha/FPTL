@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Run.h"
+#include "IntForm/InternalForm.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -80,20 +81,27 @@ void EvaluatorUnit::evaluateScheme()
 
 void EvaluatorUnit::addForkJob(SExecutionContext * task)
 {
-	pendingTasks.push_back(task);
-	if (task->Proactive.load(std::memory_order_acquire))
+	if (task->Parent !=nullptr && !task->Parent->Canceled.load(std::memory_order_acquire))
 	{
-		mProactiveJobQueue.push(task);
-		mProactiveJobsCreated++;
-	}
-	else
-	{
-		addJob(task);
+		task->Parent->Childs.insert(task);
+		pendingTasks.push_back(task);
+		if (task->Proactive.load(std::memory_order_acquire))
+		{
+			mProactiveJobQueue.push(task);
+			mProactiveJobsCreated++;
+		}
+		else
+		{
+			addJob(task);
+		}
 	}
 }
 
 SExecutionContext *EvaluatorUnit::join()
 {
+	if (pendingTasks.empty())
+		return new IFExecutionContext(new EndOp());
+
 	auto joinTask = pendingTasks.back();
 
 	if (joinTask->Proactive.load(std::memory_order_acquire))
@@ -110,6 +118,7 @@ SExecutionContext *EvaluatorUnit::join()
 	//joinTask->Parent->Childs.erase(joinTask);
 	pendingTasks.pop_back();
 	return joinTask;
+
 }
 
 void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
@@ -133,16 +142,19 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 
 void EvaluatorUnit::cancelFromPendingEnd(const size_t backPos)
 {
-	const auto cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
-	if (!cancelTask->Canceled.load(std::memory_order_acquire)) cancel(cancelTask);
-
-	while (!cancelTask->Ready.load(std::memory_order_acquire))
+	if (!pendingTasks.empty() && pendingTasks.size() >= backPos)
 	{
-		schedule();
-	}
+		const auto cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
+		if (!cancelTask->Canceled.load(std::memory_order_acquire)) cancel(cancelTask);
 
-	//Убираем из очереди ожидающих выполнения задач.
-	pendingTasks.erase(pendingTasks.end() - backPos);
+		while (!cancelTask->Ready.load(std::memory_order_acquire))
+		{
+			schedule();
+		}
+
+		//Убираем из очереди ожидающих выполнения задач.
+		pendingTasks.erase(pendingTasks.end() - backPos);
+	}
 }
 
 void EvaluatorUnit::cancel(SExecutionContext * cancelingTask)

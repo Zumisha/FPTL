@@ -37,7 +37,7 @@ private:
 
 public:
 	Collectable()
-		: meta({ YOUNG, 0 })
+		: meta({ YOUNG, 1 })
 	{}
 
 	bool isMarked() const

@@ -20,7 +20,7 @@ struct ArrayValue : public Collectable
 	DataValue * arrayData;
 
 	ArrayValue(const size_t aLength, const DataValue & initial)
-		: ops(initial.getOps()), length(aLength), type(CreateType(initial))
+		: ops(initial.getOps()), length(aLength), type(CreateType(initial)), arrayData(nullptr)
 	{
 	}
 
@@ -33,15 +33,15 @@ struct ArrayValue : public Collectable
 	// Установка значения элемента массива.
 	static void set(DataValue & arr, size_t pos, const DataValue & val);
 
-	inline static size_t byteSize(size_t length);
-
 	static size_t getLen(const DataValue & arr);
 
 	static DataValue concat(SExecutionContext & ctx);
 
 	static DataValue copy(SExecutionContext & ctx, const DataValue & arr);
 
-	inline static void arrayValueCheck(const DataValue & arr);
+	static DataValue dot(SExecutionContext & ctx, const DataValue & arr1, const DataValue & arr2);
+
+	static void arrayValueCheck(const DataValue & arr);
 
 	static void fromString(DataValue & arr, std::istream & aStream);
 

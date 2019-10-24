@@ -47,8 +47,8 @@ ASTNode * ExpressionNode::copy() const
 
 ListNode::~ListNode()
 {
-	for( ListNode::iterator it = begin(); it != end(); ++it )
-		delete *it;
+	for (auto& it : *this)
+		delete it;
 }
 
 void ListNode::accept( NodeVisitor * aVisitor )
@@ -184,9 +184,9 @@ FunctionNode * FunctionNode::copy() const
 
 DefinitionNode * FunctionNode::getDefinition(Ident aName) const
 {
-	for (ListNode::iterator it = mDefinitions->begin(); it != mDefinitions->end(); ++it)
+	for (auto& mDefinition : *mDefinitions)
 	{
-		auto def = static_cast<DefinitionNode *>(*it);
+		auto def = static_cast<DefinitionNode *>(mDefinition);
 		if (def->getDefinitionName() == aName)
 		{
 			return def;

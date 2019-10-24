@@ -18,7 +18,7 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>"..\x64\Release\Test.txt" -n 8 --proactive --ansi 8 12.8 \"fdfd\"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"..\x64\Release\Test.txt" -n 8 -i -t 1 0.1 --proactive</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

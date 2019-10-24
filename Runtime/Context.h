@@ -3,7 +3,6 @@
 #include <vector>
 #include <set>
 #include <atomic>
-#include <boost/intrusive/slist.hpp>
 
 #include "DataTypes/Data.h"
 #include "IntForm/ControlValue.h"

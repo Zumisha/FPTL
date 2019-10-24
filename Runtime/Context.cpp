@@ -41,6 +41,7 @@ CollectedHeap & SExecutionContext::heap() const
 
 const DataValue & SExecutionContext::getArg(size_t aIndex) const
 {
+#if(DebugBuild)
 	// ToDo: производить статический анализ.
 	if (aIndex >= argNum)
 	{
@@ -48,6 +49,7 @@ const DataValue & SExecutionContext::getArg(size_t aIndex) const
 		error << "attempt to get the [" << aIndex + 1 << "] argument in a tuple of size " << argNum << ".";
 		throw std::runtime_error(error.str());
 	}
+#endif
 	return stack.at(argPos + aIndex);
 }
 
@@ -80,13 +82,15 @@ void SExecutionContext::join()
 {
 	auto joined = mEvaluatorUnit->join();
 	if (!joined->Canceled.load(std::memory_order_acquire))
+	{
 		// Копируем результат.
 		for (size_t i = 0; i < joined->arity; ++i)
 		{
 			push(joined->stack.at(joined->stack.size() - joined->arity + i));
 		}
 
-	delete joined;
+		delete joined;
+	}
 }
 
 	void SExecutionContext::print(std::ostream & aStream) const
@@ -163,7 +167,7 @@ void SExecutionContext::join()
 			fork = new IFExecutionContext(forkBody);
 			fork->Parent = this;
 			fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
-			this->Childs.insert(fork);
+			
 
 			// Копируем стек.
 			for (size_t i = argPos; i < (argPos + argNum); i++)

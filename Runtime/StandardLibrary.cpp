@@ -5,13 +5,13 @@
 #include <iterator>
 #include <random>
 #include <filesystem>
-namespace fs = std::filesystem;
+
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/lock_guard.hpp>
 
 #include "StandardLibrary.h"
 #include "DataTypes/String.h"
 #include "DataTypes/Array.h"
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/lock_guard.hpp>
 
 namespace FPTL {
 namespace Runtime {
@@ -462,11 +462,11 @@ void writeToFile(SExecutionContext & aCtx, std::_Iosb<int>::_Openmode mode)
 
 	const auto fileName = file.getOps()->toString(file);
 
-	if (fs::exists(fs::status(fileName->str())))
+	if (exists(std::filesystem::status(fileName->str())))
 	{
-		fs::permissions(fileName->str(),
-			fs::perms::owner_all | fs::perms::group_all,
-			fs::perm_options::add);
+		permissions(fileName->str(),
+			std::filesystem::perms::owner_all | std::filesystem::perms::group_all,
+			std::filesystem::perm_options::add);
 	}
 	std::ofstream output(fileName->str(), mode);
 	output.precision(std::numeric_limits<double>::max_digits10);
@@ -499,7 +499,7 @@ void createArray(SExecutionContext & aCtx)
 	const auto sizeVal = aCtx.getArg(0).getOps()->toInt(aCtx.getArg(0));
 	auto & initialVal = aCtx.getArg(1);
 
-	if (sizeVal <= 0) throw std::invalid_argument("Размер массива должен быть больше нуля!");
+	if (sizeVal <= 0) throw std::invalid_argument("The size of the array must be greater than zero!");
 
 	const size_t size = static_cast<size_t>(sizeVal);
 	aCtx.push(ArrayValue::create(aCtx, size, initialVal));
@@ -549,6 +549,15 @@ void ArrayCopy(SExecutionContext & aCtx)
 	auto & arrVal = aCtx.getArg(0);
 	ArrayValue::arrayValueCheck(arrVal);
 	aCtx.push(ArrayValue::copy(aCtx, arrVal));
+}
+
+void ArrayDot(SExecutionContext & aCtx)
+{
+	auto & arrVal1 = aCtx.getArg(0);
+	auto & arrVal2 = aCtx.getArg(1);
+	ArrayValue::arrayValueCheck(arrVal1);
+	ArrayValue::arrayValueCheck(arrVal2);
+	aCtx.push(ArrayValue::dot(aCtx, arrVal1, arrVal2));
 }
 
 // Запись элемента в массив.
@@ -639,6 +648,7 @@ const std::map<std::string, TFunction> StandardLibrary::mFunctions =
 	{"arrayLen", &getArrayLength},
 	{"arrayCat", &ArrayConcat},
 	{"arrayCopy", &ArrayCopy},
+	{"ArrayDot", &ArrayDot},
 	{"arrayFromFile", &arrayFromFile}
 };
 
