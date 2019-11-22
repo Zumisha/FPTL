@@ -15,7 +15,7 @@
 #include "Context.h"
 
 #define BUILD_DATE __DATE__ " " __TIME__
-#define DebugBuild 0
+#define DebugBuild 1
 
 namespace po = boost::program_options;
 

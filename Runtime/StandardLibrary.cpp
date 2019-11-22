@@ -35,14 +35,14 @@ void tupleLength(SExecutionContext & aCtx)
 	aCtx.push(DataBuilders::createInt(static_cast<long long>(aCtx.argNum)));
 }
 
-void not(SExecutionContext & aCtx)
+void Not(SExecutionContext & aCtx)
 {
 	auto & arg = aCtx.getArg(0);
 
 	aCtx.push(DataBuilders::createBoolean(!arg.getOps()->toInt(arg)));
 }
 
-void and(SExecutionContext & aCtx)
+void And(SExecutionContext & aCtx)
 {
 	auto & lhs = aCtx.getArg(0);
 	auto & rhs = aCtx.getArg(1);
@@ -50,7 +50,7 @@ void and(SExecutionContext & aCtx)
 	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) * rhs.getOps()->toInt(rhs))));
 }
 
-void or(SExecutionContext & aCtx)
+void Or(SExecutionContext & aCtx)
 {
 	auto & lhs = aCtx.getArg(0);
 	auto & rhs = aCtx.getArg(1);
@@ -58,7 +58,7 @@ void or(SExecutionContext & aCtx)
 	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) + rhs.getOps()->toInt(rhs))));
 }
 
-void xor (SExecutionContext & aCtx)
+void Xor (SExecutionContext & aCtx)
 {
 	auto & lhs = aCtx.getArg(0);
 	auto & rhs = aCtx.getArg(1);
@@ -171,7 +171,7 @@ void rand(SExecutionContext & aCtx)
 {
 	static thread_local std::random_device rd;
 	static thread_local std::mt19937_64 gen(rd());
-	static const std::uniform_real_distribution<> realDistrib;
+	static std::uniform_real_distribution realDistrib;
 	aCtx.push(DataBuilders::createDouble(realDistrib(gen)));
 }
 
@@ -291,15 +291,15 @@ void toDouble(SExecutionContext & aCtx)
 // Конкатенация строк.
 void concat(SExecutionContext & aCtx)
 {
-	size_t length = 0;
+	size_t len = 0;
 	for (size_t i = 0; i < aCtx.argNum; ++i)
 	{
 		auto & arg = aCtx.getArg(i);
 		const auto inStr = arg.getOps()->toString(arg);
-		length += inStr->length();
+		len += inStr->length();
 	}
 
-	const auto val = StringBuilder::create(aCtx, length);
+	const auto val = StringBuilder::create(aCtx, len);
 	const auto str = val.mString->getChars();
 	size_t curPos = 0;
 
@@ -454,7 +454,7 @@ void readFile(SExecutionContext & aCtx)
 	}
 }
 
-void writeToFile(SExecutionContext & aCtx, std::_Iosb<int>::_Openmode mode)
+void writeToFile(SExecutionContext & aCtx, std::ios::openmode mode)
 {
 	// Проверяем имя файла.
 	auto & val = aCtx.getArg(0);
@@ -610,10 +610,10 @@ const std::map<std::string, TFunction> StandardLibrary::mFunctions =
 	{"rand", &rand},
 
 	//Логические.
-	{"not", &not},
-	{"and", &and},
-	{"or", &or },
-	{"xor", &xor },
+	{"not", &Not},
+	{"and", &And},
+	{"or", &Or },
+	{"xor", &Xor },
 	{"equal", &equal},
 	{"nequal", &notEqual},
 	{"greater", &greater},

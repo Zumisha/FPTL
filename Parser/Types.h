@@ -4,14 +4,23 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <boost/unordered_map.hpp>
 
 namespace FPTL {
 namespace Parser {
-
+/*
+template<
+    class Key,
+    class T,
+    class Hash = std::hash<Key>,
+    class KeyEqual = std::equal_to<Key>,
+    class Allocator = std::allocator< std::pair<const Key, T> >
+> class my_unordered_map: public std::unordered_map<Key, T, Hash, KeyEqual, Allocator>
+*/
 struct TypeInfo
 {
 	std::string name;
-	std::unordered_map<std::string, TypeInfo> parameters;
+	boost::unordered_map<std::string, TypeInfo> parameters;
 
 	TypeInfo(const std::string & aName) : name(aName)
 	{}

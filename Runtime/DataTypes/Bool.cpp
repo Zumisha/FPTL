@@ -1,4 +1,4 @@
-#include <ostream>
+#include <istream>
 #include "Data.h"
 #include "String.h"
 

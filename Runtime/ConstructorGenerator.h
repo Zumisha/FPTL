@@ -18,7 +18,7 @@ public:
 
 	ConstructorGenerator();
 
-	void ConstructorGenerator::work(Parser::FunctionalProgram * aFuncProgram);
+	void work(Parser::FunctionalProgram * aFuncProgram);
 
 	void visit(Parser::DataNode * aData) override;
 	void visit(Parser::NameRefNode * aNameReference) override;

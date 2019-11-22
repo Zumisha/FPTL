@@ -3,6 +3,7 @@
 #include <vector>
 #include <set>
 #include <atomic>
+#include <memory>
 
 #include "DataTypes/Data.h"
 #include "IntForm/ControlValue.h"

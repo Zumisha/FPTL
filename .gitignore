@@ -5,3 +5,4 @@ Runtime/test3.txt
 Runtime/x64/
 Debug/
 Parser/parser.output
+build/

@@ -56,7 +56,7 @@ public:
 	}
 
 private:
-	std::hash_multimap<std::string, std::pair<TTuple, TTuple>> mFunctions;
+	std::multimap<std::string, std::pair<TTuple, TTuple>> mFunctions;
 };
 
 // ¬ыводит тип дл€ рекурсивного выражени€.

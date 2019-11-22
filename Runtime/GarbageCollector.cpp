@@ -8,6 +8,7 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+#include <thread>
 
 #include <boost/timer/timer.hpp>
 
@@ -15,6 +16,8 @@ namespace FPTL {
 namespace Runtime {
 
 	typedef std::vector<const DataValue *> MarkList;
+
+ObjectMarker::~ObjectMarker() {}
 
 //-------------------------------------------------------------------------------
 class RootMarker : public ObjectMarker
@@ -142,7 +145,7 @@ public:
 		mQuit(false),
 		mCollectOld(false)
 	{
-		mCollectorThread.swap(std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this)));
+		mCollectorThread = std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this));
 	}
 
 	virtual ~GarbageCollectorImpl()
@@ -189,7 +192,9 @@ public:
 		for (auto heap : mHeaps)
 		{
 			job->allocatedSize += heap->heapSize();
-			job->allocated.splice(job->allocated.end(), heap->reset());
+//XXX buf added because temporary lvalue can't be passed to non const refference
+			CollectedHeap::MemList buf = heap->reset();
+			job->allocated.splice(job->allocated.end(), buf);
 		}
 
 		// Добавляем задание на сборку мусора.

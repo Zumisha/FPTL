@@ -1,5 +1,5 @@
 
-bison -L C++ --verbose parser.yy
+"%bison%" -L C++ --verbose parser.yy
 cp parser.tab.cc ./Generated
 cp parser.tab.hh ./Generated
 cp stack.hh   ./Generated

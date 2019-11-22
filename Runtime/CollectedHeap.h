@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/intrusive/slist.hpp>
+#include <functional>
 
 #include "Context.h"
 #include "GcAwarePtr.h"

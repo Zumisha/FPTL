@@ -1,4 +1,4 @@
-#include <ostream>
+#include <istream>
 #include "Data.h"
 
 namespace FPTL {

@@ -30,7 +30,7 @@ Scheme Fact
 	//@ = ("12345678" * "1..").getToken.print;
 	//@ = "Test.txt".readFile.print;
 
-	@ = 33.Fib;
+	@ = 33.Fib.print;
 
 	//@ = (10.toString * " 2").cat.print;
 
@@ -44,7 +44,7 @@ Scheme Fact
 
 	//@ = id.GenSinSignal.FFT;
 
-	Sum = ~c_nil -> 0, ~c_cons.([1]*[2].Sum).add;
+	//Sum = ~c_nil -> 0, ~c_cons.([1]*[2].Sum).add;
 
 	//@ = (10.0*c_nil).c_cons;
 

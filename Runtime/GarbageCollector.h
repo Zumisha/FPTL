@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <stddef.h> //size_t
+
 namespace FPTL { namespace Runtime {
 
 class Collectable;
@@ -15,8 +17,7 @@ public:
 
 	virtual void addChild(const DataValue * child) = 0;
 
-	virtual ~ObjectMarker() = 0
-	{}
+	virtual ~ObjectMarker() = 0;
 
 	static void setObjectAge(Collectable * object, int age);
 	static bool checkAge(const Collectable * object, int age);
