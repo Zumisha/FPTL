@@ -41,7 +41,7 @@ CollectedHeap & SExecutionContext::heap() const
 
 const DataValue & SExecutionContext::getArg(size_t aIndex) const
 {
-#if(DebugBuild)
+#if fptlDebugBuild
 	// ToDo: производить статический анализ.
 	if (aIndex >= argNum)
 	{

@@ -211,9 +211,6 @@
     <ClInclude Include="DataTypes\String.h">
       <Filter>Header Files\Runtime\Data</Filter>
     </ClInclude>
-    <ClInclude Include="DataTypes\Types.h">
-      <Filter>Header Files\Runtime\Data</Filter>
-    </ClInclude>
     <ClInclude Include="DataTypes\ADT.h">
       <Filter>Header Files\Runtime\Data</Filter>
     </ClInclude>
@@ -234,6 +231,12 @@
     </ClInclude>
     <ClInclude Include="StandardLibrary.h">
       <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\FPTL_my\Parser\Generated\Flex\FlexLexer.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Types.h">
+      <Filter>Header Files\Runtime\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

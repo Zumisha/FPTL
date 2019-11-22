@@ -13,7 +13,7 @@ NamesChecker::NamesChecker( Support * aSupport, ASTNode * root) : mSupport(aSupp
 //---------------------------------------------------------------------------
 void NamesChecker::visit( DataNode * aDataNode )
 {
-	if( mContext.insertName( aDataNode->getDataName(), aDataNode ) == false )
+	if(!mContext.insertName(aDataNode->getDataName(), aDataNode))
 	{
 		mSupport->semanticError( ErrTypes::DuplicateDefinition, aDataNode->getDataName() );
 	}
@@ -63,7 +63,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 		case ASTNode::Definition:
 		case ASTNode::TypeParameterDefinition:
 		case ASTNode::InputVarDefinition:
-			if (mContext.insertName( aDefinitionNode->getDefinitionName(),aDefinitionNode ) == false)
+			if (!mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode))
 			{
 				// Повторное определение.
 				mSupport->semanticError( ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName() );
@@ -71,7 +71,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 			break;
 
 		case ASTNode::TypeConstructorDefinition:
-			if (mContextStack[0].insertName( aDefinitionNode->getDefinitionName(), aDefinitionNode ) == false)
+			if (!mContextStack[0].insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode))
 			{
 				mSupport->semanticError( ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName() );
 			}
@@ -146,7 +146,7 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 	std::vector<STermDescriptor> undefinedTerms;
 
 	// Сначала ищем в локальном пространстве имен.
-	std::map<Ident,ASTNode*>::iterator pos = mContext.DefinitionsList.find( aTermDesc.TermName );
+	auto pos = mContext.DefinitionsList.find( aTermDesc.TermName );
 
 	if( pos != mContext.DefinitionsList.end() )
 	{

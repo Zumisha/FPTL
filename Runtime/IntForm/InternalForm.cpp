@@ -50,7 +50,7 @@ void SeqBegin::zeroing(SExecutionContext & ctx)
 
 void SeqEnd::exec(SExecutionContext & ctx) const
 {
-	auto& cv = ctx.controlStack.back();
+	const auto &cv = ctx.controlStack.back();
 	ctx.controlStack.pop_back();
 
 	// Сворачиваем стек.
@@ -83,7 +83,7 @@ void CondStart::exec(SExecutionContext & ctx) const
 
 	if (mThen)
 	{
-		IFExecutionContext *fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
+		auto fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mThen.get());
 		fork->NewProactiveLevel = true;
 		fork->Proactive = true;
 		ctx.evaluator()->addForkJob(fork);
@@ -91,7 +91,7 @@ void CondStart::exec(SExecutionContext & ctx) const
 
 	if (mElse)
 	{
-		IFExecutionContext *fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
+		auto fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mElse.get());
 		fork->NewProactiveLevel = true;
 		fork->Proactive = true;
 		ctx.evaluator()->addForkJob(fork);
@@ -199,7 +199,7 @@ void BasicFn::exec(SExecutionContext & ctx) const
 {
 	// Поскольку при вызове базисной функции необходимо обработать исключение, проивзодим вызов
 	// через метод-трамплин, чтобы не повлиять на оптимизацию компилятором хвостовой рекурсии.
-#if(DebugBuild)
+#if fptlDebugBuild
 	callFn(ctx);
 #else
 	mFn(ctx);
@@ -235,7 +235,7 @@ void GetArg::exec(SExecutionContext & ctx) const
 	size_t argNum;
 	if (mArgNum < 0) argNum = ctx.argNum + mArgNum;
 	else argNum = mArgNum - 1;
-#if(DebugBuild)
+#if(fptlDebugBuild)
 	ctx.push(TryGetArg(ctx, argNum));
 #else
 	ctx.push(ctx.getArg(argNum));
@@ -243,7 +243,7 @@ void GetArg::exec(SExecutionContext & ctx) const
 	mNext->exec(ctx);
 }
 
-const DataValue& GetArg::TryGetArg(SExecutionContext& ctx, size_t argNum) const
+const DataValue& GetArg::TryGetArg(const SExecutionContext& ctx, const size_t argNum) const
 {
 	try
 	{

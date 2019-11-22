@@ -18,11 +18,11 @@ public:
 
 	WorkStealingQueue() : WorkStealingQueue(32) {}
 
-	WorkStealingQueue(size_t size) : mHeadPos(0), mTailPos(0), mSize(size), mQueue(size) {}
+	explicit WorkStealingQueue(const size_t size) : mQueue(size), mSize(size), mHeadPos(0), mTailPos(0) {}
 
 	void push(const T & aElem)
 	{
-		int tailPos = mTailPos;
+		auto tailPos = mTailPos;
 		if (tailPos < mSize)
 		{
 			mQueue[tailPos] = aElem;
@@ -33,7 +33,7 @@ public:
 			/// Увеличиваем размер очереди.
 			boost::lock_guard<boost::mutex> lock(mAccessMutex);
 
-			int numJobs = mTailPos - mHeadPos;
+			const auto numJobs = mTailPos - mHeadPos;
 
 			if (mHeadPos > 0)
 			{
@@ -58,7 +58,7 @@ public:
 
 	bool pop(T & aElem)
 	{
-		int tailPos = mTailPos;
+		auto tailPos = mTailPos;
 		if (tailPos <= mHeadPos)
 		{
 			return false;
@@ -99,11 +99,11 @@ public:
 
 	bool steal(T & aElem)
 	{
-		bool result = false;
+		auto result = false;
 
 		if (mAccessMutex.try_lock())
 		{
-			int headPos = mHeadPos;
+			auto headPos = mHeadPos;
 
 			mHeadPos++;
 

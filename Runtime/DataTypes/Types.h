@@ -22,7 +22,7 @@ struct TypeInfo
 	TypeInfo(std::string aTypeName, const TypeInfo& aParameter) : typeName(std::move(aTypeName)), typeParameters(std::vector<TypeInfo>{aParameter}) {}
 	TypeInfo(std::string aTypeName, std::vector<TypeInfo> aParameters) : typeName(std::move(aTypeName)), typeParameters(std::move(aParameters)) {}
 	
-	static bool matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap);
+	static bool matchType(TypeInfo aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap);
 	friend std::ostream & operator <<(std::ostream& aStream, const TypeInfo& aTypeInfo);
 	friend bool operator ==(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);
 	friend bool operator !=(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);

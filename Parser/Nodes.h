@@ -45,7 +45,7 @@ class ConstantNode : public ASTNode
 {
 public:
 
-	ConstantNode( ASTNodeType aType, Ident aConstant ) : ASTNode(aType), mIdent(aConstant)
+	ConstantNode(const ASTNodeType aType, const Ident aConstant ) : ASTNode(aType), mIdent(aConstant)
 	{}
 
 	Ident getConstant() const { return mIdent; }
@@ -65,7 +65,7 @@ class ListNode : public ASTNode, public std::list<ASTNode*>
 {
 public:
 
-	ListNode( ASTNodeType aType ) : ASTNode(aType) {}
+	explicit ListNode(const ASTNodeType aType ) : ASTNode(aType) {}
 	~ListNode() override;
 
 	ListNode *    addElement( ASTNode * aElem ) { if( aElem ) push_front( aElem ); return this; }

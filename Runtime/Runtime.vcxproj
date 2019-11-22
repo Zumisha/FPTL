@@ -144,6 +144,7 @@
     <ClCompile Include="StandardLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\FPTL_my\Parser\Generated\Flex\FlexLexer.h" />
     <ClInclude Include="..\Utils\FormatedOutput.h" />
     <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="CollectedHeap.h" />

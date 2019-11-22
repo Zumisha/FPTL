@@ -10,13 +10,13 @@ namespace Runtime {
 class NodeDeleter : public FSchemeVisitor
 {
 public:
-	void visit(const FFunctionNode * aNode) override;
-	void visit(const FParallelNode * aNode) override;
-	void visit(const FSequentialNode * aNode) override;
-	void visit(const FConditionNode * aNode) override;
-	void visit(const FScheme * aScheme) override;
-	void visit(const FTakeNode * aNode) override;
-	void visit(const FConstantNode * aNode) override;
+	void visit(const FFunctionNode * node) override;
+	void visit(const FParallelNode * node) override;
+	void visit(const FSequentialNode * node) override;
+	void visit(const FConditionNode * node) override;
+	void visit(const FScheme * scheme) override;
+	void visit(const FTakeNode * node) override;
+	void visit(const FConstantNode * node) override;
 
 	void releaseGraph(const FSchemeNode * node);
 

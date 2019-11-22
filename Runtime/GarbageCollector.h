@@ -38,16 +38,16 @@ public:
 		mVerbose(false)
 	{}
 
-	void setEnabled(bool state)
+	void setEnabled(const bool state)
 	{ mEnabled = state; }
 
-	void setYoungGenSize(size_t size)
+	void setYoungGenSize(const size_t size)
 	{ mYoungGenSize = size; }
 
-	void setVerbose(bool enabled)
+	void setVerbose(const bool enabled)
 	{ mVerbose = enabled; }
 
-	void setOldGenSize(size_t size)
+	void setOldGenSize(const size_t size)
 	{ mOldGenSize = size; }
 
 	bool enabled() const
@@ -62,7 +62,7 @@ public:
 	bool verbose() const
 	{ return mVerbose; }
 
-	void setOldGenThreshold(double ratio)
+	void setOldGenThreshold(const double ratio)
 	{ mOldGenThreshold = mOldGenSize * static_cast<size_t>(ratio); }
 
 	size_t oldGenGCThreshold() const
@@ -88,7 +88,7 @@ public:
 
 	virtual ~GarbageCollector() = default;
 
-	static GarbageCollector * getCollector(size_t numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config);
+	static GarbageCollector * getCollector(size_t numThreads, DataRootExplorer * rootExplorer, const GcConfig & config);
 };
 
 //-----------------------------------------------------------------------------

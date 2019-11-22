@@ -17,13 +17,13 @@ namespace Runtime {
 
 	typedef std::vector<const DataValue *> MarkList;
 
-ObjectMarker::~ObjectMarker() {}
+	ObjectMarker::~ObjectMarker() = default;
 
-//-------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------
 class RootMarker : public ObjectMarker
 {
 public:
-	RootMarker(Collectable::Age maxAge)
+	explicit RootMarker(const Collectable::Age maxAge)
 		: mMaxAge(maxAge)
 	{}
 
@@ -56,17 +56,18 @@ class HeapMarker : public ObjectMarker
 {
 public:
 	HeapMarker()
-		: mAliveSize(0)
-	{}
+		: mAliveSize(0), mMaxAge()
+	{
+	}
 
-	HeapMarker(RootMarker & rootMarker, size_t aliveSize)
+	HeapMarker(RootMarker & rootMarker, const size_t aliveSize)
 		: mAliveSize(aliveSize),
 		mMaxAge(rootMarker.mMaxAge)
 	{
 		mMarkStack.swap(rootMarker.mMarkStack);
 	}
 
-	bool markAlive(Collectable * object, size_t size) override
+	bool markAlive(Collectable * object, const size_t size) override
 	{
 		if (!object->isMarked() && ObjectMarker::checkAge(object, mMaxAge))
 		{
@@ -127,7 +128,7 @@ private:
 			fullGc(false)
 		{}
 
-		GcJob(bool fullGc)
+		explicit GcJob(const bool fullGc)
 			: marker(fullGc ? Collectable::OLD : Collectable::YOUNG),
 			allocatedSize(0),
 			fullGc(fullGc)
@@ -135,7 +136,7 @@ private:
 	};
 
 public:
-	GarbageCollectorImpl(size_t numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+	GarbageCollectorImpl(const size_t numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 		: mConfig(config),
 		mStopped(0),
 		mThreads(numMutatorThreads),
@@ -193,7 +194,7 @@ public:
 		{
 			job->allocatedSize += heap->heapSize();
 //XXX buf added because temporary lvalue can't be passed to non const refference
-			CollectedHeap::MemList buf = heap->reset();
+			auto buf = heap->reset();
 			job->allocated.splice(job->allocated.end(), buf);
 		}
 
@@ -249,7 +250,7 @@ private:
 			{
 				break;
 			}
-
+			
 			std::unique_ptr<GcJob> job;
 			job.swap(deqJob.get());
 
@@ -270,7 +271,7 @@ private:
 			HeapMarker marker(job->marker, aliveSize);
 
 			// Помечаем доступные вершины.
-			size_t count = marker.traceDataRecursively();
+			auto count = marker.traceDataRecursively();
 
 			if (job->fullGc)
 			{

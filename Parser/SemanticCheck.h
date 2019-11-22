@@ -48,13 +48,13 @@ class NamesChecker : public NodeVisitor
 
 public:
 
-	NamesChecker( Support * aSupport, ASTNode * aNode);
+	NamesChecker( Support * aSupport, ASTNode * root);
 
-	void visit( DataNode * aDataNode );
-	void visit( FunctionNode * aFunctionNode );
-	void visit( DefinitionNode * aDefinitionNode );
-	void visit( NameRefNode * aNameNode );
-	void visit( ApplicationBlock * aApplicationBlock );
+	void visit( DataNode * aDataNode ) override;
+	void visit( FunctionNode * aFunctionNode ) override;
+	void visit( DefinitionNode * aDefinitionNode ) override;
+	void visit( NameRefNode * aNameNode ) override;
+	void visit( ApplicationBlock * aApplicationBlock ) override;
 
 private:
 
@@ -81,7 +81,7 @@ public:
 		process(root);
 	}
 
-	void visit( DefinitionNode * aDefinitionNode )
+	void visit( DefinitionNode * aDefinitionNode ) override
 	{
 		mTestDefinitions.push_back( aDefinitionNode->getDefinitionName() );
 
@@ -93,7 +93,7 @@ public:
 		mTestDefinitions.pop_back();
 	}
 
-	void visit( NameRefNode * aNameRefNode )
+	void visit( NameRefNode * aNameRefNode ) override
 	{
 		if (aNameRefNode->getType() == ASTNode::FuncObjectName || aNameRefNode->getType() == ASTNode::FuncParameterName)
 		{

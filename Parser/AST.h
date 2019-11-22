@@ -1,7 +1,7 @@
 ﻿#ifndef AST_H
 #define AST_H
 
-#include "Types.h"
+#include "../Runtime/DataTypes/Types.h"
 
 namespace FPTL {
 	namespace Parser {
@@ -104,8 +104,8 @@ namespace FPTL {
 			virtual int numParameters() const { return 0; }
 
 			// Информация о типе узла.
-			TTuple getTypeTuple() const { return mTypeTuple; }
-			void setTypeTuple(const TTuple & aTuple) { mTypeTuple = aTuple; }
+			std::vector<Runtime::TypeInfo> getTypeTuple() const { return mTypeTuple; }
+			void setTypeTuple(const std::vector<Runtime::TypeInfo> & aTuple) { mTypeTuple = aTuple; }
 
 			// deleted
 			ASTNode(const ASTNode &) = delete;
@@ -114,7 +114,7 @@ namespace FPTL {
 		private:
 			ASTNodeType mType;
 			size_t mCyclicIndex;
-			TTuple mTypeTuple;
+			std::vector<Runtime::TypeInfo> mTypeTuple;
 		};
 
 	} // Parser

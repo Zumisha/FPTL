@@ -35,7 +35,7 @@ namespace FPTL {
 		}
 
 		template<typename T>
-		void LockFreeWorkStealingQueue<T>::push(const T & aElem)
+		void LockFreeWorkStealingQueue<T>::push(const T &aElem)
 		{
 			size_t tailPos = mTailPos.load(std::memory_order_acquire);
 

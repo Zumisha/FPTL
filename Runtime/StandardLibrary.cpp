@@ -37,47 +37,47 @@ void tupleLength(SExecutionContext & aCtx)
 
 void Not(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 
 	aCtx.push(DataBuilders::createBoolean(!arg.getOps()->toInt(arg)));
 }
 
 void And(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) * rhs.getOps()->toInt(rhs))));
 }
 
 void Or(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) + rhs.getOps()->toInt(rhs))));
 }
 
 void Xor (SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) ^ rhs.getOps()->toInt(rhs))));
 }
 
 void equal(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->equal(lhs, rhs));
 }
 
 void notEqual(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(
 		DataBuilders::createBoolean(
@@ -88,16 +88,16 @@ void notEqual(SExecutionContext & aCtx)
 
 void greater(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->greater(lhs, rhs));
 }
 
 void greaterOrEqual(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(
 		DataBuilders::createBoolean(
@@ -108,16 +108,16 @@ void greaterOrEqual(SExecutionContext & aCtx)
 
 void less(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->less(lhs, rhs));
 }
 
 void lessOrEqual(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(
 		DataBuilders::createBoolean(
@@ -128,40 +128,40 @@ void lessOrEqual(SExecutionContext & aCtx)
 
 void add(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->add(lhs, rhs));
 }
 
 void sub(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->sub(lhs, rhs));
 }
 
 void mul(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->mul(lhs, rhs));
 }
 
 void div(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->div(lhs, rhs));
 }
 
 void mod(SExecutionContext & aCtx)
 {
-	auto & lhs = aCtx.getArg(0);
-	auto & rhs = aCtx.getArg(1);
+	const auto & lhs = aCtx.getArg(0);
+	const auto & rhs = aCtx.getArg(1);
 
 	aCtx.push(lhs.getOps()->combine(rhs.getOps())->mod(lhs, rhs));
 }
@@ -177,55 +177,55 @@ void rand(SExecutionContext & aCtx)
 
 void sqrt(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::sqrt(arg.getOps()->toDouble(arg))));
 }
 
 void sin(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::sin(arg.getOps()->toDouble(arg))));
 }
 
 void cos(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::cos(arg.getOps()->toDouble(arg))));
 }
 
 void tan(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::tan(arg.getOps()->toDouble(arg))));
 }
 
 void asin(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::asin(arg.getOps()->toDouble(arg))));
 }
 
 void atan(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::atan(arg.getOps()->toDouble(arg))));
 }
 
 void round(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::floor(arg.getOps()->toDouble(arg) + 0.5)));
 }
 
 void log(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::log(arg.getOps()->toDouble(arg))));
 }
 
 void exp(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(DataBuilders::createDouble(std::exp(arg.getOps()->toDouble(arg))));
 }
 
@@ -241,11 +241,11 @@ void loadE(SExecutionContext & aCtx)
 
 void abs(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	aCtx.push(arg.getOps()->abs(arg));
 }
 
-void print(SExecutionContext & aCtx)
+void print(const SExecutionContext & aCtx)
 {
 	static boost::mutex outputMutex;
 	boost::lock_guard<boost::mutex> guard(outputMutex);
@@ -253,7 +253,7 @@ void print(SExecutionContext & aCtx)
 	aCtx.print(std::cout);
 }
 
-void printType(SExecutionContext & aCtx)
+void printType(const SExecutionContext & aCtx)
 {
 	static boost::mutex outputMutex;
 	boost::lock_guard<boost::mutex> guard(outputMutex);
@@ -265,7 +265,7 @@ void printType(SExecutionContext & aCtx)
 void toString(SExecutionContext & aCtx)
 {
 	std::stringstream strStream;
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 
 	arg.getOps()->print(arg, strStream);
 
@@ -275,7 +275,7 @@ void toString(SExecutionContext & aCtx)
 // Преобразование в вещественное число.
 void toInteger(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 
 	aCtx.push(DataBuilders::createInt(arg.getOps()->toInt(arg)));
 }
@@ -283,7 +283,7 @@ void toInteger(SExecutionContext & aCtx)
 // Преобразование в целое число.
 void toDouble(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 
 	aCtx.push(DataBuilders::createDouble(arg.getOps()->toDouble(arg)));
 }
@@ -294,7 +294,7 @@ void concat(SExecutionContext & aCtx)
 	size_t len = 0;
 	for (size_t i = 0; i < aCtx.argNum; ++i)
 	{
-		auto & arg = aCtx.getArg(i);
+		const auto & arg = aCtx.getArg(i);
 		const auto inStr = arg.getOps()->toString(arg);
 		len += inStr->length();
 	}
@@ -305,7 +305,7 @@ void concat(SExecutionContext & aCtx)
 
 	for (size_t i = 0; i < aCtx.argNum; ++i)
 	{
-		auto & arg = aCtx.getArg(i);
+		const auto & arg = aCtx.getArg(i);
 		const auto inStr = arg.getOps()->toString(arg);
 		std::memcpy(str + curPos, inStr->getChars(), inStr->length());
 		curPos += inStr->length();
@@ -317,7 +317,7 @@ void concat(SExecutionContext & aCtx)
 // Длина строки.
 void length(SExecutionContext & aCtx)
 {
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 	const auto str = arg.getOps()->toString(arg);
 
 	aCtx.push(DataBuilders::createInt(static_cast<long long>(str->length())));
@@ -326,20 +326,20 @@ void length(SExecutionContext & aCtx)
 // Поиск по регулярному выражению.
 void search(SExecutionContext & aCtx)
 {
-	auto & arg0 = aCtx.getArg(0);
-	auto & arg1 = aCtx.getArg(1);
+	const auto & arg0 = aCtx.getArg(0);
+	const auto & arg1 = aCtx.getArg(1);
 
 	const auto src = arg0.getOps()->toString(arg0);
 	const auto regEx = arg1.getOps()->toString(arg1);
 
 	std::regex rx(regEx->str());
-	std::cmatch match;
+	std::cmatch matchResults;
 
-	if (std::regex_search(static_cast<const char *>(src->getChars()), static_cast<const char *>(src->getChars() + src->length()), match, rx))
+	if (std::regex_search(static_cast<const char *>(src->getChars()), static_cast<const char *>(src->getChars() + src->length()), matchResults, rx))
 	{		
 		for (size_t i = 0; i < rx.mark_count(); i++)
 		{
-			auto & m = match[i+1];
+			auto & m = matchResults[i+1];
 			auto val = StringBuilder::create(aCtx, src, m.first - src->contents(), m.second - src->contents());
 			aCtx.push(val);
 		}
@@ -353,8 +353,8 @@ void search(SExecutionContext & aCtx)
 // Проверка соответствия по регулярному выражению.
 void match(SExecutionContext & aCtx)
 {
-	auto & arg0 = aCtx.getArg(0);
-	auto & arg1 = aCtx.getArg(1);
+	const auto & arg0 = aCtx.getArg(0);
+	const auto & arg1 = aCtx.getArg(1);
 
 	const auto src = arg0.getOps()->toString(arg0);
 	const auto regEx = arg1.getOps()->toString(arg1);
@@ -366,8 +366,8 @@ void match(SExecutionContext & aCtx)
 	{
 		for (size_t i = 0; i < rx.mark_count(); ++i)
 		{
-			auto & m = match[i+1];
-			auto val = StringBuilder::create(aCtx, src, m.first - src->contents(), m.second - src->contents());
+			const auto & m = match[i+1];
+			const auto val = StringBuilder::create(aCtx, src, m.first - src->contents(), m.second - src->contents());
 			aCtx.push(val);
 		}
 	}
@@ -380,9 +380,9 @@ void match(SExecutionContext & aCtx)
 // Замена по регулярному выражению.
 void replace(SExecutionContext & aCtx)
 {
-	auto & arg0 = aCtx.getArg(0);
-	auto & arg1 = aCtx.getArg(1);
-	auto & arg2 = aCtx.getArg(2);
+	const auto & arg0 = aCtx.getArg(0);
+	const auto & arg1 = aCtx.getArg(1);
+	const auto & arg2 = aCtx.getArg(2);
 
 
 	const auto src = arg0.getOps()->toString(arg0);
@@ -397,25 +397,25 @@ void replace(SExecutionContext & aCtx)
 // Выделение лексемы с начала строки.
 void getToken(SExecutionContext & aCtx)
 {
-	auto & arg0 = aCtx.getArg(0);
-	auto & arg1 = aCtx.getArg(1);
+	const auto & arg0 = aCtx.getArg(0);
+	const auto & arg1 = aCtx.getArg(1);
 
 	const auto src = arg0.getOps()->toString(arg0);
 	const auto pattern = arg1.getOps()->toString(arg1);
 
 	const std::regex rx("^(?:\\s*)(" + pattern->str() + ")");
 
-	std::cmatch match;
+	std::cmatch matchResults;
 
-	auto first = static_cast<const char *>(src->getChars());
-	auto last = static_cast<const char *>(src->getChars() + src->length());
+	const auto first = static_cast<const char *>(src->getChars());
+	const auto last = static_cast<const char *>(src->getChars() + src->length());
 
-	if (std::regex_search(first, last, match, rx))
+	if (std::regex_search(first, last, matchResults, rx))
 	{
-		const auto prefix = StringBuilder::create(aCtx, src, match[1].first - src->contents(), match[1].second - src->contents());
+		const auto prefix = StringBuilder::create(aCtx, src, matchResults[1].first - src->contents(), matchResults[1].second - src->contents());
 		aCtx.push(prefix);
 
-		const auto suffix = StringBuilder::create(aCtx, src, match.suffix().first - src->contents(), match.suffix().second - src->contents());
+		const auto suffix = StringBuilder::create(aCtx, src, matchResults.suffix().first - src->contents(), matchResults.suffix().second - src->contents());
 		aCtx.push(suffix);
 	}
 	else
@@ -428,7 +428,7 @@ void getToken(SExecutionContext & aCtx)
 void readFile(SExecutionContext & aCtx)
 {
 	// Проверяем имя файла.
-	auto & arg = aCtx.getArg(0);
+	const auto & arg = aCtx.getArg(0);
 
 	const auto fileName = arg.getOps()->toString(arg);
 
@@ -457,8 +457,8 @@ void readFile(SExecutionContext & aCtx)
 void writeToFile(SExecutionContext & aCtx, std::ios::openmode mode)
 {
 	// Проверяем имя файла.
-	auto & val = aCtx.getArg(0);
-	auto & file = aCtx.getArg(1);
+	const auto & val = aCtx.getArg(0);
+	const auto & file = aCtx.getArg(1);
 
 	const auto fileName = file.getOps()->toString(file);
 
@@ -497,19 +497,19 @@ void appendFile(SExecutionContext & aCtx)
 void createArray(SExecutionContext & aCtx)
 {
 	const auto sizeVal = aCtx.getArg(0).getOps()->toInt(aCtx.getArg(0));
-	auto & initialVal = aCtx.getArg(1);
+	const auto & initialVal = aCtx.getArg(1);
 
 	if (sizeVal <= 0) throw std::invalid_argument("The size of the array must be greater than zero!");
 
-	const size_t size = static_cast<size_t>(sizeVal);
+	const auto size = static_cast<size_t>(sizeVal);
 	aCtx.push(ArrayValue::create(aCtx, size, initialVal));
 }
 
 // Чтение элемента из массива.
 void getArrayElement(SExecutionContext & aCtx)
 {
-	auto & arrVal = aCtx.getArg(0);
-	auto & posVal = aCtx.getArg(1);
+	const auto & arrVal = aCtx.getArg(0);
+	const auto & posVal = aCtx.getArg(1);
 
 	ArrayValue::arrayValueCheck(arrVal);
 	const size_t pos = posVal.getOps()->toInt(posVal);
@@ -520,9 +520,9 @@ void getArrayElement(SExecutionContext & aCtx)
 // Запись элемента в массив.
 void setArrayElement(SExecutionContext & aCtx)
 {
-	auto & arrVal = aCtx.getArg(0);
-	auto & posVal = aCtx.getArg(1);
-	auto & val = aCtx.getArg(2);
+	const auto & arrVal = aCtx.getArg(0);
+	const auto & posVal = aCtx.getArg(1);
+	const auto & val = aCtx.getArg(2);
 
 	ArrayValue::arrayValueCheck(arrVal);
 	const size_t pos = posVal.getOps()->toInt(posVal);
@@ -534,7 +534,7 @@ void setArrayElement(SExecutionContext & aCtx)
 
 void getArrayLength(SExecutionContext & aCtx)
 {
-	auto & arrVal = aCtx.getArg(0);
+	const auto & arrVal = aCtx.getArg(0);
 	ArrayValue::arrayValueCheck(arrVal);
 	aCtx.push(DataBuilders::createInt(ArrayValue::getLen(arrVal)));
 }
@@ -546,15 +546,15 @@ void ArrayConcat(SExecutionContext & aCtx)
 
 void ArrayCopy(SExecutionContext & aCtx)
 {
-	auto & arrVal = aCtx.getArg(0);
+	const auto & arrVal = aCtx.getArg(0);
 	ArrayValue::arrayValueCheck(arrVal);
 	aCtx.push(ArrayValue::copy(aCtx, arrVal));
 }
 
 void ArrayDot(SExecutionContext & aCtx)
 {
-	auto & arrVal1 = aCtx.getArg(0);
-	auto & arrVal2 = aCtx.getArg(1);
+	const auto & arrVal1 = aCtx.getArg(0);
+	const auto & arrVal2 = aCtx.getArg(1);
 	ArrayValue::arrayValueCheck(arrVal1);
 	ArrayValue::arrayValueCheck(arrVal2);
 	aCtx.push(ArrayValue::dot(aCtx, arrVal1, arrVal2));
@@ -564,7 +564,7 @@ void ArrayDot(SExecutionContext & aCtx)
 void arrayFromFile(SExecutionContext & aCtx)
 {
 	auto arrVal = aCtx.getArg(0);
-	auto fileVal = aCtx.getArg(1);
+	const auto fileVal = aCtx.getArg(1);
 
 	ArrayValue::arrayValueCheck(arrVal);
 	const auto fileName = fileVal.getOps()->toString(fileVal);

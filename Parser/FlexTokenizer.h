@@ -15,10 +15,10 @@ namespace Parser {
 	 * Tokenizer - обертка над flex.
 	 * Выделяет лексему из входной строки.
 	 */
-	class Tokenizer : private yyFlexLexer
+	class Tokenizer : yyFlexLexer
 	{
 	public:
-		Tokenizer(std::istream& input);
+		explicit Tokenizer(std::istream& input);
 
 		BisonParser::token_type  getToken( BisonParser::semantic_type * aVal, Support * aSupport );
 		Ident                    getErrorIdent() const;

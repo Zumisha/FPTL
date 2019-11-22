@@ -6,19 +6,19 @@
 namespace FPTL { namespace Parser {
 
 //-------------------------------------------------------------------------------------------
-ExpressionNode::ExpressionNode( ASTNodeType aType, ASTNode * aLeft, ASTNode * aRight )
+ExpressionNode::ExpressionNode(const ASTNodeType aType, ASTNode * aLeft, ASTNode * aRight )
 	: ASTNode(aType),
 	mLeft(aLeft),
 	mRight(aRight),
-	mMiddle(0)
+	mMiddle(nullptr)
 {
 }
 
-ExpressionNode::ExpressionNode( ASTNodeType aType, ASTNode * aLeft, ASTNode * aRight, ASTNode * aMiddle )
+ExpressionNode::ExpressionNode(const ASTNodeType aType, ASTNode * aLeft, ASTNode * aRight, ASTNode * aMiddle )
 	: ASTNode(aType),
 	mLeft(aLeft),
-	mMiddle(aMiddle),
-	mRight(aRight)
+	mRight(aRight),
+	mMiddle(aMiddle)
 {
 }
 
@@ -37,9 +37,9 @@ void ExpressionNode::accept( NodeVisitor * aVisitor )
 ASTNode * ExpressionNode::copy() const
 {
 	return new ExpressionNode( getType(),
-		mLeft ? mLeft->copy() : 0,
-		mRight ? mRight->copy() : 0,
-		mMiddle ? mMiddle->copy() : 0
+		mLeft ? mLeft->copy() : nullptr,
+		mRight ? mRight->copy() : nullptr,
+		mMiddle ? mMiddle->copy() : nullptr
 	);
 }
 
@@ -65,7 +65,7 @@ ListNode * ListNode::copy() const
 
 //-------------------------------------------------------------------------------------------
 
-DataNode::DataNode( Ident aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors )
+DataNode::DataNode(const Ident aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors )
 	: ASTNode(DataTypeDefinitionBlock),
 	mTypeName(aTypeName),
 	mConstructors(aConstructors),
@@ -97,7 +97,7 @@ ASTNode * DataNode::copy() const
 
 //-------------------------------------------------------------------------------------------
 
-ConstructorNode::ConstructorNode( Ident aName, ListNode * aCtorParameters, Ident aCtorResultTypeName )
+ConstructorNode::ConstructorNode(const Ident aName, ListNode * aCtorParameters, Ident aCtorResultTypeName )
 	: ASTNode( Constructor ),
 	mName(aName),
 	mCtorParameters(aCtorParameters),
@@ -117,24 +117,24 @@ ConstructorNode::~ConstructorNode()
 
 ASTNode * ConstructorNode::copy() const
 {
-	return new ConstructorNode( mName, mCtorParameters ? mCtorParameters->copy() : 0, mCtorResultTypeName );
+	return new ConstructorNode( mName, mCtorParameters ? mCtorParameters->copy() : nullptr, mCtorResultTypeName );
 }
 
 //-------------------------------------------------------------------------------------------
 
-NameRefNode::NameRefNode( Ident aTypeName, ASTNodeType aNodeType )
+NameRefNode::NameRefNode(const Ident aTypeName, const ASTNodeType aNodeType )
 	: ASTNode( aNodeType ),
 	mTypeName( aTypeName ),
-	mParameters(0),
-	mTarget(0)
+	mParameters(nullptr),
+	mTarget(nullptr)
 {
 }
 
-NameRefNode::NameRefNode(  Ident aTypeName, ASTNodeType aNodeType, ListNode * aParams )
+NameRefNode::NameRefNode(const Ident aTypeName, const ASTNodeType aNodeType, ListNode * aParams )
 	: ASTNode( aNodeType ),
 	mTypeName( aTypeName ),
 	mParameters( aParams ),
-	mTarget(0)
+	mTarget(nullptr)
 {
 }
 
@@ -150,12 +150,12 @@ void NameRefNode::accept( NodeVisitor * aVisitor )
 
 ASTNode * NameRefNode::copy() const
 {
-	return new NameRefNode( mTypeName, getType(), mParameters ? mParameters->copy() : 0 );
+	return new NameRefNode( mTypeName, getType(), mParameters ? mParameters->copy() : nullptr );
 }
 
 //-------------------------------------------------------------------------------------------
 
-FunctionNode::FunctionNode( Ident aFuncName, ListNode * aDefinitions, ListNode * aFormalParams )
+FunctionNode::FunctionNode(const Ident aFuncName, ListNode * aDefinitions, ListNode * aFormalParams )
 	: ASTNode( ASTNode::FunctionBlock ),
 	mFuncName(aFuncName),
 	mDefinitions(aDefinitions ),
@@ -176,31 +176,31 @@ void FunctionNode::accept( NodeVisitor * aVisitor )
 
 FunctionNode * FunctionNode::copy() const
 {
-	FunctionNode * copy = new FunctionNode( mFuncName, mDefinitions ? mDefinitions->copy() : 0,
-		mFormalParameters ? mFormalParameters->copy() : 0 );
+	const auto copy = new FunctionNode( mFuncName, mDefinitions ? mDefinitions->copy() : nullptr,
+		mFormalParameters ? mFormalParameters->copy() : nullptr );
 
 	return copy;
 }
 
-DefinitionNode * FunctionNode::getDefinition(Ident aName) const
+DefinitionNode * FunctionNode::getDefinition(const Ident aName) const
 {
 	for (auto& mDefinition : *mDefinitions)
 	{
-		auto def = static_cast<DefinitionNode *>(mDefinition);
+		const auto def = dynamic_cast<DefinitionNode *>(mDefinition);
 		if (def->getDefinitionName() == aName)
 		{
 			return def;
 		}
 	}
-	return 0;
+	return nullptr;
 }
 
 std::vector<FunctionNode *> FunctionNode::getFunctionNodes() const
 {
 	std::vector<FunctionNode *> functions;
-	for (ListNode::iterator it = mDefinitions->begin(); it != mDefinitions->end(); ++it)
+	for (auto& mDefinition : *mDefinitions)
 	{
-		auto def = dynamic_cast<FunctionNode *>(*it);
+		auto def = dynamic_cast<FunctionNode *>(mDefinition);
 		if (def)
 		{
 			functions.push_back(def);
@@ -212,7 +212,7 @@ std::vector<FunctionNode *> FunctionNode::getFunctionNodes() const
 
 //-------------------------------------------------------------------------------------------
 
-DefinitionNode::DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition )
+DefinitionNode::DefinitionNode(const ASTNodeType aType, const Ident aName, ASTNode * aDefinition )
 	: ASTNode( aType ),
 	mDefinitionName(aName),
 	mDefinition(aDefinition)
@@ -231,7 +231,7 @@ void DefinitionNode::accept( NodeVisitor * aVisitor )
 
 ASTNode * DefinitionNode::copy() const
 {
-	return new DefinitionNode( getType(), mDefinitionName, mDefinition ? mDefinition->copy() : 0 );
+	return new DefinitionNode( getType(), mDefinitionName, mDefinition ? mDefinition->copy() : nullptr );
 }
 
 //-------------------------------------------------------------------------------------------
@@ -259,9 +259,9 @@ void FunctionalProgram::accept( NodeVisitor * aVisitor )
 ASTNode * FunctionalProgram::copy() const
 {
 	return new FunctionalProgram(
-		mDataDefinitions ? mDataDefinitions->copy() : 0,
-		mScheme ? mScheme->copy() : 0,
-		mApplication ? mApplication->copy() : 0
+		mDataDefinitions ? mDataDefinitions->copy() : nullptr,
+		mScheme ? mScheme->copy() : nullptr,
+		mApplication ? mApplication->copy() : nullptr
 	);
 }
 
@@ -283,8 +283,8 @@ ApplicationBlock::~ApplicationBlock()
 
 ApplicationBlock * ApplicationBlock::copy() const
 {
-	return new ApplicationBlock(mRunSchemeName, mSchemeParameters ? mSchemeParameters->copy() : 0,
-		mDataVarDefinitions ? mDataVarDefinitions->copy() : 0);
+	return new ApplicationBlock(mRunSchemeName, mSchemeParameters ? mSchemeParameters->copy() : nullptr,
+		mDataVarDefinitions ? mDataVarDefinitions->copy() : nullptr);
 }
 
 void ApplicationBlock::accept(NodeVisitor * aVisitor)

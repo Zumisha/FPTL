@@ -7,6 +7,8 @@
 
 #include "Runtime/FunctionLibrary.h"
 
+#define fptlDebugBuild 0
+
 namespace FPTL {
 namespace Runtime {
 
@@ -46,7 +48,7 @@ public:
 	void exec(SExecutionContext & ctx) const override;
 	void zeroing(SExecutionContext & ctx) override;
 
-	ParJoin(IfPtr next)	: mNext(std::move(next)) {}
+	explicit ParJoin(IfPtr next)	: mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -57,7 +59,7 @@ public:
 	void exec(SExecutionContext & ctx) const override;
 	void zeroing(SExecutionContext & ctx) override;
 
-	SeqBegin(IfPtr next) : mNext(std::move(next)) {}
+	explicit SeqBegin(IfPtr next) : mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -68,7 +70,7 @@ public:
 	void exec(SExecutionContext & ctx) const override;
 	void zeroing(SExecutionContext & ctx) override;
 
-	SeqEnd(IfPtr next) : mNext(std::move(next)) {}
+	explicit SeqEnd(IfPtr next) : mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -79,7 +81,7 @@ public:
 	void exec(SExecutionContext & ctx) const override;
 	void zeroing(SExecutionContext & ctx) override;
 
-	SeqAdvance(IfPtr next) : mNext(std::move(next)) {}
+	explicit SeqAdvance(IfPtr next) : mNext(std::move(next)) {}
 
 	IfPtr mNext;
 };
@@ -176,7 +178,7 @@ public:
 		: mNext(std::move(next)), mArgNum(argNum), mPos(std::move(pos))
 	{}
 private:
-	const DataValue& TryGetArg(SExecutionContext& ctx, size_t argNum) const;
+	const DataValue& TryGetArg(const SExecutionContext& ctx, size_t argNum) const;
 
 	IfPtr mNext;
 	long long mArgNum;
@@ -207,7 +209,7 @@ class FunctionalProgram
 	friend class Generator;
 
 public:
-	FunctionalProgram(IfPtr main) : mMain(std::move(main)) {}
+	explicit FunctionalProgram(IfPtr main) : mMain(std::move(main)) {}
 	IfPtr main() const { return mMain; }
 
 private:

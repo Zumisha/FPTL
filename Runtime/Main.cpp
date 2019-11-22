@@ -15,7 +15,6 @@
 #include "Context.h"
 
 #define BUILD_DATE __DATE__ " " __TIME__
-#define DebugBuild 1
 
 namespace po = boost::program_options;
 
@@ -49,9 +48,12 @@ void run(std::vector<std::string> &inputTuple, std::string &programPath, po::var
 		const bool Proactive = vm["proactive"].as<bool>() && (numCores != 1);
 		Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
 
-		if (info) std::cout << "No syntax errors found.\n";
-		if (info) std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
-		if (info && !Proactive) std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
+		if (info)
+		{
+			std::cout << "No syntax errors found.\n";
+			std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
+			if (!Proactive) std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
+		}
 
 		Runtime::FSchemeGenerator schemeGenerator(astRoot);
 		const std::unique_ptr<Runtime::FunctionalProgram> internalForm(Runtime::Generator::generate(schemeGenerator.getProgram(), Proactive));
@@ -97,7 +99,7 @@ void * operator new[](const std::size_t count)
 	return ::je_malloc(count);
 }
 
-void operator delete (void * ptr)
+void operator delete(void * ptr)
 {
 	::je_free(ptr);
 }
