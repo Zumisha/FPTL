@@ -14,15 +14,15 @@ typedef std::function<void (SExecutionContext &)> TFunction;
 class FunctionLibrary
 {
 public:
-	FunctionLibrary(const std::string & aLibraryName);
+	explicit FunctionLibrary(std::string aLibraryName);
 
 	void addFunction(const std::string & aFunctionName, const TFunction & aFunction);
 
-	void addFunctions(std::map<std::string, TFunction> Functions);
+	void addFunctions(std::map<std::string, TFunction> functions);
 
 	std::vector<std::string> getFunctionNames() const;
 
-	TFunction getFunction(const std::string & aName) const;
+	TFunction getFunction(const std::string & aFunctionName) const;
 
 	std::string getName() const;
 

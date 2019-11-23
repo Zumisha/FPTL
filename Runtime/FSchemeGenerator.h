@@ -21,8 +21,10 @@ class FSchemeGenerator : public Parser::NodeVisitor
 {
 public:
 
-	FSchemeGenerator(Parser::ASTNode * astRoot);
+	explicit FSchemeGenerator(Parser::ASTNode * astRoot);
+	FSchemeGenerator(const FSchemeGenerator &generator);
 	~FSchemeGenerator();
+	FSchemeGenerator& operator= (const FSchemeGenerator &generator);
 
 	void visit(Parser::FunctionalProgram * aFuncProgram) override;
 	void visit(Parser::FunctionNode * aFunctionNode) override;

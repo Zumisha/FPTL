@@ -108,7 +108,7 @@ void BaseOps::write(const class DataValue& aVal, std::ostream& aStream) const
 
 DataValue BaseOps::read(std::istream & aStream) const
 {
-	invalidOperation(this->getType(this));
+	invalidOperation(this->getType(*reinterpret_cast<DataValue const*>(this)));
 	return DataValue();
 }
 

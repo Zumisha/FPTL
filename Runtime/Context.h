@@ -16,7 +16,7 @@ class EvaluatorUnit;
 class FSchemeNode;
 class CollectedHeap;
 
-// Контекст выполняения.
+// Контекст выполнения.
 struct SExecutionContext
 {
 	virtual ~SExecutionContext() = default;
@@ -95,11 +95,11 @@ class IFExecutionContext : public SExecutionContext
 	InternalForm * mInternalForm;
 
 public:
-	IFExecutionContext(InternalForm * body);
+	explicit IFExecutionContext(InternalForm * body);
 
 	void run(EvaluatorUnit * evaluator) override;
 
-	IFExecutionContext * spawn(InternalForm * fork);
+	IFExecutionContext * spawn(InternalForm * forkBody);
 
 	void cancel() override;
 };

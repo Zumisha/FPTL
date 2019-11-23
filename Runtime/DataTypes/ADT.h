@@ -57,8 +57,9 @@ namespace FPTL
 			const Constructor * ctor;
 			DataValueArray * values;
 
-			ADTValue()
-			{}
+			ADTValue(): ctor(nullptr), values(nullptr)
+			{
+			}
 
 			ADTValue(const Constructor * ctor, DataValueArray * values)
 			{

@@ -30,13 +30,13 @@ public:
 		mProactive(false)
 	{}
 
-	void SetOutput(Utils::FormatedOutput & fo) { mOutput = fo; }
+	void SetOutput(const Utils::FormatedOutput &fo) { mOutput = fo; }
 
-	void SetInfo(bool state) { mInfo = state; }
+	void SetInfo(const bool state) { mInfo = state; }
 
-	void SetProactive(bool state) { mProactive = state; }
+	void SetProactive(const bool state) { mProactive = state; }
 
-	void SetNumCores(size_t numCores) { mNumCores = numCores; }
+	void SetNumCores(const size_t numCores) { mNumCores = numCores; }
 
 	Utils::FormatedOutput Output() const { return mOutput; }
 
@@ -61,9 +61,9 @@ class EvaluatorUnit
 public:
 	friend struct SExecutionContext;
 
-	EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator);
+	explicit EvaluatorUnit(SchemeEvaluator * aSchemeEvaluator);
 
-	// Основная процедура, в которой произдводятс вычисления.
+	// Основная процедура, в которой производятся вычисления.
 	void evaluateScheme();
 
 	// Запуск независимого процесса выполнения задания.
@@ -79,7 +79,7 @@ public:
 	void cancelFromPendingEnd(size_t pos = 1);
 
 	//Отмена задания и всех его дочерних заданий.
-	void cancel(SExecutionContext *cancelTask);
+	void cancel(SExecutionContext *cancelingTask);
 
 	// Проверка на необходимость выполнения системного действия (сборка мусора и т.п.).
 	void safePoint() const;

@@ -16,18 +16,18 @@ struct DataValueArray : public Collectable
 {
 	DataValue values[];
 
-	static size_t size(size_t n)
+	static size_t size(const size_t n)
 	{
 		return sizeof(DataValueArray) + n * sizeof(DataValue);
 	}
 };
 
-const DataValue & ADTValue::operator[](size_t i) const
+const DataValue & ADTValue::operator[](const size_t i) const
 {
 	return values->values[i];
 }
 
-DataValue & ADTValue::operator[](size_t i)
+DataValue & ADTValue::operator[](const size_t i)
 {
 	return values->values[i];
 }
@@ -42,8 +42,7 @@ size_t ADTValue::size() const
 // Операции с абстрактным типом данных.
 class ADTOps : public Ops
 {
-	ADTOps()
-	{}
+	ADTOps() = default;
 
 public:
 	static ADTOps * get()
@@ -58,32 +57,32 @@ public:
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
-	Ops * combine(const Ops * aOther) const override
+	const Ops * combine(const Ops * aOther) const override
 	{
 		throw invalidOperation("combine");
 	}
 
-	Ops * withOps(class Ops const * aOps) const override
+	const Ops * withOps(class Ops const * aOps) const override
 	{
 		throw invalidOperation("with Ops");
 	}
 
-	Ops * withOps(class IntegerOps const * aOps) const override
+	const Ops * withOps(class IntegerOps const * aOps) const override
 	{
 		throw invalidOperation("with IntegerOps");
 	}
 
-	Ops * withOps(class BooleanOps const * aOps) const override
+	const Ops * withOps(class BooleanOps const * aOps) const override
 	{
 		throw invalidOperation("with BooleanOps");
 	}
 
-	Ops * withOps(class DoubleOps const * aOps) const override
+	const Ops * withOps(class DoubleOps const * aOps) const override
 	{
 		throw invalidOperation("with DoubleOps");
 	}
 
-	Ops * withOps(class StringOps const * aOps) const override
+	const Ops * withOps(class StringOps const * aOps) const override
 	{
 		throw invalidOperation("with StringOps");
 	}
@@ -166,8 +165,8 @@ public:
 	// Вывод в поток.
 	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
-		auto val = aVal.mADT;
-		size_t arity = val->ctor->arity();
+		const auto val = aVal.mADT;
+		const size_t arity = val->ctor->arity();
 
 		if (arity > 0)
 		{
@@ -229,10 +228,9 @@ Constructor::~Constructor()	= default;
 void Constructor::execConstructor(SExecutionContext & aCtx) const
 {
 	// Проверяем соответствие типов входного кортежа сигнатуре конструктора.
-	int argNum = 0;
 	std::unordered_map<std::string, struct TypeInfo> params;
 
-	size_t ar = arity();
+	const size_t ar = arity();
 	auto values = aCtx.heap().alloc<DataValueArray>(DataValueArray::size(ar));
 
 	for (size_t i = 0; i < ar; ++i)
@@ -247,7 +245,7 @@ void Constructor::execConstructor(SExecutionContext & aCtx) const
 		values->values[i] = arg;
 	}
 
-	// С типами все ок, cоздаем абстрактный тип данных.
+	// С типами все ок, cоздаём абстрактный тип данных.
 	aCtx.push(DataBuilders::createADT(new ADTValue(this, values.ptr()), ADTOps::get()));
 }
 

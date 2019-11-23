@@ -54,7 +54,7 @@ class CollectedHeap
 public:
 	typedef boost::intrusive::slist<Collectable> MemList;
 
-	CollectedHeap(GarbageCollector * collector);
+	explicit CollectedHeap(GarbageCollector * collector);
 	~CollectedHeap();
 
 	template <typename T> GcAwarePtr<T> alloc(size_t size);

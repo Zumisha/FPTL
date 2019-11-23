@@ -65,7 +65,7 @@ ListNode * ListNode::copy() const
 
 //-------------------------------------------------------------------------------------------
 
-DataNode::DataNode(const Ident aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors )
+DataNode::DataNode(const Ident &aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors )
 	: ASTNode(DataTypeDefinitionBlock),
 	mTypeName(aTypeName),
 	mConstructors(aConstructors),
@@ -97,7 +97,7 @@ ASTNode * DataNode::copy() const
 
 //-------------------------------------------------------------------------------------------
 
-ConstructorNode::ConstructorNode(const Ident aName, ListNode * aCtorParameters, Ident aCtorResultTypeName )
+ConstructorNode::ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName )
 	: ASTNode( Constructor ),
 	mName(aName),
 	mCtorParameters(aCtorParameters),
@@ -122,7 +122,7 @@ ASTNode * ConstructorNode::copy() const
 
 //-------------------------------------------------------------------------------------------
 
-NameRefNode::NameRefNode(const Ident aTypeName, const ASTNodeType aNodeType )
+NameRefNode::NameRefNode(const Ident &aTypeName, const ASTNodeType aNodeType )
 	: ASTNode( aNodeType ),
 	mTypeName( aTypeName ),
 	mParameters(nullptr),
@@ -130,7 +130,7 @@ NameRefNode::NameRefNode(const Ident aTypeName, const ASTNodeType aNodeType )
 {
 }
 
-NameRefNode::NameRefNode(const Ident aTypeName, const ASTNodeType aNodeType, ListNode * aParams )
+NameRefNode::NameRefNode(const Ident &aTypeName, const ASTNodeType aNodeType, ListNode * aParams )
 	: ASTNode( aNodeType ),
 	mTypeName( aTypeName ),
 	mParameters( aParams ),
@@ -155,7 +155,7 @@ ASTNode * NameRefNode::copy() const
 
 //-------------------------------------------------------------------------------------------
 
-FunctionNode::FunctionNode(const Ident aFuncName, ListNode * aDefinitions, ListNode * aFormalParams )
+FunctionNode::FunctionNode(const Ident &aFuncName, ListNode * aDefinitions, ListNode * aFormalParams )
 	: ASTNode( ASTNode::FunctionBlock ),
 	mFuncName(aFuncName),
 	mDefinitions(aDefinitions ),
@@ -182,11 +182,12 @@ FunctionNode * FunctionNode::copy() const
 	return copy;
 }
 
-DefinitionNode * FunctionNode::getDefinition(const Ident aName) const
+DefinitionNode * FunctionNode::getDefinition(const Ident &aName) const
 {
 	for (auto& mDefinition : *mDefinitions)
 	{
-		const auto def = dynamic_cast<DefinitionNode *>(mDefinition);
+		// do not use dynamic_cast
+		const auto def = static_cast<DefinitionNode *>(mDefinition);
 		if (def->getDefinitionName() == aName)
 		{
 			return def;
@@ -212,7 +213,7 @@ std::vector<FunctionNode *> FunctionNode::getFunctionNodes() const
 
 //-------------------------------------------------------------------------------------------
 
-DefinitionNode::DefinitionNode(const ASTNodeType aType, const Ident aName, ASTNode * aDefinition )
+DefinitionNode::DefinitionNode(const ASTNodeType aType, const Ident &aName, ASTNode * aDefinition )
 	: ASTNode( aType ),
 	mDefinitionName(aName),
 	mDefinition(aDefinition)

@@ -3,7 +3,7 @@
 
 namespace FPTL { namespace Runtime {
 
-bool TypeInfo::matchType(const TypeInfo aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap)
+bool TypeInfo::matchType(const TypeInfo &aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap)
 {
 	if (aRef->typeName[0] == '\'')
 	{

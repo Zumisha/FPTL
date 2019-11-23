@@ -16,22 +16,22 @@ public:
 		return &ops;
 	}
 
-	Ops * combine(const Ops * aOther) const override
+	const Ops * combine(const Ops * aOther) const override
 	{
 		return get();
 	}
 
-	Ops * withOps(const BooleanOps * aOps) const override
+	const Ops * withOps(const BooleanOps * aOps) const override
 	{
 		return get();
 	}
 
-	Ops * withOps(const IntegerOps * aOps) const override
+	const Ops * withOps(const IntegerOps * aOps) const override
 	{
 		return get();
 	}
 
-	Ops * withOps(const DoubleOps * aOps) const override
+	const Ops * withOps(const DoubleOps * aOps) const override
 	{
 		return get();
 	}

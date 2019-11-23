@@ -23,7 +23,17 @@ FSchemeGenerator::FSchemeGenerator(Parser::ASTNode * astRoot)
 	process(astRoot);
 }
 
-//-----------------------------------------------------------------------------
+	FSchemeGenerator::FSchemeGenerator(const FSchemeGenerator& generator)
+	{
+		mTree = generator.mTree;
+		mScheme = generator.mScheme;
+		mSchemeInput = generator.mSchemeInput;
+		mProgram = generator.mProgram;
+		mConstructorGenerator = new ConstructorGenerator(*generator.mConstructorGenerator);
+		mLibrary = new FunctionLibrary(*generator.mLibrary);
+	}
+
+	//-----------------------------------------------------------------------------
 FSchemeGenerator::~FSchemeGenerator()
 {
 	NodeDeleter deleter;
@@ -32,6 +42,26 @@ FSchemeGenerator::~FSchemeGenerator()
 
 	delete mLibrary;
 	delete mConstructorGenerator;
+}
+
+FSchemeGenerator & FSchemeGenerator::operator=(const FSchemeGenerator & generator)
+{
+	if (this != &generator)
+	{
+		NodeDeleter deleter;
+		deleter.releaseGraph(mProgram);
+		delete mLibrary;
+		delete mConstructorGenerator;
+
+		mTree = generator.mTree;
+		mScheme = generator.mScheme;
+		mSchemeInput = generator.mSchemeInput;
+		mProgram = generator.mProgram;
+		mConstructorGenerator = new ConstructorGenerator(*generator.mConstructorGenerator);
+		mLibrary = new FunctionLibrary(*generator.mLibrary);
+	}
+
+	return *this;
 }
 
 FSchemeNode * FSchemeGenerator::getProgram() const
@@ -44,7 +74,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 {
 	FSchemeNode * node = nullptr;
 
-	const Parser::Ident name = aNode->getConstant();
+	const auto name = aNode->getConstant();
 
 	switch (aNode->getType())
 	{
@@ -118,8 +148,8 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 
 		case Parser::ASTNode::ConstructorName:
 		{
-			Constructor * ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
-			Parser::Ident name = aNameRefNode->getName();
+			const auto ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
+			auto name = aNameRefNode->getName();
 			FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), name.getStr(), name.Line, name.Col);
 			mNodeStack.push(node);
 			break;
@@ -127,8 +157,8 @@ void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
 
 		case Parser::ASTNode::DestructorName:
 		{
-			Constructor * ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
-			Parser::Ident name = aNameRefNode->getName();
+			const auto ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
+			auto name = aNameRefNode->getName();
 			FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), "~" + name.getStr(), name.Line, name.Col);
 			mNodeStack.push(node);
 			break;
@@ -158,7 +188,7 @@ void FSchemeGenerator::visit(Parser::DefinitionNode * aDefinitionNode)
 
 		NodeVisitor::visit(aDefinitionNode);
 
-		FSchemeNode * contents = mNodeStack.top();
+		const auto contents = mNodeStack.top();
 		mNodeStack.pop();
 		me->setFirstNode(contents);
 	}
@@ -177,10 +207,10 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 	{
 		case Parser::ASTNode::ConditionTerm:
 		{
-			FSchemeNode * thenBranch = mNodeStack.top();
+			const auto thenBranch = mNodeStack.top();
 			mNodeStack.pop();
 
-			Parser::ASTNode * middle = aExpressionNode->getMiddle();
+			const auto middle = aExpressionNode->getMiddle();
 			FSchemeNode * elseBranch = nullptr;
 			if (middle)
 			{
@@ -188,7 +218,7 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 				mNodeStack.pop();
 			}
 
-			FSchemeNode * condition = mNodeStack.top();
+			const auto condition = mNodeStack.top();
 			mNodeStack.pop();
 
 			mNodeStack.push(new FConditionNode(condition, thenBranch, elseBranch));
@@ -199,10 +229,10 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 		case Parser::ASTNode::SequentialTerm:
 		case Parser::ASTNode::ValueConstructor:
 		{
-			FSchemeNode * second = mNodeStack.top();
+			const auto second = mNodeStack.top();
 			mNodeStack.pop();
 
-			FSchemeNode * first = mNodeStack.top();
+			const auto first = mNodeStack.top();
 			mNodeStack.pop();
 
 			// Трансформируем дерево, чтобы оно ветвилось только в левую сторону, 
@@ -225,10 +255,10 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 		case Parser::ASTNode::ValueComposition:
 		case Parser::ASTNode::InputVarList:
 		{
-			FSchemeNode * right = mNodeStack.top();
+			const auto right = mNodeStack.top();
 			mNodeStack.pop();
 
-			FSchemeNode * left = mNodeStack.top();
+			const auto left = mNodeStack.top();
 			mNodeStack.pop();
 
 			mNodeStack.push(new FParallelNode(left, right));
@@ -244,7 +274,7 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName)
 {
 	// Проверяем, на кого ссылается имя терма.
-	Parser::ASTNode * target = aFuncTermName->getTarget();
+	auto target = aFuncTermName->getTarget();
 
 	if (aFuncTermName->getType() == Parser::ASTNode::FuncObjectWithParameters)
 	{
@@ -264,7 +294,7 @@ void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName
 			// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
 			Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);
 
-			FScheme * delegateScheme = dynamic_cast<FScheme *>(node);
+			FScheme *delegateScheme = dynamic_cast<FScheme *>(node);
 			if (!delegateScheme)
 			{
 				delegateScheme = new FScheme(node);

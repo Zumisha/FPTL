@@ -45,7 +45,7 @@ class ConstantNode : public ASTNode
 {
 public:
 
-	ConstantNode(const ASTNodeType aType, const Ident aConstant ) : ASTNode(aType), mIdent(aConstant)
+	ConstantNode(const ASTNodeType aType, const Ident &aConstant ) : ASTNode(aType), mIdent(aConstant)
 	{}
 
 	Ident getConstant() const { return mIdent; }
@@ -81,7 +81,7 @@ public:
 class DefinitionNode : public ASTNode
 {
 public:
-	DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition );
+	DefinitionNode(ASTNodeType aType, const Ident &aName, ASTNode * aDefinition );
 	~DefinitionNode();
 
 	Ident         getDefinitionName() const { return mDefinitionName; }
@@ -103,8 +103,8 @@ class NameRefNode : public ASTNode
 {
 public:
 
-	NameRefNode( Ident aTypeName, ASTNodeType aNodeType );
-	NameRefNode( Ident aTypeName, ASTNodeType aNodeType, ListNode * aParams );
+	NameRefNode( const Ident &aTypeName, ASTNodeType aNodeType );
+	NameRefNode(const Ident &aTypeName, ASTNodeType aNodeType, ListNode * aParams );
 	~NameRefNode();
 
 	void setTarget( ASTNode * aTarget ) {
@@ -133,7 +133,7 @@ class ConstructorNode : public ASTNode
 {
 public:
 
-	ConstructorNode( Ident aName, ListNode * aCtorParameters, Ident aCtorResultTypeName );
+	ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName );
 	virtual ~ConstructorNode();
 
 	void accept( NodeVisitor * aVisitor ) override;
@@ -158,7 +158,7 @@ class DataNode : public ASTNode
 {
 public:
 
-	DataNode( Ident aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors );
+	DataNode(const Ident &aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors );
 	~DataNode();
 
 	void accept( NodeVisitor * aVisitor ) override;
@@ -186,7 +186,7 @@ class FunctionNode : public ASTNode
 {
 public:
 
-	FunctionNode( Ident aFuncName, ListNode * aDefinitions, ListNode * aFormalParams );
+	FunctionNode( const Ident &aFuncName, ListNode * aDefinitions, ListNode * aFormalParams );
 	~FunctionNode();
 
 	void accept( NodeVisitor * aVisitor ) override;
@@ -194,7 +194,7 @@ public:
 	Ident             getFuncName() const         { return mFuncName; }
 	ListNode *        getFormalParameters() const { return mFormalParameters; }
 	ListNode *        getDefinitions() const      { return mDefinitions; }
-	DefinitionNode *  getDefinition(Ident aName) const;
+	DefinitionNode *  getDefinition(const Ident &aName) const;
 
 	FunctionNode *    copy() const override;
 	int               numParameters() const override { return mFormalParameters ? static_cast<int>(mFormalParameters->size()) : 0; }

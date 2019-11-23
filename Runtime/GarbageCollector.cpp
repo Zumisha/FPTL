@@ -250,9 +250,8 @@ private:
 			{
 				break;
 			}
-			
-			std::unique_ptr<GcJob> job;
-			job.swap(deqJob.get());
+
+			auto job = std::move(deqJob.get());
 
 			boost::timer::cpu_timer gcTimer;
 
@@ -348,7 +347,7 @@ private:
 };
 
 //-------------------------------------------------------------------------------
-GarbageCollector * GarbageCollector::getCollector(size_t numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+GarbageCollector * GarbageCollector::getCollector(const size_t numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 {
 	return new GarbageCollectorImpl(numThreads, rootExplorer, config);
 }
@@ -362,12 +361,12 @@ void Runtime::ObjectMarker::setObjectAge(Collectable * object, int age)
 }
 
 //-------------------------------------------------------------------------------
-bool Runtime::ObjectMarker::checkAge(const Collectable * object, int age)
+bool Runtime::ObjectMarker::checkAge(const Collectable * object, const int age)
 {
 	return object->meta.age <= age;
 }
 
-void Runtime::ObjectMarker::setMarked(Collectable * object, unsigned int flag)
+void Runtime::ObjectMarker::setMarked(Collectable * object, const unsigned int flag)
 {
 	object->meta.marked = flag;
 }

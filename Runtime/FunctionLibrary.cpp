@@ -1,10 +1,11 @@
 #include "DataTypes/Data.h"
 #include "FunctionLibrary.h"
+#include <utility>
 
 namespace FPTL {
 	namespace Runtime {
-		FunctionLibrary::FunctionLibrary(const std::string & aLibraryName)
-			: mLibraryName(aLibraryName)
+		FunctionLibrary::FunctionLibrary(std::string aLibraryName)
+			: mLibraryName(std::move(aLibraryName))
 		{
 		}
 
@@ -13,9 +14,9 @@ namespace FPTL {
 			mFunctions.insert(std::make_pair(aFunctionName, aFunction));
 		}
 
-		void FunctionLibrary::addFunctions(std::map<std::string, TFunction> Functions)
+		void FunctionLibrary::addFunctions(std::map<std::string, TFunction> functions)
 		{
-			mFunctions.insert(Functions.begin(), Functions.end());
+			mFunctions.insert(functions.begin(), functions.end());
 		}
 
 		TFunction FunctionLibrary::getFunction(const std::string & aFunctionName) const

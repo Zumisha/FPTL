@@ -26,22 +26,22 @@ public:
 	}
 	
 	// Добавлять сюда методы по мере добавления новых типов.
-	Ops * combine(const Ops * aOther) const override
+	const Ops * combine(const Ops * aOther) const override
 	{
 		throw invalidOperation("combine");
 	}
 
-	Ops * withOps(class IntegerOps const * aOps) const override
+	const Ops * withOps(class IntegerOps const * aOps) const override
 	{
 		throw invalidOperation("toInt");
 	}
 
-	Ops * withOps(class BooleanOps const * aOps) const override
+	const Ops * withOps(class BooleanOps const * aOps) const override
 	{
 		throw invalidOperation("toBoolean");
 	}
 
-	Ops * withOps(class DoubleOps const * aOps) const override
+	const Ops * withOps(class DoubleOps const * aOps) const override
 	{
 		throw invalidOperation("toDouble");
 	}
@@ -246,7 +246,7 @@ DataValue ArrayValue::get(const DataValue & arr, size_t pos)
 }
 
 //-----------------------------------------------------------------------------
-void ArrayValue::set(DataValue & arr, size_t pos, const DataValue & val)
+void ArrayValue::set(const DataValue & arr, const size_t pos, const DataValue & val)
 {
 	ArrayValue * trg = arr.mArray;
 
@@ -272,7 +272,7 @@ size_t ArrayValue::getLen(const DataValue & arr)
 	return arr.mArray->length;
 }
 
-DataValue ArrayValue::concat(SExecutionContext & ctx)
+DataValue ArrayValue::concat(const SExecutionContext & ctx)
 {
 	for (size_t i = 0; i < ctx.argNum; ++i)
 	{
@@ -318,7 +318,7 @@ DataValue ArrayValue::concat(SExecutionContext & ctx)
 	return res;
 }
 
-void ArrayValue::fromString(DataValue & arr, std::istream &aStream)
+void ArrayValue::fromString(const DataValue & arr, std::istream &aStream)
 {
 	const auto arrVal = arr.mArray;
 	for (size_t i = 0; i < arrVal->length; ++i)

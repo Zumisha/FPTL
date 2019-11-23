@@ -123,7 +123,7 @@ const char * Support::getErrorString(const ErrTypes::ErrType aErr )
 	case ErrTypes::InvalidConstructorUsage:             msg = "invalid constructor usage"; break;
 	case ErrTypes::NestedDataDefinition:                msg = "nested data definitions are not allowed"; break;
 	case ErrTypes::MultipleTypeExpression:              msg = "only one type expression is allowed"; break;
-	case ErrTypes::InvalidFuncallParameters:            msg = "function parameters cannot be used as another function parameters"; break;
+	case ErrTypes::InvalidFunCallParameters:            msg = "function parameters cannot be used as another function parameters"; break;
 	case ErrTypes::InvalidConstant:                     msg = "constant is invalid or out of range"; break;
 	case ErrTypes::MissingMainDefinition:               msg = "missing main definition in function"; break;
 	case ErrTypes::InvalidTupleIndex:                   msg = "invalid tuple element index"; break;

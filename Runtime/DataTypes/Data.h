@@ -22,7 +22,7 @@ class DataValue
 public:
 	// Конструктор по умолчанию. Создает значение типа "неопределенность".
 	DataValue();
-	DataValue(const Ops * aOps);
+	explicit DataValue(const Ops * aOps);
 	DataValue(const DataValue & other)
 	{
 		*this = other;
@@ -50,7 +50,7 @@ class UndefinedValue : public DataValue
 {
 	friend class DataBuilders;
 
-	UndefinedValue(const Ops * aOps)
+	explicit UndefinedValue(const Ops * aOps)
 		: DataValue(aOps)
 	{}
 };
@@ -59,17 +59,17 @@ class UndefinedValue : public DataValue
 class Ops
 {
 protected:
-	~Ops() = default;
+	virtual ~Ops() = default;
 public:
 	virtual TypeInfo getType(const DataValue & aVal) const = 0;
 	
 	// Добавлять сюда методы по мере добавления новых типов.
-	virtual Ops * combine(const Ops * aOther) const = 0;
-	virtual Ops * withOps(class IntegerOps const * aOps) const = 0;
-	virtual Ops * withOps(class BooleanOps const * aOps) const = 0;
-	virtual Ops * withOps(class DoubleOps const * aOps) const = 0;
-	virtual Ops * withOps(class StringOps const * aOps) const = 0;
-	virtual Ops * withOps(const Ops * aOther) const = 0;
+	virtual const Ops * combine(const Ops * aOther) const = 0;
+	virtual const Ops * withOps(class IntegerOps const * aOps) const = 0;
+	virtual const Ops * withOps(class BooleanOps const * aOps) const = 0;
+	virtual const Ops * withOps(class DoubleOps const * aOps) const = 0;
+	virtual const Ops * withOps(class StringOps const * aOps) const = 0;
+	virtual const Ops * withOps(const Ops * aOther) const = 0;
 
 	// Преобразование типов.
 	virtual long long toInt(const DataValue & aVal) const = 0;

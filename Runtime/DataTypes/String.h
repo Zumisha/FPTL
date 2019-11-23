@@ -26,9 +26,9 @@ struct StringValue : public Collectable
 class StringBuilder
 {
 public:
-	static DataValue create(SExecutionContext & aCtx, const std::string & aData);
-	static DataValue create(SExecutionContext & aCtx, size_t aSize);
-	static DataValue create(SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd);
+	static DataValue create(const SExecutionContext & aCtx, const std::string & aData);
+	static DataValue create(const SExecutionContext & aCtx, size_t aSize);
+	static DataValue create(const SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd);
 };
 
 //-----------------------------------------------------------------------------

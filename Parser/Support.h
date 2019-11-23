@@ -49,7 +49,7 @@ namespace FPTL
 			DataBlockWithoutConstructors,
 			NestedDataDefinition,
 			MultipleTypeExpression,
-			InvalidFuncallParameters,
+			InvalidFunCallParameters,
 			InvalidConstant,
 			InvalidTupleIndex
 		};

@@ -7,11 +7,11 @@
 namespace FPTL { namespace Runtime {
 
 //-------------------------------------------------------------------------------------------
-ConstructorGenerator::ConstructorGenerator()
-{
-}
+ConstructorGenerator::ConstructorGenerator(): mCurrentData(nullptr)
+	{
+	}
 
-//------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------------------
 
 void ConstructorGenerator::work(Parser::FunctionalProgram * aFuncProgram)
 {

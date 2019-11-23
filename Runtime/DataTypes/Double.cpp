@@ -15,23 +15,23 @@ public:
 		return &ops;
 	}
 
-	Ops * combine(const Ops * aOther) const override
+	const Ops * combine(const Ops * aOther) const override
 	{
 		return aOther->withOps(this);
 	}
 
-	Ops * withOps(const IntegerOps * aOther) const override
+	const Ops * withOps(const IntegerOps * aOther) const override
 	{
 		return get();
 	}
 
-	Ops * withOps(const BooleanOps * aOther) const override
+	const Ops * withOps(const BooleanOps * aOther) const override
 	{
 		invalidOperation(getType(DataValue()));
 		return nullptr;
 	}
 
-	Ops * withOps(const DoubleOps * aOther) const override
+	const Ops * withOps(const DoubleOps * aOther) const override
 	{
 		return get();
 	}

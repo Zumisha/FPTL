@@ -19,8 +19,8 @@ struct SExecutionContext;
 class FSchemeNode
 {
 public:
-	FSchemeNode(bool aIsLong);
-	virtual ~FSchemeNode() {}
+	explicit FSchemeNode(bool aIsLong);
+	virtual ~FSchemeNode() = default;
 
 	virtual void accept(FSchemeVisitor * aVisitor) const = 0;
 
@@ -54,10 +54,12 @@ class FFunctionNode : public FSchemeNode
 {
 public:
 	template <typename F>
-	FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction) {}
+	explicit FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction), mLine(0), mColumn(0)
+	{
+	}
 
 	template <typename F>
-	FFunctionNode(const F & aFunction, const std::string & aName, size_t aLine, size_t aCol) :
+	FFunctionNode(const F & aFunction, const std::string & aName, const size_t aLine, const size_t aCol) :
 		FSchemeNode(false),
 		mFunction(aFunction),
 		mName(aName),
@@ -122,7 +124,7 @@ private:
 class FTakeNode : public FSchemeNode
 {
 public:
-	FTakeNode(long long aIndex, size_t aLine, size_t aCol)
+	FTakeNode(const long long aIndex, const size_t aLine, const size_t aCol)
 		: FSchemeNode(false), 
 		mIndex(aIndex),
 		mLine(aLine),
@@ -146,7 +148,7 @@ private:
 class FConstantNode : public FSchemeNode
 {
 public:
-	FConstantNode(TypeInfo aType, const DataValue & aData, size_t aLine, size_t aCol) :
+	FConstantNode(TypeInfo aType, const DataValue & aData, const size_t aLine, const size_t aCol) :
 		FSchemeNode(false),
 		mData(aData),
 		mType(std::move(aType)),
@@ -169,7 +171,7 @@ private:
 class FStringConstant : public FConstantNode
 {
 public:
-	FStringConstant(std::string aStr, size_t aLine, size_t aCol) : 
+	FStringConstant(std::string aStr, const size_t aLine, const size_t aCol) : 
 		FConstantNode(TypeInfo("string"), DataValue(), aLine, aCol),
 		mStr(std::move(aStr))
 	{}
@@ -185,7 +187,7 @@ private:
 class FScheme : public FSchemeNode
 {
 public:
-	FScheme(FSchemeNode * aFirstNode);
+	explicit FScheme(FSchemeNode * aFirstNode);
 	FScheme(FSchemeNode * aFirstNode, std::string aName);
 
 	void accept(FSchemeVisitor * aVisitor) const override;

@@ -9,7 +9,7 @@
 namespace FPTL { namespace Runtime {
 
 //-----------------------------------------------------------------------------------
-FSchemeNode::FSchemeNode(bool aIsLong) : mIsLong(aIsLong)
+FSchemeNode::FSchemeNode(const bool aIsLong) : mIsLong(aIsLong)
 {
 }
 
@@ -33,7 +33,7 @@ FConditionNode::FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBran
 	mTrueBranch(aTrueBranch),
 	mFalseBranch(aFalseBranch)
 {
-	if (!mFalseBranch)
+	if (mFalseBranch == nullptr)
 	{
 		// Если в условной конструкции отсутствует явно ветка else, считаем что она возвращает UndefinedValue.
 		mFalseBranch = new FFunctionNode([](SExecutionContext & aCtx) { 

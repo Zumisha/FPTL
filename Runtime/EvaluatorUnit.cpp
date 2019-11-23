@@ -66,7 +66,7 @@ void EvaluatorUnit::evaluateScheme()
 	if (evalConf.Info())
 	{
 		std::stringstream ss;
-		Utils::FormatedOutput fo = evalConf.Output();
+		auto fo = evalConf.Output();
 		ss << "\n" << fo.Underlined("Thread ID") << " = " << boost::this_thread::get_id() << ". Jobs " << fo.Bold(fo.Cyan("created: ")) << mJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mJobsStealed << ".";
 
 		if (evalConf.Proactive())
@@ -140,11 +140,11 @@ void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
 	movingTask->NewProactiveLevel.store(false, std::memory_order_release);
 }
 
-void EvaluatorUnit::cancelFromPendingEnd(const size_t backPos)
+void EvaluatorUnit::cancelFromPendingEnd(const size_t pos)
 {
-	if (!pendingTasks.empty() && pendingTasks.size() >= backPos)
+	if (!pendingTasks.empty() && pendingTasks.size() >= pos)
 	{
-		const auto cancelTask = pendingTasks.at(pendingTasks.size() - backPos);
+		const auto cancelTask = pendingTasks.at(pendingTasks.size() - pos);
 		if (!cancelTask->Canceled.load(std::memory_order_acquire)) cancel(cancelTask);
 
 		while (!cancelTask->Ready.load(std::memory_order_acquire))
@@ -153,7 +153,7 @@ void EvaluatorUnit::cancelFromPendingEnd(const size_t backPos)
 		}
 
 		//Убираем из очереди ожидающих выполнения задач.
-		pendingTasks.erase(pendingTasks.end() - backPos);
+		pendingTasks.erase(pendingTasks.end() - pos);
 	}
 }
 

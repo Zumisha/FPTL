@@ -31,11 +31,11 @@ struct ArrayValue : public Collectable
 	static DataValue get(const DataValue & arr, size_t pos);
 
 	// Установка значения элемента массива.
-	static void set(DataValue & arr, size_t pos, const DataValue & val);
+	static void set(const DataValue & arr, size_t pos, const DataValue & val);
 
 	static size_t getLen(const DataValue & arr);
 
-	static DataValue concat(SExecutionContext & ctx);
+	static DataValue concat(const SExecutionContext & ctx);
 
 	static DataValue copy(SExecutionContext & ctx, const DataValue & arr);
 
@@ -43,7 +43,7 @@ struct ArrayValue : public Collectable
 
 	static void arrayValueCheck(const DataValue & arr);
 
-	static void fromString(DataValue & arr, std::istream & aStream);
+	static void fromString(const DataValue & arr, std::istream & aStream);
 
 private:
 	static TypeInfo CreateType(const DataValue & initial)

@@ -15,26 +15,27 @@ public:
 		return &ops;
 	}
 
-	Ops * combine(const Ops * aOther) const override
+	const Ops * combine(const Ops * aOther) const override
 	{
 		return aOther->withOps(this);
 	}
 
-	Ops * withOps(const IntegerOps * aOps) const override
+	const Ops * withOps(const IntegerOps * aOps) const override
 	{
 		return get();
 	}
 
-	Ops * withOps(const BooleanOps * aOps) const override
+	const Ops * withOps(const BooleanOps * aOps) const override
 	{
 		invalidOperation(getType(DataValue()));
 		return nullptr;
 	}
 
-	Ops * withOps(const DoubleOps * aOps) const override
+	const Ops * withOps(const DoubleOps * aOps) const override
 	{
 		// FIXME: сделать возвращаемое значение const.
-		return (Ops *)aOps;
+		//return (Ops *)aOps;
+		return reinterpret_cast<Ops const*>(aOps);
 	}
 
 	TypeInfo getType(const DataValue &aVal) const override

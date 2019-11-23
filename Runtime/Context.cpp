@@ -39,7 +39,7 @@ CollectedHeap & SExecutionContext::heap() const
 	return mEvaluatorUnit->heap();
 }
 
-const DataValue & SExecutionContext::getArg(size_t aIndex) const
+const DataValue & SExecutionContext::getArg(const size_t aIndex) const
 {
 #if fptlDebugBuild
 	// ToDo: производить статический анализ.
@@ -66,7 +66,7 @@ void SExecutionContext::advance()
 	arity = 0;
 }
 
-void SExecutionContext::unwind(size_t aArgPosOld, size_t aArity, size_t aPos)
+void SExecutionContext::unwind(const size_t aArgPosOld, const size_t aArity, const size_t aPos)
 {;
 	for (size_t i = 0; i < arity; ++i)
 	{

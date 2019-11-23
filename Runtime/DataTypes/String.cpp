@@ -17,7 +17,7 @@ struct StringData : public Collectable
 	char * const value;
 	const size_t length;
 
-	StringData(size_t aLength)
+	explicit StringData(const size_t aLength)
 		: value(reinterpret_cast<char *>(this) + sizeof(StringData)),
 		length(aLength)
 	{}
@@ -42,32 +42,32 @@ public:
 		return &ops;
 	}
 
-	Ops * combine(const Ops * aOther) const override
+	const Ops * combine(const Ops * aOther) const override
 	{
 		return aOther->withOps(this);
 	}
 
-	Ops * withOps(const StringOps * aOther) const override
+	const Ops * withOps(const StringOps * aOther) const override
 	{
 		return get();
 	}
 
-	Ops * withOps(const Ops * aOps) const override
+	const Ops * withOps(const Ops * aOps) const override
 	{
 		throw invalidOperation("combine");
 	}
 
-	Ops * withOps(const BooleanOps * aOps) const override
+	const Ops * withOps(const BooleanOps * aOps) const override
 	{
 		throw invalidOperation("toBool");
 	}
 
-	Ops * withOps(const IntegerOps * aOps) const override
+	const Ops * withOps(const IntegerOps * aOps) const override
 	{
 		throw invalidOperation("toInt");
 	}
 
-	Ops * withOps(const DoubleOps * aOps) const override
+	const Ops * withOps(const DoubleOps * aOps) const override
 	{
 		throw invalidOperation("toDouble");
 	}
@@ -209,7 +209,7 @@ std::string StringValue::str() const
 
 //-----------------------------------------------------------------------------
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, const std::string & aData)
+DataValue StringBuilder::create(const SExecutionContext & aCtx, const std::string & aData)
 {
 	auto val = create(aCtx, aData.size());
 
@@ -218,7 +218,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, const std::string & aD
 	return val;
 }
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, size_t aSize)
+DataValue StringBuilder::create(const SExecutionContext & aCtx, size_t aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 
@@ -233,7 +233,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, size_t aSize)
 	return val;
 }
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd)
+DataValue StringBuilder::create(const SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd)
 {
 	auto str = aCtx.heap().alloc<StringValue>(sizeof(StringValue));
 
