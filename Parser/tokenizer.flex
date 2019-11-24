@@ -1,4 +1,4 @@
-﻿/* Описание сканнера для генерации с использованием flex. */
+/* Описание сканнера для генерации с использованием flex. */
 
 %option c++
 %option outfile="FlexScanner.cpp"
@@ -6,16 +6,19 @@
 %option noyywrap
 %option nounistd
 
-%{
+%top{
+#include <cstdint>
+}
 
+%{
 #include "../../FlexTokenizer.h"
 #include "../../Support.h"
 #include "../../Nodes.h"
 
 %}
 
-White 			[ \t\r]
-NewLine 		[\n]
+White 			[ \t]
+NewLine 		[\n\r]
 
 ShortComment 	"//"(.)*\n
 
@@ -76,7 +79,7 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 [\(\)\.\,\:\;\[\]\{\}\<\>\~\$\#\*\=\+\~\@\%]	{ return *YYText(); }
 
 .								{
-									Ident errSymb = { static_cast<short>(mCol), static_cast<short>(mLine), 0 };
+									Ident errSymb = { static_cast<size_t>(mCol), static_cast<size_t>(mLine), 0 };
 									mSupport->newIdent( YYText(), 0, errSymb );
 									mSupport->semanticError( ErrTypes::IllegalCharacter, errSymb );
 								}

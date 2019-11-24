@@ -27,9 +27,9 @@ public:
 	ASTNode * getRight() const { return mRight; }
 	ASTNode * getMiddle() const { return mMiddle; }
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
-	ASTNode * copy() const;
+	ASTNode * copy() const override;
 
 private:
 
@@ -45,14 +45,14 @@ class ConstantNode : public ASTNode
 {
 public:
 
-	ConstantNode( ASTNodeType aType, Ident aConstant ) : ASTNode(aType), mIdent(aConstant)
+	ConstantNode(const ASTNodeType aType, const Ident &aConstant ) : ASTNode(aType), mIdent(aConstant)
 	{}
 
 	Ident getConstant() const { return mIdent; }
 
 	bool isNatural() const;
-	void accept( NodeVisitor * aVisitor );
-	ASTNode * copy() const;
+	void accept( NodeVisitor * aVisitor ) override;
+	ASTNode * copy() const override;
 
 private:
 	Ident          mIdent;
@@ -65,15 +65,14 @@ class ListNode : public ASTNode, public std::list<ASTNode*>
 {
 public:
 
-	ListNode( ASTNodeType aType ) : ASTNode(aType) {}
-	~ListNode();
+	explicit ListNode(const ASTNodeType aType ) : ASTNode(aType) {}
+	~ListNode() override;
 
 	ListNode *    addElement( ASTNode * aElem ) { if( aElem ) push_front( aElem ); return this; }
 	size_t        getNumElements() const { return size(); }
 
-	void accept( NodeVisitor * aVisitor );
-
-	ListNode * copy() const;
+	void accept( NodeVisitor * aVisitor ) override;
+	ListNode * copy() const override;
 };
 
 //-------------------------------------------------------------------------------------
@@ -82,15 +81,15 @@ public:
 class DefinitionNode : public ASTNode
 {
 public:
-	DefinitionNode( ASTNodeType aType, Ident aName, ASTNode * aDefinition );
+	DefinitionNode(ASTNodeType aType, const Ident &aName, ASTNode * aDefinition );
 	~DefinitionNode();
 
 	Ident         getDefinitionName() const { return mDefinitionName; }
 	ASTNode *     getDefinition() const     { return mDefinition; }
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
-	ASTNode * copy() const;
+	ASTNode * copy() const override;
 
 private:
 	Ident mDefinitionName;
@@ -104,20 +103,21 @@ class NameRefNode : public ASTNode
 {
 public:
 
-	NameRefNode( Ident aTypeName, ASTNodeType aNodeType );
-	NameRefNode( Ident aTypeName, ASTNodeType aNodeType, ListNode * aParams );
+	NameRefNode( const Ident &aTypeName, ASTNodeType aNodeType );
+	NameRefNode(const Ident &aTypeName, ASTNodeType aNodeType, ListNode * aParams );
 	~NameRefNode();
 
-	void setTarget( ASTNode * aTarget ) { if (mTarget) delete mTarget; mTarget = aTarget; }
-	void accept( NodeVisitor * aVisitor );
+	void setTarget( ASTNode * aTarget ) {
+		delete mTarget; mTarget = aTarget; }
+	void accept( NodeVisitor * aVisitor ) override;
 
 	Ident                    getName() const       { return mTypeName; }
 	ListNode *               getParameters() const { return mParameters; }
 
 	// Возвращает узел, на который ссылается данное имя.
 	ASTNode *                getTarget() const { return mTarget; }
-	ASTNode *                copy() const;
-	int                      numParameters() const { return mParameters ? mParameters->size() : 0; }
+	ASTNode *                copy() const override;
+	int                      numParameters() const override { return mParameters ? static_cast<int>(mParameters->size()) : 0; }
 
 private:
 
@@ -133,16 +133,16 @@ class ConstructorNode : public ASTNode
 {
 public:
 
-	ConstructorNode( Ident aName, ListNode * aCtorParameters, Ident aCtorResultTypeName );
+	ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName );
 	virtual ~ConstructorNode();
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
 	Ident                 getCtorName() const { return mName; }
 	Ident                 getCtorResultTypeName() const { return mCtorResultTypeName; }
 	ListNode *            getCtorParameters() const { return mCtorParameters; }
 
-	ASTNode *             copy() const;
+	ASTNode *             copy() const override;
 
 private:
 
@@ -158,18 +158,18 @@ class DataNode : public ASTNode
 {
 public:
 
-	DataNode( Ident aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors );
+	DataNode(const Ident &aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors );
 	~DataNode();
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
 	ListNode *      getConstructors() const { return mConstructors; }
 	Ident           getDataName() const     { return mTypeName; }
 	ListNode *      getTypeDefs() const     { return mTypeDefinitions; }
 	ListNode *      getTypeParams() const   { return mTypeParameters; }
 
-	ASTNode *       copy() const;
-	int             numParameters() const   { return mTypeParameters ? mTypeParameters->size() : 0; }
+	ASTNode *       copy() const override;
+	int             numParameters() const override { return mTypeParameters ? static_cast<int>(mTypeParameters->size()) : 0; }
 
 private:
 
@@ -186,20 +186,20 @@ class FunctionNode : public ASTNode
 {
 public:
 
-	FunctionNode( Ident aFuncName, ListNode * aDefinitions, ListNode * aFormalParams );
+	FunctionNode( const Ident &aFuncName, ListNode * aDefinitions, ListNode * aFormalParams );
 	~FunctionNode();
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
 	Ident             getFuncName() const         { return mFuncName; }
 	ListNode *        getFormalParameters() const { return mFormalParameters; }
 	ListNode *        getDefinitions() const      { return mDefinitions; }
+	DefinitionNode *  getDefinition(const Ident &aName) const;
 
-	DefinitionNode *  getDefinition(Ident aName) const;
+	FunctionNode *    copy() const override;
+	int               numParameters() const override { return mFormalParameters ? static_cast<int>(mFormalParameters->size()) : 0; }
 
-	FunctionNode *    copy() const;
-	int               numParameters() const { return mFormalParameters ? mFormalParameters->size() : 0; }
-
+	std::vector<FunctionNode *>    getFunctionNodes() const;
 private:
 
 	Ident mFuncName;
@@ -217,13 +217,13 @@ public:
 	ApplicationBlock(NameRefNode * aRunSchemeName, ASTNode * aSchemeParameters, ListNode * aDataVarDefs);
 	~ApplicationBlock();
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
 	ASTNode *     getSchemeParameters() const    { return mSchemeParameters; }
 	ListNode *    getDataVarDefinitions() const { return mDataVarDefinitions; }
 	NameRefNode * getRunningSchemeName() const  { return mRunSchemeName; }
 
-	ApplicationBlock *  copy() const;
+	ApplicationBlock *  copy() const override;
 
 private:
 	NameRefNode * mRunSchemeName;
@@ -240,13 +240,13 @@ public:
 	FunctionalProgram( ListNode * aDataDefinitions, FunctionNode * aScheme, ApplicationBlock * aApplication );
 	~FunctionalProgram();
 
-	void accept( NodeVisitor * aVisitor );
+	void accept( NodeVisitor * aVisitor ) override;
 
 	ListNode *             getDataDefinitions() const { return mDataDefinitions; }
 	FunctionNode *         getScheme() const          { return mScheme; }
 	ApplicationBlock *     getApplication() const     { return mApplication; }
 
-	ASTNode * copy() const;
+	ASTNode * copy() const override;
 
 private:
 

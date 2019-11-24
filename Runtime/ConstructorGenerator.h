@@ -6,7 +6,7 @@
 #include <stack>
 
 #include "../Parser/NodeVisitor.h"
-#include "Types.h"
+#include "DataTypes/Types.h"
 
 namespace FPTL { namespace Runtime {
 
@@ -18,9 +18,11 @@ public:
 
 	ConstructorGenerator();
 
-	virtual void visit(Parser::DataNode * aData);
-	virtual void visit(Parser::NameRefNode * aNameReference);
-	virtual void visit(Parser::DefinitionNode * aDefinition);
+	void work(Parser::FunctionalProgram * aFuncProgram);
+
+	void visit(Parser::DataNode * aData) override;
+	void visit(Parser::NameRefNode * aNameReference) override;
+	void visit(Parser::DefinitionNode * aDefinition) override;
 
 	Constructor * getConstructor(const std::string & aConstructorName) const;
 	std::vector<std::string> constructors() const;
@@ -32,8 +34,8 @@ private:
 	// Сгенерированные эталонные типы для конструкторов.
 	std::map<std::string, std::shared_ptr<Constructor>> mConstructors;
 
-	TTypeList mTypeTuple;
-	std::stack<TTypeList> mStack;
+	std::vector<TypeInfo> mTypeTuple;
+	std::stack<std::vector<TypeInfo>> mStack;
 
 	// Типовые параметры для типа, определяемого конструкторами.
 	std::vector<std::string> mTypeParameters;

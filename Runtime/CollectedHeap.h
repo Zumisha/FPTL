@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/intrusive/slist.hpp>
+#include <functional>
 
 #include "Context.h"
 #include "GcAwarePtr.h"
@@ -11,18 +12,53 @@ namespace Runtime {
 class GarbageCollector;
 
 //-------------------------------------------------------------------------------
+
+// Интерфейс объектов с автоматическим управлением памятью.
+// Все наследника этого класса обязаны иметь тривиальный деструктор.
+class Collectable : public boost::intrusive::slist_base_hook<>
+{
+	friend class CollectedHeap;
+	friend class ObjectMarker;
+
+public:
+	enum Age
+	{
+		YOUNG = 0,
+		OLD = 1
+	};
+
+private:
+	struct MetaInfo
+	{
+		Age age : 30;
+		unsigned int marked : 2;
+	};
+
+	MetaInfo meta;
+
+public:
+	Collectable()
+		: meta({ YOUNG, 1 })
+	{}
+
+	bool isMarked() const
+	{
+		return meta.marked == 1;
+	}
+};
+
+//-------------------------------------------------------------------------------
+
 class CollectedHeap
 {
 public:
 	typedef boost::intrusive::slist<Collectable> MemList;
 
-	CollectedHeap(GarbageCollector * collector);
+	explicit CollectedHeap(GarbageCollector * collector);
 	~CollectedHeap();
 
 	template <typename T> GcAwarePtr<T> alloc(size_t size);
 	template <typename T> GcAwarePtr<T> alloc(std::function<T *(void *)> constructor, size_t size);
-
-	void updateStats(size_t sizeAlive);
 
 	size_t heapSize() const;
 

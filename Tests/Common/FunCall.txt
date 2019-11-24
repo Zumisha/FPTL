@@ -1,0 +1,18 @@
+Scheme FunCall
+{
+        Param = fm(print);
+	FunCall = 123.fn(Param);
+
+        Fun fn[A]
+        {
+           fn = A;
+        }
+
+        Fun fm[B]
+        {
+           fm = B;
+        }
+}
+
+Application
+% FunCall

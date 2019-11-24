@@ -4,11 +4,9 @@
 #define FSCHEME_GENERATOR_H
 
 #include <map>
-#include <functional>
 #include <stack>
 
 #include "../Parser/NodeVisitor.h"
-#include "Functions.h"
 #include "FScheme.h"
 
 namespace FPTL {
@@ -17,40 +15,31 @@ namespace Runtime {
 class ConstructorGenerator;
 
 //
-// Генератор функциональных схем по АСТ-дереву. На вход должно предоставляться только семантически корректное дерево.
+// Генератор функциональных схем по АСД. На вход должно предоставляться только семантически корректное дерево.
 //
 class FSchemeGenerator : public Parser::NodeVisitor
 {
 public:
 
-	FSchemeGenerator();
+	explicit FSchemeGenerator(Parser::ASTNode * astRoot);
+	FSchemeGenerator(const FSchemeGenerator &generator);
 	~FSchemeGenerator();
+	FSchemeGenerator& operator= (const FSchemeGenerator &generator);
 
-	virtual void visit(Parser::FunctionalProgram * aFuncProgram);
-	virtual void visit(Parser::FunctionNode * aFunctionNode);
-	virtual void visit(Parser::NameRefNode * aNameRefNode);
-	virtual void visit(Parser::DefinitionNode * aDefinitionNode);
-	virtual void visit(Parser::ExpressionNode * aExpressionNode);
-	virtual void visit(Parser::ConstantNode * aConstantNode);
-
-	// Запуск генерации функциональной схемы.
-	void generateFScheme();
+	void visit(Parser::FunctionalProgram * aFuncProgram) override;
+	void visit(Parser::FunctionNode * aFunctionNode) override;
+	void visit(Parser::NameRefNode * aNameRefNode) override;
+	void visit(Parser::DefinitionNode * aDefinitionNode) override;
+	void visit(Parser::ExpressionNode * aExpressionNode) override;
+	void visit(Parser::ConstantNode * aNode) override;
 
 	// Получение результата.
-	FSchemeNode * getFScheme();
-	FSchemeNode * getSchemeInput();
-
-	ConstructorGenerator * getConstructorGenerator() const;
+	FSchemeNode * getProgram() const;
 
 private:
 
-	void processBuildInFunction(Parser::NameRefNode * aFunctionName);
+	void processBuildInFunction(Parser::NameRefNode * aFunctionNameNode);
 	void processFunctionalTerm(Parser::NameRefNode * aFuncTermName);
-
-	template <typename F> static FFunctionNode * newFunctionNode(const F &aFunction);
-	template <typename F> static FFunctionNode * newFunctionNode(const F &aFunction, const Parser::Ident & aIdent);
-
-private:
 
 	Parser::ASTNode * mTree;
 
@@ -67,6 +56,7 @@ private:
 	
 	FSchemeNode * mScheme;
 	FSchemeNode * mSchemeInput;
+	FSchemeNode * mProgram;
 
 	ConstructorGenerator * mConstructorGenerator;
 	FunctionLibrary * mLibrary;

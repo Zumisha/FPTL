@@ -9,8 +9,8 @@ namespace FPTL { namespace Runtime {
 //-----------------------------------------------------------------------------
 CollectedHeap::CollectedHeap(GarbageCollector * collector)
 	: mAllocatedSize(0),
-	mCollector(collector),
-	mMaxHeapSize(std::numeric_limits<size_t>::max())
+	mMaxHeapSize(std::numeric_limits<size_t>::max()),
+	mCollector(collector)
 {
 	mCollector->registerHeap(this);
 

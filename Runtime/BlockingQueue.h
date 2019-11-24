@@ -23,6 +23,13 @@ public:
 		mCond.notify_one();
 	}
 
+	void push(T && elem)
+	{
+		std::unique_lock<std::mutex> lock(mMutex);
+		mQueue.push(std::move(elem));
+		mCond.notify_one();
+	}
+
 	boost::optional<T> pop()
 	{
 		std::unique_lock<std::mutex> lock(mMutex);
@@ -30,9 +37,9 @@ public:
 
 		if (!mQueue.empty())
 		{
-			T elem = mQueue.front();
+			boost::optional<T> ret(std::move(mQueue.front()));
 			mQueue.pop();
-			return boost::optional<T>(elem);
+			return ret;
 		}
 
 		return boost::optional<T>();

@@ -3,12 +3,9 @@
 #ifndef FSCHEME_H
 #define FSCHEME_H
 
-#include <iostream>
-#include <sstream>
-#include <set>
-
-#include "Functions.h"
+#include <utility>
 #include "Context.h"
+#include "FunctionLibrary.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -22,10 +19,8 @@ struct SExecutionContext;
 class FSchemeNode
 {
 public:
-	FSchemeNode(bool aIsLong);
-	virtual ~FSchemeNode() {}
-
-	virtual void execute(SExecutionContext & aCtx) const = 0;
+	explicit FSchemeNode(bool aIsLong);
+	virtual ~FSchemeNode() = default;
 
 	virtual void accept(FSchemeVisitor * aVisitor) const = 0;
 
@@ -41,9 +36,7 @@ class FParallelNode : public FSchemeNode
 public:
 	FParallelNode(FSchemeNode * aLeft, FSchemeNode * aRight);
 
-	virtual void execute(SExecutionContext & aCtx) const;
-
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * left() const { return mLeft; }
 	FSchemeNode * right() const { return mRight; }
@@ -61,35 +54,34 @@ class FFunctionNode : public FSchemeNode
 {
 public:
 	template <typename F>
-	FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction)
-	{}
+	explicit FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction), mLine(0), mColumn(0)
+	{
+	}
 
 	template <typename F>
-	FFunctionNode(const F & aFunction, const std::string & aName, short aLine, short aCol)
-		: FSchemeNode(false),
-		  mFunction(aFunction),
-		  mName(aName),
-		  mColumn(aCol),
-		  mLine(aLine)
+	FFunctionNode(const F & aFunction, const std::string & aName, const size_t aLine, const size_t aCol) :
+		FSchemeNode(false),
+		mFunction(aFunction),
+		mName(aName),
+		mLine(aLine),
+		mColumn(aCol)
 	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
-
-	virtual void accept(FSchemeVisitor * aVisitor) const;
-
-	static void call(const FFunctionNode * aNode, SExecutionContext * aCtx);
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	std::string name() const { return mName; }
-	int col() const { return mColumn; }
-	int line() const { return mLine; }
+	size_t col() const { return mColumn; }
+	size_t line() const { return mLine; }
+	std::pair<size_t, size_t> pos() const { return{ mColumn, mLine }; }
+	TFunction fn() const { return mFunction; }
 
 private:
 	std::function<void(SExecutionContext &)> mFunction;
 
 	// Имя функции и позиция в тексте программы.
 	std::string mName;
-	short mLine;
-	short mColumn;
+	size_t mLine;
+	size_t mColumn;
 };
 
 //---------------------------------------------------------------------------------------------
@@ -98,9 +90,7 @@ class FSequentialNode : public FSchemeNode
 public:
 	FSequentialNode(FSchemeNode * aFirst, FSchemeNode * aSecond);
 
-	virtual void execute(SExecutionContext & aCtx) const;
-
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * first() const { return mFirst; }
 	FSchemeNode * second() const { return mSecond; }
@@ -117,9 +107,7 @@ public:
 
 	FConditionNode(FSchemeNode * aCondition, FSchemeNode * aTrueBranch, FSchemeNode * aFalseBranch);
 
-	virtual void execute(SExecutionContext & aCtx) const;
-
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	FSchemeNode * condition() const { return mCondition; }
 	FSchemeNode * trueBranch() const { return mTrueBranch; }
@@ -136,59 +124,59 @@ private:
 class FTakeNode : public FSchemeNode
 {
 public:
-	FTakeNode(int aIndex, short aLine, short aCol)
+	FTakeNode(const long long aIndex, const size_t aLine, const size_t aCol)
 		: FSchemeNode(false), 
 		mIndex(aIndex),
 		mLine(aLine),
 		mCol(aCol)
 	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
-	virtual void accept(FSchemeVisitor * aVisitor) const;
-
-	int index() const { return mIndex; }
-	int col() const { return mCol; }
-	int line() const { return mLine; }
+	long long index() const { return mIndex; }
+	size_t col() const { return mCol; }
+	size_t line() const { return mLine; }
+	std::pair<size_t, size_t> pos() const { return{ mCol, mLine }; }
 
 private:
-	int mIndex;
-
-	short mLine;
-	short mCol;
+	long long mIndex;
+	size_t mLine;
+	size_t mCol;
 };
 
 //---------------------------------------------------------------------------------------------
 class FConstantNode : public FSchemeNode
 {
 public:
-	FConstantNode(const TypeInfo & aType, const DataValue & aData, short aLine, short aCol)
-		: FSchemeNode(false),
+	FConstantNode(TypeInfo aType, const DataValue & aData, const size_t aLine, const size_t aCol) :
+		FSchemeNode(false),
 		mData(aData),
-		mType(aType),
+		mType(std::move(aType)),
 		mLine(aLine),
 		mCol(aCol)
 	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
-
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	TypeInfo type() const { return mType; }
+	DataValue data() const { return mData; }
 
 private:
 	DataValue mData;
 	TypeInfo mType;
-	short mLine;
-	short mCol;
+	size_t mLine;
+	size_t mCol;
 };
 
 class FStringConstant : public FConstantNode
 {
 public:
-	FStringConstant(const std::string & aStr, short aLine, short aCol);
+	FStringConstant(std::string aStr, const size_t aLine, const size_t aCol) : 
+		FConstantNode(TypeInfo("string"), DataValue(), aLine, aCol),
+		mStr(std::move(aStr))
+	{}
 
-	virtual void execute(SExecutionContext & aCtx) const;
+	std::string str() const { return mStr; }
 
 private:
 	std::string mStr;
@@ -199,12 +187,10 @@ private:
 class FScheme : public FSchemeNode
 {
 public:
-	FScheme(FSchemeNode * aFirstNode);
-	FScheme(FSchemeNode * aFirstNode, const std::string & aName);
+	explicit FScheme(FSchemeNode * aFirstNode);
+	FScheme(FSchemeNode * aFirstNode, std::string aName);
 
-	virtual void execute(SExecutionContext & aCtx) const;
-
-	virtual void accept(FSchemeVisitor * aVisitor) const;
+	void accept(FSchemeVisitor * aVisitor) const override;
 
 	void setFirstNode(FSchemeNode * aFirstNode);
 	void setDefinitions(const std::map<std::string, FSchemeNode *> & aDefinitions);
@@ -216,8 +202,6 @@ public:
 	FSchemeNode * definition(const std::string & aName) const;
 
 private:
-	void optimizeTailCall();
-
 	FSchemeNode * mFirstNode;
 	std::string mName;
 	std::map<std::string, FSchemeNode *> mDefinitions;

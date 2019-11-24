@@ -1,4 +1,6 @@
-#pragma once
+﻿#pragma once
+
+#include <stddef.h> //size_t
 
 namespace FPTL { namespace Runtime {
 
@@ -15,8 +17,7 @@ public:
 
 	virtual void addChild(const DataValue * child) = 0;
 
-	virtual ~ObjectMarker() = 0
-	{}
+	virtual ~ObjectMarker() = 0;
 
 	static void setObjectAge(Collectable * object, int age);
 	static bool checkAge(const Collectable * object, int age);
@@ -30,22 +31,23 @@ class GcConfig
 
 public:
 	GcConfig() :
-		mEnabled(true),
 		mYoungGenSize(DEFAULT_YOUNG_GEN_SIZE),
-		mOldGenSize(2 * DEFAULT_YOUNG_GEN_SIZE),
+		mOldGenSize(5 * DEFAULT_YOUNG_GEN_SIZE),
+		mOldGenThreshold(mOldGenSize * static_cast<size_t>(0.75)),
+		mEnabled(true),
 		mVerbose(false)
 	{}
 
-	void setEnabled(bool state)
+	void setEnabled(const bool state)
 	{ mEnabled = state; }
 
-	void setYoungGenSize(size_t size)
+	void setYoungGenSize(const size_t size)
 	{ mYoungGenSize = size; }
 
-	void setVerbose(bool enabled)
+	void setVerbose(const bool enabled)
 	{ mVerbose = enabled; }
 
-	void setOldGenSize(size_t size)
+	void setOldGenSize(const size_t size)
 	{ mOldGenSize = size; }
 
 	bool enabled() const
@@ -60,9 +62,16 @@ public:
 	bool verbose() const
 	{ return mVerbose; }
 
+	void setOldGenThreshold(const double ratio)
+	{ mOldGenThreshold = mOldGenSize * static_cast<size_t>(ratio); }
+
+	size_t oldGenGCThreshold() const
+	{ return mOldGenThreshold; }
+
 private:
 	size_t mYoungGenSize;
 	size_t mOldGenSize;
+	size_t mOldGenThreshold;
 	bool mEnabled;
 	bool mVerbose;
 };
@@ -77,16 +86,16 @@ public:
 
 	virtual void registerHeap(CollectedHeap * heap) = 0;
 
-	virtual ~GarbageCollector() = 0
-	{}
+	virtual ~GarbageCollector() = default;
 
-	static GarbageCollector * getCollector(int numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config);
+	static GarbageCollector * getCollector(size_t numThreads, DataRootExplorer * rootExplorer, const GcConfig & config);
 };
 
 //-----------------------------------------------------------------------------
 class DataRootExplorer
 {
 public:
+	virtual ~DataRootExplorer() = default;
 	virtual void markRoots(ObjectMarker * marker) = 0;
 };
 

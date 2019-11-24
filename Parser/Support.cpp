@@ -1,33 +1,34 @@
-﻿#include <cassert>
+﻿#include <memory>
+#include <string>
+
+#include "Generated/Parser.tab.hh"
 
 #include "Support.h"
-#include "Generated/Parser.tab.hh"
 #include "SemanticCheck.h"
 #include "Nodes.h"
-#include "BuildInFunctionNames.h"
+#include "Runtime/StandardLibrary.h"
+#include "Tokenizer.h"
+#include "Runtime/Run.h"
 
 namespace FPTL { namespace Parser {
 
 //-------------------------------------------------------------------------------------------
-ErrorMessage::ErrorMessage( ErrTypes::ErrType aErr, Ident aIdent )
-	: mIdent(aIdent), mErr(aErr)
+ErrorMessage::ErrorMessage(const ErrTypes::ErrType aErr, const Ident aIdent )
+	: mErr(aErr), mIdent(aIdent)
 {}
 
 //-------------------------------------------------------------------------------------------
 Support::Support() : mWasError(false)
 {
-	initializeKeywordTable();
 }
 
 //-------------------------------------------------------------------------------------------
-Support::~Support()
-{
-}
+Support::~Support()	= default;
 
-//-------------------------------------------------------------------------------------------
-void Support::semanticError( ErrTypes::ErrType aErr, Ident aIdent )
+	//-------------------------------------------------------------------------------------------
+void Support::semanticError(const ErrTypes::ErrType aErr, const Ident aIdent )
 {
-	mErrorList.push_back( ErrorMessage( aErr, aIdent ) );
+	mErrorList.emplace_back(aErr, aIdent);
 	mWasError = true;
 }
 
@@ -42,6 +43,7 @@ void Support::initializeKeywordTable( void )
 	registerKeyword("float", BisonParser::token::T_TDOUBLE); // float не реализован.
 	registerKeyword("double", BisonParser::token::T_TDOUBLE);
 	registerKeyword("string", BisonParser::token::T_TSTRING);
+	registerKeyword("boolean", BisonParser::token::T_TBOOL);
 
 	// Ключевые слова.
 	registerKeyword("Functional program", BisonParser::token::T_FUNCTIONAL_PROGRAM);
@@ -55,61 +57,14 @@ void Support::initializeKeywordTable( void )
 	registerKeyword("true", BisonParser::token::T_TRUE);
 	registerKeyword("false", BisonParser::token::T_FALSE);
 
-	// Встроенные функции.
-	auto regBF = [&](const char * aName)
+	for (auto fName : Runtime::StandardLibrary::mFunctions)
 	{
-		registerKeyword(aName, BisonParser::token::BFNAME);
-	};
-
-	regBF(BuildInFunctions::Id);
-	regBF(BuildInFunctions::Add);
-	regBF(BuildInFunctions::Subtract);
-	regBF(BuildInFunctions::Multiply);
-	regBF(BuildInFunctions::Divide);
-	regBF(BuildInFunctions::Modulus);
-	regBF(BuildInFunctions::Equal);
-	regBF(BuildInFunctions::NotEqual);
-	regBF(BuildInFunctions::Greater);
-	regBF(BuildInFunctions::Less);
-	regBF(BuildInFunctions::GreaterOrEqual);
-	regBF(BuildInFunctions::LessOrEqual);
-
-	regBF(BuildInFunctions::Sqrt);
-	regBF(BuildInFunctions::Sin);
-	regBF(BuildInFunctions::Cos);
-	regBF(BuildInFunctions::Tan);
-	regBF(BuildInFunctions::Asin);
-	regBF(BuildInFunctions::Atan);
-	regBF(BuildInFunctions::Round);
-	regBF(BuildInFunctions::Exp);
-	regBF(BuildInFunctions::Ln);
-	regBF(BuildInFunctions::Abs);
-
-	regBF(BuildInFunctions::Rand);
-	regBF(BuildInFunctions::Print);
-	regBF(BuildInFunctions::PrintType);
-
-	regBF(BuildInFunctions::Cat);
-	regBF(BuildInFunctions::Search);
-	regBF(BuildInFunctions::Match);
-	regBF(BuildInFunctions::Replace);
-	regBF(BuildInFunctions::GetToken);
-	regBF(BuildInFunctions::Length);
-
-	regBF(BuildInFunctions::toString);
-	regBF(BuildInFunctions::toInt);
-	regBF(BuildInFunctions::toReal);
-	regBF(BuildInFunctions::toLongInt);
-
-	regBF(BuildInFunctions::readFile);
-
-	regBF(BuildInFunctions::arrCreate);
-	regBF(BuildInFunctions::arrGetElem);
-	regBF(BuildInFunctions::arrSetElem);
+		registerKeyword(fName.first, BisonParser::token::BFNAME);
+	}
 }
 
 //-------------------------------------------------------------------------------------------
-void Support::registerKeyword( const std::string & aName, int aId )
+void Support::registerKeyword( const std::string & aName, const int aId )
 {
 	mNameTable[aName] = aId;
 }
@@ -119,7 +74,7 @@ void Support::registerKeyword( const std::string & aName, int aId )
 //
 int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 {
-	std::unordered_map<std::string,int>::iterator pos = mNameTable.find( aName );
+	const auto pos = mNameTable.find( aName );
 	if( pos != mNameTable.end() )
 	{
 		aIdent.Ptr = &pos->first;
@@ -131,16 +86,16 @@ int Support::lookForIdent( const std::string & aName, Ident & aIdent )
 //
 // newIdent - добавление идентификатора в таблицу имен.
 //
-void Support::newIdent( const std::string & aName, int aId, Ident & aIdent )
+void Support::newIdent( const std::string & aName, const int aId, Ident & aIdent )
 {
 	mNameTable[aName] = aId;
 	aIdent.Ptr = &mNameTable.find( aName )->first;
 }
 
 //-------------------------------------------------------------------------------------------
-Ident Support::newConstant( const std::string & aConstant, int aLine, int aCol )
+Ident Support::newConstant( const std::string & aConstant, const size_t aLine, const size_t aCol )
 {
-	Ident ident;
+	Ident ident{};
 	ident.Col = aCol;
 	ident.Line = aLine;
 	ident.Ptr = &*mConstantTable.insert( aConstant ).first;
@@ -148,9 +103,9 @@ Ident Support::newConstant( const std::string & aConstant, int aLine, int aCol )
 }
 
 //-------------------------------------------------------------------------------------------
-const char * Support::getErrorString( ErrTypes::ErrType aErr ) const
+const char * Support::getErrorString(const ErrTypes::ErrType aErr )
 {
-	const char * msg = 0;
+	const char * msg = nullptr;
 	switch( aErr )
 	{
 	case ErrTypes::GeneralSyntaxError:                  msg = "general syntax error"; break;
@@ -168,7 +123,7 @@ const char * Support::getErrorString( ErrTypes::ErrType aErr ) const
 	case ErrTypes::InvalidConstructorUsage:             msg = "invalid constructor usage"; break;
 	case ErrTypes::NestedDataDefinition:                msg = "nested data definitions are not allowed"; break;
 	case ErrTypes::MultipleTypeExpression:              msg = "only one type expression is allowed"; break;
-	case ErrTypes::InvalidFuncallParameters:            msg = "function parameters cannot be used as another function parameters"; break;
+	case ErrTypes::InvalidFunCallParameters:            msg = "function parameters cannot be used as another function parameters"; break;
 	case ErrTypes::InvalidConstant:                     msg = "constant is invalid or out of range"; break;
 	case ErrTypes::MissingMainDefinition:               msg = "missing main definition in function"; break;
 	case ErrTypes::InvalidTupleIndex:                   msg = "invalid tuple element index"; break;
@@ -180,12 +135,16 @@ const char * Support::getErrorString( ErrTypes::ErrType aErr ) const
 //-------------------------------------------------------------------------------------------
 void Support::getErrorList( std::ostream & aOutStream )
 {
-	for( std::list<ErrorMessage>::iterator errMsg = mErrorList.begin(); errMsg != mErrorList.end(); ++errMsg )
+	std::vector<ErrorMessage> processed;
+	for (auto& errMsg : mErrorList)
 	{
-		aOutStream << "Error : " << getErrorString( errMsg->mErr ) << " : "
-			<< "\'" << *errMsg->mIdent.Ptr << "\'"
-			<< " line " << errMsg->mIdent.Line
-			<< " ch " << errMsg->mIdent.Col << "\n";
+		if (std::find(processed.begin(), processed.end(), errMsg) == processed.end()) {
+			aOutStream << "Error : " << getErrorString(errMsg.mErr) << " : "
+				<< "\'" << *errMsg.mIdent.Ptr << "\'"
+				<< " line " << errMsg.mIdent.Line
+				<< " ch " << errMsg.mIdent.Col << "\n";
+			processed.push_back(errMsg);
+		}
 	}
 }
 
@@ -207,10 +166,8 @@ Ident Support::getTopIdent() const
 	return mIdentStack.back();
 }
 
-extern bool checkTypes(ASTNode * aNode);
-
 //-------------------------------------------------------------------------------------------
-ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
+ASTNode* Support::getInternalForm(std::vector<std::string> &inputTuple, std::string &programStr)
 {
 	// Сбрасываем состояние.
 	mIdentStack.clear();
@@ -219,42 +176,65 @@ ASTNode * Support::getInternalForm( Tokenizer * aTokenizer )
 
 	initializeKeywordTable();
 
-	ASTNode * root = 0;
+	// Плохая временная реализация получения начального кортежа из параметров запуска.
+	// Изменится с реализацией именованных параметров.
+	if (!inputTuple.empty())
+	{
+		std::string inputTupleStr;
 
-	BisonParser parser( this, aTokenizer, root );
+		inputTupleStr += "(" + inputTuple[0];
+		for (size_t i = 1; i < inputTuple.size(); ++i)
+		{
+			inputTupleStr += ", " + inputTuple[i];
+		}
+		inputTupleStr += ")";
+
+		const size_t inPos = programStr.rfind('%');
+		if (inPos != static_cast<size_t>(-1))
+		{
+			std::string end = programStr.substr(inPos);
+			size_t fPos, lPos = end.rfind(')');
+			if (lPos != static_cast<size_t>(-1))
+			{
+				fPos = end.find('(');
+				++lPos;
+			}
+			else
+			{
+				fPos = end.find_first_of("\n\r");
+				if (fPos == static_cast<size_t>(-1)) fPos = end.length();
+				lPos = fPos;
+			}
+			if (fPos != static_cast<size_t>(-1))
+				programStr = programStr.substr(0, inPos) + end.substr(0, fPos) + inputTupleStr + end.substr(lPos, end.length());
+		}
+	}//*/
+
+	std::stringstream program(programStr);
+	Tokenizer tokenizer(program);
+	ASTNode *root = nullptr;
+	BisonParser parser( this, &tokenizer, root );
 
 	//parser.set_debug_stream(std::cerr);
 	//parser.set_debug_level(1);
 
-	int result = parser.parse();
+	const int result = parser.parse();
 
-	std::auto_ptr<ASTNode> rootPtr(root);
+	std::unique_ptr<ASTNode> rootPtr(root);
 
 	if (result)
 	{
-		return 0;
+		return nullptr;
 	}
 
-	NamesChecker checkNames( this );
-	checkNames.process( root );
+	NamesChecker checkNames( this, root);
 
 	if (mWasError)
 	{
-		return 0;
+		return nullptr;
 	}
 
-	RecursionFinder recursionFinder;
-	recursionFinder.process( root );
-
-	if (mWasError)
-	{
-		return 0;
-	}
-
-	// Проверка типов.
-	/*FunctionalProgram * fp = dynamic_cast<FunctionalProgram *>(root);
-
-	checkTypes(fp->getScheme());*/
+	RecursionFinder recursionFinder(root);
 
 	return rootPtr.release();
 }

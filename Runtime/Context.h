@@ -1,12 +1,12 @@
 ﻿#pragma once
 
 #include <vector>
-#include <stack>
-
+#include <set>
 #include <atomic>
-#include <boost/intrusive/slist.hpp>
+#include <memory>
 
-#include "Data.h"
+#include "DataTypes/Data.h"
+#include "IntForm/ControlValue.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -16,88 +16,92 @@ class EvaluatorUnit;
 class FSchemeNode;
 class CollectedHeap;
 
-// Контекст выполняения.
+// Контекст выполнения.
 struct SExecutionContext
 {
+	virtual ~SExecutionContext() = default;
 	// Указатель на схему.
 	FSchemeNode * Scheme;
 
-	// Указатель на дочерний контекст.
+	// Указатель на родительский контекст.
 	SExecutionContext * Parent;
 
+	// Указатели на порождённые задачи.
+	std::set<SExecutionContext *> Childs;
+
 	// Флаг готовности задания.
-	std::atomic<int> Ready;
+	std::atomic<bool> Ready;
+
+	// Флаг выполнения задания.
+	std::atomic<bool> Working;
+
+	// Флаг упреждения.
+	std::atomic<bool> Proactive;
+
+	// Флаг нового уровня упреждения.
+	std::atomic<bool> NewProactiveLevel;
+
+	std::atomic<bool> Canceled;
+
+	// Экземпляр завершающего узла, чтобы не создавать множественные при отмене.
+	std::shared_ptr<InternalForm> endIfPtr;
+
+	//Вектор для сохранения указателей на заменённые при остановке узлы, чтобы они не удалились преждевременно.
+	std::vector<std::shared_ptr<InternalForm>> exchangedNodes;
 
 	// Стек для работы с кортежами.
 	std::vector<DataValue> stack;
 
 	// Положение кортежа аргументов.
-	int argPos;
+	size_t argPos;
 
 	// Теущая арность операции.
-	int arity;
+	size_t arity;
 
 	// Количество аргументов во входном кортеже.
-	int argNum;
+	size_t argNum;
 
-	// Объем памяти, выделенной до сборки мусора.
-	size_t numAllocated;
-	size_t prevAllocated;
+	std::vector<ControlValue> controlStack;
 
 	SExecutionContext();
 
 	bool isReady() const;
 
 	// Методы работы с данными.
-	const DataValue & getArg(int index) const;
+	const DataValue & getArg(size_t aIndex) const;
 	void push(const DataValue & aData);
 	void advance();
-	void unwind(int aArgPosOld, int aArity, int aPos);
+	void unwind(size_t aArgPosOld, size_t aArity, size_t aPos);
+	void join();
+	void print(std::ostream & aStream) const;
+	void printTypes(std::ostream & aStream) const;
 
 	// Запуск выполнения.
-	void run(EvaluatorUnit * aEvaluatorUnit);
+	virtual void run(EvaluatorUnit * aEvaluatorUnit) = 0;
 
-	// Порождение нового задания. После выполнения задания результат будет записан по адресу aResult.
-	SExecutionContext * spawn(FSchemeNode * aFirstNode);
+	virtual void cancel() {}
 
 	EvaluatorUnit * evaluator() const;
 	CollectedHeap & heap() const;
 	 
-private:
+protected:
 	EvaluatorUnit * mEvaluatorUnit;
 };
 
-// Интерфейс объектов с автоматическим управлением памятью.
-// Все наследника этого класса обязаны иметь тривиальный деструктор.
-class Collectable :
-	public boost::intrusive::slist_base_hook<>
+//-----------------------------------------------------------------------------
+
+class IFExecutionContext : public SExecutionContext
 {
-	friend class CollectedHeap;
-	friend class ObjectMarker;
+	InternalForm * mInternalForm;
 
 public:
-	enum Age
-	{
-		YOUNG = 0,
-		OLD   = 1
-	};
+	explicit IFExecutionContext(InternalForm * body);
 
-private:
-	struct MetaInfo
-	{
-		Age age : 30;
-		unsigned int marked : 2;
-	};
+	void run(EvaluatorUnit * evaluator) override;
 
-	MetaInfo meta;
+	IFExecutionContext * spawn(InternalForm * forkBody);
 
-public:
-	Collectable()
-		: meta({YOUNG, 0})
-	{}
-
-	bool isMarked() const
-	{ return meta.marked == 1; }
+	void cancel() override;
 };
 
 } // Runtime

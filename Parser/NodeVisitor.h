@@ -36,8 +36,12 @@ public:
 	virtual void visit(ExpressionNode * aExpressionNode);
 	virtual void visit(ConstantNode * aConstantNode);
 
+  //XXX made public to be callable from TypeBuilder::visit
 	// Начинает обход дерева.
 	void process(ASTNode * aNode );
+
+protected:
+
 };
 
 }} // namespace FPTL::Parser

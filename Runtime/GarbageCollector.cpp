@@ -1,4 +1,4 @@
-#include "GarbageCollector.h"
+п»ї#include "GarbageCollector.h"
 #include "CollectedHeap.h"
 #include "BlockingQueue.h"
 
@@ -7,46 +7,47 @@
 #include <condition_variable>
 #include <vector>
 #include <functional>
+#include <iostream>
+#include <thread>
 
 #include <boost/timer/timer.hpp>
 
 namespace FPTL {
 namespace Runtime {
 
-typedef std::vector<const DataValue *> MarkList;
+	typedef std::vector<const DataValue *> MarkList;
 
-//-------------------------------------------------------------------------------
+	ObjectMarker::~ObjectMarker() = default;
+
+	//-------------------------------------------------------------------------------
 class RootMarker : public ObjectMarker
 {
 public:
-	RootMarker(Collectable::Age maxAge)
-		: mAliveSize(0),
-		mMaxAge(maxAge)
+	explicit RootMarker(const Collectable::Age maxAge)
+		: mMaxAge(maxAge)
 	{}
 
-	virtual bool markAlive(Collectable * object, size_t size)
+	bool markAlive(Collectable * object, size_t size) override
 	{
 		if (ObjectMarker::checkAge(object, mMaxAge))
 		{
-			mAliveSize += size;
-			// Т.к. корни помечаются из потоков мутатора, то в этом методе
-			// мы не маркируем объекты, а лишь заносим их в список для
-			// дальнейшей маркировки, чтобы избежать гонки со сборщиком.
-			mRoots.push_back(object);
+			// Рў.Рє. РєРѕСЂРЅРё РїРѕРјРµС‡Р°СЋС‚СЃСЏ РёР· РїРѕС‚РѕРєРѕРІ РјСѓС‚Р°С‚РѕСЂР°, С‚Рѕ РІ СЌС‚РѕРј РјРµС‚РѕРґРµ
+			// РјС‹ РЅРµ РјР°СЂРєРёСЂСѓРµРј РѕР±СЉРµРєС‚С‹, Р° Р»РёС€СЊ Р·Р°РЅРѕСЃРёРј РёС… РІ СЃРїРёСЃРѕРє РґР»СЏ
+			// РґР°Р»СЊРЅРµР№С€РµР№ РјР°СЂРєРёСЂРѕРІРєРё, С‡С‚РѕР±С‹ РёР·Р±РµР¶Р°С‚СЊ РіРѕРЅРєРё СЃРѕ СЃР±РѕСЂС‰РёРєРѕРј.
+			mRoots.emplace_back(object, size);
 			return true;
 		}
 
 		return false;
 	}
 
-	virtual void addChild(const DataValue * child)
+	void addChild(const DataValue * child) override
 	{
 		mMarkStack.push_back(child);
 	}
 
-	std::vector<Collectable *> mRoots;
+	std::vector<std::pair<Collectable *, size_t>> mRoots;
 	MarkList mMarkStack;
-	size_t mAliveSize;
 	Collectable::Age mMaxAge;
 };
 
@@ -55,17 +56,18 @@ class HeapMarker : public ObjectMarker
 {
 public:
 	HeapMarker()
-		: mAliveSize(0)
-	{}
+		: mAliveSize(0), mMaxAge()
+	{
+	}
 
-	HeapMarker(RootMarker & rootMarker)
-		: mAliveSize(rootMarker.mAliveSize),
+	HeapMarker(RootMarker & rootMarker, const size_t aliveSize)
+		: mAliveSize(aliveSize),
 		mMaxAge(rootMarker.mMaxAge)
 	{
 		mMarkStack.swap(rootMarker.mMarkStack);
 	}
 
-	virtual bool markAlive(Collectable * object, size_t size)
+	bool markAlive(Collectable * object, const size_t size) override
 	{
 		if (!object->isMarked() && ObjectMarker::checkAge(object, mMaxAge))
 		{
@@ -77,7 +79,7 @@ public:
 		return false;
 	}
 
-	virtual void addChild(const DataValue * child)
+	void addChild(const DataValue * child) override
 	{
 		mMarkStack.push_back(child);
 	}
@@ -87,13 +89,13 @@ public:
 		return mAliveSize;
 	}
 
-	int traceDataRecursively()
+	size_t traceDataRecursively()
 	{
-		int count = 0;
+		size_t count = 0;
 
 		while (!mMarkStack.empty())
 		{
-			const DataValue * val = mMarkStack.back();
+			const auto val = mMarkStack.back();
 			mMarkStack.pop_back();
 
 			val->getOps()->mark(*val, this);
@@ -126,7 +128,7 @@ private:
 			fullGc(false)
 		{}
 
-		GcJob(bool fullGc)
+		explicit GcJob(const bool fullGc)
 			: marker(fullGc ? Collectable::OLD : Collectable::YOUNG),
 			allocatedSize(0),
 			fullGc(fullGc)
@@ -134,17 +136,17 @@ private:
 	};
 
 public:
-	GarbageCollectorImpl(int numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+	GarbageCollectorImpl(const size_t numMutatorThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 		: mConfig(config),
 		mStopped(0),
 		mThreads(numMutatorThreads),
-		mStop(0),
 		mRootExplorer(rootExplorer),
-		mQuit(false),
 		mOldGenSize(0),
+		mStop(false),
+		mQuit(false),
 		mCollectOld(false)
 	{
-		mCollectorThread.swap(std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this)));
+		mCollectorThread = std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this));
 	}
 
 	virtual ~GarbageCollectorImpl()
@@ -155,14 +157,14 @@ public:
 		mAllocated.clear_and_dispose([](Collectable * obj) { delete obj; });
 	}
 
-	virtual void runGc()
+	void runGc() override
 	{
 		if (!mConfig.enabled())
 		{ 
 			return;
 		}
 
-		// Проверяем, не начал ли кто-нибудь другой сборку мусора.
+		// РџСЂРѕРІРµСЂСЏРµРј, РЅРµ РЅР°С‡Р°Р» Р»Рё РєС‚Рѕ-РЅРёР±СѓРґСЊ РґСЂСѓРіРѕР№ СЃР±РѕСЂРєСѓ РјСѓСЃРѕСЂР°.
 		while (!mGcMutex.try_lock())
 		{
 			safePoint();
@@ -173,35 +175,37 @@ public:
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
 
-			// Посылаем команду на остановку других потоков.
-			mStop.store(1, std::memory_order_release);
+			// РџРѕСЃС‹Р»Р°РµРј РєРѕРјР°РЅРґСѓ РЅР° РѕСЃС‚Р°РЅРѕРІРєСѓ РґСЂСѓРіРёС… РїРѕС‚РѕРєРѕРІ.
+			mStop.store(true, std::memory_order_release);
 			mStopped++;
 
-			// Ждем, пока они остановятся.
+			// Р–РґРµРј, РїРѕРєР° РѕРЅРё РѕСЃС‚Р°РЅРѕРІСЏС‚СЃСЏ.
 			mRunCond.wait(lock, [this] { return mStopped == mThreads; });
 			mStopped--;
 		}
 
-		GcJob * job = new GcJob(mCollectOld);
+		std::unique_ptr<GcJob> job(new GcJob(mCollectOld));
 
-		// Сканируем корни.
+		// РЎРєР°РЅРёСЂСѓРµРј РєРѕСЂРЅРё.
 		mRootExplorer->markRoots(&job->marker);
 
-		// Сбрасываем списке выделенной памяти во всех кучах.
+		// РЎР±СЂР°СЃС‹РІР°РµРј СЃРїРёСЃРєРµ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РІРѕ РІСЃРµС… РєСѓС‡Р°С….
 		for (auto heap : mHeaps)
 		{
 			job->allocatedSize += heap->heapSize();
-			job->allocated.splice(job->allocated.end(), heap->reset());
+//XXX buf added because temporary lvalue can't be passed to non const refference
+			auto buf = heap->reset();
+			job->allocated.splice(job->allocated.end(), buf);
 		}
 
-		// Добавляем задание на сборку мусора.
-		mQueue.push(job);
+		// Р”РѕР±Р°РІР»СЏРµРј Р·Р°РґР°РЅРёРµ РЅР° СЃР±РѕСЂРєСѓ РјСѓСЃРѕСЂР°.
+		mQueue.push(std::move(job));
 
 		{
 			std::unique_lock<std::mutex> lock(mRunMutex);
 
-			// Возобновляем работу других потоков.
-			mStop.store(0, std::memory_order_relaxed);
+			// Р’РѕР·РѕР±РЅРѕРІР»СЏРµРј СЂР°Р±РѕС‚Сѓ РґСЂСѓРіРёС… РїРѕС‚РѕРєРѕРІ.
+			mStop.store(false, std::memory_order_relaxed);
 			mRunCond.notify_all();
 		}
 
@@ -214,8 +218,8 @@ public:
 		mGcMutex.unlock();
 	}
 
-	// Этот метод выполняется другими потоками для ожидании сканирования корней.
-	virtual void safePoint()
+	// Р­С‚РѕС‚ РјРµС‚РѕРґ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РґСЂСѓРіРёРјРё РїРѕС‚РѕРєР°РјРё РґР»СЏ РѕР¶РёРґР°РЅРёРё СЃРєР°РЅРёСЂРѕРІР°РЅРёСЏ РєРѕСЂРЅРµР№.
+	void safePoint() override
 	{
 		if (mStop.load(std::memory_order_acquire) == 1)
 		{
@@ -229,7 +233,7 @@ public:
 		}
 	}
 
-	virtual void registerHeap(CollectedHeap * heap)
+	void registerHeap(CollectedHeap * heap) override
 	{
 		mHeaps.push_back(heap);
 		heap->setLimit(mConfig.youngGenSize());
@@ -247,20 +251,26 @@ private:
 				break;
 			}
 
-			GcJob * job = deqJob.get();
+			auto job = std::move(deqJob.get());
 
 			boost::timer::cpu_timer gcTimer;
 
-			// Маркируем корневые объекты.
-			for (auto object : job->marker.mRoots)
+			// РњР°СЂРєРёСЂСѓРµРј РєРѕСЂРЅРµРІС‹Рµ РѕР±СЉРµРєС‚С‹.
+			size_t aliveSize = 0;
+			for (const auto object : job->marker.mRoots)
 			{
-				ObjectMarker::setMarked(object, 1);
+				const auto root = object.first;
+				if (!root->isMarked())
+				{
+					ObjectMarker::setMarked(root, 1);
+					aliveSize += object.second;
+				}
 			}
 			
-			HeapMarker marker(job->marker);
+			HeapMarker marker(job->marker, aliveSize);
 
-			// Помечаем доступные вершины.
-			int count = marker.traceDataRecursively();
+			// РџРѕРјРµС‡Р°РµРј РґРѕСЃС‚СѓРїРЅС‹Рµ РІРµСЂС€РёРЅС‹.
+			auto count = marker.traceDataRecursively();
 
 			if (job->fullGc)
 			{
@@ -270,15 +280,11 @@ private:
 				mCollectOld = false;
 			}
 
-			// Очищаем память.
-			job->allocated
-				.remove_and_dispose_if([](const Collectable & obj) { 
-											return !obj.isMarked();
-										}, [](Collectable * obj) {
-											delete obj;
-										});
+			// РћС‡РёС‰Р°РµРј РїР°РјСЏС‚СЊ.
+			job->allocated.remove_and_dispose_if([](const Collectable & obj) { return !obj.isMarked(); },
+												[](Collectable * obj) {	delete obj;	});
 
-			// Сбрасываем флаги.
+			// РЎР±СЂР°СЃС‹РІР°РµРј С„Р»Р°РіРё.
 			for (auto & object : job->allocated)
 			{
 				ObjectMarker::setObjectAge(&object, Collectable::OLD);
@@ -297,23 +303,26 @@ private:
 			}
 
 			if (mOldGenSize > mConfig.oldGenSize())
-				mCollectOld = true;
+			{
+				std::cout << "\n\nERROR: out of memory\n";
+				::exit(1);
+			}
 
-			delete job;
+			if (mOldGenSize > mConfig.oldGenGCThreshold())
+			{
+				mCollectOld = true;
+			}
 		}
 	}
 
 private:
 	GcConfig mConfig;
 
-	// Флаг, сигнализирующий о необходимости остановки.
-	std::atomic<int> mStop;
+	// РљРѕР»РёС‡РµСЃС‚РІРѕ РѕСЃС‚Р°РЅРѕРІРёРІС€РёС…СЃСЏ РїРѕС‚РѕРєРѕРІ.
+	size_t mStopped;
 
-	// Количество остановившихся потоков.
-	int mStopped;
-
-	// Количество потоков мутатора.
-	int mThreads;
+	// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕС‚РѕРєРѕРІ РјСѓС‚Р°С‚РѕСЂР°.
+	size_t mThreads;
 
 	std::mutex mGcMutex;
 	std::mutex mRunMutex;
@@ -323,19 +332,22 @@ private:
 	std::vector<CollectedHeap *> mHeaps;
 	size_t mOldGenSize;
 
-	// Общие структуры данных.
-	BlockingQueue<GcJob *> mQueue;
-	bool mQuit;
+	// РћР±С‰РёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С….
+	BlockingQueue<std::unique_ptr<GcJob>> mQueue;
 
-	// Структуры данных потока сборки мусора.
+	// Р¤Р»Р°Рі, СЃРёРіРЅР°Р»РёР·РёСЂСѓСЋС‰РёР№ Рѕ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РѕСЃС‚Р°РЅРѕРІРєРё.
+	std::atomic<bool> mStop;
+
+	bool mQuit;
+	bool mCollectOld;
+
+	// РЎС‚СЂСѓРєС‚СѓСЂС‹ РґР°РЅРЅС‹С… РїРѕС‚РѕРєР° СЃР±РѕСЂРєРё РјСѓСЃРѕСЂР°.
 	std::thread mCollectorThread;
 	CollectedHeap::MemList mAllocated;
-
-	bool mCollectOld;
 };
 
 //-------------------------------------------------------------------------------
-GarbageCollector * GarbageCollector::getCollector(int numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
+GarbageCollector * GarbageCollector::getCollector(const size_t numThreads, DataRootExplorer * rootExplorer, const GcConfig & config)
 {
 	return new GarbageCollectorImpl(numThreads, rootExplorer, config);
 }
@@ -349,12 +361,12 @@ void Runtime::ObjectMarker::setObjectAge(Collectable * object, int age)
 }
 
 //-------------------------------------------------------------------------------
-bool Runtime::ObjectMarker::checkAge(const Collectable * object, int age)
+bool Runtime::ObjectMarker::checkAge(const Collectable * object, const int age)
 {
 	return object->meta.age <= age;
 }
 
-void Runtime::ObjectMarker::setMarked(Collectable * object, unsigned int flag)
+void Runtime::ObjectMarker::setMarked(Collectable * object, const unsigned int flag)
 {
 	object->meta.marked = flag;
 }

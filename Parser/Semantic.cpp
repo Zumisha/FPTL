@@ -1,18 +1,19 @@
 ﻿#include "SemanticCheck.h"
-#include "boost/bind.hpp"
 
 // Semantic.cpp - реализация класса для семантической проверки структуры программы.
 
 namespace FPTL { namespace Parser {
 
 //---------------------------------------------------------------------------
-NamesChecker::NamesChecker( Support * aSupport ) : mSupport(aSupport)
-{}
+NamesChecker::NamesChecker( Support * aSupport, ASTNode * root) : mSupport(aSupport)
+{
+	process(root);
+}
 
 //---------------------------------------------------------------------------
 void NamesChecker::visit( DataNode * aDataNode )
 {
-	if( mContext.insertName( aDataNode->getDataName(), aDataNode ) == false )
+	if(!mContext.insertName(aDataNode->getDataName(), aDataNode))
 	{
 		mSupport->semanticError( ErrTypes::DuplicateDefinition, aDataNode->getDataName() );
 	}
@@ -28,8 +29,16 @@ void NamesChecker::visit( DataNode * aDataNode )
 //---------------------------------------------------------------------------
 void NamesChecker::visit( FunctionNode * aFunctionNode )
 {
-	mContext.insertName( aFunctionNode->getFuncName(), aFunctionNode );
-	pushContext();
+	mContext.insertName(aFunctionNode->getFuncName(), aFunctionNode);
+
+	pushContext(aFunctionNode);
+
+	// Добавляем вложенные fun-конструкции в лексический контекст
+	for (auto functionNode : aFunctionNode->getFunctionNodes()) {
+		if (!mContext.insertName(functionNode->getFuncName(), functionNode)) {
+			mSupport->semanticError(ErrTypes::DuplicateDefinition, functionNode->getFuncName());
+		}
+	}
 
 	NodeVisitor::visit(aFunctionNode);
 
@@ -54,7 +63,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 		case ASTNode::Definition:
 		case ASTNode::TypeParameterDefinition:
 		case ASTNode::InputVarDefinition:
-			if (mContext.insertName( aDefinitionNode->getDefinitionName(),aDefinitionNode ) == false)
+			if (!mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode))
 			{
 				// Повторное определение.
 				mSupport->semanticError( ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName() );
@@ -62,7 +71,7 @@ void NamesChecker::visit( DefinitionNode * aDefinitionNode )
 			break;
 
 		case ASTNode::TypeConstructorDefinition:
-			if (mContextStack[0].insertName( aDefinitionNode->getDefinitionName(), aDefinitionNode ) == false)
+			if (!mContextStack[0].insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode))
 			{
 				mSupport->semanticError( ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName() );
 			}
@@ -78,7 +87,7 @@ void NamesChecker::visit( NameRefNode * aNameNode )
 	STermDescriptor termDesc;
 	termDesc.TermName = aNameNode->getName();
 	termDesc.Node = aNameNode;
-
+	 
 	switch( aNameNode->getType() )
 	{
 		case ASTNode::InputVarName:
@@ -115,6 +124,13 @@ void NamesChecker::pushContext()
 	mContext.clear();
 }
 
+void NamesChecker::pushContext(FunctionNode * function)
+{
+	mContextStack.push_back(mContext);
+	mContext.clear();
+	mContext.currentFunction = function;
+}
+
 //---------------------------------------------------------------------------
 void NamesChecker::popContext()
 {
@@ -130,7 +146,7 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 	std::vector<STermDescriptor> undefinedTerms;
 
 	// Сначала ищем в локальном пространстве имен.
-	std::map<Ident,ASTNode*>::iterator pos = mContext.DefinitionsList.find( aTermDesc.TermName );
+	auto pos = mContext.DefinitionsList.find( aTermDesc.TermName );
 
 	if( pos != mContext.DefinitionsList.end() )
 	{
@@ -141,16 +157,28 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 		// Затем ищем в глобальном пространстве имен.
 		if( !mContextStack.empty() )
 		{
-			pos = mContextStack[0].DefinitionsList.find( aTermDesc.TermName );
+			// Ищем среди определений блоков fun из родительского контекста
+			SLexicalContext & parent = mContextStack.back();
 
-			if( pos != mContextStack[0].DefinitionsList.end() )
+			pos = parent.DefinitionsList.find(aTermDesc.TermName);
+			if (pos != parent.DefinitionsList.end())
 			{
 				target = pos->second;
 			}
 			else
 			{
-				mSupport->semanticError( ErrTypes::UndefinedIdentifier, aTermDesc.TermName );
-				return;
+				// Ищем в глобальном контексте (типы данных, конструкторы, ...)
+				pos = mContextStack[0].DefinitionsList.find(aTermDesc.TermName);
+
+				if (pos != mContextStack[0].DefinitionsList.end())
+				{
+					target = pos->second;
+				}
+				else
+				{
+					mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+					return;
+				}
 			}
 		}
 		else
@@ -159,15 +187,6 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 			return;
 		}
 	}
-
-	// FIXME: сейчас я не вижу оснований для этого ограничения. Но, возможно, оно имеются.
-	/*if (aTermDesc.Node->getType() == ASTNode::FuncParameterName)
-	{
-		if (target->getType() == ASTNode::FunctionParameterDefinition)
-		{
-			mSupport->semanticError(ErrTypes::InvalidFuncallParameters, aTermDesc.TermName);
-		}
-	}*/
 
 	if (aTermDesc.Node->getType() == ASTNode::RunningSchemeName && target->getType() && target->getType() != ASTNode::FunctionBlock)
 	{
@@ -188,7 +207,10 @@ void NamesChecker::checkName( STermDescriptor & aTermDesc )
 //---------------------------------------------------------------------------
 void NamesChecker::checkNames()
 {
-	std::for_each( mContext.TermsList.begin(), mContext.TermsList.end(), boost::bind( &NamesChecker::checkName, this, _1 ) );
+	for (auto &termsList : mContext.TermsList)
+	{
+		checkName(termsList);
+	}
 }
 
 }} // FPTL::Parser

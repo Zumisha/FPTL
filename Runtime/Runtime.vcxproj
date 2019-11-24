@@ -1,25 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug DLL|Win32">
-      <Configuration>Debug DLL</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug DLL|x64">
-      <Configuration>Debug DLL</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -30,129 +14,44 @@
     <ProjectGuid>{69D57EAD-F1A4-475D-9AF6-38950E12D608}</ProjectGuid>
     <RootNamespace>Runtime</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v140</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Thirdparty\winflexbison3\custom_build_rules\win_flex_bison\win_flex_bison_custom_build.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">true</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">fptl</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fptl</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fptl</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fptl</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">fptl</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'">fptl</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>E:\boost_1_59_0;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\boost_1_59_0\stage\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\boost_1_59_0;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\boost_1_59_0\stage\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(PYTHON_PATH)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <SmallerTypeCheck>false</SmallerTypeCheck>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <SubSystem>Console</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/STACK:64000000 %(AdditionalOptions)</AdditionalOptions>
-    </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(PYTHON_PATH)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include;..\Thirdparty\jemalloc-5.0.1\include\msvc_compat</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -162,128 +61,57 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <SmallerTypeCheck>false</SmallerTypeCheck>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/STACK:64000000 %(AdditionalOptions)</AdditionalOptions>
-    </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(PYTHON_PATH)\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <SubSystem>Console</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>jemallocd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/STACK:256000000 %(AdditionalOptions)</AdditionalOptions>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
+      <StackReserveSize>4194304</StackReserveSize>
     </Link>
     <PreBuildEvent>
       <Command>
       </Command>
     </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH)\;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(PYTHON_PATH)\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\gperftools-2.0\vsprojects\libtcmalloc_minimal\Debug;$(PYTHON_PATH)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/STACK:8000000 %(AdditionalOptions)</AdditionalOptions>
-    </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(BOOST_PATH)\</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:128000000 %(AdditionalOptions)</AdditionalOptions>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;..\External\gc\gc-7.2\include;..\External\AsmJit\AsmJit;$(BOOST_PATH)\</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\;..\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include\msvc_compat;..\Thirdparty\jemalloc-5.0.1\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4710;4514;4711;4464;4062</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:128000000 %(AdditionalOptions)</AdditionalOptions>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>jemalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:10000000 %(AdditionalOptions)</AdditionalOptions>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
+      <Version>
+      </Version>
+      <StackReserveSize>16777216</StackReserveSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Parser\AST.cpp" />
     <ClCompile Include="..\Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="..\Parser\Nodes.cpp" />
     <ClCompile Include="..\Parser\NodeVisitor.cpp" />
@@ -291,56 +119,56 @@
     <ClCompile Include="..\Parser\Semantic.cpp" />
     <ClCompile Include="..\Parser\Support.cpp" />
     <ClCompile Include="..\Parser\Tokenizer.cpp" />
-    <ClCompile Include="CodeGenerator.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug DLL|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="CollectedHeap.cpp" />
     <ClCompile Include="ConstructorGenerator.cpp" />
-    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Context.cpp" />
     <ClCompile Include="DataTypes\Array.cpp" />
+    <ClCompile Include="DataTypes\Bool.cpp" />
+    <ClCompile Include="DataTypes\Data.cpp" />
+    <ClCompile Include="DataTypes\Double.cpp" />
+    <ClCompile Include="DataTypes\Int.cpp" />
     <ClCompile Include="DataTypes\String.cpp" />
+    <ClCompile Include="DataTypes\Types.cpp" />
+    <ClCompile Include="DataTypes\Undefined.cpp" />
+    <ClCompile Include="EvaluatorUnit.cpp" />
     <ClCompile Include="FScheme.cpp" />
     <ClCompile Include="FSchemeGenerator.cpp" />
-    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="ADT.cpp" />
+    <ClCompile Include="FunctionLibrary.cpp" />
     <ClCompile Include="GarbageCollector.cpp" />
+    <ClCompile Include="IntForm\Generator.cpp" />
+    <ClCompile Include="IntForm\InternalForm.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NodeDeleter.cpp" />
-    <ClCompile Include="PythonInterop.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Run.cpp" />
-    <ClCompile Include="StandartLibrary.cpp" />
-    <ClCompile Include="Types.cpp" />
+    <ClCompile Include="StandardLibrary.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Parser\BuildInFunctionNames.h" />
-    <ClInclude Include="ADT.h" />
-    <ClInclude Include="Array.h" />
+    <ClInclude Include="..\..\FPTL_my\Parser\Generated\Flex\FlexLexer.h" />
+    <ClInclude Include="..\Utils\FormatedOutput.h" />
     <ClInclude Include="BlockingQueue.h" />
-    <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="CollectedHeap.h" />
     <ClInclude Include="ConstructorGenerator.h" />
     <ClInclude Include="Context.h" />
-    <ClInclude Include="Data.h" />
+    <ClInclude Include="DataTypes\ADT.h" />
+    <ClInclude Include="DataTypes\Array.h" />
+    <ClInclude Include="DataTypes\Data.h" />
+    <ClInclude Include="DataTypes\String.h" />
+    <ClInclude Include="DataTypes\Types.h" />
+    <ClInclude Include="EvaluatorUnit.h" />
     <ClInclude Include="FScheme.h" />
     <ClInclude Include="FSchemeGenerator.h" />
     <ClInclude Include="FSchemeVisitor.h" />
-    <ClInclude Include="Functions.h" />
+    <ClInclude Include="FunctionLibrary.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GcAwarePtr.h" />
+    <ClInclude Include="IntForm\ControlValue.h" />
+    <ClInclude Include="IntForm\Generator.h" />
+    <ClInclude Include="IntForm\InternalForm.h" />
+    <ClInclude Include="LockFreeWorkStealingQueue.h" />
     <ClInclude Include="NodeDeleter.h" />
     <ClInclude Include="Run.h" />
-    <ClInclude Include="StandartLibrary.h" />
-    <ClInclude Include="String.h" />
-    <ClInclude Include="Types.h" />
+    <ClInclude Include="StandardLibrary.h" />
     <ClInclude Include="..\Parser\AST.h" />
     <ClInclude Include="..\Parser\FlexTokenizer.h" />
     <ClInclude Include="..\Parser\Ident.h" />
@@ -352,11 +180,16 @@
     <ClInclude Include="WorkStealingQueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Parser\parser.yy" />
-    <None Include="..\Parser\tokenizer.flex" />
+    <None Include="..\Parser\parser.yy">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\Parser\tokenizer.flex">
+      <FileType>Document</FileType>
+    </None>
     <None Include="Bugs.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Thirdparty\winflexbison3\custom_build_rules\win_flex_bison\win_flex_bison_custom_build.targets" />
   </ImportGroup>
 </Project>

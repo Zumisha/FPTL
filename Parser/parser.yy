@@ -1,6 +1,6 @@
-﻿%defines
-%define namespace "FPTL::Parser"
-%define parser_class_name "BisonParser"
+%defines
+%define api.namespace {FPTL::Parser}
+%define api.parser.class {BisonParser}
 
 %code requires
 {
@@ -600,16 +600,8 @@ TupleElement
 	: '[' NUMBER ']'
 	{
 		ConstantNode * number = static_cast<ConstantNode*>( $2 );
-		if (number->isNatural())
-		{
-			$$ = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
-			delete number;
-		}
-		else
-		{
-			pSupport->semanticError(ErrTypes::InvalidTupleIndex, number->getConstant());
-			$$ = 0;
-		}
+		$$ = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
+		delete number;
 	}
 	
 Constant

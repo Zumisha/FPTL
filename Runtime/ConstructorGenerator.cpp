@@ -2,13 +2,23 @@
 
 #include "../Parser/Nodes.h"
 #include "ConstructorGenerator.h"
-#include "Functions.h"
+#include "DataTypes/ADT.h"
 
 namespace FPTL { namespace Runtime {
 
 //-------------------------------------------------------------------------------------------
-ConstructorGenerator::ConstructorGenerator()
+ConstructorGenerator::ConstructorGenerator(): mCurrentData(nullptr)
+	{
+	}
+
+	//------------------------------------------------------------------------------------------
+
+void ConstructorGenerator::work(Parser::FunctionalProgram * aFuncProgram)
 {
+	if (aFuncProgram->getDataDefinitions())
+	{
+		process(aFuncProgram->getDataDefinitions());
+	}
 }
 
 //-------------------------------------------------------------------------------------------
@@ -38,7 +48,7 @@ void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
 		case Parser::ASTNode::BaseType:
 		case Parser::ASTNode::Type:
 		{
-			mTypeTuple.push_back(TypeInfo(aNameReference->getName().getStr()));
+			mTypeTuple.emplace_back(aNameReference->getName().getStr());
 			break;
 		}
 
@@ -48,18 +58,16 @@ void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
 			TypeInfo newType(aNameReference->getName().getStr());
 			
 			// Добавляем параметры.
-			int i = 0;
+			size_t i = 0;
 
-			Parser::DataNode * data = static_cast<Parser::DataNode *>(aNameReference->getTarget());
+			auto* data = dynamic_cast<Parser::DataNode *>(aNameReference->getTarget());
 
-			std::for_each(data->getTypeParams()->begin(), data->getTypeParams()->end(),
-				[&newType, this, &i](Parser::ASTNode * aParam)
-				{
-					Parser::NameRefNode * paramName = static_cast<Parser::NameRefNode *>(aParam);
-					newType.Parameters[paramName->getName().getStr()] = mTypeTuple[i];
-					i++;
-				}
-			);
+			for (auto element : *data->getTypeParams())
+			{
+				auto* paramName = static_cast<Parser::NameRefNode *>(element);
+				newType.typeParameters.emplace_back(paramName->getName().getStr(), mTypeTuple[i]);
+				i++;
+			}
 
 			mTypeTuple = mStack.top();
 			mStack.pop();
@@ -104,12 +112,10 @@ std::vector<std::string> ConstructorGenerator::constructors() const
 {
 	std::vector<std::string> result;
 
-	std::for_each(mConstructors.begin(), mConstructors.end(), [&result](const std::pair<std::string, std::shared_ptr<Constructor>> & arg)
-		{
-			result.push_back(arg.first);
-		}
-	);
-
+	for (auto &arg : mConstructors)
+	{
+		result.push_back(arg.first);
+	}
 	return result;
 }
 

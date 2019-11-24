@@ -1,6 +1,4 @@
 ﻿#include <string>
-#include <cassert>
-#include <cmath>
 #include <regex>
 
 #include <boost/lexical_cast.hpp>
@@ -12,37 +10,38 @@
 namespace FPTL { namespace Parser {
 
 //-------------------------------------------------------------------------------------------
-Tokenizer::Tokenizer( const std::string & aInputString )
-	: yyFlexLexer( &mInputStream ),
-	mLine(1),
-	mCol(0),
-	mTokenBegin(0),
-	mLastTokenLen(0),
-	mPrevTokenLine(0)
-{
-	mInputStream << aInputString;
-}
+Tokenizer::Tokenizer(std::istream & input)
+		: yyFlexLexer(input, std::cout),
+		  mSupport(nullptr),
+		  mVal(nullptr),
+		  mLine(1),
+		  mCol(0),
+		  mPrevTokenLine(0),
+		  mTokenBegin(0),
+		  mLastTokenLen(0)
+	{
+	}
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formDecimalConstant()
+ConstantNode * Tokenizer::formDecimalConstant() const
 {
 	// Проверяем диапазон.
 	try
 	{
-		boost::lexical_cast<int>(YYText());
+		boost::lexical_cast<long long>(YYText());
 	}
 	catch (const std::exception &)
 	{
-		mSupport->semanticError(ErrTypes::InvalidConstant, getErrorIdent());
+		return formLongLongConstant();
 	}
 
 	return new ConstantNode(ASTNode::IntConstant, mSupport->newConstant(YYText(), mLine, mCol));
 }
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formLongLongConstant()
+ConstantNode * Tokenizer::formLongLongConstant() const
 {
-	std::regex rx("(\\d+)[Ll][Ll]");
+	const std::regex rx("(\\d+)[Ll][Ll]");
 	std::cmatch match;
 
 	std::regex_search(YYText(), match, rx); 
@@ -50,7 +49,7 @@ ConstantNode * Tokenizer::formLongLongConstant()
 	// Проверяем диапазон.
 	try
 	{
-		boost::lexical_cast<long long int>(match[1]);
+		boost::lexical_cast<double>(match[1]);
 	}
 	catch (const std::exception &)
 	{
@@ -61,7 +60,7 @@ ConstantNode * Tokenizer::formLongLongConstant()
 }
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formFPConstant( bool aForceFloat )
+ConstantNode * Tokenizer::formFPConstant(const bool aForceFloat ) const
 {
 	std::string str = YYText();
 
@@ -77,21 +76,21 @@ ConstantNode * Tokenizer::formFPConstant( bool aForceFloat )
 
 	if( aForceFloat )
 	{
-		str = std::string( str.begin(), str.begin() + str.find_first_of("f") );
+		str = std::string( str.begin(), str.begin() + str.find_first_of('f') );
 	}
 
 	return new ConstantNode( ASTNode::FloatConstant, mSupport->newConstant( str, mLine, mCol ) );
 }
 
 //-------------------------------------------------------------------------------------------
-ConstantNode * Tokenizer::formStringConstant(void)
+ConstantNode * Tokenizer::formStringConstant(void) const
 {
 	std::string str = YYText();
 	str = std::string( str.begin() + str.find_first_of('\"') + 1, str.begin() + str.find_last_of('\"') );
 
 	// Заменяем escape-символы.
 
-	str = std::regex_replace(str, std::regex("\\\\\\\\"), std::string("\\"));
+	str = std::regex_replace(str, std::regex(R"(\\\\)"), std::string("\\"));
 	str = std::regex_replace(str, std::regex("[\\\\][a]"), std::string("\a"));
 	str = std::regex_replace(str, std::regex("[\\\\][b]"), std::string("\b"));
 	str = std::regex_replace(str, std::regex("[\\\\][f]"), std::string("\f"));
@@ -99,7 +98,7 @@ ConstantNode * Tokenizer::formStringConstant(void)
 	str = std::regex_replace(str, std::regex("[\\\\][r]"), std::string("\r"));
 	str = std::regex_replace(str, std::regex("[\\\\][t]"), std::string("\t"));
 	str = std::regex_replace(str, std::regex("[\\\\][v]"), std::string("\v"));
-	str = std::regex_replace(str, std::regex("[\\\\]\""), std::string("\""));
+	str = std::regex_replace(str, std::regex(R"([\\]")"), std::string("\""));
 
 	return new ConstantNode( ASTNode::StringConstant, mSupport->newConstant( str, mLine, mCol ));
 }
@@ -135,14 +134,14 @@ int Tokenizer::processCommentBlock(void)
 }
 
 //-------------------------------------------------------------------------------------------
-int Tokenizer::processIdentifier(void)
+int Tokenizer::processIdentifier() const
 {
 	mVal->scIdent.Col = mCol;
 	mVal->scIdent.Line = mLine;
 
 	const char * token = YYText();
-	int tokenId;
-	if( !(tokenId = mSupport->lookForIdent( token, mVal->scIdent )) )
+	const int tokenId = mSupport->lookForIdent(token, mVal->scIdent);
+	if(!tokenId)
 	{
 		if( token[0] == 'c' && token[1] == '_' )
 		{
@@ -174,7 +173,7 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 	mTokenBegin += mLastTokenLen;
 	do
 	{
-		token = (BisonParser::token_type)yylex();
+		token = static_cast<BisonParser::token_type>(yylex());
 		if( token == '\n' )
 		{
 			mCol++;
@@ -183,8 +182,8 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 
 	mLastTokenLen = YYLeng();
 	mCol += mLastTokenLen;
-	mSupport = 0;
-	mVal = 0;
+	mSupport = nullptr;
+	mVal = nullptr;
 	return token;
 }
 
@@ -192,7 +191,7 @@ BisonParser::token_type Tokenizer::getToken( BisonParser::semantic_type * aVal, 
 Ident Tokenizer::getErrorIdent() const
 {
 	static std::string nullStr;
-	Ident ident = { static_cast<short>(mCol), static_cast<short>(mLine), &nullStr };
+	const Ident ident = { mCol, mLine, &nullStr };
 	return ident;
 }
 
@@ -205,7 +204,7 @@ int yylex( BisonParser::semantic_type * aVal, Support * aSupport, Tokenizer * aT
 }
 
 //-------------------------------------------------------------------------------------------
-void BisonParser::error( const BisonParser::location_type & loc, const std::string & msg )
+void BisonParser::error(const std::string & msg)
 {
 	pSupport->semanticError( ErrTypes::GeneralSyntaxError, aTokenizer->getErrorIdent() );
 }

@@ -1,0 +1,7 @@
+Scheme Fact
+{
+	Fact = ([1]*0).equal -> 1, ([1]*([1]*1).sub.Fact).mul;
+}
+
+Application
+% Fact(1)

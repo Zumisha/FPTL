@@ -6,7 +6,6 @@
 #include <cassert>
 #include "Support.h"
 #include "Nodes.h"
-#include <boost/bind.hpp>
 
 namespace FPTL {
 namespace Parser {
@@ -26,34 +25,41 @@ class NamesChecker : public NodeVisitor
 
 	struct SLexicalContext
 	{
+		FunctionNode * currentFunction;
 		std::vector<STermDescriptor> TermsList;
 		std::map<Ident, ASTNode*> DefinitionsList;
+
+		SLexicalContext() : currentFunction(nullptr)
+		{
+		}
 
 		void clear()
 		{
 			TermsList.clear();
 			DefinitionsList.clear();
+			currentFunction = nullptr;
 		}
 
 		bool insertName( const Ident & aIdent, ASTNode * aNode )
 		{
-			return DefinitionsList.insert( std::make_pair( aIdent, aNode ) ).second;
+			return DefinitionsList.insert(std::make_pair(aIdent, aNode)).second;
 		}
 	};
 
 public:
 
-	NamesChecker( Support * aSupport );
+	NamesChecker( Support * aSupport, ASTNode * root);
 
-	void visit( DataNode * aDataNode );
-	void visit( FunctionNode * aFunctionNode );
-	void visit( DefinitionNode * aDefinitionNode );
-	void visit( NameRefNode * aNameNode );
-	void visit( ApplicationBlock * aApplicationBlock );
+	void visit( DataNode * aDataNode ) override;
+	void visit( FunctionNode * aFunctionNode ) override;
+	void visit( DefinitionNode * aDefinitionNode ) override;
+	void visit( NameRefNode * aNameNode ) override;
+	void visit( ApplicationBlock * aApplicationBlock ) override;
 
 private:
 
 	void pushContext();
+	void pushContext(FunctionNode * function);
 	void popContext();
 	void checkName( STermDescriptor & aTermDesc );
 	void checkNames();
@@ -70,21 +76,24 @@ private:
 class RecursionFinder : public NodeVisitor
 {
 public:
+	RecursionFinder(ASTNode * root)
+	{
+		process(root);
+	}
 
-	void visit( DefinitionNode * aDefinitionNode )
+	void visit( DefinitionNode * aDefinitionNode ) override
 	{
 		mTestDefinitions.push_back( aDefinitionNode->getDefinitionName() );
 
 		if( aDefinitionNode->getType() == ASTNode::Definition )
 		{
 			process(aDefinitionNode->getDefinition());
-
 		}
 
 		mTestDefinitions.pop_back();
 	}
 
-	void visit( NameRefNode * aNameRefNode )
+	void visit( NameRefNode * aNameRefNode ) override
 	{
 		if (aNameRefNode->getType() == ASTNode::FuncObjectName || aNameRefNode->getType() == ASTNode::FuncParameterName)
 		{

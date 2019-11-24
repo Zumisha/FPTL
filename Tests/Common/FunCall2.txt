@@ -1,0 +1,12 @@
+Scheme FunCall
+{
+	FunCall = fn(123)*fn(456);
+
+        Fun fn[A]
+        {
+           fn = A.print;
+        }
+}
+
+Application
+% FunCall

@@ -49,7 +49,7 @@ namespace FPTL
 			DataBlockWithoutConstructors,
 			NestedDataDefinition,
 			MultipleTypeExpression,
-			InvalidFuncallParameters,
+			InvalidFunCallParameters,
 			InvalidConstant,
 			InvalidTupleIndex
 		};
@@ -67,6 +67,13 @@ namespace FPTL
 
 		ErrTypes::ErrType mErr;
 		Ident mIdent;
+
+		bool operator == (const ErrorMessage & other) const {
+			return mErr == other.mErr
+				&& mIdent == other.mIdent
+				&& mIdent.Col == other.mIdent.Col
+				&& mIdent.Line == other.mIdent.Line;
+		}
 	};
 
 	/*
@@ -83,7 +90,7 @@ namespace FPTL
 
 		void               semanticError( ErrTypes::ErrType aErr, Ident aIdent );
 
-		const char *       getErrorString( ErrTypes::ErrType aErr ) const;
+		static const char *       getErrorString( ErrTypes::ErrType aErr );
 		void               getErrorList( std::ostream & aOutStream );
 
 		// Методы для работы с таблицей имен.
@@ -91,12 +98,12 @@ namespace FPTL
 		void		       initializeKeywordTable( void );
 		void		       registerKeyword( const std::string & aName, int aId );
 		void		       newIdent( const std::string & aName, int aId, Ident & aIdent );
-		int			       lookForIdent( const std::string & aName, Ident & aIdent );
+		int				   lookForIdent( const std::string & aName, Ident & aIdent );
 
-		Ident              newConstant( const std::string & aConstant, int aLine, int aCol );
+		Ident              newConstant( const std::string & aConstant, size_t aLine, size_t aCol );
 
-		// Проводит синтксический разбор, семантическую проверку и возвращает AST-дерево.
-		ASTNode *          getInternalForm( class Tokenizer * aTokenizer );
+		// Проводит синтаксический разбор, семантическую проверку и возвращает AST-дерево.
+		ASTNode *          getInternalForm(std::vector<std::string> &inputTuple, std::string& programStr);
 
 		// Вспомогательные методы для парсера.
 		void               pushIdent( const Ident & aIdent );

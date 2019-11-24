@@ -1,7 +1,4 @@
 ﻿// NodeVisitor.cpp - выполняет передачу вызова от конкретного узла к абстрактному.
-#include <algorithm>
-#include <functional>
-
 #include "NodeVisitor.h"
 #include "Nodes.h"
 
@@ -62,10 +59,11 @@ void NodeVisitor::visit( ConstantNode * aConstantNode )
 }
 
 void NodeVisitor::visit( ListNode * aNode )                    
-{
-	using namespace std::placeholders;
-
-	std::for_each(aNode->begin(), aNode->end(), std::bind(&NodeVisitor::process, this, _1));
+{	
+	for (auto & node : *aNode)
+	{
+		process(node);
+	}
 }
 
 void NodeVisitor::process( ASTNode * aNode )

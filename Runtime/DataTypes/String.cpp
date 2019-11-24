@@ -1,10 +1,9 @@
-﻿
-#include "../Data.h"
-#include "../String.h"
+
+#include "Data.h"
+#include "String.h"
 #include "../CollectedHeap.h"
 #include "../GarbageCollector.h"
 
-#include <cstring>
 #include <cassert>
 
 #include <boost/lexical_cast.hpp>
@@ -18,8 +17,8 @@ struct StringData : public Collectable
 	char * const value;
 	const size_t length;
 
-	StringData(size_t aLength)
-		: value((char *)(this) + sizeof(StringData)),
+	explicit StringData(const size_t aLength)
+		: value(reinterpret_cast<char *>(this) + sizeof(StringData)),
 		length(aLength)
 	{}
 
@@ -33,8 +32,8 @@ struct StringData : public Collectable
 
 class StringOps : public Ops
 {
-	StringOps()
-	{}
+protected:
+	StringOps() = default;
 
 public:
 	static StringOps * get()
@@ -43,125 +42,146 @@ public:
 		return &ops;
 	}
 
-	virtual Ops * combine(const Ops * aOther) const
+	const Ops * combine(const Ops * aOther) const override
 	{
-		return (Ops *)aOther;
+		return aOther->withOps(this);
 	}
 
-	virtual Ops * withOps(const BooleanOps * aOps) const
+	const Ops * withOps(const StringOps * aOther) const override
+	{
+		return get();
+	}
+
+	const Ops * withOps(const Ops * aOps) const override
+	{
+		throw invalidOperation("combine");
+	}
+
+	const Ops * withOps(const BooleanOps * aOps) const override
 	{
 		throw invalidOperation("toBool");
 	}
 
-	virtual Ops * withOps(const IntegerOps * aOps) const
+	const Ops * withOps(const IntegerOps * aOps) const override
 	{
 		throw invalidOperation("toInt");
 	}
 
-	virtual Ops * withOps(const DoubleOps * aOps) const
+	const Ops * withOps(const DoubleOps * aOps) const override
 	{
 		throw invalidOperation("toDouble");
 	}
 
-	virtual TypeInfo * getType(const DataValue & aVal) const
+	TypeInfo getType(const DataValue &aVal) const override
 	{
 		static TypeInfo info("string");
-		return &info;
+		return info;
 	}
 
 	// Преобразование типов.
-	virtual int toInt(const DataValue & aVal) const
+	long long toInt(const DataValue & aVal) const override
 	{
-		return boost::lexical_cast<int>(aVal.mString->str());
+		return boost::lexical_cast<long long>(aVal.mString->str());
 	}
 
-	virtual double toDouble(const DataValue & aVal) const
+	double toDouble(const DataValue & aVal) const override
 	{
 		return boost::lexical_cast<double>(aVal.mString->str());
 	}
 
-	virtual StringValue * toString(const DataValue & aVal) const
+	StringValue * toString(const DataValue & aVal) const override
 	{
 		return aVal.mString;
 	}
-
+	
 	// Арифметические функции.
-	virtual DataValue add(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation("add");
 	}
 
-	virtual DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation("sub");
 	}
 
-	virtual DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation("mul");
 	}
 
-	virtual DataValue div(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation("div");
 	}
 
-	virtual DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
 		throw invalidOperation("mod");
 	}
 
-	virtual DataValue abs(const DataValue & aArg) const
+	DataValue abs(const DataValue & aArg) const override
 	{
 		throw invalidOperation("abs");
 	}
-
+	
 	// Функции сравнения.
-	virtual DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		auto lhs = aLhs.mString;
-		auto rhs = aRhs.mString;
+		const auto lhs = aLhs.mString;
+		const auto rhs = aRhs.mString;
 		return DataBuilders::createBoolean(
 			lhs->length() == rhs->length() && std::equal(lhs->getChars(), lhs->getChars() + lhs->length(), rhs->getChars())
 		);
 	}
 
-	virtual DataValue less(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		auto lhs = aLhs.mString;
-		auto rhs = aRhs.mString;
+		const auto lhs = aLhs.mString;
+		const auto rhs = aRhs.mString;
 		return DataBuilders::createBoolean(
 			std::lexicographical_compare(lhs->getChars(), lhs->getChars() + lhs->length(), rhs->getChars(), rhs->getChars() + rhs->length())
 		);
 	}
 
-	virtual DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const
+	DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		auto lhs = aLhs.mString;
-		auto rhs = aRhs.mString;
+		const auto lhs = aLhs.mString;
+		const auto rhs = aRhs.mString;
 		return DataBuilders::createBoolean(
 			std::lexicographical_compare(rhs->getChars(), rhs->getChars() + rhs->length(), lhs->getChars(), lhs->getChars() + lhs->length())
 		);
 	}
 
-	virtual void mark(const DataValue & aVal, ObjectMarker * marker) const
+	void mark(const DataValue & aVal, ObjectMarker * marker) const override
 	{
 		marker->markAlive(aVal.mString, sizeof(StringValue));
-		marker->markAlive(aVal.mString->data, aVal.mString->data->size());
+		marker->markAlive(aVal.mString->data, aVal.mString->data->size() * sizeof(aVal.mString->data[0]));
 	}
 
 	// Вывод в поток.
-	virtual void print(const DataValue & aVal, std::ostream & aStream) const
+	void print(const DataValue & aVal, std::ostream & aStream) const override
 	{
-		auto str = aVal.mString;
+		const auto str = aVal.mString;
 		std::copy(str->getChars(), str->getChars() + str->length(), std::ostreambuf_iterator<char>(aStream));
 	}
 
-private:
-	std::exception invalidOperation(const char * aOpName) const
+	void write(const DataValue & aVal, std::ostream & aStream) const override
 	{
-		std::string msg = "invalid operation ";
-		return std::runtime_error(msg + "'" + aOpName + "' on type string");
+		aStream << aVal.mString->data->value;
+	}
+
+	DataValue read(std::istream & aStream) const override
+	{
+		throw invalidOperation("read");
+	}
+
+private:
+	static std::runtime_error invalidOperation(const char * aOpName)
+	{
+		std::stringstream message;
+		message << "invalid operation '" << aOpName << "' on type string";
+		return std::runtime_error(message.str());
 	}
 };
 
@@ -177,7 +197,7 @@ char * StringValue::contents() const
 	return data->value;
 }
 
-int StringValue::length() const
+size_t StringValue::length() const
 {
 	return end - begin;
 }
@@ -189,7 +209,7 @@ std::string StringValue::str() const
 
 //-----------------------------------------------------------------------------
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, const std::string & aData)
+DataValue StringBuilder::create(const SExecutionContext & aCtx, const std::string & aData)
 {
 	auto val = create(aCtx, aData.size());
 
@@ -198,7 +218,7 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, const std::string & aD
 	return val;
 }
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
+DataValue StringBuilder::create(const SExecutionContext & aCtx, size_t aSize)
 {
 	auto val = DataBuilders::createVal(StringOps::get());
 
@@ -213,9 +233,9 @@ DataValue StringBuilder::create(SExecutionContext & aCtx, int aSize)
 	return val;
 }
 
-DataValue StringBuilder::create(SExecutionContext & aCtx, const StringValue * aOther, int aBegin, int aEnd)
+DataValue StringBuilder::create(const SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd)
 {
-	GcAwarePtr<StringValue> str = aCtx.heap().alloc<StringValue>(sizeof(StringValue));
+	auto str = aCtx.heap().alloc<StringValue>(sizeof(StringValue));
 
 	str->data = aOther->data;
 	str->begin = aBegin;
