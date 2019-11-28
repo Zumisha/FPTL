@@ -2,8 +2,7 @@
 #define FLEXTOKENIZER_H
 
 #include <string>
-#include <sstream>
-#include "Generated/Parser.tab.hh"
+#include "Generated/parser.tab.hh"
 
 namespace FPTL {
 namespace Parser {

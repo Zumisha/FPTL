@@ -6,7 +6,7 @@
 
 #include "jemalloc/jemalloc.h"
 
-#include "../Parser/Support.h"
+#include "Parser/Support.h"
 #include "FSchemeGenerator.h"
 #include "Run.h"
 #include "IntForm/Generator.h"
@@ -135,24 +135,9 @@ bool optionsVerification(po::variables_map &vm, Utils::FormatedOutput fo)
 	return noErrors;
 }
 
-bool infoOptions(po::variables_map &vm, po::options_description desc, Utils::FormatedOutput fo)
-{
-	bool options = false;
-	if (vm.count("version"))
-	{
-		std::cout << "Version of the interpreter from " << fo.Bold(fo.Green(BUILD_DATE)) << ".\n\n";
-		options = false;
-	}
-	if (vm.count("help"))
-	{
-		std::cout << desc << "\n";
-		options = true;
-	}
-	return options;
-}
-
 int main(int argc, char ** argv)
 {
+	po::variables_map vm;
 	setlocale(LC_ALL, "ru-ru");
 	std::cout.precision(std::numeric_limits<double>::max_digits10);
 
@@ -180,16 +165,25 @@ int main(int argc, char ** argv)
 		("old-gen", po::value<size_t>()->default_value(100), "Old generation size in MiB.")
 		("old-gen-ratio", po::value<double>()->default_value(0.75), "Old gen usage ratio to start full GC.");
 
-	po::variables_map vm;
+	vm.clear();
 	try
 	{
-		po::store(po::command_line_parser(argc, argv).options(desc).positional(posOpt).run(), vm);
-		const Utils::FormatedOutput fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
-		if (!optionsVerification(vm, fo) || infoOptions(vm, desc, fo)) return 1;
+		const auto parsed = po::command_line_parser(argc, argv).options(desc).positional(posOpt).run();
+		po::store(parsed, vm, false);
+		auto fo = Utils::FormatedOutput(vm["ansi"].as<bool>());
+		if (!optionsVerification(vm, fo)) return 1;
+		if (vm.count("version"))
+			std::cout << "Version of the interpreter from " << fo.Bold(fo.Green(BUILD_DATE)) << ".\n\n";
+		if (vm.count("help"))
+		{
+			std::cout << desc << "\n\n"; 
+			return 1;
+		}
 		po::notify(vm);
 	}
 	catch (std::exception & e)
 	{
+		if (vm.count("version") && vm.size() == 1) return 0;
 		std::cout << "Error: " << e.what() << std::endl
 			<< "\nUse --help or -h to display all available options." << std::endl;
 		return 1;

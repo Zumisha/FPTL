@@ -4,4 +4,4 @@ Scheme Arrays
     Create = ((200*0).arrayCreate*1).[2];
 }
 Application
-% Arrays(10000000)
+% Arrays(100000)
