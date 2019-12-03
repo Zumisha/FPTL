@@ -44,9 +44,7 @@
 //      #include <FlexLexer.h>
 //      ...
 
-#ifndef __FLEX_LEXER_H
-// Never included before - need to define base class.
-#define __FLEX_LEXER_H
+#pragma once
 
 #include <iostream>
 
@@ -106,13 +104,6 @@ protected:
 };
 
 }
-#endif // FLEXLEXER_H
-
-#if defined(yyFlexLexer) || ! defined(yyFlexLexerOnce)
-// Either this is the first time through (yyFlexLexerOnce not defined),
-// or this is a repeated include to define a different flavor of
-// yyFlexLexer, as discussed in the flex manual.
-# define yyFlexLexerOnce
 
 extern "C++" {
 
@@ -216,5 +207,3 @@ protected:
 };
 
 }
-
-#endif // yyFlexLexer || ! yyFlexLexerOnce

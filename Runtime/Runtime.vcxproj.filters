@@ -119,9 +119,6 @@
     <ClCompile Include="DataTypes\Undefined.cpp">
       <Filter>Source Files\Runtime\Data</Filter>
     </ClCompile>
-    <ClCompile Include="ADT.cpp">
-      <Filter>Source Files\Runtime\Data</Filter>
-    </ClCompile>
     <ClCompile Include="FunctionLibrary.cpp">
       <Filter>Source Files\Runtime</Filter>
     </ClCompile>
@@ -133,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="StandardLibrary.cpp">
       <Filter>Source Files\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\ADT.cpp">
+      <Filter>Source Files\Runtime\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,9 +199,6 @@
     <ClInclude Include="LockFreeWorkStealingQueue.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="..\Utils\FormatedOutput.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="GarbageCollector.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
@@ -237,6 +234,12 @@
     </ClInclude>
     <ClInclude Include="DataTypes\Types.h">
       <Filter>Header Files\Runtime\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Header Files\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\FormatedOutput.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

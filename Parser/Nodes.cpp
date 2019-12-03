@@ -278,6 +278,7 @@ ApplicationBlock::ApplicationBlock(NameRefNode * aRunSchemeName, ASTNode * aSche
 
 ApplicationBlock::~ApplicationBlock()
 {
+	delete mRunSchemeName;
 	delete mSchemeParameters;
 	delete mDataVarDefinitions;
 }

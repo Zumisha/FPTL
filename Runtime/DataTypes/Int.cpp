@@ -33,8 +33,6 @@ public:
 
 	const Ops * withOps(const DoubleOps * aOps) const override
 	{
-		// FIXME: сделать возвращаемое значение const.
-		//return (Ops *)aOps;
 		return reinterpret_cast<Ops const*>(aOps);
 	}
 

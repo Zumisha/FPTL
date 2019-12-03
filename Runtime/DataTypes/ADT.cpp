@@ -1,11 +1,11 @@
 ﻿#include <sstream>
 #include <utility>
 
-#include "DataTypes/Data.h"
-#include "DataTypes/ADT.h"
-#include "CollectedHeap.h"
-#include "GarbageCollector.h"
-#include "Context.h"
+#include "Data.h"
+#include "ADT.h"
+#include "Runtime/CollectedHeap.h"
+#include "Runtime/GarbageCollector.h"
+#include "Runtime/Context.h"
 
 namespace FPTL {
 namespace Runtime {

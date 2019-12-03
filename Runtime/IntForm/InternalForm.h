@@ -7,8 +7,6 @@
 
 #include "Runtime/FunctionLibrary.h"
 
-#define fptlDebugBuild 0
-
 namespace FPTL {
 namespace Runtime {
 

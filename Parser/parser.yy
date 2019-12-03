@@ -1,6 +1,6 @@
 %defines
 %define api.namespace {FPTL::Parser}
-%define api.parser.class {BisonParser}
+%define parser_class_name {BisonParser}
 
 %code requires
 {
@@ -48,7 +48,7 @@
 %code
 {
 #include "../Support.h"
-#include "../Tokenizer.h"
+#include "../FlexTokenizer.h"
 #include "../Nodes.h"
 }
 

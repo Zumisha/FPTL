@@ -1,4 +1,6 @@
 #include <istream>
+#include <cmath>
+
 #include "Data.h"
 
 namespace FPTL {
@@ -76,7 +78,7 @@ public:
 
 	DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 	{
-		return DataBuilders::createDouble(fmod(aLhs.getOps()->toDouble(aLhs), aRhs.getOps()->toDouble(aRhs)));
+		return DataBuilders::createDouble(std::fmod(aLhs.getOps()->toDouble(aLhs), aRhs.getOps()->toDouble(aRhs)));
 	}
 
 	DataValue abs(const DataValue & aArg) const override

@@ -1,9 +1,9 @@
 #include "InternalForm.h"
 #include "../DataTypes/String.h"
 #include "Runtime/StandardLibrary.h"
-#include "Runtime/FScheme.h"
 #include "Runtime/Run.h"
 #include "Runtime/Context.h"
+#include "Runtime/Macros.h"
 
 namespace FPTL {
 namespace Runtime {
@@ -114,7 +114,7 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	ctx.controlStack.pop_back();
 
 	// Берём сверху стека 1 аргумент - результат вычисления предиката.
-	auto cond = ctx.stack.back();
+	const auto& cond = ctx.stack.back();
 	bool isUndefined = false;
 
 	const size_t numArgs = ctx.arity - arity;
@@ -133,7 +133,7 @@ void CondChoose::exec(SExecutionContext & ctx) const
 	ctx.arity = arity;
 
 	// Проверка условия.
-	if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
+	if (numArgs > 0 && (isUndefined || (/*cond.getOps() == falseConst.getOps() && */!cond.mIntVal)))
 	{
 		if (!mThen) // Если ненужная ветвь длинная - отменяем её вычисление.
 			ctx.evaluator()->cancelFromPendingEnd(1 + !mElse);

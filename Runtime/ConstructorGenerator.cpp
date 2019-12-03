@@ -1,5 +1,6 @@
 ﻿#include <iterator>
 
+#include <memory>
 #include "../Parser/Nodes.h"
 #include "ConstructorGenerator.h"
 #include "DataTypes/ADT.h"

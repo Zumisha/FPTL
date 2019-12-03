@@ -22,7 +22,7 @@ include_directories($ENV{BOOST_ROOT})
 include_directories(./Thirdparty/lib/)
 include_directories(./Thirdparty/jemalloc-5.0.1/lib/)
 include_directories(./Thirdparty/jemalloc-5.0.1/include/)
-include_directories(../)
+include_directories(./)
 include_directories(./Parser/Generated/Flex/)
 
 # Define Release by default.
@@ -119,7 +119,6 @@ Runtime/ConstructorGenerator.h
 Runtime/FunctionLibrary.h
 Runtime/Context.h
 Runtime/GarbageCollector.h
-Runtime/Core.h
 Runtime/GcAwarePtr.h
 Runtime/StandardLibrary.h
 Runtime/WorkStealingQueue.h
@@ -209,4 +208,4 @@ FIND_PACKAGE(Boost 1.58 COMPONENTS program_options timer thread chrono date_time
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} )
-#target_link_libraries(${PROJECT_NAME} libjemalloc.so )
+target_link_libraries(${PROJECT_NAME} libjemalloc.so )

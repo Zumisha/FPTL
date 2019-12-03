@@ -6,7 +6,7 @@ namespace Utils {
 	{
 	private:
 		bool isEnabled;
-		std::string Set(std::string atr) { return isEnabled ? ("\033[" + atr + "m") : ""; }
+		std::string Set(const std::string& atr) { return isEnabled ? ("\033[" + atr + "m") : ""; }
 
 	public:
 		FormatedOutput() : isEnabled(false) {}
@@ -15,27 +15,27 @@ namespace Utils {
 		void enable() { isEnabled = true; }
 		void disable() { isEnabled = false; }
 
-		std::string Bold(std::string text) { return Set("1") + text + Set("22"); }		
-		std::string Underlined(std::string text) { return Set("4") + text + Set("24"); }		
-		std::string Reverse(std::string text) { return Set("7") + text + Set("27"); }
+		std::string Bold(const std::string& text) { return Set("1") + text + Set("22"); }
+		std::string Underlined(const std::string& text) { return Set("4") + text + Set("24"); }
+		std::string Reverse(const std::string& text) { return Set("7") + text + Set("27"); }
 
-		std::string Black(std::string text) { return Set("30") + text + Set("39"); }
-		std::string Red(std::string text) { return Set("31") + text + Set("39"); }
-		std::string Green(std::string text) { return Set("32") + text + Set("39"); }
-		std::string Yellow(std::string text) { return Set("33") + text + Set("39"); }
-		std::string Blue(std::string text) { return Set("34") + text + Set("39"); }
-		std::string Magenta(std::string text) { return Set("35") + text + Set("39"); }
-		std::string Cyan(std::string text) { return Set("36") + text + Set("39"); }
-		std::string White(std::string text) { return Set("37") + text + Set("39"); }
+		std::string Black(const std::string& text) { return Set("30") + text + Set("39"); }
+		std::string Red(const std::string& text) { return Set("31") + text + Set("39"); }
+		std::string Green(const std::string& text) { return Set("32") + text + Set("39"); }
+		std::string Yellow(const std::string& text) { return Set("33") + text + Set("39"); }
+		std::string Blue(const std::string& text) { return Set("34") + text + Set("39"); }
+		std::string Magenta(const std::string& text) { return Set("35") + text + Set("39"); }
+		std::string Cyan(const std::string& text) { return Set("36") + text + Set("39"); }
+		std::string White(const std::string& text) { return Set("37") + text + Set("39"); }
 
-		std::string BackBlack(std::string text) { return Set("40") + text + Set("49"); }
-		std::string BackRed(std::string text) { return Set("41") + text + Set("49"); }
-		std::string BackGreen(std::string text) { return Set("42") + text + Set("49"); }
-		std::string BackYellow(std::string text) { return Set("43") + text + Set("49"); }
-		std::string BackBlue(std::string text) { return Set("44") + text + Set("49"); }
-		std::string BackMagenta(std::string text) { return Set("45") + text + Set("49"); }
-		std::string BackCyan(std::string text) { return Set("46") + text + Set("49"); }
-		std::string BackWhite(std::string text) { return Set("47") + text + Set("49"); }
+		std::string BackBlack(const std::string& text) { return Set("40") + text + Set("49"); }
+		std::string BackRed(const std::string& text) { return Set("41") + text + Set("49"); }
+		std::string BackGreen(const std::string& text) { return Set("42") + text + Set("49"); }
+		std::string BackYellow(const std::string& text) { return Set("43") + text + Set("49"); }
+		std::string BackBlue(const std::string& text) { return Set("44") + text + Set("49"); }
+		std::string BackMagenta(const std::string& text) { return Set("45") + text + Set("49"); }
+		std::string BackCyan(const std::string& text) { return Set("46") + text + Set("49"); }
+		std::string BackWhite(const std::string& text) { return Set("47") + text + Set("49"); }
 
 		// Unsupported
 		/*

@@ -1,7 +1,7 @@
 ﻿#ifndef AST_H
 #define AST_H
 
-#include "Runtime/DataTypes/TypeInfo.h"
+#include "Runtime/DataTypes/Types.h"
 
 namespace FPTL {
 	namespace Parser {

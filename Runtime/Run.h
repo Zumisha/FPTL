@@ -24,7 +24,7 @@ class EvalConfig
 {
 public:
 	EvalConfig() :
-		mOutput(new Utils::FormatedOutput()),
+		mOutput(Utils::FormatedOutput()),
 		mNumCores(1),
 		mInfo(false),
 		mProactive(false)

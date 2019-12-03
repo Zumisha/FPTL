@@ -3,6 +3,7 @@
 #include "Context.h"
 #include "Run.h"
 #include "IntForm/InternalForm.h"
+#include "Runtime/Macros.h"
 
 namespace FPTL {
 namespace Runtime {

@@ -89,7 +89,7 @@ void run(std::vector<std::string> &inputTuple, std::string &programPath, po::var
 
 }}
 
-void * operator new (const std::size_t count)
+/*void * operator new (const std::size_t count)
 {
 	return ::je_malloc(count);
 }
@@ -107,7 +107,7 @@ void operator delete(void * ptr)
 void operator delete[](void * ptr)
 {
 	::je_free(ptr);
-}
+}*/
 
 bool optionsVerification(po::variables_map &vm, Utils::FormatedOutput fo)
 {
