@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{7f6caaea-3402-44e3-85d7-7fcbd6e2a18e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{f99a91fc-e20f-48ab-9910-6e7a2572b2fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Grammar rules">
+      <UniqueIdentifier>{e23981d0-8950-4b1f-a241-8268d586deea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{d586f75f-ba1e-46e2-bb53-c5dd60d55025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Evaluator">
+      <UniqueIdentifier>{71daa11c-b606-4801-b9a0-24cc77c9b32b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FScheme">
+      <UniqueIdentifier>{0d483e0c-bb70-4a3a-bef1-ffb9ca5e7eb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\InternalForm">
+      <UniqueIdentifier>{80001741-01b1-4218-91aa-1045f98dba96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Libraries">
+      <UniqueIdentifier>{9cd4a8d2-e276-4b9e-8061-ac555220a020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Evaluator">
+      <UniqueIdentifier>{d9c21c54-98ac-45cb-a66d-e3cb3fa8c419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FScheme">
+      <UniqueIdentifier>{6e430fc5-fa8e-4f8f-95a7-844dff7e0914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\InternalForm">
+      <UniqueIdentifier>{7df96ea4-bc7f-47d4-a759-ec017e2b6205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Libraries">
+      <UniqueIdentifier>{1feaa019-e0d7-444b-8285-93cb1ca0c964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataTypes">
+      <UniqueIdentifier>{46db1307-03ba-467d-b373-1b6aaa4271c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataTypes">
+      <UniqueIdentifier>{57524d30-f543-46b0-a070-064b8765166d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\Generated">
+      <UniqueIdentifier>{d40f6c13-bb42-43ab-b6a4-3dd14e830659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\Generated">
+      <UniqueIdentifier>{aa6df165-e388-4470-b6d0-c8efc52f0ed2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataTypes\Values">
+      <UniqueIdentifier>{b1966213-7151-4f96-a640-9a911de1d023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataTypes\Ops">
+      <UniqueIdentifier>{eaedb6c7-7b50-48f9-839c-d8f58183a6ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataTypes\NewFilter1">
+      <UniqueIdentifier>{944a8159-1629-4f3b-a26d-b882f20023cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DataTypes\TypeInfo.cpp">
+      <Filter>Source Files\DataTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Support.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Tokenizer.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Nodes.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Semantic.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\NodeVisitor.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Evaluator\EvaluatorUnit.cpp">
+      <Filter>Source Files\Evaluator</Filter>
+    </ClCompile>
+    <ClCompile Include="Evaluator\Run.cpp">
+      <Filter>Source Files\Evaluator</Filter>
+    </ClCompile>
+    <ClCompile Include="FScheme\ConstructorGenerator.cpp">
+      <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
+    <ClCompile Include="FScheme\FScheme.cpp">
+      <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
+    <ClCompile Include="FScheme\FSchemeGenerator.cpp">
+      <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
+    <ClCompile Include="FScheme\NodeDeleter.cpp">
+      <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
+    <ClCompile Include="InternalForm\Generator.cpp">
+      <Filter>Source Files\InternalForm</Filter>
+    </ClCompile>
+    <ClCompile Include="InternalForm\InternalForm.cpp">
+      <Filter>Source Files\InternalForm</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\FunctionLibrary.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\StandardLibrary.cpp">
+      <Filter>Source Files\Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Generated\parser.tab.cc">
+      <Filter>Source Files\Parser\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Generated\Flex\FlexScanner.cpp">
+      <Filter>Source Files\Parser\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Values\ADTValue.cpp">
+      <Filter>Source Files\DataTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Evaluator\Context.cpp">
+      <Filter>Source Files\Evaluator</Filter>
+    </ClCompile>
+    <ClCompile Include="Value.cpp">
+      <Filter>Source Files\DataTypes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Utils\FormatedOutput.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\TypeInfo.h">
+      <Filter>Header Files\DataTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\AST.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\FlexTokenizer.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Ident.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Nodes.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\NodeVisitor.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\SemanticCheck.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Support.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\Context.h">
+      <Filter>Header Files\Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\ControlValue.h">
+      <Filter>Header Files\Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\EvaluatorUnit.h">
+      <Filter>Header Files\Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\LockFreeWorkStealingQueue.h">
+      <Filter>Header Files\Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\Run.h">
+      <Filter>Header Files\Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\ConstructorGenerator.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\FScheme.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\FSchemeGenerator.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\FSchemeVisitor.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\NodeDeleter.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="InternalForm\Generator.h">
+      <Filter>Header Files\InternalForm</Filter>
+    </ClInclude>
+    <ClInclude Include="InternalForm\InternalForm.h">
+      <Filter>Header Files\InternalForm</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\FunctionLibrary.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\StandardLibrary.h">
+      <Filter>Header Files\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Generated\Flex\FlexLexer.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Generated\parser.tab.hh">
+      <Filter>Header Files\Parser\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Generated\stack.hh">
+      <Filter>Header Files\Parser\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\ArrayOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\BaseOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\DoubleOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\IntegerOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\Ops.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\StringOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\ADTValue.h">
+      <Filter>Header Files\DataTypes\Values</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\ArrayValue.h">
+      <Filter>Header Files\DataTypes\Values</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\StringValue.h">
+      <Filter>Header Files\DataTypes\Values</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\Value.h">
+      <Filter>Header Files\DataTypes\Values</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\BooleanOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\ADTOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Bugs.txt" />
+    <None Include="Parser\parser.yy">
+      <Filter>Grammar rules</Filter>
+    </None>
+    <None Include="Parser\tokenizer.flex">
+      <Filter>Grammar rules</Filter>
+    </None>
+  </ItemGroup>
+</Project>

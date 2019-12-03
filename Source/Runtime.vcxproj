@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{69D57EAD-F1A4-475D-9AF6-38950E12D608}</ProjectGuid>
+    <RootNamespace>Runtime</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="..\Thirdparty\winflexbison3\custom_build_rules\win_flex_bison\win_flex_bison_custom_build.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fptl</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fptl</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Source;..\Source\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include;..\Thirdparty\jemalloc-5.0.1\include\msvc_compat</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>jemallocd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/STACK:256000000 %(AdditionalOptions)</AdditionalOptions>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
+      <StackReserveSize>4194304</StackReserveSize>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\Source;..\Source\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include\msvc_compat;..\Thirdparty\jemalloc-5.0.1\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>4710;4514;4711;4464;4062</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>jemalloc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:libcmtd /STACK:10000000 %(AdditionalOptions)</AdditionalOptions>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
+      <Version>
+      </Version>
+      <StackReserveSize>16777216</StackReserveSize>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="DataTypes\TypeInfo.cpp" />
+    <ClCompile Include="DataTypes\Values\ADTValue.cpp" />
+    <ClCompile Include="Evaluator\Context.cpp" />
+    <ClCompile Include="Evaluator\EvaluatorUnit.cpp" />
+    <ClCompile Include="Evaluator\Run.cpp" />
+    <ClCompile Include="FScheme\ConstructorGenerator.cpp" />
+    <ClCompile Include="FScheme\FScheme.cpp" />
+    <ClCompile Include="FScheme\FSchemeGenerator.cpp" />
+    <ClCompile Include="FScheme\NodeDeleter.cpp" />
+    <ClCompile Include="InternalForm\Generator.cpp" />
+    <ClCompile Include="InternalForm\InternalForm.cpp" />
+    <ClCompile Include="Libraries\FunctionLibrary.cpp" />
+    <ClCompile Include="Libraries\StandardLibrary.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Parser\Generated\Flex\FlexScanner.cpp" />
+    <ClCompile Include="Parser\Generated\parser.tab.cc" />
+    <ClCompile Include="Parser\Nodes.cpp" />
+    <ClCompile Include="Parser\NodeVisitor.cpp" />
+    <ClCompile Include="Parser\Semantic.cpp" />
+    <ClCompile Include="Parser\Support.cpp" />
+    <ClCompile Include="Parser\Tokenizer.cpp" />
+    <ClCompile Include="Tests.cpp" />
+    <ClCompile Include="Value.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DataTypes\Ops\ADTOps.h" />
+    <ClInclude Include="DataTypes\Ops\ArrayOps.h" />
+    <ClInclude Include="DataTypes\Ops\BaseOps.h" />
+    <ClInclude Include="DataTypes\Ops\BooleanOps.h" />
+    <ClInclude Include="DataTypes\Ops\DoubleOps.h" />
+    <ClInclude Include="DataTypes\Ops\IntegerOps.h" />
+    <ClInclude Include="DataTypes\Ops\Ops.h" />
+    <ClInclude Include="DataTypes\Ops\StringOps.h" />
+    <ClInclude Include="DataTypes\TypeInfo.h" />
+    <ClInclude Include="DataTypes\Values\ADTValue.h" />
+    <ClInclude Include="DataTypes\Values\ArrayValue.h" />
+    <ClInclude Include="DataTypes\Values\StringValue.h" />
+    <ClInclude Include="DataTypes\Values\Value.h" />
+    <ClInclude Include="Evaluator\Context.h" />
+    <ClInclude Include="Evaluator\ControlValue.h" />
+    <ClInclude Include="Evaluator\EvaluatorUnit.h" />
+    <ClInclude Include="Evaluator\LockFreeWorkStealingQueue.h" />
+    <ClInclude Include="Evaluator\Run.h" />
+    <ClInclude Include="FScheme\ConstructorGenerator.h" />
+    <ClInclude Include="FScheme\FScheme.h" />
+    <ClInclude Include="FScheme\FSchemeGenerator.h" />
+    <ClInclude Include="FScheme\FSchemeVisitor.h" />
+    <ClInclude Include="FScheme\NodeDeleter.h" />
+    <ClInclude Include="InternalForm\Generator.h" />
+    <ClInclude Include="InternalForm\InternalForm.h" />
+    <ClInclude Include="Libraries\FunctionLibrary.h" />
+    <ClInclude Include="Libraries\StandardLibrary.h" />
+    <ClInclude Include="Macros.h" />
+    <ClInclude Include="Parser\AST.h" />
+    <ClInclude Include="Parser\FlexTokenizer.h" />
+    <ClInclude Include="Parser\Generated\Flex\FlexLexer.h" />
+    <ClInclude Include="Parser\Generated\parser.tab.hh" />
+    <ClInclude Include="Parser\Generated\stack.hh" />
+    <ClInclude Include="Parser\Ident.h" />
+    <ClInclude Include="Parser\Nodes.h" />
+    <ClInclude Include="Parser\NodeVisitor.h" />
+    <ClInclude Include="Parser\SemanticCheck.h" />
+    <ClInclude Include="Parser\Support.h" />
+    <ClInclude Include="Utils\FormatedOutput.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Bugs.txt" />
+    <None Include="Parser\parser.yy" />
+    <None Include="Parser\tokenizer.flex" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\Thirdparty\winflexbison3\custom_build_rules\win_flex_bison\win_flex_bison_custom_build.targets" />
+  </ImportGroup>
+</Project>
