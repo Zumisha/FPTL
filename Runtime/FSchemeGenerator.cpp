@@ -23,45 +23,13 @@ FSchemeGenerator::FSchemeGenerator(Parser::ASTNode * astRoot)
 	process(astRoot);
 }
 
-	FSchemeGenerator::FSchemeGenerator(const FSchemeGenerator& generator)
-	{
-		mTree = generator.mTree;
-		mScheme = generator.mScheme;
-		mSchemeInput = generator.mSchemeInput;
-		mProgram = generator.mProgram;
-		mConstructorGenerator = new ConstructorGenerator(*generator.mConstructorGenerator);
-		mLibrary = new FunctionLibrary(*generator.mLibrary);
-	}
-
-	//-----------------------------------------------------------------------------
 FSchemeGenerator::~FSchemeGenerator()
 {
 	NodeDeleter deleter;
-
 	deleter.releaseGraph(mProgram);
 
 	delete mLibrary;
 	delete mConstructorGenerator;
-}
-
-FSchemeGenerator & FSchemeGenerator::operator=(const FSchemeGenerator & generator)
-{
-	if (this != &generator)
-	{
-		NodeDeleter deleter;
-		deleter.releaseGraph(mProgram);
-		delete mLibrary;
-		delete mConstructorGenerator;
-
-		mTree = generator.mTree;
-		mScheme = generator.mScheme;
-		mSchemeInput = generator.mSchemeInput;
-		mProgram = generator.mProgram;
-		mConstructorGenerator = new ConstructorGenerator(*generator.mConstructorGenerator);
-		mLibrary = new FunctionLibrary(*generator.mLibrary);
-	}
-
-	return *this;
 }
 
 FSchemeNode * FSchemeGenerator::getProgram() const
@@ -81,7 +49,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Целочисленная константа.
 		case Parser::ASTNode::IntConstant:
 		{
-			const auto constant = boost::lexical_cast<long long>(aNode->getConstant().getStr().c_str());
+			const auto constant = boost::lexical_cast<int64_t>(aNode->getConstant().getStr().c_str());
 			node = new FConstantNode(TypeInfo("integer"), DataBuilders::createInt(constant), name.Line, name.Col);
 			break;
 		}
@@ -107,7 +75,7 @@ void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
 		// Выбор элемента из кортежа.
 		case Parser::ASTNode::TupleElemNumber:
 		{
-			const auto elemNumber = boost::lexical_cast<long long>(aNode->getConstant().getStr().c_str());
+			const auto elemNumber = boost::lexical_cast<int64_t>(aNode->getConstant().getStr().c_str());
 			node = new FTakeNode(elemNumber, name.Line, name.Col);
 			break;
 		}
@@ -237,7 +205,7 @@ void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
 
 			// Трансформируем дерево, чтобы оно ветвилось только в левую сторону, 
 			// чтобы при выполнении за каждым advance шел unwind.
-			const auto seqNode = dynamic_cast<FSequentialNode *>(second);
+			const auto seqNode = dynamic_cast<FSequentialNode*>(second);
 
 			if (seqNode)
 			{

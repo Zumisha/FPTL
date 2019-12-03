@@ -22,9 +22,9 @@ class FSchemeGenerator : public Parser::NodeVisitor
 public:
 
 	explicit FSchemeGenerator(Parser::ASTNode * astRoot);
-	FSchemeGenerator(const FSchemeGenerator &generator);
 	~FSchemeGenerator();
-	FSchemeGenerator& operator= (const FSchemeGenerator &generator);
+	FSchemeGenerator(const FSchemeGenerator &generator) = delete;
+	FSchemeGenerator& operator= (const FSchemeGenerator &generator) = delete;
 
 	void visit(Parser::FunctionalProgram * aFuncProgram) override;
 	void visit(Parser::FunctionNode * aFunctionNode) override;
@@ -43,10 +43,9 @@ private:
 
 	Parser::ASTNode * mTree;
 
-	typedef std::map<std::string, FScheme *> TLexicalContext;
+	typedef std::map<std::string, FScheme*> TLexicalContext;
 
 	std::stack<FSchemeNode *> mNodeStack;
-	std::stack<bool> mIsParallel;
 
 	TLexicalContext mDefinitions;
 

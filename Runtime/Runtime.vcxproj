@@ -96,6 +96,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4710;4514;4711;4464;4062</DisableSpecificWarnings>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -109,7 +110,9 @@
       </ForceSymbolReferences>
       <Version>
       </Version>
-      <StackReserveSize>16777216</StackReserveSize>
+      <StackReserveSize>4194304</StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
