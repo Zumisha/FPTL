@@ -1,0 +1,1 @@
+"../build/FPTL" "test.fptl" -n 8 -t -i -v

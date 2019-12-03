@@ -1,7 +1,7 @@
 ﻿#include <cassert>
 #include "Support.h"
 #include "Nodes.h"
-#include "Generated/Parser.tab.hh"
+#include "Generated/parser.tab.hh"
 
 namespace FPTL { namespace Parser {
 

@@ -1,0 +1,74 @@
+/*{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "windows": {
+      "options": {
+        "shell": {
+          "executable": "bash.exe",
+          "args": ["-c"]
+        },
+        "cwd": "${workspaceRoot}/build"
+      }
+    },
+    "tasks": [
+        {
+            "label": "build FPTL on WSL",
+            "type": "shell",
+            "command": "cmake \"${workspaceRoot}/Runtime/\"",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "make",
+            "args": [
+                "make -j 8"
+            ]
+        }
+    ],
+    "group": {
+      "kind": "build",
+      "isDefault": true
+    }
+}*/
+{
+    "version": "2.0.0",
+    "command": "sh",
+    "args": ["-c"],
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new"
+    },
+    "tasks": [
+        {
+            "label": "cmake",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build"
+            },
+            "args": [
+                "cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Debug .."
+            ]
+        },
+        {
+            "label": "make",
+            "type": "shell",
+            "args": [
+                "make -j 8"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/build"
+            },
+            "dependsOn": [
+                "cmake"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
