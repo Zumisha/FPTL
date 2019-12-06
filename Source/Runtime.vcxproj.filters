@@ -164,6 +164,9 @@
     <ClCompile Include="DataTypes\Ops\IntegerOps.cpp">
       <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
+    <ClCompile Include="FScheme\NewFSchemeGenerator.cpp">
+      <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTypes\TypeInfo.h">

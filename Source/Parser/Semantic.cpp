@@ -138,7 +138,7 @@ namespace FPTL {
 		//---------------------------------------------------------------------------
 		void NamesChecker::checkName(STermDescriptor & aTermDesc)
 		{
-			ASTNode * target = 0;
+			ASTNode * target = nullptr;
 
 			std::vector<STermDescriptor> undefinedTerms;
 

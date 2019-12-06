@@ -133,7 +133,7 @@ namespace FPTL
 			ctx.arity = arity;
 
 			// Проверка условия.
-			if (numArgs > 0 && (isUndefined || (/*cond.getOps() == falseConst.getOps() && */!cond.mIntVal)))
+			if (numArgs > 0 && (isUndefined || (cond.getOps() == falseConst.getOps() && !cond.mIntVal)))
 			{
 				if (!mThen) // Если ненужная ветвь длинная - отменяем её вычисление.
 					ctx.evaluator()->cancelFromPendingEnd(1 + !mElse);

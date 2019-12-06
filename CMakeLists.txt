@@ -13,6 +13,10 @@ project(${PROJECT_NAME} CXX)
 #message("${PROJECT_NAME}: CURR PROJECT: ${CMAKE_CURRENT_SOURCE_DIR}")
 #message("${PROJECT_NAME}: CURR BIN DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
+######################### Flags ############################
+# Defines Flags for Windows and Linux                      #
+############################################################
+
 if(NOT MSVC)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -22,7 +26,7 @@ endif(NOT MSVC)
 
 # Include directories 
 include_directories($ENV{BOOST_ROOT})
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIR})
 include_directories(./Thirdparty/lib/)
 include_directories(./Thirdparty/jemalloc-5.0.1/lib/)
 include_directories(./Thirdparty/jemalloc-5.0.1/include/)
@@ -77,10 +81,6 @@ endif()
 ############################################################
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fno-omit-frame-pointer -fsanitize=memory")
 #set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=memory")
-
-######################### Flags ############################
-# Defines Flags for Windows and Linux                      #
-############################################################
 
 # Preprocessor definitions
 if(CMAKE_BUILD_TYPE STREQUAL "Release")

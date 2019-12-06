@@ -127,6 +127,7 @@
     <ClCompile Include="FScheme\ConstructorGenerator.cpp" />
     <ClCompile Include="FScheme\FScheme.cpp" />
     <ClCompile Include="FScheme\FSchemeGenerator.cpp" />
+    <ClCompile Include="FScheme\NewFSchemeGenerator.cpp" />
     <ClCompile Include="FScheme\NodeDeleter.cpp" />
     <ClCompile Include="GC\CollectedHeap.cpp" />
     <ClCompile Include="GC\GarbageCollector.cpp" />

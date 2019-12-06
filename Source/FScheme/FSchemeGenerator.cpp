@@ -255,13 +255,15 @@ namespace FPTL
 				// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
 				Parser::ListNode * parameters = static_cast<Parser::FunctionNode *>(target)->getFormalParameters();
 
-				for (auto formalParam = parameters->rbegin(); formalParam != parameters->rend(); ++formalParam)
+				//for (auto& child : parameters->mChilds)
+				for (size_t i = parameters->mChilds.size(); i--;)
 				{
 					FSchemeNode * node = mNodeStack.top();
 					mNodeStack.pop();
 
 					// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
-					Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(*formalParam);
+					//Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(child);
+					Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(parameters->mChilds[i]);
 
 					FScheme *delegateScheme = dynamic_cast<FScheme *>(node);
 					if (!delegateScheme)

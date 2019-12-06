@@ -83,14 +83,14 @@ namespace FPTL
 				ValueConstructor			// конструктор какого-либо данного
 			};
 
-			explicit ASTNode(const ASTNodeType aType) : mType(aType), mCyclicIndex(0) {}
+			explicit ASTNode(const ASTNodeType aType) : mParent(nullptr), mType(aType), mCyclicIndex(0) {}
 			virtual ~ASTNode() = default;
 
 			ASTNodeType getType() const { return mType; }
 
 			virtual void accept(class NodeVisitor * aVisitor) = 0;
 
-			virtual ASTNode * copy() const = 0;
+			//virtual ASTNode* copy() const = 0;
 
 			// Возвращает количество циклов, в которых состоит эта вершина.
 			size_t cyclicIndex() const { return mCyclicIndex; }
@@ -110,6 +110,8 @@ namespace FPTL
 			// deleted
 			ASTNode(const ASTNode &) = delete;
 			ASTNode & operator=(const ASTNode &) = delete;
+			const ASTNode * mParent;
+			std::vector<ASTNode*> mChilds;
 
 		private:
 			ASTNodeType mType;

@@ -60,9 +60,11 @@ namespace FPTL
 
 		void NodeVisitor::visit(ListNode * aNode)
 		{
-			for (auto & node : *aNode)
+			//for (auto& node : aNode->mChilds)
+			for (size_t i = aNode->mChilds.size(); i--;)
 			{
-				process(node);
+				//process(node);
+				process(aNode->mChilds[i]);
 			}
 		}
 

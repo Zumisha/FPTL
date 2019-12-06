@@ -178,6 +178,9 @@ FunctionalProgram
 	: DataTypeDefinitionsBlocks Scheme Application
 		{
 			mASTRoot = new FunctionalProgram( $1, $2, $3 );
+			$1->mParent = mASTRoot;
+			$2->mParent = mASTRoot;
+			$3->mParent = mASTRoot;
 			
 			// Возвращаем 0, иначе все дерево будет "срублено" деструктором парсера.
 			$$ = 0;
@@ -185,6 +188,8 @@ FunctionalProgram
 	| Scheme Application
 		{
 			mASTRoot = new FunctionalProgram( 0, $1, $2 );
+			$1->mParent = mASTRoot;
+			$2->mParent = mASTRoot;
 			$$ = 0;
 		}
 	;
@@ -196,10 +201,12 @@ DataTypeDefinitionsBlocks
 		{
 			$$ = new ListNode(  ASTNode::DataTypeDefinitionsBlocks );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| DataTypeDefinitionsBlock DataTypeDefinitionsBlocks
 		{
 			$$ = $2->addElement( $1 );
+			$1->mParent = $2;
 		}
 	;
 
@@ -207,18 +214,26 @@ DataTypeDefinitionsBlock
 	: T_DATA TypeName '{' TypesDefinitionList '}'
 		{
 			$$ = new DataNode(  $2, $4, 0, 0 );
+			$4->mParent = $$;
 		}
 	| T_DATA TypeName '[' TypeParametersList ']' '{' TypesDefinitionList '}'
 		{
 			$$ = new DataNode(  $2, $7, $4, 0 );
+			$7->mParent = $$;
+			$4->mParent = $$;
 		}
 	| T_DATA TypeName '{' T_CONSTRUCTORS '{' ConstructorsDefinitionList '}' TypesDefinitionList '}'
 		{
 			$$ = new DataNode(  $2, $8, 0, $6 );
+			$8->mParent = $$;
+			$6->mParent = $$;
 		}
 	| T_DATA TypeName '[' TypeParametersList ']' '{' T_CONSTRUCTORS '{' ConstructorsDefinitionList '}' TypesDefinitionList '}'
 		{
 			$$ = new DataNode(  $2, $11, $4, $9 );
+			$11->mParent = $$;
+			$4->mParent = $$;
+			$9->mParent = $$;
 		}	
 	;
 
@@ -231,10 +246,12 @@ TypeParametersList
 		{
 			$$ = new ListNode( ASTNode::TypeParametersList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| TypeParameterDef ',' TypeParametersList
 		{		
 			$$ = $3->addElement( $1 );
+			$1->mParent = $3;
 		}
 	;
 	
@@ -250,10 +267,12 @@ ConstructorsDefinitionList
 		{
 			$$ = new ListNode( ASTNode::ConstructorsDefinitionList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| ConstructorDef ConstructorsDefinitionList
 		{
 			$$ = $2->addElement( $1 );
+			$1->mParent = $2;
 		}
 	;
 
@@ -265,6 +284,7 @@ ConstructorDef
 	| ConstructorParametersList T_TARROW TypeName ':' CONSNAME ';'
 		{
 			$$ = new ConstructorNode( $5, $1, $3 );
+			$1->mParent = $$;
 		}
 	
 ConstructorParametersList
@@ -272,10 +292,12 @@ ConstructorParametersList
 		{
 			$$ = new ListNode( ASTNode::ConstructorParametersList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| AtomType '*' ConstructorParametersList
 		{
 			$$ = $3->addElement( $1 );
+			$1->mParent = $3;
 		}
 	;
 	
@@ -283,10 +305,10 @@ ConstructorParametersList
 TypesDefinitionList
 	: TypesDefinitionList2
 		{
-			if( $1->size() > 1 )
+			if( $1->mChilds.size() > 1 )
 			{
-				for( ListNode::iterator it = $1->begin(); it != $1->end(); ++it )
-					pSupport->semanticError( ErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>( *it )->getDefinitionName() );
+				for(ASTNode* child : $1->mChilds)
+					pSupport->semanticError( ErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>(child)->getDefinitionName() );
 			}
 
 			$$ = $1;
@@ -298,10 +320,12 @@ TypesDefinitionList2
 		{
 			$$ = new ListNode( ASTNode::TypesDefinitionList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| TypeDefinition TypesDefinitionList2
 		{
 			$$ = $2->addElement( $1 );
+			$1->mParent = $2;
 		}
 	;
 
@@ -309,6 +333,7 @@ TypeDefinition
 	: TypeName '=' TypeExpression ';'
 		{
 			$$ = new DefinitionNode( ASTNode::TypeDefinition, $1, $3 );
+			$3->mParent = $$;
 		}
 	| DataTypeDefinitionsBlock
 		{
@@ -322,6 +347,7 @@ TypeDefConstructor
 	: ConstructorParametersList '.' ConstructorName
 		{
 			$$ = new DefinitionNode( ASTNode::TypeConstructorDefinition, $3, $1 );
+			$1->mParent = $$;
 		}
 	| ConstructorName
 		{
@@ -333,7 +359,9 @@ TypeExpression
 	: TypeDefConstructor
 	| TypeDefConstructor T_UNION TypeExpression
 		{
-			$$ = new ExpressionNode( ASTNode::TypeExpression, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::TypeExpression, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 		
@@ -341,19 +369,20 @@ TypeExpression
 AtomType
 	: BaseType
 		{	
-			$$ = new NameRefNode( $1, NameRefNode::BaseType );
+			$$ = new NameRefNode( $1, NameRefNode::BaseType, nullptr );
 		}
 	| TypeName
 		{
-			$$ = new NameRefNode( $1, NameRefNode::Type );
+			$$ = new NameRefNode( $1, NameRefNode::Type, nullptr );
 		}
 	| TypeName '[' TypeExpressionsList ']'
 		{
 			$$ = new NameRefNode( $1, NameRefNode::Template, $3 );
+			$3->mParent = $$;
 		}
 	| TypeParameter
 		{
-			$$ = new NameRefNode( $1, NameRefNode::TypeParamName );
+			$$ = new NameRefNode( $1, NameRefNode::TypeParamName, nullptr );
 		}
 	;
 
@@ -372,10 +401,12 @@ TypeExpressionsList
 		{
 			$$ = new ListNode( ASTNode::TypeExpressionsList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| AtomType ',' TypeExpressionsList
 		{
 			$$ = $3->addElement( $1 );
+			$1->mParent = $3;
 		}
 	;
 
@@ -389,11 +420,14 @@ Scheme
 	: SchemeBegin '{' DefinitionsList '}'
 		{
 			$$ = new FunctionNode( $1, $3, 0 );
+			$3->mParent = $$;
 			pSupport->popIdent();
 		}
 	| SchemeBegin '[' FormalParametersList ']' '{' DefinitionsList '}'
 		{
 			$$ = new FunctionNode( $1, $6, $3 );
+			$6->mParent = $$;
+			$3->mParent = $$;
 			pSupport->popIdent();
 		}
 	;
@@ -411,10 +445,12 @@ FormalParametersList
 		{
 			$$ = new ListNode( ASTNode::FormalParametersList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| FormalParameter ',' FormalParametersList
 		{
 			$$ = $3->addElement( $1 );
+			$1->mParent = $3;
 		}
 	;
 	
@@ -430,10 +466,12 @@ DefinitionsList
 		{
 			$$ = new ListNode( ASTNode::DefinitionsList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| Definition DefinitionsList
 		{
 			$$ = $2->addElement( $1 );
+			$1->mParent = $2;
 		}
 	;
 
@@ -441,10 +479,12 @@ Definition
 	: '@' '=' Term ';'
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $3 );
+			$3->mParent = $$;
 		}
 	| FuncVarName '=' Term ';'
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, $1, $3 );
+			$3->mParent = $$;
 		}
 	| ConstructionFun
 		{ $$ = $1; }
@@ -462,7 +502,7 @@ AtomTerm
 		{ $$ = $1; }
 	| '@'
 		{
-			$$ = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName );
+			$$ = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName, nullptr );
 		}
 	;
 
@@ -470,6 +510,7 @@ FuncObjectWithParameters
 	: NAME '(' FuncArgumentList ')'
 		{
 			$$ = new NameRefNode( $1, NameRefNode::FuncObjectWithParameters, $3 );
+			$3->mParent = $$;
 		}
 	
 FuncArgumentList
@@ -477,17 +518,19 @@ FuncArgumentList
 		{
 			$$ = new ListNode( ASTNode::FuncArgumentsList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| FuncParameterName ',' FuncArgumentList
 		{
 			$$ = $3->addElement( $1 );
+			$1->mParent = $3;
 		}
 	;
 
 FuncParameterName
 	: NAME
 		{
-			$$ = new NameRefNode( $1, NameRefNode::FuncParameterName );
+			$$ = new NameRefNode( $1, NameRefNode::FuncParameterName, nullptr );
 		}
 	| ElementaryFunctionName
 	| FuncObjectWithParameters
@@ -498,7 +541,9 @@ SequentialTerm
 	: AtomTerm
 	| SequentialTerm '.' AtomTerm
 		{
-			$$ = new ExpressionNode( ASTNode::SequentialTerm, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::SequentialTerm, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
@@ -506,7 +551,9 @@ CompositionTerm
 	: SequentialTerm
 	| CompositionTerm '*' SequentialTerm
 		{
-			$$ = new ExpressionNode( ASTNode::CompositionTerm, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::CompositionTerm, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
@@ -515,10 +562,15 @@ ConditionTerm
 	| CompositionTerm T_FARROW CompositionTerm ',' ConditionTerm
 		{
 			$$ = new ExpressionNode( ASTNode::ConditionTerm, $1, $3, $5 );
+			$1->mParent = $$;
+			$3->mParent = $$;
+			$5->mParent = $$;
 		}
 	| CompositionTerm T_FARROW CompositionTerm
 		{
-			$$ = new ExpressionNode( ASTNode::ConditionTerm, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::ConditionTerm, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
@@ -526,14 +578,16 @@ VariantTerm
 	: ConditionTerm
 	| VariantTerm '+' ConditionTerm
 		{
-			$$ = new ExpressionNode( ASTNode::VariantTerm, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::VariantTerm, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
 FuncObjectName
 	: NAME
 		{
-			$$ = new NameRefNode( $1, NameRefNode::FuncObjectName );
+			$$ = new NameRefNode( $1, NameRefNode::FuncObjectName, nullptr );
 		}
 	| FuncObjectWithParameters
 	;
@@ -547,6 +601,7 @@ ConstructionFun
 		{
 			$$ = new FunctionNode( $2, $5, 0 );
 			pSupport->popIdent();
+			$5->mParent = $$;
 		}
 	| T_FUN ConstructionFunName
 		{
@@ -556,6 +611,8 @@ ConstructionFun
 		{
 			$$ = new FunctionNode( $2, $8, $5 );
 			pSupport->popIdent();
+			$8->mParent = $$;
+			$5->mParent = $$;
 		}
 	;
 	
@@ -578,14 +635,14 @@ ElementaryFunctionName
 Constructor
 	: ConstructorName
 		{
-			$$ = new NameRefNode( $1, NameRefNode::ConstructorName );
+			$$ = new NameRefNode( $1, NameRefNode::ConstructorName, nullptr );
 		}
 	;
 	
 Destructor
 	: '~' ConstructorName
 		{	
-			$$ = new NameRefNode( $2, NameRefNode::DestructorName );
+			$$ = new NameRefNode( $2, NameRefNode::DestructorName, nullptr );
 		}
 	;
 	
@@ -622,7 +679,7 @@ Constant
 BuiltInFunctionName
 	: BFNAME
 		{
-			$$ = new NameRefNode( $1, NameRefNode::BuildInFunction );
+			$$ = new NameRefNode( $1, NameRefNode::BuildInFunction, nullptr );
 		}
 	;
 		
@@ -630,18 +687,26 @@ Application
 	: T_APPLICATION InterpFunProgramName
 		{
 			$$ = new ApplicationBlock( $2, 0, 0 );
+			$2->mParent = $$;
 		}
 	| T_APPLICATION InterpFunProgramName '(' Data ')'
 		{
 			$$ = new ApplicationBlock( $2, $4, 0 );
+			$2->mParent = $$;
+			$4->mParent = $$;
 		}
 	| T_APPLICATION DataInit InterpFunProgramName
 		{
 			$$ = new ApplicationBlock( $3, 0, $2 ); 
+			$3->mParent = $$;
+			$2->mParent = $$;
 		}
 	| T_APPLICATION DataInit InterpFunProgramName '(' Data ')'
 		{
 			$$ = new ApplicationBlock( $3, $5, $2 );
+			$3->mParent = $$;
+			$5->mParent = $$;
+			$2->mParent = $$;
 		}
 	;
 	
@@ -650,10 +715,12 @@ DataInit
 		{
 			$$ = new ListNode( ASTNode::InputVarDefinitionList );
 			$$->addElement( $1 );
+			$1->mParent = $$;
 		}
 	| OneDataInit DataInit
 		{
 			$$ = $2->addElement( $1 );
+			$1->mParent = $2;
 		}
 	;
 	
@@ -661,6 +728,7 @@ OneDataInit
 	: DataName '=' Value ';'
 		{
 			$$ = new DefinitionNode( ASTNode::InputVarDefinition, $1, $3 );
+			$3->mParent = $$;
 		}
 	;
 	
@@ -669,7 +737,7 @@ DataName : NAME;
 InterpFunProgramName
 	 : '%' NAME
 		{ 
-			$$ = new NameRefNode($2, ASTNode::RunningSchemeName);
+			$$ = new NameRefNode($2, ASTNode::RunningSchemeName, nullptr );
 		}
 	 ;
 
@@ -680,14 +748,16 @@ Data
 		}
 	| OneData ',' Data
 		{
-			$$ = new ExpressionNode(ASTNode::InputVarList, $1, $3);
+			$$ = new ExpressionNode(ASTNode::InputVarList, $1, $3, nullptr);
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
 OneData
 	: DataName
 		{
-			$$ = new NameRefNode( $1, ASTNode::InputVarName );
+			$$ = new NameRefNode( $1, ASTNode::InputVarName, nullptr );
 		}
 	| Value
 	;
@@ -707,7 +777,9 @@ ValueConstructor
 	: ValueAtom
 	| ValueAtom '.' Constructor
 		{
-			$$ = new ExpressionNode( ASTNode::ValueConstructor, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::ValueConstructor, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
@@ -715,7 +787,9 @@ ValueComposition
 	: ValueConstructor
 	| ValueConstructor '*' ValueComposition
 		{
-			$$ = new ExpressionNode( ASTNode::ValueComposition, $1, $3 );
+			$$ = new ExpressionNode( ASTNode::ValueComposition, $1, $3, nullptr );
+			$1->mParent = $$;
+			$3->mParent = $$;
 		}
 	;
 	
