@@ -22,6 +22,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -133,9 +134,11 @@
     <ClCompile Include="GC\GarbageCollector.cpp" />
     <ClCompile Include="InternalForm\Generator.cpp" />
     <ClCompile Include="InternalForm\InternalForm.cpp" />
+    <ClCompile Include="Interpreter\Interpreter.cpp" />
     <ClCompile Include="Libraries\FunctionLibrary.cpp" />
     <ClCompile Include="Libraries\StandardLibrary.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Parser\CommandLineParser.cpp" />
     <ClCompile Include="Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="Parser\Generated\parser.tab.cc" />
     <ClCompile Include="Parser\Nodes.cpp" />
@@ -166,10 +169,12 @@
     <ClInclude Include="InternalForm\ControlValue.h" />
     <ClInclude Include="InternalForm\Generator.h" />
     <ClInclude Include="InternalForm\InternalForm.h" />
+    <ClInclude Include="Interpreter\Interpreter.h" />
     <ClInclude Include="Libraries\FunctionLibrary.h" />
     <ClInclude Include="Libraries\StandardLibrary.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Parser\AST.h" />
+    <ClInclude Include="Parser\CommandLineParser.h" />
     <ClInclude Include="Parser\FlexTokenizer.h" />
     <ClInclude Include="Parser\Generated\Flex\FlexLexer.h" />
     <ClInclude Include="Parser\Generated\parser.tab.hh" />

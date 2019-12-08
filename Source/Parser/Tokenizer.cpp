@@ -205,10 +205,10 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		void BisonParser::error(const std::string & msg)
+		void BisonParser::error(const std::string& msg)
 		{
 			auto ident = aTokenizer->getErrorIdent();
-			ident.Ptr = &msg;
+			pSupport->newIdent(msg, token::T_TSTRING, ident);
 			pSupport->semanticError(ErrTypes::GeneralSyntaxError, ident);
 		}
 	}

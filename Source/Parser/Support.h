@@ -102,12 +102,13 @@ namespace FPTL
 			Ident              newConstant(const std::string & aConstant, size_t aLine, size_t aCol);
 
 			// Проводит синтаксический разбор, семантическую проверку и возвращает AST-дерево.
-			ASTNode *          getInternalForm(std::vector<std::string> &inputTuple, std::string& programStr);
+			ASTNode *          getInternalForm(const std::vector<std::string>& inputTuple, const std::string& programStr);
 
 			// Вспомогательные методы для парсера.
 			void               pushIdent(const Ident & aIdent);
 			void               popIdent();
 			Ident              getTopIdent() const;
+			bool WasErrors() const { return mWasError; }
 
 		private:
 

@@ -1,6 +1,4 @@
-﻿#include <cassert>
-
-#include "Generated/parser.tab.hh"
+﻿#include "Generated/parser.tab.hh"
 
 #include "Support.h"
 #include "Nodes.h"
@@ -9,7 +7,7 @@ namespace FPTL {
 	namespace Parser {
 
 		ExpressionNode::ExpressionNode(const ASTNodeType aType, ASTNode* aLeft, ASTNode* aRight, ASTNode* aMiddle)
-			: ASTNode(aType)
+			: ASTNode(aType, Ident())
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mLeft] = aLeft;
@@ -68,7 +66,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 
 		DefinitionNode::DefinitionNode(const ASTNodeType aType, const Ident &aName, ASTNode * aDefinition)
-			: ASTNode(aType), mDefinitionName(aName)
+			: ASTNode(aType, aName)
 		{
 			mChilds = std::vector<ASTNode*>(1);
 			mChilds[mDefinition] = aDefinition;
@@ -97,7 +95,7 @@ namespace FPTL {
 		//-----------------------------------------------------------
 
 		NameRefNode::NameRefNode(const Ident &aTypeName, const ASTNodeType aNodeType, ListNode * aParams)
-			: ASTNode(aNodeType), mTypeName(aTypeName)
+			: ASTNode(aNodeType, aTypeName)
 		{
 			mChilds = std::vector<ASTNode*>(2);
 			mChilds[mParameters] = aParams;
@@ -126,8 +124,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 
 		ConstructorNode::ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName)
-			: ASTNode(Constructor),
-			mName(aName),
+			: ASTNode(Constructor, aName),
 			mCtorResultTypeName(aCtorResultTypeName)
 		{
 			mChilds = std::vector<ASTNode*>(1);
@@ -155,7 +152,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 
 		DataNode::DataNode(const Ident &aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors)
-			: ASTNode(DataTypeDefinitionBlock),	mTypeName(aTypeName)
+			: ASTNode(DataTypeDefinitionBlock, aTypeName)
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mConstructors] = aConstructors;
@@ -190,7 +187,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 
 		FunctionNode::FunctionNode(const Ident &aFuncName, ListNode * aDefinitions, ListNode * aFormalParams)
-			: ASTNode(FunctionBlock), mFuncName(aFuncName)
+			: ASTNode(FunctionBlock, aFuncName)
 		{
 			mChilds = std::vector<ASTNode*>(2);
 			mChilds[mFormalParameters] = (aFormalParams);
@@ -257,7 +254,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 
 		FunctionalProgram::FunctionalProgram(ASTNode * aDataDefinitions, FunctionNode * aScheme, ApplicationBlock * aApplication)
-		: ASTNode(FunctionalProgramDef)
+		: ASTNode(FunctionalProgramDef, Ident())
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mDataDefinitions] = aDataDefinitions;
@@ -292,7 +289,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 
 		ApplicationBlock::ApplicationBlock(NameRefNode * aRunSchemeName, ASTNode * aSchemeParameters, ListNode * aDataVarDefs)
-		: ASTNode(Application)
+		: ASTNode(Application, Ident())
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mRunSchemeName] = aRunSchemeName;

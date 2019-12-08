@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="FPTL">
+      <UniqueIdentifier>{d21aa338-fe61-495f-832c-b2b2252aae68}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\AST.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GC\BlockingQueue.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GC\CollectedHeap.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\CommandLineParser.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FScheme\ConstructorGenerator.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Evaluator\Context.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\InternalForm\ControlValue.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Generated\Flex\FlexLexer.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\FlexTokenizer.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Utils\FormattedOutput.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FScheme\FScheme.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FScheme\FSchemeGenerator.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FScheme\FSchemeVisitor.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Libraries\FunctionLibrary.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GC\GarbageCollector.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GC\GcAwarePtr.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\InternalForm\Generator.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Ident.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\InternalForm\InternalForm.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Interpreter\Interpreter.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Evaluator\LockFreeWorkStealingQueue.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Macros.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FScheme\NodeDeleter.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Nodes.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\NodeVisitor.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Generated\parser.tab.hh">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Evaluator\Run.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\SemanticCheck.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Generated\stack.hh">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Libraries\StandardLibrary.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Support.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\Tokenizer.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\TypeInfo.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\ADTOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\ArrayOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\Ops.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\StringOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Testing.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\ADTOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\ArrayOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\BooleanOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GC\CollectedHeap.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\CommandLineParser.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FScheme\ConstructorGenerator.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Evaluator\Context.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\DoubleOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Evaluator\EvaluatorUnit.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\Generated\Flex\FlexScanner.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FScheme\FScheme.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FScheme\FSchemeGenerator.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Libraries\FunctionLibrary.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GC\GarbageCollector.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\InternalForm\Generator.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\IntegerOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\InternalForm\InternalForm.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Interpreter\Interpreter.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FScheme\NewFSchemeGenerator.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FScheme\NodeDeleter.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\Nodes.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\NodeVisitor.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\Ops.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\Generated\parser.tab.cc">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Evaluator\Run.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\Semantic.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Libraries\StandardLibrary.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\StringOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\Support.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\Tokenizer.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\TypeInfo.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\UndefinedOps.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

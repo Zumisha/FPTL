@@ -1,0 +1,154 @@
+Scheme Test
+{
+	P = [1].toReal;
+	Switch = [2].toInt;
+	
+	@ = (Switch * 1).equal -> (0.0 * 5000.0 * 0.00001 * P).Integrate(Fun1).print,
+		(Switch * 2).equal -> (1.0 * 10000.0 * 0.0000001 * P).Integrate(Fun2).print,
+		(0.0 * 100.0 * 0.0000001 * P).Integrate(Fun3).print;
+	
+	//(x*x+1)*cos(0.5*x) от 0 до 20
+	Fun1 = ((([1] * [1]).mul * 1.0).add * (0.5 * [1]).mul.cos).mul;
+
+	//(x*x+3*x+11)/(x*x+11*x-7) от 1 до 20
+	Fun2 = (((([1] * [1]).mul * (3.0 * [1]).mul).add * 11.0).add * (((([1] * [1]).mul * (11.0 * [1]).mul)).add * 7.0).sub).div;
+	
+	//f(x) = sin(0.5*x^3)*sin(0.25*x^2)*sin(0.125*x) от 0 до 25
+	Fun3 = 	(	(	((([1] * [1]).mul * [1]).mul * 0.5).mul.sin * 
+					(([1] * [1]).mul * 0.25).mul.sin).mul * 
+				([1] * 0.125).mul.sin
+			).mul;
+	
+	//Интегрирование методом трапеции.
+	Fun Integrate[fFunction]
+	{
+		A = [1].toReal;		// левая граница отрезка интегрирования
+		B = [2].toReal;		// правая граница отрезка интегрирования
+		Eps = [3].toReal;	// точность
+		p = [4].toInt;		// степень параллелизма
+		
+		h = ((B * A).sub * 2.0).div;
+		m = (A * h).add;
+		Af = A.fFunction;
+		Bf = B.fFunction;
+		oddSum = m.fFunction;
+		
+		@ = 	/*(A * B).greater -> 
+					((((("Ошибка: граница A больше границы B! A = " * A.toString).cat * ", B = ").cat * B.toString).cat * "\n").cat).print,
+					
+				(Eps * 0.0).lequal ->
+					(("Ошибка: точность должна задаваться положительным числом! Eps = " * Eps.toString).cat * "\n").cat.print,
+					
+				(p * 0).lequal ->
+					(("Ошибка: степень параллелизма должна задаваться положительным числом! p = " * p.toString).cat * "\n").cat.print,*/
+					
+				(A * B * Eps * p * (h * 2.0).div * A.fFunction * B.fFunction * oddSum * ((h * 3.0).div * ((Af * Bf).add * (4.0 * oddSum).mul).add).mul).Integr(fFunction);
+		
+		
+		Fun Integr[fFunction]	// Функция не видит fFunction из-за бага в интерпретаторе, поэтому делаем её функционалом.
+		{
+			A = [1];
+			B = [2];
+			Eps = [3];
+			p = [4];
+			h = [5];
+			Af = [6];
+			Bf = [7];
+			lastSum = [8];	
+			I2h = [9];
+			
+			//По правилу Рунге для метода 
+			
+			Fun Sum[fFunction]
+			{
+				A = [1];
+				B = [2];
+				h = [3];
+				p = [4];			
+				
+				@ = (A * B * h * (h * p).mul * p).ParSum(fFunction);				
+				
+				Fun ParSum[fFunction]
+				{
+					A = [1];
+					B = [2];
+					h = [3];
+					ph = [4];
+					i = [5];
+					
+					// Запустить расcчёт сумы с шагом p*h, добавить к A h, уменьшить i на единицу.
+					@ = ((i * 1).greater -> (A * B).lequal) -> 
+							(	(	(A * h).add * 
+									B * 
+									h * 
+									ph * 
+									(i * 1).sub
+								).ParSum * 
+								(A * B * ph * 0.0).SeqSum(fFunction)
+							).add,
+							(A * B * ph * 0.0).SeqSum(fFunction);
+						
+					/*Fun SeqSum[fFunction]
+					{
+						A = [1];
+						B = [2];
+						h = [3];
+					
+						@ = (A * B).lequal -> 
+								(	A.fFunction * 
+									((A*h).add * B * h).SeqSum
+								).add,
+								0;					
+					}*/
+						
+					Fun SeqSum[fFunction]
+					{
+						A = [1];
+						B = [2];
+						h = [3];
+						S = [4];
+					
+						@ = (A * B).lequal -> 
+								((A*h).add * B * h * (S * A.fFunction).add).SeqSum,
+								S;					
+					}	
+				}
+			}
+			
+			oddSumCalc = 	(	(A*h).add * 
+								(B*h).sub * 
+								(2.0 * h).mul * 
+								p
+							).Sum(fFunction);
+							
+			oddSum = [10];
+			
+			SimpsonCalc = 	(	(h * 3.0).div * 
+								(	(	(Af * Bf).add * 
+										(2.0 * lastSum).mul
+									).add * 
+									(4.0 * oddSum).mul
+								).add
+							).mul;
+							
+			Ih = [11];
+			
+			RungeCalc = (	(	(Ih * I2h).sub.abs * 
+								15.0
+							).div * 
+							Eps
+						).less;
+			
+			@ =	id.print."\n".print * (id * oddSumCalc).(id * SimpsonCalc).
+					(	RungeCalc -> 
+							Ih, 
+							(A * B * Eps * p * (h * 2.0).div * Af * Bf * (lastSum * oddSum).add * Ih).Integr
+					);
+		}
+	}
+}
+
+Application
+P = 1;
+Switch = 3;
+%Test(P, Switch)

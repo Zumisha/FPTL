@@ -109,26 +109,65 @@ namespace FPTL {
 			const char * msg = nullptr;
 			switch (aErr)
 			{
-			case ErrTypes::GeneralSyntaxError:                  msg = "general syntax error"; break;
-			case ErrTypes::EOFInComment:                        msg = "end of file was reached in comment block"; break;
-			case ErrTypes::IntConstOverflow:                    msg = "integer constant overflow"; break;
-			case ErrTypes::IllegalCharacter:                    msg = "illegal character"; break;
-			case ErrTypes::MissingMainTypeDef:                  msg = "missing main type definition"; break;
-			case ErrTypes::DuplicateDefinition:                 msg = "identifier was defined before"; break;
-			case ErrTypes::UndefinedIdentifier:                 msg = "undefined identifier"; break;
-			case ErrTypes::InvalidNumberOfParameters:           msg = "invalid number of parameters"; break;
-			case ErrTypes::UndefinedSchemeName:                 msg = "undefined scheme name"; break;
-			case ErrTypes::IncorrectIdentifierUsage:            msg = "incorrect use of identifier"; break;
-			case ErrTypes::NotATemplateType:                    msg = "not a template type"; break;
-			case ErrTypes::InvalidTemplateArgumentsNumber:      msg = "invalid type parameters number"; break;
-			case ErrTypes::InvalidConstructorUsage:             msg = "invalid constructor usage"; break;
-			case ErrTypes::NestedDataDefinition:                msg = "nested data definitions are not allowed"; break;
-			case ErrTypes::MultipleTypeExpression:              msg = "only one type expression is allowed"; break;
-			case ErrTypes::InvalidFunCallParameters:            msg = "function parameters cannot be used as another function parameters"; break;
-			case ErrTypes::InvalidConstant:                     msg = "constant is invalid or out of range"; break;
-			case ErrTypes::MissingMainDefinition:               msg = "missing main definition in function"; break;
-			case ErrTypes::InvalidTupleIndex:                   msg = "invalid tuple element index"; break;
-			default:                                            msg = "unknown error";
+			case ErrTypes::GeneralSyntaxError:             
+				msg = ""; 
+				break;
+			case ErrTypes::EOFInComment:                   
+				msg = "Error: end of file was reached in comment block";
+				break;
+			case ErrTypes::IntConstOverflow:               
+				msg = "Error: integer constant overflow";
+				break;
+			case ErrTypes::IllegalCharacter:               
+				msg = "Error: illegal character";
+				break;
+			case ErrTypes::MissingMainTypeDef:             
+				msg = "Error: missing main type definition";
+				break;
+			case ErrTypes::DuplicateDefinition:            
+				msg = "Error: identifier was defined before";
+				break;
+			case ErrTypes::UndefinedIdentifier:            
+				msg = "Error: undefined identifier";
+				break;
+			case ErrTypes::InvalidNumberOfParameters:      
+				msg = "Error: invalid number of parameters"; 
+				break;
+			case ErrTypes::UndefinedSchemeName:            
+				msg = "Error: undefined scheme name";
+				break;
+			case ErrTypes::IncorrectIdentifierUsage:       
+				msg = "Error: incorrect use of identifier";
+				break;
+			case ErrTypes::NotATemplateType:               
+				msg = "Error: not a template type";
+				break;
+			case ErrTypes::InvalidTemplateArgumentsNumber: 
+				msg = "Error: invalid type parameters number";
+				break;
+			case ErrTypes::InvalidConstructorUsage:        
+				msg = "Error: invalid constructor usage";
+				break;
+			case ErrTypes::NestedDataDefinition:           
+				msg = "Error: nested data definitions are not allowed";
+				break;
+			case ErrTypes::MultipleTypeExpression:         
+				msg = "Error: only one type expression is allowed";
+				break;
+			case ErrTypes::InvalidFunCallParameters: 
+				msg = "Error: function parameters cannot be used as another function parameters"; 
+				break;
+			case ErrTypes::InvalidConstant:                
+				msg = "Error: constant is invalid or out of range"; 
+				break;
+			case ErrTypes::MissingMainDefinition:          
+				msg = "Error: missing main definition in function"; 
+				break;
+			case ErrTypes::InvalidTupleIndex:              
+				msg = "Error: invalid tuple element index"; 
+				break;
+			default:                                       
+				msg = "Unknown error";
 			}
 			return msg;
 		}
@@ -140,10 +179,11 @@ namespace FPTL {
 			for (auto& errMsg : mErrorList)
 			{
 				if (std::find(processed.begin(), processed.end(), errMsg) == processed.end()) {
-					aOutStream << "Error : " << getErrorString(errMsg.mErr) << " : "
-						<< "\'" << *errMsg.mIdent.Ptr << "\'"
-						<< " line " << errMsg.mIdent.Line
-						<< " ch " << errMsg.mIdent.Col << "\n";
+
+					aOutStream << getErrorString(errMsg.mErr)
+						<< *errMsg.mIdent.Ptr
+						<< ". Line " << errMsg.mIdent.Line
+						<< ", ch " << errMsg.mIdent.Col << "\n";
 					processed.push_back(errMsg);
 				}
 			}
@@ -168,8 +208,10 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		ASTNode* Support::getInternalForm(std::vector<std::string> &inputTuple, std::string &programStr)
+		ASTNode* Support::getInternalForm(const std::vector<std::string>& inputTuple, const std::string& programStr)
 		{
+			std::stringstream program;
+
 			// Сбрасываем состояние.
 			mIdentStack.clear();
 			mNameTable.clear();
@@ -206,12 +248,18 @@ namespace FPTL {
 						if (fPos == static_cast<size_t>(-1)) fPos = end.length();
 						lPos = fPos;
 					}
+					// Если блок Application не отсутствует в принципе.
 					if (fPos != static_cast<size_t>(-1))
-						programStr = programStr.substr(0, inPos) + end.substr(0, fPos) + inputTupleStr + end.substr(lPos, end.length());
+					{
+						program << programStr.substr(0, inPos);
+						program << end.substr(0, fPos);
+						program << inputTupleStr;
+						program << end.substr(lPos, end.length());
+					}
 				}
 			}//*/
+			else program << programStr;
 
-			std::stringstream program(programStr);
 			Tokenizer tokenizer(program);
 			ASTNode *root = nullptr;
 			BisonParser parser(this, &tokenizer, root);

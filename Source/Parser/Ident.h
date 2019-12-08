@@ -10,7 +10,7 @@ namespace FPTL {
 		{
 			size_t Col;
 			size_t Line;
-			const std::string * Ptr;
+			const std::string* Ptr;
 
 			bool operator==(const Ident & aOther) const { return Ptr == aOther.Ptr; }
 			bool operator!=(const Ident & aOther) const { return Ptr != aOther.Ptr; }

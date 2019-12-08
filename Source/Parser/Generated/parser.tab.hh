@@ -40,7 +40,7 @@
 #ifndef YY_YY_PARSER_TAB_HH_INCLUDED
 # define YY_YY_PARSER_TAB_HH_INCLUDED
 // //                    "%code requires" blocks.
-#line 6 "parser.yy" // lalr1.cc:377
+#line 7 "parser.yy" // lalr1.cc:377
 
 #include "../Ident.h"
 
@@ -146,7 +146,7 @@ namespace FPTL { namespace Parser {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 37 "parser.yy" // lalr1.cc:377
+    #line 38 "parser.yy" // lalr1.cc:377
 
 	Ident			   scToken;
 	Ident			   scIdent;
@@ -404,10 +404,13 @@ namespace FPTL { namespace Parser {
   static const unsigned char yyr2_[];
 
 
-#if YYDEBUG
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *n);
+
+
     /// For a symbol, its name in clear.
     static const char* const yytname_[];
-
+#if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
   static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
@@ -526,7 +529,7 @@ namespace FPTL { namespace Parser {
 
 #line 2 "parser.yy" // lalr1.cc:377
 } } // FPTL::Parser
-#line 530 "parser.tab.hh" // lalr1.cc:377
+#line 533 "parser.tab.hh" // lalr1.cc:377
 
 
 

@@ -1,0 +1,144 @@
+Scheme Lab
+{
+	N = [1].toInt;
+	P = [2].toInt;
+			
+	Matr = ([1].EmptyMatr * ("../../Tests/Generalized/MatrixMul/" * [1].toString * ".txt").cat).arrayFromFile.(id -> id, false * "File not found!\n".print);
+    EmptyMatr = ([1] * (([1] * 0.0).arrayCreate)).arrayCreate;
+	
+	@ = (N * 10).lequal -> ((N.Matr * N.Matr * N * P).MatrixMul * "out.txt").createFile,
+		(((N.Matr * N.Matr * N * P).MatrixMul * 0).arrayGet * 0).arrayGet.print;
+		
+	Fun MatrixMul
+	{
+		A = [1];
+		B = [2];
+		N = [3];
+		P = [4];
+		WS = [5];
+		MatrixMul = (id * 0).Recurse;
+		Recurse = ((N * WS).sub * 1).lequal -> "Matrix can't have less than 2 rows".print,
+			(P * 1).equal ->
+				(A * B * N * WS * (N * WS).sub).MatrixMulSeq,
+				(
+					(A * B * N * WS * ((N * WS).sub * P).div).MatrixMulSeq *
+					((N * WS).sub * P).div *
+					(A * B * N * (P * 1).sub * (WS * ((N * WS).sub * P).div).add).Recurse *
+					((N * WS).sub * ((N * WS).sub * P).div).sub
+				).MyArrayCat;
+	}
+	
+	Fun MatrixMulSeq
+	{
+		A = [1];
+		B = [2];
+		N = [3];
+		WS = [4];
+		WL = [5];
+		I = [6];
+		Res = [7];
+		
+		MatrixMulSeq = 
+			(
+				id * 
+				WS *
+				(WL * (N * 0.0).arrayCreate).arrayCreate
+			).Recurse;
+			
+		Recurse =
+			(I * (WS * WL).add).equal -> Res,
+				(
+					A *
+					B *
+					N *
+					WS *
+					WL *
+					(I * 1).add *
+					(
+						Res *
+						(I * WS).sub *
+						(
+							(A * I).arrayGet *
+							B *
+							N
+						).RowMul
+					).arraySet
+				).Recurse;
+				
+		Fun RowMul
+		{
+			Row = [1];
+			B = [2];
+			N = [3];
+			J = [4];
+			Res = [5];
+			RowMul = (id * 0 * (N * 0.0).arrayCreate).Recurse;
+			Recurse =
+				(J * N).equal -> Res,
+					(
+						Row *
+						B *
+						N *
+						(J * 1).add *
+						(
+							Res * 
+							J *
+							(Row * B * N * J).GetMultipliedElement
+						).arraySet
+					).Recurse;
+		}
+		
+		Fun GetMultipliedElement
+		{
+			Row = [1];
+			B = [2];
+			N = [3];
+			J = [4];
+			K = [5];
+			GetMultipliedElement = (id * 0).Recurse;
+			Recurse = 
+				(K * N).equal -> 0,
+					(
+						(
+							(Row * K).arrayGet *
+							((B * K).arrayGet * J).arrayGet
+						).mul *
+						(
+							Row *
+							B *
+							N *
+							J *
+							(K * 1).add
+						).Recurse
+					).add;
+		}
+	}
+	
+	Fun MyArrayCat
+	{
+		A = [1];
+		N1 = [2];
+		B = [3];
+		N2 = [4];
+		I = [5];
+		N = [6];
+		Res = [7];
+		
+		MyArrayCat = (id * 1 * (N1 * N2).add * ((N1 * N2).add * (A * 0).arrayGet).arrayCreate).Recurse;
+		Recurse = 
+			(I * N).equal -> Res,
+				((I * N1).gequal ->
+					(
+						A * N1 * B * N2 * (I * 1).add * N *
+						(Res * I * (B * (I * N1).sub).arrayGet).arraySet
+					).Recurse,
+					(
+						A * N1 * B * N2 * (I * 1).add * N *
+						(Res * I * (A * I).arrayGet).arraySet
+					).Recurse
+				);
+	}
+							
+}
+Application
+%Lab(10 * 2)

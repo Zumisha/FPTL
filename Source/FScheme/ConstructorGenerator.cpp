@@ -62,7 +62,7 @@ namespace FPTL {
 
 				auto* data = dynamic_cast<Parser::DataNode *>(aNameReference->getTarget());
 
-				for (auto& child : data->mChilds)
+				for (auto& child : data->getTypeParams()->mChilds)
 				{
 					auto* paramName = static_cast<Parser::NameRefNode *>(child);
 					newType.typeParameters.emplace_back(paramName->getName().getStr(), mTypeTuple[i]);

@@ -69,6 +69,12 @@
     <Filter Include="Source Files\GC">
       <UniqueIdentifier>{2a25492e-efd2-40a6-9539-615779e4d1c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Interpreter">
+      <UniqueIdentifier>{c31516dd-e712-460a-be86-8b1fb46713ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interpreter">
+      <UniqueIdentifier>{823829f4-6733-4cff-82d8-81f0d1722ef7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataTypes\TypeInfo.cpp">
@@ -166,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="FScheme\NewFSchemeGenerator.cpp">
       <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\CommandLineParser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter\Interpreter.cpp">
+      <Filter>Source Files\Interpreter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +282,12 @@
     </ClInclude>
     <ClInclude Include="Utils\FormattedOutput.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\CommandLineParser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter\Interpreter.h">
+      <Filter>Header Files\Interpreter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

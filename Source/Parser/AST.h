@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#include <utility>
 #include "DataTypes/TypeInfo.h"
+#include "Ident.h"
 
 namespace FPTL 
 {
@@ -83,7 +85,9 @@ namespace FPTL
 				ValueConstructor			// конструктор какого-либо данного
 			};
 
-			explicit ASTNode(const ASTNodeType aType) : mParent(nullptr), mType(aType), mCyclicIndex(0) {}
+			explicit ASTNode(const ASTNodeType& aType, Ident aIdent)
+			: mParent(nullptr), mIdent(std::move(aIdent)), mType(aType), mCyclicIndex(0) {}
+
 			virtual ~ASTNode() = default;
 
 			ASTNodeType getType() const { return mType; }
@@ -112,6 +116,7 @@ namespace FPTL
 			ASTNode & operator=(const ASTNode &) = delete;
 			const ASTNode * mParent;
 			std::vector<ASTNode*> mChilds;
+			Ident mIdent;
 
 		private:
 			ASTNodeType mType;

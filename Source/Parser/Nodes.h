@@ -33,11 +33,6 @@ namespace FPTL
 				mRight,
 				mMiddle
 			};
-
-		private:
-			//ASTNode * mLeft;
-			//ASTNode * mRight;
-			//ASTNode * mMiddle;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -48,16 +43,13 @@ namespace FPTL
 		public:
 
 			ConstantNode(const ASTNodeType aType, const Ident &aConstant) : 
-			ASTNode(aType), mIdent(aConstant) {}
+			ASTNode(aType, aConstant) {}
 
 			Ident getConstant() const { return mIdent; }
 
 			bool isNatural() const;
 			void accept(NodeVisitor * aVisitor) override;
 			//ASTNode * copy() const override;
-
-		private:
-			Ident          mIdent;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -67,7 +59,7 @@ namespace FPTL
 		{
 		public:
 
-			explicit ListNode(const ASTNodeType aType) : ASTNode(aType) {}
+			explicit ListNode(const ASTNodeType aType) : ASTNode(aType, Ident()) {}
 			~ListNode() override;
 
 			ListNode* addElement(ASTNode * aElem)
@@ -95,7 +87,7 @@ namespace FPTL
 			DefinitionNode(ASTNodeType aType, const Ident &aName, ASTNode * aDefinition);
 			~DefinitionNode();
 
-			Ident         getDefinitionName() const { return mDefinitionName; }
+			Ident         getDefinitionName() const { return mIdent; }
 			ASTNode *     getDefinition() const { return mChilds[mDefinition]; }
 
 			void accept(NodeVisitor * aVisitor) override;
@@ -106,10 +98,6 @@ namespace FPTL
 			{
 				mDefinition
 			};
-
-		private:
-			Ident mDefinitionName;
-			//ASTNode * mDefinition;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -128,7 +116,7 @@ namespace FPTL
 			}
 			void accept(NodeVisitor * aVisitor) override;
 
-			Ident                    getName() const { return mTypeName; }
+			Ident                    getName() const { return mIdent; }
 			ListNode *               getParameters() const { return static_cast<ListNode*>(mChilds[mParameters]); }
 
 			// Возвращает узел, на который ссылается данное имя.
@@ -144,12 +132,6 @@ namespace FPTL
 				mParameters,
 				mTarget
 			};
-
-		private:
-			
-			Ident mTypeName;
-			//ListNode * mParameters;
-			//ASTNode *  mTarget;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -164,7 +146,7 @@ namespace FPTL
 
 			void accept(NodeVisitor * aVisitor) override;
 
-			Ident                 getCtorName() const { return mName; }
+			Ident                 getCtorName() const { return mIdent; }
 			Ident                 getCtorResultTypeName() const { return mCtorResultTypeName; }
 			ListNode *            getCtorParameters() const { return static_cast<ListNode*>(mChilds[mCtorParameters]); }
 
@@ -176,9 +158,6 @@ namespace FPTL
 			};
 
 		private:
-
-			Ident mName;
-			//ListNode * mCtorParameters;
 			Ident mCtorResultTypeName;
 		};
 
@@ -195,7 +174,7 @@ namespace FPTL
 			void accept(NodeVisitor * aVisitor) override;
 
 			ListNode *      getConstructors() const { return static_cast<ListNode*>(mChilds[mConstructors]); }
-			Ident           getDataName() const { return mTypeName; }
+			Ident           getDataName() const { return mIdent; }
 			ListNode *      getTypeDefs() const { return static_cast<ListNode*>(mChilds[mTypeDefinitions]); }
 			ListNode *      getTypeParams() const { return static_cast<ListNode*>(mChilds[mTypeParameters]); }
 
@@ -211,13 +190,6 @@ namespace FPTL
 				mTypeDefinitions,
 				mTypeParameters
 			};
-
-		private:
-
-			Ident mTypeName;
-			//ListNode * mConstructors;
-			//ListNode * mTypeDefinitions;
-			//ListNode * mTypeParameters;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -232,7 +204,7 @@ namespace FPTL
 
 			void accept(NodeVisitor * aVisitor) override;
 
-			Ident             getFuncName() const { return mFuncName; }
+			Ident             getFuncName() const { return mIdent; }
 			ListNode *        getFormalParameters() const { return static_cast<ListNode*>(mChilds[mFormalParameters]); }
 			ListNode *        getDefinitions() const { return static_cast<ListNode*>(mChilds[mDefinitions]); }
 			DefinitionNode *  getDefinition(const Ident &aName) const;
@@ -250,11 +222,6 @@ namespace FPTL
 				mDefinitions,
 				mFormalParameters
 			};
-
-		private:
-			Ident mFuncName;
-			//ListNode * mDefinitions;
-			//ListNode * mFormalParameters;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -281,11 +248,6 @@ namespace FPTL
 				mSchemeParameters,
 				mDataVarDefinitions
 			};
-
-		private:
-			//NameRefNode * mRunSchemeName;
-			//ASTNode * mSchemeParameters;
-			//ListNode * mDataVarDefinitions;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -311,12 +273,6 @@ namespace FPTL
 				mScheme,
 				mApplication
 			};
-
-		private:
-
-			//ListNode *         mDataDefinitions;
-			//FunctionNode *     mScheme;
-			//ApplicationBlock * mApplication;
 		};
 	}
 }
