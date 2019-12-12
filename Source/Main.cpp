@@ -8,29 +8,26 @@
 
 void * operator new (const std::size_t count)
 {
-	return ::je_malloc(count);
+	return je_malloc(count);
 }
 
 void * operator new[](const std::size_t count)
 {
-	return ::je_malloc(count);
+	return je_malloc(count);
 }
 
-void operator delete(void * ptr)
+void operator delete(void * ptr) noexcept
 {
-	::je_free(ptr);
+	je_free(ptr);
 }
 
-void operator delete[](void * ptr)
+void operator delete[](void * ptr) noexcept
 {
-	::je_free(ptr);
+	je_free(ptr);
 }
 
 int main(const int argc, const char ** argv)
 {
-	setlocale(LC_ALL, "ru-ru");
-	std::cout.precision(std::numeric_limits<double>::max_digits10);
-
 	FPTL::Runtime::Interpreter interpreter;
 	return interpreter.Eval(argc, argv);
 }

@@ -145,6 +145,9 @@ namespace FPTL
 			void run(SExecutionContext & program);
 
 			// Прервать вычисления.
+			void abort();
+
+			// Вычисления окончены.
 			void stop();
 
 			// Взять задание у других вычислителей. Возвращает нулевой указатель, если не получилось.
@@ -157,6 +160,11 @@ namespace FPTL
 
 			GarbageCollector * garbageCollector() const;
 
+			bool WasErrors() const
+			{
+				return mWasErrors;
+			}
+
 		private:
 			std::vector<EvaluatorUnit *> mEvaluatorUnits;
 			boost::thread_group mThreadGroup;
@@ -164,6 +172,7 @@ namespace FPTL
 			std::unique_ptr<GarbageCollector> mGarbageCollector;
 			GcConfig mGcConfig;
 			EvalConfig mEvalConfig;
+			bool mWasErrors = false;
 		};
 
 	}

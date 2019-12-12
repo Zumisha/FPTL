@@ -28,12 +28,15 @@ set(SRC_FILES
   InternalForm/Generator.cpp
   InternalForm/InternalForm.cpp
   
+  Interpreter/Interpreter.cpp
+  
   Libraries/FunctionLibrary.cpp
   Libraries/StandardLibrary.cpp
   
   GC/CollectedHeap.cpp
   GC/GarbageCollector.cpp
   
+  Parser/CommandLineParser.cpp
   Parser/Nodes.cpp
   Parser/NodeVisitor.cpp
   Parser/Semantic.cpp
@@ -70,6 +73,8 @@ InternalForm/ControlValue.h
 InternalForm/Generator.h
 InternalForm/InternalForm.h
 
+Interpreter/Interpreter.h
+
 Libraries/FunctionLibrary.h
 Libraries/StandardLibrary.h
   
@@ -79,6 +84,7 @@ GC/GarbageCollector.h
 GC/GcAwarePtr.h  
 
 Parser/AST.h
+Parser/CommandLineParser.h
 Parser/FlexTokenizer.h
 Parser/Ident.h
 Parser/Nodes.h

@@ -2,4 +2,4 @@
 
 #define BUILD_DATE __DATE__ " " __TIME__
 
-#define fptlDebugBuild 0
+#define fptlDebugBuild 1

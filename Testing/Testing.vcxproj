@@ -96,6 +96,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>..\Source;..\Source\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include\msvc_compat;..\Thirdparty\jemalloc-5.0.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -192,7 +193,7 @@
     <ClInclude Include="..\Source\Parser\Support.h" />
     <ClInclude Include="..\Source\Parser\Tokenizer.h" />
     <ClInclude Include="..\Source\Utils\FormattedOutput.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="Shared.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\DataTypes\Ops\ADTOps.cpp" />
@@ -227,13 +228,21 @@
     <ClCompile Include="..\Source\Parser\Semantic.cpp" />
     <ClCompile Include="..\Source\Parser\Support.cpp" />
     <ClCompile Include="..\Source\Parser\Tokenizer.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Testing.cpp" />
+    <ClCompile Include="ArrayCat.cpp" />
+    <ClCompile Include="ArrayCatErrors.cpp" />
+    <ClCompile Include="ArrayCreateErrors.cpp" />
+    <ClCompile Include="ArrayFromFile.cpp" />
+    <ClCompile Include="ArrayFromFileErrors.cpp" />
+    <ClCompile Include="ArrayGet.cpp" />
+    <ClCompile Include="ArrayCreate.cpp" />
+    <ClCompile Include="ArrayLen.cpp" />
+    <ClCompile Include="ArrayLenErrors.cpp" />
+    <ClCompile Include="ArraySet.cpp" />
+    <ClCompile Include="ArraySetErrors.cpp" />
+    <ClCompile Include="ArrayGetErrors.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="GeneralizedTests.cpp" />
+    <ClCompile Include="StressTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -138,7 +138,6 @@ namespace FPTL
 
 		void IFExecutionContext::run(EvaluatorUnit * evaluator)
 		{
-			//try
 			{
 				mEvaluatorUnit = evaluator;
 				mEvaluatorUnit->pushTask(this);
@@ -150,10 +149,6 @@ namespace FPTL
 				// Сообщаем о готовности задания.
 				Ready.store(true, std::memory_order_release);
 			}
-			/*catch (std::exception & e)
-			{
-				evaluator->mEvaluator->stop();
-			}*/
 		}
 
 		void IFExecutionContext::cancel()

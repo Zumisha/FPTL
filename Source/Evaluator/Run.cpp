@@ -1,8 +1,5 @@
 ﻿#include <iostream>
 #include <mutex>
-#include <string>
-#include <boost/timer/timer.hpp>
-
 #include "Run.h"
 #include "FScheme/FScheme.h"
 
@@ -12,6 +9,13 @@ namespace FPTL {
 	namespace Runtime {
 
 		SchemeEvaluator::SchemeEvaluator() = default;
+
+		void SchemeEvaluator::abort()
+		{
+			boost::lock_guard<boost::mutex> guard(mStopMutex);
+			mWasErrors = true;
+			mThreadGroup.interrupt_all();
+		}
 
 		void SchemeEvaluator::stop()
 		{
@@ -74,22 +78,7 @@ namespace FPTL {
 
 			void run(EvaluatorUnit * evaluatorUnit) override
 			{
-				try
-				{
-					mTarget->run(evaluatorUnit);
-				}
-				catch (std::runtime_error & e)
-				{
-					std::cerr << "Runtime error: " << e.what() << std::endl;
-				}
-				catch (std::exception & e)
-				{
-					std::cerr << "Exception: " << e.what() << std::endl;
-				}
-				catch (...) // SEH not catch
-				{
-					std::cerr << "Unknown error.";
-				}
+				mTarget->run(evaluatorUnit);
 				mEvaluator->stop();
 			}
 

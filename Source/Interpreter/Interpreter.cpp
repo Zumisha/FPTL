@@ -20,8 +20,11 @@ namespace FPTL
 {
 	namespace Runtime 
 	{
-		int Interpreter::Eval(const int argc, const char ** argv) const
+		int Interpreter::Eval(const int argc, const char ** argv, const std::string& programText) const
 		{
+			setlocale(LC_ALL, "ru-ru");
+			std::cout.precision(std::numeric_limits<double>::max_digits10); 
+			Parser::ASTNode * astRoot = nullptr;
 			try
 			{
 				boost::timer::cpu_timer timer;
@@ -36,15 +39,22 @@ namespace FPTL
 				const std::string programPath = CLParser.GetProgramPath();
 				const std::vector<std::string> inputTuple = CLParser.GetInputTuple();
 
-				std::ifstream programFile(programPath);
-				if (!programFile.good())
-				{
-					std::cout << "Unable to open file : " << programPath << "\n";
-					return 1;
-				}
 				std::string programStr;
-				std::copy(std::istreambuf_iterator<char>(programFile), std::istreambuf_iterator<char>(), std::back_inserter(programStr));
-				programFile.close();
+				if (programText == "")
+				{
+					std::ifstream programFile(programPath);
+					if (!programFile.good())
+					{
+						std::cout << "Unable to open file : " << programPath << "\n";
+						return 1;
+					}
+					std::copy(std::istreambuf_iterator<char>(programFile), std::istreambuf_iterator<char>(), std::back_inserter(programStr));
+					programFile.close();
+				}
+				else
+				{
+					programStr = programText;
+				}
 
 				Parser::Support support;
 				Parser::ASTNode * astRoot = support.getInternalForm(inputTuple, programStr);
@@ -67,6 +77,7 @@ namespace FPTL
 				FSchemeGenerator schemeGenerator(astRoot);
 				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(schemeGenerator.getProgram(), proactive));
 				IFExecutionContext ctx(internalForm->main().get());
+
 				const auto interpTime = timer.elapsed();
 				if (showTime) std::cout << "Interpretation time: " << boost::timer::format(interpTime, 3, "%ws\n");
 				timer.resume();
@@ -87,19 +98,22 @@ namespace FPTL
 				const auto evalTime = timer.elapsed();
 				if (showTime) std::cout << "\n\nEvaluation time: " << boost::timer::format(evalTime, 3, "%ws\n");
 
-				delete astRoot;
+				if (astRoot) delete astRoot;
+				if (evaluator.WasErrors()) return 1;
 			}
-			catch (std::exception & e)
+			catch (std::exception& e)
 			{
-				std::cout << "Error: " << e.what() << std::endl
+				std::cerr << "Error: " << e.what() << std::endl
 					<< "Execution aborted." << std::endl;
+				if (astRoot) delete astRoot;
 				return 1;
 			}
 			catch (...) // SEH not catch
 			{
-				std::cout << "Congratulations, you found the entrance to Narnia!" << std::endl
+				std::cerr << "Congratulations, you found the entrance to Narnia!" << std::endl
 					<< "(Not std::exception error.)" << std::endl
 					<< "Execution aborted." << std::endl;
+				if (astRoot) delete astRoot;
 				return 1;
 			}
 

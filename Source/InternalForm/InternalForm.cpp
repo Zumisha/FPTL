@@ -213,7 +213,7 @@ namespace FPTL
 			{
 				mFn(ctx);
 			}
-			catch (std::exception & thrown)
+			catch (std::exception& thrown)
 			{
 				std::stringstream error;
 				error << thrown.what() << std::endl

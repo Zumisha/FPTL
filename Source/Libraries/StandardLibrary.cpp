@@ -6,12 +6,13 @@
 #include <fstream>
 #include <iterator>
 #include <random>
-#include <filesystem>
+#include <experimental/filesystem>
 #include <cmath>
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 
+#include "Macros.h"
 #include "StandardLibrary.h"
 #include "DataTypes/Ops/StringOps.h"
 #include "DataTypes/Ops/ArrayOps.h"
@@ -463,11 +464,10 @@ namespace FPTL
 
 				const auto fileName = file.getOps()->toString(file);
 
-				if (exists(std::filesystem::status(fileName->str())))
+				if (std::experimental::filesystem::exists(std::experimental::filesystem::status(fileName->str())))
 				{
-					permissions(fileName->str(),
-						std::filesystem::perms::owner_all | std::filesystem::perms::group_all,
-						std::filesystem::perm_options::add);
+					std::experimental::filesystem::permissions(fileName->str(),
+						std::experimental::filesystem::perms::add_perms | std::experimental::filesystem::perms::owner_all | std::experimental::filesystem::perms::group_all);
 				}
 				std::ofstream output(fileName->str(), mode);
 				output.precision(std::numeric_limits<double>::max_digits10);
@@ -500,7 +500,9 @@ namespace FPTL
 				const auto sizeVal = aCtx.getArg(0).getOps()->toInt(aCtx.getArg(0));
 				const auto & initialVal = aCtx.getArg(1);
 
+#if fptlDebugBuild
 				if (sizeVal <= 0) throw std::invalid_argument("The size of the array must be greater than zero!");
+#endif
 
 				const auto size = static_cast<size_t>(sizeVal);
 				aCtx.push(ArrayValue::create(aCtx, size, initialVal));
