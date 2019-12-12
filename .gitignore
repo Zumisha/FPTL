@@ -6,3 +6,4 @@ Runtime/x64/
 Debug/
 Parser/parser.output
 build/
+*.TMP
