@@ -4,6 +4,7 @@
 #include "Evaluator/Run.h"
 #include "Evaluator/Context.h"
 #include "Macros.h"
+#include "Parser/Support.h"
 
 namespace FPTL
 {
@@ -216,8 +217,8 @@ namespace FPTL
 			catch (std::exception& thrown)
 			{
 				std::stringstream error;
-				error << thrown.what() << std::endl
-					<< "In function \"" << mName << "\". " << "Line: " << mPos.second << ". Column: " << mPos.first << "." << std::endl
+				Parser::Support::printError(error, mPos.first, mPos.second, thrown.what());
+				error << "In function \"" << mName << "\"" << std::endl
 					<< "Input tuple type: ";
 				ctx.printTypes(error);
 				error << std::endl;

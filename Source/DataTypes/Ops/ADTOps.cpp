@@ -3,6 +3,7 @@
 
 #include "Ops.h"
 #include "ADTOps.h"
+#include "UndefinedOps.h"
 #include "GC/CollectedHeap.h"
 #include "GC/GarbageCollector.h"
 #include "Evaluator/Context.h"
@@ -39,7 +40,7 @@ namespace FPTL
 		//-------------------------------------------------------------------------------
 
 		// Операции с абстрактным типом данных.
-		class ADTOps : public Ops
+		class ADTOps : public BaseOps
 		{
 			ADTOps() = default;
 
@@ -89,65 +90,65 @@ namespace FPTL
 			// Преобразование типов.
 			long long toInt(const DataValue & aVal) const override
 			{
-				throw invalidOperation("toInt");
+				throw invalidOperation(aVal.getOps()->getType(aVal), "toInt");
 			}
 
 			double toDouble(const DataValue & aVal) const override
 			{
-				throw invalidOperation("toDouble");
+				throw invalidOperation(aVal.getOps()->getType(aVal), "toDouble");
 			}
 
-			StringValue * toString(const DataValue & aVal) const override
+			StringValue * toString(const DataValue& aVal) const override
 			{
-				throw invalidOperation("toString");
+				throw invalidOperation(aVal.getOps()->getType(aVal), "toString");
 			}
 
 			// Арифметические функции.
 			DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("add");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "add");
 			}
 
 			DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("sub");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "sub");
 			}
 
 			DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("mul");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "mul");
 			}
 
 			DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("div");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "div");
 			}
 
 			DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("mod");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "mod");
 			}
 
 			DataValue abs(const DataValue & aArg) const override
 			{
-				throw invalidOperation("abs");
+				throw invalidOperation(aArg.getOps()->getType(aArg), "abs");
 			}
 
 			// Функции сравнения.
 			DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
 				// TODO: возможно эту функцию можно определить.
-				throw invalidOperation("equal");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "equal");
 			}
 
 			DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("less");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "less");
 			}
 
 			DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				throw invalidOperation("greater");
+				throw invalidOperation(aRhs.getOps()->getType(aRhs), "greater");
 			}
 
 			void mark(const DataValue & aVal, ObjectMarker * marker) const override
@@ -189,20 +190,12 @@ namespace FPTL
 
 			void write(const DataValue & aVal, std::ostream & aStream) const override
 			{
-				throw invalidOperation("write");
+				throw invalidOperation(aVal.getOps()->getType(aVal), "write");
 			}
 
 			DataValue read(std::istream & aStream) const override
 			{
 				throw invalidOperation("read");
-			}
-
-		private:
-			static std::runtime_error invalidOperation(const char * aOpName)
-			{
-				std::stringstream message;
-				message << "invalid operation '" << aOpName << "' on type string";
-				return std::runtime_error(message.str());
 			}
 		};
 

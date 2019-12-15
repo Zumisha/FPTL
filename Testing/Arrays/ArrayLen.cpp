@@ -1,4 +1,4 @@
-#include "Shared.h"
+#include "../Shared.h"
 
 namespace UnitTests
 {

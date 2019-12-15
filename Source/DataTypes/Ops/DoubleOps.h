@@ -1,3 +1,5 @@
+#pragma once
+
 #include <istream>
 #include <cmath>
 
@@ -30,8 +32,7 @@ namespace FPTL
 
 			const Ops * withOps(const BooleanOps * aOther) const override
 			{
-				invalidOperation(getType(DataValue()));
-				return nullptr;
+				throw invalidOperation("combine");
 			}
 
 			const Ops * withOps(const DoubleOps * aOther) const override
@@ -74,12 +75,9 @@ namespace FPTL
 
 			DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) / aRhs.getOps()->toDouble(aRhs));
-			}
-
-			DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				return DataBuilders::createDouble(std::fmod(aLhs.getOps()->toDouble(aLhs), aRhs.getOps()->toDouble(aRhs)));
+				const auto Right = aRhs.getOps()->toDouble(aRhs);
+				if (Right == 0) throw divideByZero();
+				return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) / Right);
 			}
 
 			DataValue abs(const DataValue & aArg) const override
@@ -122,7 +120,7 @@ namespace FPTL
 			}
 		};
 
-		DataValue DataBuilders::createDouble(const double aVal)
+		inline DataValue DataBuilders::createDouble(const double aVal)
 		{
 			DataValue val(DoubleOps::get());
 			val.mDoubleVal = aVal;

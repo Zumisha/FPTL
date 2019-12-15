@@ -1324,7 +1324,7 @@ namespace FPTL { namespace Parser {
 			if( (yystack_[0].value.scList)->mChilds.size() > 1 )
 			{
 				for(ASTNode* child : (yystack_[0].value.scList)->mChilds)
-					pSupport->semanticError( ErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>(child)->getDefinitionName() );
+					pSupport->semanticError( ParserErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>(child)->getDefinitionName() );
 			}
 
 			(yylhs.value.scList) = (yystack_[0].value.scList);
@@ -1363,7 +1363,7 @@ namespace FPTL { namespace Parser {
   case 24:
 #line 340 "parser.yy" // lalr1.cc:859
     {
-			pSupport->semanticError( ErrTypes::NestedDataDefinition, static_cast<DataNode*>((yystack_[0].value.scNode))->getDataName() );
+			pSupport->semanticError( ParserErrTypes::NestedDataDefinition, static_cast<DataNode*>((yystack_[0].value.scNode))->getDataName() );
 			delete (yystack_[0].value.scNode);
 			(yylhs.value.scDef) = 0;
 		}

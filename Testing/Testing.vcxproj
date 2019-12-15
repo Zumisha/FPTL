@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -123,17 +124,21 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\Source;..\Source\Parser\Generated\Flex;$(BOOST_PATH);..\Thirdparty\jemalloc-5.0.1\include\msvc_compat;..\Thirdparty\jemalloc-5.0.1\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(BOOST_PATH)\stage\lib;..\Thirdparty\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,8 +163,12 @@
   <ItemGroup>
     <ClInclude Include="..\Source\DataTypes\Ops\ADTOps.h" />
     <ClInclude Include="..\Source\DataTypes\Ops\ArrayOps.h" />
+    <ClInclude Include="..\Source\DataTypes\Ops\BooleanOps.h" />
+    <ClInclude Include="..\Source\DataTypes\Ops\DoubleOps.h" />
+    <ClInclude Include="..\Source\DataTypes\Ops\IntegerOps.h" />
     <ClInclude Include="..\Source\DataTypes\Ops\Ops.h" />
     <ClInclude Include="..\Source\DataTypes\Ops\StringOps.h" />
+    <ClInclude Include="..\Source\DataTypes\Ops\UndefinedOps.h" />
     <ClInclude Include="..\Source\DataTypes\TypeInfo.h" />
     <ClInclude Include="..\Source\Evaluator\Context.h" />
     <ClInclude Include="..\Source\Evaluator\LockFreeWorkStealingQueue.h" />
@@ -198,12 +207,8 @@
   <ItemGroup>
     <ClCompile Include="..\Source\DataTypes\Ops\ADTOps.cpp" />
     <ClCompile Include="..\Source\DataTypes\Ops\ArrayOps.cpp" />
-    <ClCompile Include="..\Source\DataTypes\Ops\BooleanOps.cpp" />
-    <ClCompile Include="..\Source\DataTypes\Ops\DoubleOps.cpp" />
-    <ClCompile Include="..\Source\DataTypes\Ops\IntegerOps.cpp" />
     <ClCompile Include="..\Source\DataTypes\Ops\Ops.cpp" />
     <ClCompile Include="..\Source\DataTypes\Ops\StringOps.cpp" />
-    <ClCompile Include="..\Source\DataTypes\Ops\UndefinedOps.cpp" />
     <ClCompile Include="..\Source\DataTypes\TypeInfo.cpp" />
     <ClCompile Include="..\Source\Evaluator\Context.cpp" />
     <ClCompile Include="..\Source\Evaluator\EvaluatorUnit.cpp" />
@@ -228,21 +233,21 @@
     <ClCompile Include="..\Source\Parser\Semantic.cpp" />
     <ClCompile Include="..\Source\Parser\Support.cpp" />
     <ClCompile Include="..\Source\Parser\Tokenizer.cpp" />
-    <ClCompile Include="ArrayCat.cpp" />
-    <ClCompile Include="ArrayCatErrors.cpp" />
-    <ClCompile Include="ArrayCreateErrors.cpp" />
-    <ClCompile Include="ArrayFromFile.cpp" />
-    <ClCompile Include="ArrayFromFileErrors.cpp" />
-    <ClCompile Include="ArrayGet.cpp" />
-    <ClCompile Include="ArrayCreate.cpp" />
-    <ClCompile Include="ArrayLen.cpp" />
-    <ClCompile Include="ArrayLenErrors.cpp" />
-    <ClCompile Include="ArraySet.cpp" />
-    <ClCompile Include="ArraySetErrors.cpp" />
-    <ClCompile Include="ArrayGetErrors.cpp" />
+    <ClCompile Include="Arrays\ArrayCat.cpp" />
+    <ClCompile Include="Arrays\ArrayCatErrors.cpp" />
+    <ClCompile Include="Arrays\ArrayCreate.cpp" />
+    <ClCompile Include="Arrays\ArrayCreateErrors.cpp" />
+    <ClCompile Include="Arrays\ArrayFromFile.cpp" />
+    <ClCompile Include="Arrays\ArrayFromFileErrors.cpp" />
+    <ClCompile Include="Arrays\ArrayGet.cpp" />
+    <ClCompile Include="Arrays\ArrayGetErrors.cpp" />
+    <ClCompile Include="Arrays\ArrayLen.cpp" />
+    <ClCompile Include="Arrays\ArrayLenErrors.cpp" />
+    <ClCompile Include="Arrays\ArraySet.cpp" />
+    <ClCompile Include="Arrays\ArraySetErrors.cpp" />
+    <ClCompile Include="Arrays\ArraysPerformanceTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GeneralizedTests.cpp" />
-    <ClCompile Include="StressTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

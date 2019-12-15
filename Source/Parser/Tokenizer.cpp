@@ -54,7 +54,7 @@ namespace FPTL {
 			}
 			catch (const std::exception &)
 			{
-				mSupport->semanticError(ErrTypes::InvalidConstant, getErrorIdent());
+				mSupport->semanticError(ParserErrTypes::InvalidConstant, getErrorIdent(""));
 			}
 
 			return new ConstantNode(ASTNode::LongLongConstant, mSupport->newConstant(match[1], mLine, mCol));
@@ -72,7 +72,7 @@ namespace FPTL {
 			}
 			catch (std::exception &)
 			{
-				mSupport->semanticError(ErrTypes::InvalidConstant, getErrorIdent());
+				mSupport->semanticError(ParserErrTypes::InvalidConstant, getErrorIdent(""));
 			}
 
 			if (aForceFloat)
@@ -122,7 +122,7 @@ namespace FPTL {
 					}
 					else if (ch == EOF)
 					{
-						mSupport->semanticError(ErrTypes::EOFInComment, getErrorIdent());
+						mSupport->semanticError(ParserErrTypes::EOFInComment, getErrorIdent(""));
 						return 0;
 					}
 				} while (ch != '*');
@@ -183,17 +183,13 @@ namespace FPTL {
 
 			mLastTokenLen = YYLeng();
 			mCol += mLastTokenLen;
-			mSupport = nullptr;
-			mVal = nullptr;
 			return token;
 		}
 
 		//-------------------------------------------------------------------------------------------
-		Ident Tokenizer::getErrorIdent() const
+		Ident Tokenizer::getErrorIdent(const std::string& msg) const
 		{
-			static std::string nullStr;
-			const Ident ident = { mCol, mLine, &nullStr };
-			return ident;
+			return mSupport->newConstant(msg, mLine, mCol);
 		}
 
 
@@ -207,9 +203,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 		void BisonParser::error(const std::string& msg)
 		{
-			auto ident = aTokenizer->getErrorIdent();
-			pSupport->newIdent(msg, token::T_TSTRING, ident);
-			pSupport->semanticError(ErrTypes::GeneralSyntaxError, ident);
+			pSupport->semanticError(ParserErrTypes::GeneralSyntaxError, aTokenizer->getErrorIdent(msg));
 		}
 	}
 }

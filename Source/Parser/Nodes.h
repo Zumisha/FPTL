@@ -2,6 +2,7 @@
 
 #include "AST.h"
 #include "Ident.h"
+#include "NodeVisitor.h"
 
 namespace FPTL
 {

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <istream>
 
 #include "Ops.h"
@@ -24,8 +26,7 @@ namespace FPTL
 
 			const Ops * withOps(const IntegerOps * aOps) const override
 			{
-				invalidOperation(getType(DataValue()));
-				return nullptr;
+				throw invalidOperation("combine with int");
 			}
 
 			const Ops * withOps(const BooleanOps * aOps) const override
@@ -35,8 +36,7 @@ namespace FPTL
 
 			const Ops * withOps(const DoubleOps * aOps) const override
 			{
-				invalidOperation(getType(DataValue()));
-				return nullptr;
+				throw invalidOperation("combine with double");
 			}
 
 			TypeInfo getType(const DataValue &aVal) const override
@@ -82,7 +82,7 @@ namespace FPTL
 			}
 		};
 
-		DataValue DataBuilders::createBoolean(bool aVal)
+		inline DataValue DataBuilders::createBoolean(bool aVal)
 		{
 			DataValue val(BooleanOps::get());
 			val.mIntVal = aVal;

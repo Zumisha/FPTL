@@ -47,9 +47,7 @@ namespace FPTL
 			// ToDo: производить статический анализ.
 			if (aIndex >= argNum)
 			{
-				std::stringstream error;
-				error << "attempt to get the [" << aIndex + 1 << "] argument in a tuple of size " << argNum << ".";
-				throw std::runtime_error(error.str());
+				throw std::runtime_error(outOfRange(aIndex+1, argNum));
 			}
 #endif
 			return stack.at(argPos + aIndex);

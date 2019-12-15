@@ -19,7 +19,7 @@ namespace FPTL
 			explicit Tokenizer(std::istream& input);
 
 			BisonParser::token_type  getToken(BisonParser::semantic_type* aVal, Support* aSupport);
-			Ident                    getErrorIdent() const;
+			Ident                    getErrorIdent(const std::string& msg) const;
 
 		private:
 

@@ -4,6 +4,7 @@
 #include "Generated/parser.tab.hh"
 
 #include "Support.h"
+#include "NodeVisitor.h"
 #include "SemanticCheck.h"
 #include "Nodes.h"
 #include "Libraries/StandardLibrary.h"
@@ -14,7 +15,7 @@ namespace FPTL {
 	namespace Parser {
 
 		//-------------------------------------------------------------------------------------------
-		ErrorMessage::ErrorMessage(const ErrTypes::ErrType aErr, const Ident aIdent)
+		ErrorMessage::ErrorMessage(const ParserErrTypes::ErrType aErr, const Ident aIdent)
 			: mErr(aErr), mIdent(aIdent)
 		{}
 
@@ -27,7 +28,7 @@ namespace FPTL {
 		Support::~Support() = default;
 
 		//-------------------------------------------------------------------------------------------
-		void Support::semanticError(const ErrTypes::ErrType aErr, const Ident aIdent)
+		void Support::semanticError(const ParserErrTypes::ErrType aErr, const Ident aIdent)
 		{
 			mErrorList.emplace_back(aErr, aIdent);
 			mWasError = true;
@@ -94,7 +95,7 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		Ident Support::newConstant(const std::string & aConstant, const size_t aLine, const size_t aCol)
+		Ident Support::newConstant(const std::string& aConstant, const size_t aLine, const size_t aCol)
 		{
 			Ident ident{};
 			ident.Col = aCol;
@@ -104,89 +105,90 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		const char * Support::getErrorString(const ErrTypes::ErrType aErr)
+		const char* Support::getErrorString(const ParserErrTypes::ErrType aErr)
 		{
 			const char * msg = nullptr;
 			switch (aErr)
 			{
-			case ErrTypes::GeneralSyntaxError:             
+			case ParserErrTypes::GeneralSyntaxError:             
 				msg = ""; 
 				break;
-			case ErrTypes::EOFInComment:                   
-				msg = "Error: end of file was reached in comment block";
+			case ParserErrTypes::EOFInComment:                   
+				msg = "end of file was reached in comment block. ";
 				break;
-			case ErrTypes::IntConstOverflow:               
-				msg = "Error: integer constant overflow";
+			case ParserErrTypes::IntConstOverflow:               
+				msg = "integer constant overflow. ";
 				break;
-			case ErrTypes::IllegalCharacter:               
-				msg = "Error: illegal character";
+			case ParserErrTypes::IllegalCharacter:               
+				msg = "illegal character. ";
 				break;
-			case ErrTypes::MissingMainTypeDef:             
-				msg = "Error: missing main type definition";
+			case ParserErrTypes::MissingMainTypeDef:             
+				msg = "missing main type definition. ";
 				break;
-			case ErrTypes::DuplicateDefinition:            
-				msg = "Error: identifier was defined before";
+			case ParserErrTypes::DuplicateDefinition:            
+				msg = "identifier was defined before. ";
 				break;
-			case ErrTypes::UndefinedIdentifier:            
-				msg = "Error: undefined identifier";
+			case ParserErrTypes::UndefinedIdentifier:            
+				msg = "undefined identifier. ";
 				break;
-			case ErrTypes::InvalidNumberOfParameters:      
-				msg = "Error: invalid number of parameters"; 
+			case ParserErrTypes::InvalidNumberOfParameters:      
+				msg = "invalid number of parameters. "; 
 				break;
-			case ErrTypes::UndefinedSchemeName:            
-				msg = "Error: undefined scheme name";
+			case ParserErrTypes::UndefinedSchemeName:            
+				msg = "undefined scheme name. ";
 				break;
-			case ErrTypes::IncorrectIdentifierUsage:       
-				msg = "Error: incorrect use of identifier";
+			case ParserErrTypes::IncorrectIdentifierUsage:       
+				msg = "incorrect use of identifier. ";
 				break;
-			case ErrTypes::NotATemplateType:               
-				msg = "Error: not a template type";
+			case ParserErrTypes::NotATemplateType:               
+				msg = "not a template type. ";
 				break;
-			case ErrTypes::InvalidTemplateArgumentsNumber: 
-				msg = "Error: invalid type parameters number";
+			case ParserErrTypes::InvalidTemplateArgumentsNumber: 
+				msg = "invalid type parameters number. ";
 				break;
-			case ErrTypes::InvalidConstructorUsage:        
-				msg = "Error: invalid constructor usage";
+			case ParserErrTypes::InvalidConstructorUsage:        
+				msg = "invalid constructor usage. ";
 				break;
-			case ErrTypes::NestedDataDefinition:           
-				msg = "Error: nested data definitions are not allowed";
+			case ParserErrTypes::NestedDataDefinition:           
+				msg = "nested data definitions are not allowed. ";
 				break;
-			case ErrTypes::MultipleTypeExpression:         
-				msg = "Error: only one type expression is allowed";
+			case ParserErrTypes::MultipleTypeExpression:         
+				msg = "only one type expression is allowed. ";
 				break;
-			case ErrTypes::InvalidFunCallParameters: 
-				msg = "Error: function parameters cannot be used as another function parameters"; 
+			case ParserErrTypes::InvalidFunCallParameters: 
+				msg = "function parameters cannot be used as another function parameters. "; 
 				break;
-			case ErrTypes::InvalidConstant:                
-				msg = "Error: constant is invalid or out of range"; 
+			case ParserErrTypes::InvalidConstant:                
+				msg = "constant is invalid or out of range. "; 
 				break;
-			case ErrTypes::MissingMainDefinition:          
-				msg = "Error: missing main definition in function"; 
+			case ParserErrTypes::MissingMainDefinition:          
+				msg = "missing main definition in function. "; 
 				break;
-			case ErrTypes::InvalidTupleIndex:              
-				msg = "Error: invalid tuple element index"; 
+			case ParserErrTypes::InvalidTupleIndex:              
+				msg = "invalid tuple element index. "; 
 				break;
 			default:                                       
-				msg = "Unknown error";
+				msg = "unknown error. ";
 			}
 			return msg;
 		}
 
 		//-------------------------------------------------------------------------------------------
-		void Support::getErrorList(std::ostream & aOutStream)
+		void Support::getErrorList(std::ostream & aOutStream) const
 		{
 			std::vector<ErrorMessage> processed;
 			for (auto& errMsg : mErrorList)
 			{
 				if (std::find(processed.begin(), processed.end(), errMsg) == processed.end()) {
-
-					aOutStream << getErrorString(errMsg.mErr)
-						<< *errMsg.mIdent.Ptr
-						<< ". Line " << errMsg.mIdent.Line
-						<< ", ch " << errMsg.mIdent.Col << "\n";
+					printError(aOutStream, errMsg.mIdent.Line, errMsg.mIdent.Col, getErrorString(errMsg.mErr) + *errMsg.mIdent.Ptr);
 					processed.push_back(errMsg);
 				}
 			}
+		}
+
+		void Support::printError(std::ostream& outStream, const size_t line, const size_t col,	const std::string& message)
+		{
+			outStream << "Line " << line << ", ch " << col << ": " << message << std::endl;
 		}
 
 		//-------------------------------------------------------------------------------------------
@@ -256,7 +258,9 @@ namespace FPTL {
 						program << inputTupleStr;
 						program << end.substr(lPos, end.length());
 					}
+					else program << programStr;
 				}
+				else program << programStr;
 			}//*/
 			else program << programStr;
 

@@ -12,7 +12,7 @@ namespace FPTL {
 		{
 			if (!mContext.insertName(aDataNode->getDataName(), aDataNode))
 			{
-				mSupport->semanticError(ErrTypes::DuplicateDefinition, aDataNode->getDataName());
+				mSupport->semanticError(ParserErrTypes::DuplicateDefinition, aDataNode->getDataName());
 			}
 
 			pushContext();
@@ -33,7 +33,7 @@ namespace FPTL {
 			// Добавляем вложенные fun-конструкции в лексический контекст
 			for (auto functionNode : aFunctionNode->getFunctionNodes()) {
 				if (!mContext.insertName(functionNode->getFuncName(), functionNode)) {
-					mSupport->semanticError(ErrTypes::DuplicateDefinition, functionNode->getFuncName());
+					mSupport->semanticError(ParserErrTypes::DuplicateDefinition, functionNode->getFuncName());
 				}
 			}
 
@@ -42,7 +42,7 @@ namespace FPTL {
 			// Проверяем наличие главного уравнения.
 			if (!aFunctionNode->getDefinition(aFunctionNode->getFuncName()))
 			{
-				mSupport->semanticError(ErrTypes::MissingMainDefinition, aFunctionNode->getFuncName());
+				mSupport->semanticError(ParserErrTypes::MissingMainDefinition, aFunctionNode->getFuncName());
 			}
 
 			// Выполняем проверку имен.
@@ -63,14 +63,14 @@ namespace FPTL {
 				if (!mContext.insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode))
 				{
 					// Повторное определение.
-					mSupport->semanticError(ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
+					mSupport->semanticError(ParserErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
 				}
 				break;
 
 			case ASTNode::TypeConstructorDefinition:
 				if (!mContextStack[0].insertName(aDefinitionNode->getDefinitionName(), aDefinitionNode))
 				{
-					mSupport->semanticError(ErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
+					mSupport->semanticError(ParserErrTypes::DuplicateDefinition, aDefinitionNode->getDefinitionName());
 				}
 				break;
 			}
@@ -173,21 +173,21 @@ namespace FPTL {
 						}
 						else
 						{
-							mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+							mSupport->semanticError(ParserErrTypes::UndefinedIdentifier, aTermDesc.TermName);
 							return;
 						}
 					}
 				}
 				else
 				{
-					mSupport->semanticError(ErrTypes::UndefinedIdentifier, aTermDesc.TermName);
+					mSupport->semanticError(ParserErrTypes::UndefinedIdentifier, aTermDesc.TermName);
 					return;
 				}
 			}
 
 			if (aTermDesc.Node->getType() == ASTNode::RunningSchemeName && target->getType() && target->getType() != ASTNode::FunctionBlock)
 			{
-				mSupport->semanticError(ErrTypes::UndefinedSchemeName, aTermDesc.TermName);
+				mSupport->semanticError(ParserErrTypes::UndefinedSchemeName, aTermDesc.TermName);
 			}
 
 			if (aTermDesc.Node->numParameters() == target->numParameters())
@@ -197,7 +197,7 @@ namespace FPTL {
 			else
 			{
 				// TODO: выводить число требуемых и фактических параметров.
-				mSupport->semanticError(ErrTypes::InvalidNumberOfParameters, aTermDesc.TermName);
+				mSupport->semanticError(ParserErrTypes::InvalidNumberOfParameters, aTermDesc.TermName);
 			}
 		}
 

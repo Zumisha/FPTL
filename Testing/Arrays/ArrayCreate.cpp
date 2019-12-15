@@ -1,4 +1,4 @@
-#include "Shared.h"
+#include "../Shared.h"
 
 namespace UnitTests
 {
@@ -33,9 +33,9 @@ namespace UnitTests
 
 		TEST(ArrayCreate, String)
 		{
-			const std::string innerCode = "@ = (2 * \"asd\").arrayCreate.(print * printType);";
+			const std::string innerCode = R"(@ = (2 * "asd").arrayCreate.(print * printType);)";
 
-			const std::string expected = "[asd, asd](array[string])";
+			const std::string expected = R"(["asd", "asd"](array[string]))";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}

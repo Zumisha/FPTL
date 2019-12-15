@@ -4,6 +4,7 @@
 
 #include "ArrayOps.h"
 #include "GC/GarbageCollector.h"
+#include "UndefinedOps.h"
 
 namespace FPTL
 {
@@ -106,20 +107,17 @@ namespace FPTL
 			{
 				throw invalidOperation("read");
 			}
-
-		private:
-			static std::runtime_error invalidOperation(const std::string & name)
-			{
-				return std::runtime_error(boost::str(boost::format("Invalid operation on array: %1%.") % name));
-			}
 		};
 
 		//-----------------------------------------------------------------------------
-		DataValue ArrayValue::create(SExecutionContext & ctx, size_t length, const DataValue & initial)
+		DataValue ArrayValue::create(SExecutionContext & ctx, size_t length, const DataValue& initial)
 		{
+			if (((SIZE_MAX - sizeof(ArrayValue)) / length) < sizeof(initial))
+				throw std::runtime_error(overflowSizeMsg(length, std::string(initial.getOps()->getType(initial))));
+
 			// Выделяем память в контролируемой куче под хранение массива.
 			auto val = ctx.heap().alloc<ArrayValue>(
-				[length, initial](void * m) { return new(m) ArrayValue(length, initial); },
+				[length, initial](void* m) { return new(m) ArrayValue(length, initial); },
 				sizeof(ArrayValue) + sizeof(initial) * length);
 
 			// Создаем массив и заполняем его начальным значением.
@@ -176,7 +174,7 @@ namespace FPTL
 		{
 			if (arr.getOps() != ArrayOps::get())
 			{
-				throw notArrayValue();
+				throw BaseOps::invalidOperation(arr.getOps()->getType(arr), "toArray");
 			}
 		}
 
@@ -240,7 +238,7 @@ namespace FPTL
 
 			if (pos >= trg->length)
 			{
-				throw outOfRange();
+				throw std::runtime_error(badIndexMsg(trg->length, pos));
 			}
 
 			return trg->arrayData[pos];
@@ -253,7 +251,7 @@ namespace FPTL
 
 			if (pos >= trg->length)
 			{
-				throw outOfRange();
+				throw std::runtime_error(badIndexMsg(trg->length, pos));
 			}
 
 			const auto valType = val.getOps()->getType(val);
@@ -262,7 +260,7 @@ namespace FPTL
 			{
 				std::stringstream error;
 				error << "cannot assign element of type " << valType << " to an array of type " << arrType << ".";
-				throw std::runtime_error(error.str());
+				throw std::runtime_error(assignErrMsg(std::string(valType), std::string(arrType)));
 			}
 
 			trg->arrayData[pos] = val;
@@ -288,10 +286,8 @@ namespace FPTL
 			{
 				const auto rArr = ctx.getArg(i).mArray;
 				if (rArr->type != type)
-				{
-					std::stringstream error;
-					error << "Cannot concat an array of type " << type << " with an array of type " << rArr->type;
-					throw std::runtime_error(error.str());
+				{					
+					throw std::runtime_error(concatErrMsg(std::string(type), std::string(rArr->type)));
 				}
 				len += rArr->length;
 			}

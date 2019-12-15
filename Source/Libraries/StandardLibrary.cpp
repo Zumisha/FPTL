@@ -8,20 +8,44 @@
 #include <random>
 #include <experimental/filesystem>
 #include <cmath>
+#include <string>
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>
 
 #include "Macros.h"
 #include "StandardLibrary.h"
+#include "DataTypes/Ops/Ops.h"
 #include "DataTypes/Ops/StringOps.h"
 #include "DataTypes/Ops/ArrayOps.h"
+#include "DataTypes/Ops/IntegerOps.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
 		namespace {
+
+			std::string getIfStreamError(std::fstream& input)
+			{
+				std::string errMsg = "";
+				if (!input.is_open())
+				{
+					const size_t error_len = 1024;
+					char error_buf[error_len];
+					strerror_s(error_buf, error_len, errno);
+					errMsg = error_buf;
+				}
+				else
+				{
+					if (input.bad())
+						errMsg = "error while reading file";
+					else if (input.fail())
+						errMsg = "characters extracted could not be interpreted as a valid value of the appropriate type";
+					input.close();
+				}
+				return errMsg;
+			}
 
 			void id(SExecutionContext & aCtx)
 			{
@@ -433,10 +457,12 @@ namespace FPTL
 				const auto & arg = aCtx.getArg(0);
 
 				const auto fileName = arg.getOps()->toString(arg);
-
-				std::ifstream input;
-				input.open(fileName->str());
-				if (input.is_open())
+				
+				DataValue val;
+				std::string errMsg = "";
+				std::fstream input;
+				input.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+				try
 				{
 					// Вычисляем размер файла.
 					const auto begin = input.tellg();
@@ -444,16 +470,20 @@ namespace FPTL
 					const auto size = input.tellg() - begin;
 					input.seekg(0, std::ios::beg);
 
-					// Резервируем память под файл.
-					const auto val = StringBuilder::create(aCtx, size);
+					// Резервируем память под файл.					
+					val = StringBuilder::create(aCtx, size);
 					// Читаем данные.
 					std::copy(std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>(), val.mString->getChars());
-					aCtx.push(val);
+					input.close();
 				}
-				else
+				catch (const std::ios_base::failure& exc)
 				{
-					aCtx.push(DataBuilders::createUndefinedValue());
+					val = DataBuilders::createUndefinedValue();
+					errMsg = getIfStreamError(input);
+					if (errMsg == "") errMsg = exc.what();
 				}
+				aCtx.push(val);
+				aCtx.push(StringBuilder::create(aCtx, errMsg));
 			}
 
 			void writeToFile(SExecutionContext & aCtx, std::ios::openmode mode)
@@ -469,17 +499,27 @@ namespace FPTL
 					std::experimental::filesystem::permissions(fileName->str(),
 						std::experimental::filesystem::perms::add_perms | std::experimental::filesystem::perms::owner_all | std::experimental::filesystem::perms::group_all);
 				}
-				std::ofstream output(fileName->str(), mode);
-				output.precision(std::numeric_limits<double>::max_digits10);
-				if (output.is_open())
+
+				DataValue res;
+				std::string errMsg = "";
+				std::fstream output;
+				output.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+				try
 				{
+					output.open(fileName->str(), mode);
+					output.precision(std::numeric_limits<double>::max_digits10);
 					val.getOps()->write(val, output);
-					aCtx.push(DataBuilders::createBoolean(true));
+					res = DataBuilders::createBoolean(true);
+					output.close();
 				}
-				else
+				catch (const std::ios_base::failure& exc)
 				{
-					aCtx.push(DataBuilders::createBoolean(false));
+					res = DataBuilders::createBoolean(false);
+					errMsg = getIfStreamError(output);
+					if (errMsg == "") errMsg = exc.what();
 				}
+				aCtx.push(res);
+				aCtx.push(StringBuilder::create(aCtx, errMsg));
 			}
 
 			// Создание или перезапись файла.
@@ -497,14 +537,18 @@ namespace FPTL
 			// Создание массива.
 			void createArray(SExecutionContext & aCtx)
 			{
-				const auto sizeVal = aCtx.getArg(0).getOps()->toInt(aCtx.getArg(0));
-				const auto & initialVal = aCtx.getArg(1);
+				const auto sizeVal = aCtx.getArg(0);
+				const auto& initialVal = aCtx.getArg(1);
+
+				const auto intSize = sizeVal.getOps()->toInt(sizeVal);
 
 #if fptlDebugBuild
-				if (sizeVal <= 0) throw std::invalid_argument("The size of the array must be greater than zero!");
+				if (sizeVal.getOps() != IntegerOps::get())
+					throw BaseOps::invalidOperation(sizeVal.getOps()->getType(sizeVal), "toInt");
+				if (intSize <= 0) throw std::invalid_argument(ArrayValue::negativeSizeMsg(intSize));
 #endif
 
-				const auto size = static_cast<size_t>(sizeVal);
+				const auto size = static_cast<size_t>(intSize);
 				aCtx.push(ArrayValue::create(aCtx, size, initialVal));
 			}
 
@@ -514,9 +558,13 @@ namespace FPTL
 				const auto & arrVal = aCtx.getArg(0);
 				const auto & posVal = aCtx.getArg(1);
 
+#if fptlDebugBuild
 				ArrayValue::arrayValueCheck(arrVal);
-				const size_t pos = posVal.getOps()->toInt(posVal);
+				if (posVal.getOps() != IntegerOps::get())
+					throw BaseOps::invalidOperation(posVal.getOps()->getType(posVal), "toInt");
+#endif
 
+				const size_t pos = posVal.getOps()->toInt(posVal);
 				aCtx.push(ArrayValue::get(arrVal, pos));
 			}
 
@@ -527,7 +575,12 @@ namespace FPTL
 				const auto & posVal = aCtx.getArg(1);
 				const auto & val = aCtx.getArg(2);
 
+#if fptlDebugBuild
 				ArrayValue::arrayValueCheck(arrVal);
+				if (posVal.getOps() != IntegerOps::get())
+					throw BaseOps::invalidOperation(posVal.getOps()->getType(posVal), "toInt");
+#endif
+
 				const size_t pos = posVal.getOps()->toInt(posVal);
 
 				ArrayValue::set(const_cast<DataValue &>(arrVal), pos, val);
@@ -572,18 +625,24 @@ namespace FPTL
 				ArrayValue::arrayValueCheck(arrVal);
 				const auto fileName = fileVal.getOps()->toString(fileVal);
 
-				std::ifstream input(fileName->str());
-				if (input.is_open())
+				std::string errMsg = "";
+				std::fstream input;
+				input.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+				try
 				{
+					input.open(fileName->str());
 					ArrayValue::fromString(arrVal, static_cast<std::istream&>(input));
-					aCtx.push(arrVal);
+					input.close();
 				}
-				else
+				catch (const std::ios_base::failure& exc)
 				{
-					aCtx.push(DataBuilders::createUndefinedValue());
+					arrVal = DataBuilders::createUndefinedValue();
+					errMsg = getIfStreamError(input);
+					if (errMsg == "") errMsg = exc.what();
 				}
+				aCtx.push(arrVal);
+				aCtx.push(StringBuilder::create(aCtx, errMsg));
 			}
-
 		} // anonymous namespace
 
 		const std::map<std::string, TFunction> StandardLibrary::mFunctions =

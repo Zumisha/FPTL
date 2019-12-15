@@ -7,6 +7,7 @@
 
 #include "DataTypes/Ops/Ops.h"
 #include "InternalForm/ControlValue.h"
+#include <sstream>
 
 namespace FPTL {
 	namespace Runtime {
@@ -83,6 +84,13 @@ namespace FPTL {
 
 			EvaluatorUnit * evaluator() const;
 			CollectedHeap & heap() const;
+
+			static std::string outOfRange(size_t aIndex, size_t argNum)
+			{
+				std::stringstream error;
+				error << "attempt to get the [" << aIndex << "] argument in a tuple of size " << argNum;
+				return error.str();
+			}
 
 		protected:
 			EvaluatorUnit * mEvaluatorUnit;

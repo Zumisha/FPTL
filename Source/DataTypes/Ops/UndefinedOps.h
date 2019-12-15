@@ -1,3 +1,5 @@
+#pragma once
+
 #include <ostream>
 #include "Ops.h"
 
@@ -11,7 +13,7 @@ namespace FPTL
 			UndefinedValueOps() = default;
 
 		public:
-			static UndefinedValueOps * get()
+			static UndefinedValueOps* get()
 			{
 				static UndefinedValueOps ops;
 				return &ops;
@@ -56,7 +58,7 @@ namespace FPTL
 			}
 		};
 
-		UndefinedValue DataBuilders::createUndefinedValue()
+		inline UndefinedValue DataBuilders::createUndefinedValue()
 		{
 			return UndefinedValue(UndefinedValueOps::get());
 		}

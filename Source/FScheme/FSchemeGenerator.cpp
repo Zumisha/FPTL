@@ -8,6 +8,7 @@
 #include "Libraries/StandardLibrary.h"
 #include "NodeDeleter.h"
 #include "Parser/Nodes.h"
+#include "DataTypes/Ops/DoubleOps.h"
 
 namespace FPTL
 {

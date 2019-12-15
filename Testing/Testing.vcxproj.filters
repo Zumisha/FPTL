@@ -19,6 +19,9 @@
     <Filter Include="Исходные файлы\ArraysTests">
       <UniqueIdentifier>{b02e3a14-79af-4fa8-9481-b1f694e98fd4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\CompositionsTests">
+      <UniqueIdentifier>{49364356-e5c6-4991-b722-f2275b0a3512}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\FScheme\ConstructorGenerator.h">
@@ -135,6 +138,18 @@
     <ClInclude Include="Shared.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\IntegerOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\BooleanOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\DoubleOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\UndefinedOps.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneralizedTests.cpp">
@@ -206,22 +221,10 @@
     <ClCompile Include="..\Source\DataTypes\Ops\ArrayOps.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\DataTypes\Ops\BooleanOps.cpp">
-      <Filter>FPTL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\DataTypes\Ops\DoubleOps.cpp">
-      <Filter>FPTL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\DataTypes\Ops\IntegerOps.cpp">
-      <Filter>FPTL</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\DataTypes\Ops\Ops.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\DataTypes\Ops\StringOps.cpp">
-      <Filter>FPTL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\DataTypes\Ops\UndefinedOps.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\DataTypes\TypeInfo.cpp">
@@ -239,43 +242,43 @@
     <ClCompile Include="Main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ArraySet.cpp">
+    <ClCompile Include="Arrays\ArrayCat.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="StressTests.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrayCreateErrors.cpp">
+    <ClCompile Include="Arrays\ArrayCatErrors.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArraySetErrors.cpp">
+    <ClCompile Include="Arrays\ArrayCreate.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayLen.cpp">
+    <ClCompile Include="Arrays\ArrayCreateErrors.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayLenErrors.cpp">
+    <ClCompile Include="Arrays\ArrayFromFile.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayCat.cpp">
+    <ClCompile Include="Arrays\ArrayFromFileErrors.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayCatErrors.cpp">
+    <ClCompile Include="Arrays\ArrayGet.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayFromFile.cpp">
+    <ClCompile Include="Arrays\ArrayGetErrors.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayFromFileErrors.cpp">
+    <ClCompile Include="Arrays\ArrayLen.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayGetErrors.cpp">
+    <ClCompile Include="Arrays\ArrayLenErrors.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayGet.cpp">
+    <ClCompile Include="Arrays\ArraySet.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayCreate.cpp">
+    <ClCompile Include="Arrays\ArraySetErrors.cpp">
+      <Filter>Исходные файлы\ArraysTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrays\ArraysPerformanceTests.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
     </ClCompile>
   </ItemGroup>

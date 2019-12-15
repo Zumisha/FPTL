@@ -3,7 +3,7 @@ Scheme mergeSort
 	N = [1].toInt;
 	P = [2].toInt;
 		
-	Array = ([1].EmptyArray * ("../../Tests/Generalized/MergeSort/" * [1].toString * ".txt").cat).arrayFromFile.(id -> id, false * "File not found!\n".print);	
+	Array = ([1].EmptyArray * ("../../Tests/Generalized/MergeSort/" * [1].toString * ".txt").cat).arrayFromFile.(id -> [1], print);	
     EmptyArray = ([1] * 0.0).arrayCreate;
 	
 	@ = (N * 100).equal -> (Array * P).Sort.print,

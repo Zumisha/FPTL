@@ -1,4 +1,4 @@
-#include "Shared.h"
+#include "../Shared.h"
 #include <fstream>
 
 namespace UnitTests
@@ -41,7 +41,7 @@ namespace UnitTests
 				).arrayFromFile.print;
 			)";
 
-			const std::string expected = "Error: Invalid operation on not array value.\nIn function \"arrayLen\". Line: 1. Column: 19.\nInput tuple type: (int)";
+			const std::string expected = R"(undefined * "characters extracted could not be interpreted as a valid value of the appropriate type")";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}
@@ -54,7 +54,7 @@ namespace UnitTests
 				).arrayFromFile.print;
 			)";
 
-			const std::string expected = "undefined";
+			const std::string expected = R"(undefined * "No such file or directory")";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <istream>
 
 #include "Ops.h"
@@ -29,8 +31,7 @@ namespace FPTL
 
 			const Ops * withOps(const BooleanOps * aOps) const override
 			{
-				invalidOperation(getType(DataValue()));
-				return nullptr;
+				throw invalidOperation("combine with boolean");
 			}
 
 			const Ops * withOps(const DoubleOps * aOps) const override
@@ -74,14 +75,14 @@ namespace FPTL
 			DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
 				const long long Right = aRhs.getOps()->toInt(aRhs);
-				if (Right == 0) throw std::overflow_error("Divide by zero");
+				if (Right == 0) throw divideByZero();
 				return DataBuilders::createInt(aLhs.mIntVal / Right);
 			}
 
 			DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
 				const long long Right = aRhs.getOps()->toInt(aRhs);
-				if (Right == 0) throw std::overflow_error("Divide by zero");
+				if (Right == 0) throw divideByZero();
 				return DataBuilders::createInt(aLhs.mIntVal % Right);
 			}
 
@@ -125,7 +126,7 @@ namespace FPTL
 			}
 		};
 
-		DataValue DataBuilders::createInt(long long aVal)
+		inline DataValue DataBuilders::createInt(long long aVal)
 		{
 			DataValue val(IntegerOps::get());
 			val.mIntVal = aVal;

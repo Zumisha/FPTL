@@ -146,16 +146,10 @@
     <ClCompile Include="DataTypes\Ops\ArrayOps.cpp">
       <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
-    <ClCompile Include="DataTypes\Ops\DoubleOps.cpp">
-      <Filter>Source Files\DataTypes\Ops</Filter>
-    </ClCompile>
     <ClCompile Include="DataTypes\Ops\Ops.cpp">
       <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
     <ClCompile Include="DataTypes\Ops\StringOps.cpp">
-      <Filter>Source Files\DataTypes\Ops</Filter>
-    </ClCompile>
-    <ClCompile Include="DataTypes\Ops\UndefinedOps.cpp">
       <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
     <ClCompile Include="GC\CollectedHeap.cpp">
@@ -163,12 +157,6 @@
     </ClCompile>
     <ClCompile Include="GC\GarbageCollector.cpp">
       <Filter>Source Files\GC</Filter>
-    </ClCompile>
-    <ClCompile Include="DataTypes\Ops\BooleanOps.cpp">
-      <Filter>Source Files\DataTypes\Ops</Filter>
-    </ClCompile>
-    <ClCompile Include="DataTypes\Ops\IntegerOps.cpp">
-      <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
     <ClCompile Include="FScheme\NewFSchemeGenerator.cpp">
       <Filter>Source Files\FScheme</Filter>
@@ -178,6 +166,18 @@
     </ClCompile>
     <ClCompile Include="Interpreter\Interpreter.cpp">
       <Filter>Source Files\Interpreter</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\UndefinedOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\IntegerOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\DoubleOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\BooleanOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

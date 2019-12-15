@@ -59,7 +59,7 @@ namespace FPTL
 				}
 				catch (std::exception& e)
 				{
-					std::cerr << "Error: " << e.what() << std::endl
+					std::cerr << e.what() << std::endl
 						<< "Execution aborted." << std::endl;
 					mEvaluator->abort();
 				}

@@ -1,12 +1,13 @@
 ﻿#pragma once
 
+#include <string>
 #include <vector>
 #include <list>
 #include <unordered_set>
 #include <unordered_map>
 
 #include "Ident.h"
-#include "NodeVisitor.h"
+#include "AST.h"
 
 namespace FPTL
 {
@@ -15,7 +16,7 @@ namespace FPTL
 		/*
 		 * Идентификаторы кодов синтаксических и семантических ошибок.
 		 */
-		namespace ErrTypes
+		namespace ParserErrTypes
 		{
 			enum ErrType
 			{
@@ -52,7 +53,7 @@ namespace FPTL
 				InvalidConstant,
 				InvalidTupleIndex
 			};
-		};
+		}
 
 		/*
 		 * Сообщение об ошибке: код ошибки, идентификатор,
@@ -62,9 +63,9 @@ namespace FPTL
 		{
 		public:
 
-			ErrorMessage(ErrTypes::ErrType aErr, Ident aIdent);
+			ErrorMessage(ParserErrTypes::ErrType aErr, Ident aIdent);
 
-			ErrTypes::ErrType mErr;
+			ParserErrTypes::ErrType mErr;
 			Ident mIdent;
 
 			bool operator == (const ErrorMessage & other) const {
@@ -87,10 +88,11 @@ namespace FPTL
 
 			// Методы обработки ошибок.
 
-			void               semanticError(ErrTypes::ErrType aErr, Ident aIdent);
+			void               semanticError(ParserErrTypes::ErrType aErr, Ident aIdent);
 
-			static const char *       getErrorString(ErrTypes::ErrType aErr);
-			void               getErrorList(std::ostream & aOutStream);
+			static const char* getErrorString(ParserErrTypes::ErrType aErr);
+			void getErrorList(std::ostream & aOutStream) const;
+			static void printError(std::ostream & outStream, const size_t line, const size_t col, const std::string& message);
 
 			// Методы для работы с таблицей имен.
 
@@ -99,10 +101,10 @@ namespace FPTL
 			void		       newIdent(const std::string & aName, int aId, Ident & aIdent);
 			int				   lookForIdent(const std::string & aName, Ident & aIdent);
 
-			Ident              newConstant(const std::string & aConstant, size_t aLine, size_t aCol);
+			Ident              newConstant(const std::string& aConstant, size_t aLine, size_t aCol);
 
 			// Проводит синтаксический разбор, семантическую проверку и возвращает AST-дерево.
-			ASTNode *          getInternalForm(const std::vector<std::string>& inputTuple, const std::string& programStr);
+			ASTNode*           getInternalForm(const std::vector<std::string>& inputTuple, const std::string& programStr);
 
 			// Вспомогательные методы для парсера.
 			void               pushIdent(const Ident & aIdent);

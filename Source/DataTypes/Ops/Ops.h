@@ -105,8 +105,8 @@ namespace FPTL
 		{
 		public:
 			virtual ~BaseOps() = default;
-			Ops * withOps(const Ops * aOther) const override;
-			Ops * withOps(class StringOps const * aOther) const override;
+			const Ops* withOps(const Ops * aOther) const override;
+			const Ops* withOps(class StringOps const * aOther) const override;
 
 			// Базисные функции.
 			DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override;
@@ -131,8 +131,12 @@ namespace FPTL
 			DataValue read(std::istream & aStream) const override;
 			void write(const DataValue & aVal, std::ostream & aStream) const override;
 
-		protected:
-			static DataValue invalidOperation(const TypeInfo & valType);
+			static std::runtime_error divideByZero();
+			static std::runtime_error invalidOperation(const TypeInfo& valType, const std::string& funcName);
+			std::runtime_error invalidOperation(const std::string& funcName) const;
+
+			inline static const std::string invalidOpsMsg = "invalid operation on type ";
+			inline static const std::string divideByZeroMsg = "divide by zero ";
 		};
 
 		// Конструкторы типов данных.

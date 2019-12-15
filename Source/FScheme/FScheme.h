@@ -71,7 +71,7 @@ namespace FPTL
 			std::string name() const { return mName; }
 			size_t col() const { return mColumn; }
 			size_t line() const { return mLine; }
-			std::pair<size_t, size_t> pos() const { return{ mColumn, mLine }; }
+			std::pair<size_t, size_t> pos() const { return{ mLine, mColumn }; }
 			TFunction fn() const { return mFunction; }
 
 		private:
@@ -135,7 +135,7 @@ namespace FPTL
 			long long index() const { return mIndex; }
 			size_t col() const { return mCol; }
 			size_t line() const { return mLine; }
-			std::pair<size_t, size_t> pos() const { return{ mCol, mLine }; }
+			std::pair<size_t, size_t> pos() const { return{ mLine, mCol }; }
 
 		private:
 			long long mIndex;

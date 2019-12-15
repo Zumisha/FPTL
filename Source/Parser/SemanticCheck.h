@@ -6,6 +6,7 @@
 
 #include "Support.h"
 #include "Nodes.h"
+#include "NodeVisitor.h"
 
 namespace FPTL
 {

@@ -116,12 +116,12 @@
   <ItemGroup>
     <ClCompile Include="DataTypes\Ops\ADTOps.cpp" />
     <ClCompile Include="DataTypes\Ops\ArrayOps.cpp" />
-    <ClCompile Include="DataTypes\Ops\BooleanOps.cpp" />
-    <ClCompile Include="DataTypes\Ops\DoubleOps.cpp" />
-    <ClCompile Include="DataTypes\Ops\IntegerOps.cpp" />
+    <ClCompile Include="DataTypes\Ops\BooleanOps.h" />
+    <ClCompile Include="DataTypes\Ops\DoubleOps.h" />
+    <ClCompile Include="DataTypes\Ops\IntegerOps.h" />
     <ClCompile Include="DataTypes\Ops\Ops.cpp" />
     <ClCompile Include="DataTypes\Ops\StringOps.cpp" />
-    <ClCompile Include="DataTypes\Ops\UndefinedOps.cpp" />
+    <ClCompile Include="DataTypes\Ops\UndefinedOps.h" />
     <ClCompile Include="DataTypes\TypeInfo.cpp" />
     <ClCompile Include="Evaluator\Context.cpp" />
     <ClCompile Include="Evaluator\EvaluatorUnit.cpp" />

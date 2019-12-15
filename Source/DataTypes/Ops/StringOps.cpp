@@ -2,8 +2,9 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "DataTypes/Ops/Ops.h"
-#include "DataTypes/Ops/StringOps.h"
+#include "Ops.h"
+#include "StringOps.h"
+#include "BooleanOps.h"
 #include "GC/CollectedHeap.h"
 #include "GC/GarbageCollector.h"
 
@@ -29,7 +30,7 @@ namespace FPTL
 
 		//-----------------------------------------------------------------------------
 
-		class StringOps : public Ops
+		class StringOps : public BaseOps
 		{
 		protected:
 			StringOps() = default;
@@ -41,22 +42,22 @@ namespace FPTL
 				return &ops;
 			}
 
-			const Ops * combine(const Ops * aOther) const override
+			const Ops* combine(const Ops * aOther) const override
 			{
 				return aOther->withOps(this);
 			}
 
-			const Ops * withOps(const StringOps * aOther) const override
+			const Ops* withOps(const StringOps * aOther) const override
 			{
 				return get();
 			}
 
-			const Ops * withOps(const Ops * aOps) const override
+			const Ops* withOps(const Ops * aOps) const override
 			{
 				throw invalidOperation("combine");
 			}
 
-			const Ops * withOps(const BooleanOps * aOps) const override
+			const Ops* withOps(const BooleanOps * aOps) const override
 			{
 				throw invalidOperation("toBool");
 			}
@@ -162,7 +163,7 @@ namespace FPTL
 			void print(const DataValue & aVal, std::ostream & aStream) const override
 			{
 				const auto str = aVal.mString;
-				std::copy(str->getChars(), str->getChars() + str->length(), std::ostreambuf_iterator<char>(aStream));
+				aStream << "\"" << aVal.mString->str() << "\"";
 			}
 
 			void write(const DataValue & aVal, std::ostream & aStream) const override
@@ -173,14 +174,6 @@ namespace FPTL
 			DataValue read(std::istream & aStream) const override
 			{
 				throw invalidOperation("read");
-			}
-
-		private:
-			static std::runtime_error invalidOperation(const char * aOpName)
-			{
-				std::stringstream message;
-				message << "invalid operation '" << aOpName << "' on type string";
-				return std::runtime_error(message.str());
 			}
 		};
 

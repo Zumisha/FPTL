@@ -3,7 +3,7 @@ Scheme Lab
 	N = [1].toInt;
 	P = [2].toInt;
 			
-	Matr = ([1].EmptyMatr * ("../../Tests/Generalized/MatrixMul/" * [1].toString * ".txt").cat).arrayFromFile.(id -> id, false * "File not found!\n".print);
+	Matr = ([1].EmptyMatr * ("../../Tests/Generalized/MatrixMul/" * [1].toString * ".txt").cat).arrayFromFile.(id -> [1], print);
     EmptyMatr = ([1] * (([1] * 0.0).arrayCreate)).arrayCreate;
 	
 	@ = (N * 10).lequal -> ((N.Matr * N.Matr * N * P).MatrixMul * "out.txt").createFile,

@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <unordered_map>
+#include <sstream>
 
 namespace FPTL
 {
@@ -26,6 +27,13 @@ namespace FPTL
 			TypeInfo(std::string aTypeName, std::vector<TypeInfo> aParameters) : typeName(std::move(aTypeName)), typeParameters(std::move(aParameters)) {}
 
 			static bool matchType(const TypeInfo &aTypeInfo, const TypeInfo * aRef, std::unordered_map<std::string, struct TypeInfo> & aParametersMap);
+
+			explicit operator std::string() const
+			{
+				std::stringstream ss;
+				ss << *this;
+				return ss.str();
+			};
 			friend std::ostream & operator <<(std::ostream& aStream, const TypeInfo& aTypeInfo);
 			friend bool operator ==(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);
 			friend bool operator !=(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);

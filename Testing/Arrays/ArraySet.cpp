@@ -1,4 +1,4 @@
-#include "Shared.h"
+#include "../Shared.h"
 
 namespace UnitTests
 {
@@ -55,7 +55,7 @@ namespace UnitTests
 				print);
 			)";
 
-			const std::string expected = "[asd, asd, asd][asd, qwe, asd]";//[asd, asd, asd]";
+			const std::string expected = R"(["asd", "asd", "asd"]["asd", "qwe", "asd"])";//["asd", "asd", "asd"])";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}

@@ -25,6 +25,7 @@ namespace FPTL
 			virtual void execDestructor(SExecutionContext & aCtx) const;
 
 			std::string name() const { return mConstructorName; }
+			std::string typeName() const { return mConstructorName; }
 			std::vector<TypeInfo> type() const { return mReferenceType; }
 			TypeInfo * targetType() const { return const_cast<TypeInfo *>(&mTargetType); }
 			size_t arity() const { return static_cast<size_t>(mReferenceType.size()); }

@@ -7,9 +7,20 @@
 
 #include "../Source/Interpreter/Interpreter.h"
 #include "Macros.h"
+#include "DataTypes/Ops/Ops.h"
+#include "Parser/Support.h"
+#include "Evaluator/Context.h"
+#include "DataTypes/Ops/ArrayOps.h"
 
 namespace UnitTests
 {
+	static std::string invalidOperation(const std::string& typeName, const std::string& funcName)
+	{
+		std::stringstream ss;
+		ss << FPTL::Runtime::BaseOps::invalidOpsMsg << typeName << ": " << funcName;
+		return ss.str();
+	}
+
 	const static std::string ListDefinition = "Data List['t] {List = c_nil ++ 't * List['t].c_cons;} ";
 
 	std::string static MakeTestProgram(const std::string& innerCode)
