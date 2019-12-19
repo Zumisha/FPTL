@@ -4,7 +4,7 @@ namespace UnitTests
 {
 	namespace Arrays
 	{
-		TEST(ArraysPerformance, ArrayCreate)
+		TEST(PerformanceArrays, ArrayCreate)
 		{
 			const size_t n = 540000000;
 
@@ -16,7 +16,7 @@ namespace UnitTests
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode.str()));
 		}
 
-		TEST(ArraysPerformance, ArrayGet)
+		TEST(PerformanceArrays, ArrayGet)
 		{
 			const size_t n = 10000;
 
@@ -33,7 +33,7 @@ namespace UnitTests
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode.str()));
 		}
 
-		TEST(ArraysPerformance, ArraySet)
+		TEST(PerformanceArrays, ArraySet)
 		{
 			const size_t n = 10000;
 
@@ -50,7 +50,7 @@ namespace UnitTests
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode.str()));
 		}
 
-		TEST(ArraysPerformance, ArraysCat)
+		TEST(PerformanceArrays, ArraysCat)
 		{
 			const std::string innerCode = R"(
 			@ = (	(140000000 * 1).arrayCreate * 
@@ -63,7 +63,7 @@ namespace UnitTests
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}
 
-		TEST(ArraysPerformance, ArrayFromFile)
+		TEST(PerformanceArrays, ArrayFromFile)
 		{
 			const std::string innerCode = R"(
 			@ = (	(1000000 * 0.0).arrayCreate * 

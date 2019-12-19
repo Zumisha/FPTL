@@ -5,6 +5,7 @@
 
 #include "Parser/NodeVisitor.h"
 #include "FScheme.h"
+#include "DataTypes/Ops/ADTOps.h"
 
 namespace FPTL
 {

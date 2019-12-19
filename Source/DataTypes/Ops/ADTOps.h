@@ -1,85 +1,119 @@
-#pragma once
+﻿#pragma once
 
-#include <string>
+#include <sstream>
+#include <utility>
+
+#include "Ops.h"
+#include "UndefinedOps.h"
+#include "GC/CollectedHeap.h"
+#include "GC/GarbageCollector.h"
+#include "ADTValue.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
-		struct SExecutionContext;
-		struct DataValueArray;
-		class DataValue;
+		struct ADTValue;
 
-		class Constructor
+		// Implementation of operations on abstract data types (ADT) values (boxed tuple).
+		class ADTOps : public BaseOps
 		{
+			// TODO: определить функции Equal, Length
 		public:
-
-			Constructor(std::string aConstructorName,
-				const std::string & aTypeName,
-			            std::vector<TypeInfo> aRefType,
-				const std::vector<std::string> & aParameters
-			);
-			virtual ~Constructor();
-
-			virtual void execConstructor(SExecutionContext & aCtx) const;
-			virtual void execDestructor(SExecutionContext & aCtx) const;
-
-			std::string name() const { return mConstructorName; }
-			std::string typeName() const { return mConstructorName; }
-			std::vector<TypeInfo> type() const { return mReferenceType; }
-			TypeInfo * targetType() const { return const_cast<TypeInfo *>(&mTargetType); }
-			size_t arity() const { return static_cast<size_t>(mReferenceType.size()); }
-
-		protected:
-
-			std::string mConstructorName;
-			std::string mTypeName;
-
-			// Эталонный тип.
-			std::vector<TypeInfo> mReferenceType;
-
-			// Создаваемый тип данных.
-			TypeInfo mTargetType;
-		};
-
-		//-------------------------------------------------------------------------------
-		// Конструктор без параметров.
-		class EmptyConstructor : public Constructor
-		{
-		public:
-
-			EmptyConstructor(const std::string & aConstructorName, const std::string & aTypeName);
-
-		private:
-			TypeInfo mTypeInfo;
-		};
-
-		// Внутреннее представление абстрактного типа данных (boxed tuple).
-		struct ADTValue
-		{
-			const Constructor * ctor;
-			DataValueArray * values;
-
-			ADTValue(): ctor(nullptr), values(nullptr)
+			static ADTOps * get()
 			{
+				// It breaks if there are errors in the Ops, BaseOps, Value, ADTValue or this classes.
+				static ADTOps ops;
+				return &ops;
 			}
 
-			ADTValue(const Constructor * ctor, DataValueArray * values)
+			TypeInfo getType(const DataValue & aVal) const override
 			{
-				this->ctor = ctor;
-				this->values = values;
+				return *aVal.mADT->ctor->targetType();
 			}
 
-			ADTValue(const ADTValue & other)
+			const Ops * combine(const Ops * aOther) const override
 			{
-				ctor = other.ctor;
-				values = other.values;
+				throw invalidOperation("combine");
 			}
 
-			const DataValue & operator[](size_t i) const;
-			DataValue & operator[](size_t i);
+			const Ops * withOps(class Ops const * aOps) const override
+			{
+				throw invalidOperation("with Ops");
+			}
 
-			size_t size() const;
+			const Ops * withOps(class IntegerOps const * aOps) const override
+			{
+				throw invalidOperation("with IntegerOps");
+			}
+
+			const Ops * withOps(class BooleanOps const * aOps) const override
+			{
+				throw invalidOperation("with BooleanOps");
+			}
+
+			const Ops * withOps(class DoubleOps const * aOps) const override
+			{
+				throw invalidOperation("with DoubleOps");
+			}
+
+			const Ops * withOps(class StringOps const * aOps) const override
+			{
+				throw invalidOperation("with StringOps");
+			}
+
+			void mark(const DataValue & aVal, ObjectMarker * marker) const override
+			{
+				if (marker->markAlive(aVal.mADT->values, aVal.mADT->size()))
+				{
+					for (size_t i = 0; i < aVal.mADT->ctor->arity(); i++)
+					{
+						marker->addChild(&(*aVal.mADT)[i]);
+					}
+				}
+			}
+
+			void print(const DataValue & aVal, std::ostream & aStream) const override
+			{
+				const auto val = aVal.mADT;
+				const size_t arity = val->ctor->arity();
+
+				if (arity > 0)
+				{
+					aStream << "(";
+
+					for (size_t i = 0; i < arity; ++i)
+					{
+						(*val)[i].getOps()->print((*val)[i], aStream);
+
+						if (i + 1 < arity)
+						{
+							aStream << "*";
+						}
+					}
+
+					aStream << ").";
+				}
+
+				aStream << val->ctor->name();
+			}
+
+			void write(const DataValue & aVal, std::ostream & aStream) const override
+			{
+				throw invalidOperation(aVal.getOps()->getType(aVal), "write");
+			}
+
+			DataValue read(std::istream & aStream) const override
+			{
+				throw invalidOperation("read");
+			}
+
+			static std::string assignErrMsg(const std::string& fType, const std::string& sType)
+			{
+				std::stringstream error;
+				error << "type mismatch. Actual: " << fType << ". Expected: " << sType << ".";
+				return error.str();
+			}
 		};
 	}
 }

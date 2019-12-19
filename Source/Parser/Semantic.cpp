@@ -192,7 +192,7 @@ namespace FPTL {
 
 			if (aTermDesc.Node->numParameters() == target->numParameters())
 			{
-				aTermDesc.Node->setTarget(target);
+				aTermDesc.Node->mTarget = target;
 			}
 			else
 			{

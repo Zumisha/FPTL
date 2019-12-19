@@ -3,7 +3,7 @@
 
 #include "Parser/Nodes.h"
 #include "ConstructorGenerator.h"
-#include "DataTypes/Ops/ADTOps.h"
+#include "DataTypes/Ops/ADTValue.h"
 
 namespace FPTL {
 	namespace Runtime {
@@ -60,7 +60,7 @@ namespace FPTL {
 				// Добавляем параметры.
 				size_t i = 0;
 
-				auto* data = dynamic_cast<Parser::DataNode *>(aNameReference->getTarget());
+				auto* data = dynamic_cast<Parser::DataNode *>(aNameReference->mTarget);
 
 				for (auto& child : data->getTypeParams()->mChilds)
 				{

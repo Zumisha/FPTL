@@ -136,7 +136,7 @@ namespace FPTL
 
 			case Parser::ASTNode::InputVarName:
 			{
-				auto* inputVarDef = dynamic_cast<Parser::DefinitionNode *>(aNameRefNode->getTarget());
+				auto* inputVarDef = dynamic_cast<Parser::DefinitionNode *>(aNameRefNode->mTarget);
 				process(inputVarDef->getDefinition());
 				break;
 			}
@@ -244,7 +244,7 @@ namespace FPTL
 		void FSchemeGenerator::processFunctionalTerm(Parser::NameRefNode * aFuncTermName)
 		{
 			// Проверяем, на кого ссылается имя терма.
-			auto target = aFuncTermName->getTarget();
+			auto target = aFuncTermName->mTarget;
 
 			if (aFuncTermName->getType() == Parser::ASTNode::FuncObjectWithParameters)
 			{

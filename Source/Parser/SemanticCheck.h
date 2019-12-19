@@ -99,7 +99,7 @@ namespace FPTL
 			{
 				if (aNameRefNode->getType() == ASTNode::FuncObjectName || aNameRefNode->getType() == ASTNode::FuncParameterName)
 				{
-					ASTNode * target = aNameRefNode->getTarget();
+					ASTNode * target = aNameRefNode->mTarget;
 
 					// Отлавливаем рекурсию.
 					if (std::find(mTestDefinitions.begin(), mTestDefinitions.end(), aNameRefNode->getName()) != mTestDefinitions.end())

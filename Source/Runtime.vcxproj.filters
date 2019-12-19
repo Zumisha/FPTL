@@ -140,9 +140,6 @@
     <ClCompile Include="Evaluator\Context.cpp">
       <Filter>Source Files\Evaluator</Filter>
     </ClCompile>
-    <ClCompile Include="DataTypes\Ops\ADTOps.cpp">
-      <Filter>Source Files\DataTypes\Ops</Filter>
-    </ClCompile>
     <ClCompile Include="DataTypes\Ops\ArrayOps.cpp">
       <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
@@ -178,6 +175,12 @@
     </ClCompile>
     <ClCompile Include="DataTypes\Ops\BooleanOps.h">
       <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\ADTOps.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\ADTValue.cpp">
+      <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -262,9 +265,6 @@
     <ClInclude Include="DataTypes\Ops\StringOps.h">
       <Filter>Header Files\DataTypes\Ops</Filter>
     </ClInclude>
-    <ClInclude Include="DataTypes\Ops\ADTOps.h">
-      <Filter>Header Files\DataTypes\Ops</Filter>
-    </ClInclude>
     <ClInclude Include="InternalForm\ControlValue.h">
       <Filter>Header Files\InternalForm</Filter>
     </ClInclude>
@@ -288,6 +288,9 @@
     </ClInclude>
     <ClInclude Include="Interpreter\Interpreter.h">
       <Filter>Header Files\Interpreter</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\ADTValue.h">
+      <Filter>Header Files\DataTypes\Ops</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

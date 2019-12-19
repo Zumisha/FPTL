@@ -22,6 +22,9 @@ namespace UnitTests
 	}
 
 	const static std::string ListDefinition = "Data List['t] {List = c_nil ++ 't * List['t].c_cons;} ";
+	const static std::string PairDefinition = "Data TPair['x,'y]{ TPair = 'x * 'y.c_pair; } ";
+	const static std::string NatDefinition = "Data d {d = int.c_succ;} ";
+	const static std::string SumDefinition = "Fun Sum {a = [1];	b = [2]; @ = (a * b).lequal -> (a *	((a * 1).add * b).Sum).add, 0;}";
 
 	std::string static MakeTestProgram(const std::string& innerCode)
 	{
@@ -58,6 +61,8 @@ namespace UnitTests
 		const auto compare = output.find(expected);
 
 		EXPECT_LT(compare, static_cast<size_t>(-1));
+
+		std::cout << std::endl << "Program: " << std::endl << programText << std::endl;
 
 		std::cout << std::endl << "Expected: " << std::endl << expected << std::endl;
 

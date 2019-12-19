@@ -22,6 +22,9 @@
     <Filter Include="Исходные файлы\CompositionsTests">
       <UniqueIdentifier>{49364356-e5c6-4991-b722-f2275b0a3512}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\ADTTests">
+      <UniqueIdentifier>{14a4825f-b5ac-48b3-8b22-447bf20c714d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\FScheme\ConstructorGenerator.h">
@@ -150,6 +153,9 @@
     <ClInclude Include="..\Source\DataTypes\Ops\UndefinedOps.h">
       <Filter>FPTL</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\DataTypes\Ops\ADTValue.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneralizedTests.cpp">
@@ -215,9 +221,6 @@
     <ClCompile Include="..\Source\Parser\Tokenizer.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\DataTypes\Ops\ADTOps.cpp">
-      <Filter>FPTL</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\DataTypes\Ops\ArrayOps.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
@@ -280,6 +283,42 @@
     </ClCompile>
     <ClCompile Include="Arrays\ArraysPerformanceTests.cpp">
       <Filter>Исходные файлы\ArraysTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Compositions\ProactiveTest.cpp">
+      <Filter>Исходные файлы\CompositionsTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Compositions\CompositionsOrderTest.cpp">
+      <Filter>Исходные файлы\CompositionsTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Compositions\CompositionOrthogonal.cpp">
+      <Filter>Исходные файлы\CompositionsTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Compositions\CompositionCondition.cpp">
+      <Filter>Исходные файлы\CompositionsTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Compositions\CompositionParallel.cpp">
+      <Filter>Исходные файлы\CompositionsTests</Filter>
+    </ClCompile>
+    <ClCompile Include="Compositions\CompositionsSequential.cpp">
+      <Filter>Исходные файлы\CompositionsTests</Filter>
+    </ClCompile>
+    <ClCompile Include="ADTTests\ADT.cpp">
+      <Filter>Исходные файлы\ADTTests</Filter>
+    </ClCompile>
+    <ClCompile Include="ADTTests\ADTErrorsTest.cpp">
+      <Filter>Исходные файлы\ADTTests</Filter>
+    </ClCompile>
+    <ClCompile Include="ADTTests\ADTDblParamTest.cpp">
+      <Filter>Исходные файлы\ADTTests</Filter>
+    </ClCompile>
+    <ClCompile Include="ADTTests\ADTDoubleParamErrorsTest.cpp">
+      <Filter>Исходные файлы\ADTTests</Filter>
+    </ClCompile>
+    <ClCompile Include="ADTTests\ADTStressTest.cpp">
+      <Filter>Исходные файлы\ADTTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\DataTypes\Ops\ADTValue.cpp">
+      <Filter>FPTL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

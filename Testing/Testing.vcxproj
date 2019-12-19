@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\DataTypes\Ops\ADTOps.h" />
+    <ClInclude Include="..\Source\DataTypes\Ops\ADTValue.h" />
     <ClInclude Include="..\Source\DataTypes\Ops\ArrayOps.h" />
     <ClInclude Include="..\Source\DataTypes\Ops\BooleanOps.h" />
     <ClInclude Include="..\Source\DataTypes\Ops\DoubleOps.h" />
@@ -205,7 +206,7 @@
     <ClInclude Include="Shared.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source\DataTypes\Ops\ADTOps.cpp" />
+    <ClCompile Include="..\Source\DataTypes\Ops\ADTValue.cpp" />
     <ClCompile Include="..\Source\DataTypes\Ops\ArrayOps.cpp" />
     <ClCompile Include="..\Source\DataTypes\Ops\Ops.cpp" />
     <ClCompile Include="..\Source\DataTypes\Ops\StringOps.cpp" />
@@ -233,6 +234,11 @@
     <ClCompile Include="..\Source\Parser\Semantic.cpp" />
     <ClCompile Include="..\Source\Parser\Support.cpp" />
     <ClCompile Include="..\Source\Parser\Tokenizer.cpp" />
+    <ClCompile Include="ADTTests\ADT.cpp" />
+    <ClCompile Include="ADTTests\ADTDblParamTest.cpp" />
+    <ClCompile Include="ADTTests\ADTDoubleParamErrorsTest.cpp" />
+    <ClCompile Include="ADTTests\ADTErrorsTest.cpp" />
+    <ClCompile Include="ADTTests\ADTStressTest.cpp" />
     <ClCompile Include="Arrays\ArrayCat.cpp" />
     <ClCompile Include="Arrays\ArrayCatErrors.cpp" />
     <ClCompile Include="Arrays\ArrayCreate.cpp" />
@@ -246,6 +252,12 @@
     <ClCompile Include="Arrays\ArraySet.cpp" />
     <ClCompile Include="Arrays\ArraySetErrors.cpp" />
     <ClCompile Include="Arrays\ArraysPerformanceTests.cpp" />
+    <ClCompile Include="Compositions\CompositionCondition.cpp" />
+    <ClCompile Include="Compositions\CompositionsOrderTest.cpp" />
+    <ClCompile Include="Compositions\CompositionOrthogonal.cpp" />
+    <ClCompile Include="Compositions\CompositionParallel.cpp" />
+    <ClCompile Include="Compositions\ProactiveTest.cpp" />
+    <ClCompile Include="Compositions\CompositionsSequential.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GeneralizedTests.cpp" />
   </ItemGroup>

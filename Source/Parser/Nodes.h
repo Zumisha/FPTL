@@ -111,17 +111,10 @@ namespace FPTL
 			NameRefNode(const Ident &aTypeName, ASTNodeType aNodeType, ListNode * aParams);
 			~NameRefNode();
 
-			void setTarget(ASTNode * aTarget) {
-				delete mChilds[mTarget];
-				mChilds[mTarget] = aTarget;
-			}
 			void accept(NodeVisitor * aVisitor) override;
 
 			Ident                    getName() const { return mIdent; }
 			ListNode *               getParameters() const { return static_cast<ListNode*>(mChilds[mParameters]); }
-
-			// Возвращает узел, на который ссылается данное имя.
-			ASTNode *                getTarget() const { return mChilds[mTarget]; }
 			//ASTNode *                copy() const override;
 			int                      numParameters() const override
 			{
@@ -130,9 +123,10 @@ namespace FPTL
 
 			enum
 			{
-				mParameters,
-				mTarget
+				mParameters
 			};
+
+			ASTNode* mTarget;
 		};
 
 		//-------------------------------------------------------------------------------------

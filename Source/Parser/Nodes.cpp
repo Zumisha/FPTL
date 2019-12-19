@@ -99,7 +99,7 @@ namespace FPTL {
 		{
 			mChilds = std::vector<ASTNode*>(2);
 			mChilds[mParameters] = aParams;
-			mChilds[mTarget] = nullptr;
+			mTarget = nullptr;
 		}
 
 		NameRefNode::~NameRefNode()

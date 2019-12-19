@@ -114,7 +114,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataTypes\Ops\ADTOps.cpp" />
+    <ClCompile Include="DataTypes\Ops\ADTOps.h" />
+    <ClCompile Include="DataTypes\Ops\ADTValue.cpp" />
     <ClCompile Include="DataTypes\Ops\ArrayOps.cpp" />
     <ClCompile Include="DataTypes\Ops\BooleanOps.h" />
     <ClCompile Include="DataTypes\Ops\DoubleOps.h" />
@@ -150,7 +151,7 @@
     <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataTypes\Ops\ADTOps.h" />
+    <ClInclude Include="DataTypes\Ops\ADTValue.h" />
     <ClInclude Include="DataTypes\Ops\ArrayOps.h" />
     <ClInclude Include="DataTypes\Ops\Ops.h" />
     <ClInclude Include="DataTypes\Ops\StringOps.h" />

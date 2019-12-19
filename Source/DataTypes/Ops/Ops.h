@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../TypeInfo.h"
-#include "ADTOps.h"
 
 namespace FPTL 
 {
