@@ -182,6 +182,9 @@
     <ClCompile Include="DataTypes\Ops\ADTValue.cpp">
       <Filter>Source Files\DataTypes\Ops</Filter>
     </ClCompile>
+    <ClCompile Include="Parser\ASTSerializer.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTypes\TypeInfo.h">
@@ -291,6 +294,15 @@
     </ClInclude>
     <ClInclude Include="DataTypes\Ops\ADTValue.h">
       <Filter>Header Files\DataTypes\Ops</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\ASTSerializer.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\FileStreamHelper.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\NodeHandler.h">
+      <Filter>Header Files\Parser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -175,27 +175,6 @@ namespace FPTL
 
 			switch (aExpressionNode->getType())
 			{
-			case Parser::ASTNode::ConditionTerm:
-			{
-				const auto thenBranch = mNodeStack.top();
-				mNodeStack.pop();
-
-				const auto middle = aExpressionNode->getMiddle();
-				FSchemeNode * elseBranch = nullptr;
-				if (middle)
-				{
-					elseBranch = mNodeStack.top();
-					mNodeStack.pop();
-				}
-
-				const auto condition = mNodeStack.top();
-				mNodeStack.pop();
-
-				mNodeStack.push(new FConditionNode(condition, thenBranch, elseBranch));
-
-				break;
-			}
-
 			case Parser::ASTNode::SequentialTerm:
 			case Parser::ASTNode::ValueConstructor:
 			{
@@ -238,6 +217,27 @@ namespace FPTL
 			default:
 				throw std::logic_error("unknown node type");
 			}
+		}
+
+		//-----------------------------------------------------------------------------
+		void FSchemeGenerator::visit(Parser::ConditionNode * aExpressionNode)
+		{
+			NodeVisitor::visit(aExpressionNode);
+				const auto thenBranch = mNodeStack.top();
+				mNodeStack.pop();
+
+				const auto middle = aExpressionNode->getCond();
+				FSchemeNode * elseBranch = nullptr;
+				if (middle)
+				{
+					elseBranch = mNodeStack.top();
+					mNodeStack.pop();
+				}
+
+				const auto condition = mNodeStack.top();
+				mNodeStack.pop();
+
+				mNodeStack.push(new FConditionNode(condition, thenBranch, elseBranch));
 		}
 
 		//-----------------------------------------------------------------------------

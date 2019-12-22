@@ -2,7 +2,6 @@
 
 #include "AST.h"
 #include "Ident.h"
-#include "NodeVisitor.h"
 
 namespace FPTL
 {
@@ -16,23 +15,45 @@ namespace FPTL
 		class ExpressionNode : public ASTNode
 		{
 		public:
-
-			ExpressionNode(ASTNodeType aType, ASTNode * aLeft, ASTNode * aRight, ASTNode * aMiddle);
+			ExpressionNode(ASTNodeType aType, ASTNode * aLeft, ASTNode * aRight);
 			~ExpressionNode();
 
 			ASTNode * getLeft() const { return mChilds[mLeft]; }
 			ASTNode * getRight() const { return mChilds[mRight]; }
-			ASTNode * getMiddle() const { return mChilds[mMiddle]; }
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
-			//ASTNode * copy() const override;
+			std::string childNameToString(size_t child) override;
 
 			enum
 			{
 				mLeft,
-				mRight,
-				mMiddle
+				mRight
+			};
+		};
+
+		class ConditionNode : public ASTNode
+		{
+		public:
+
+			ConditionNode(const ASTNodeType aType, ASTNode* aLeft, ASTNode* aRight, ASTNode* aMiddle);
+			~ConditionNode();
+
+			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
+
+			ASTNode * getThen() const { return mChilds[mThen]; }
+			ASTNode * getElse() const { return mChilds[mElse]; }
+			ASTNode * getCond() const { return mChilds[mCond]; }
+
+			std::string childNameToString(size_t child) override;
+
+			enum
+			{
+				mThen,
+				mElse,
+				mCond
 			};
 		};
 
@@ -43,14 +64,20 @@ namespace FPTL
 		{
 		public:
 
-			ConstantNode(const ASTNodeType aType, const Ident &aConstant) : 
-			ASTNode(aType, aConstant) {}
+			ConstantNode(const ASTNodeType aType, const Ident &aConstant) :
+				ASTNode(aType), mIdent(aConstant) {}
+
+			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
+
+			bool isNatural() const;
 
 			Ident getConstant() const { return mIdent; }
 
-			bool isNatural() const;
-			void accept(NodeVisitor * aVisitor) override;
-			//ASTNode * copy() const override;
+			std::string childNameToString(size_t) override;
+
+		private:
+			Ident          mIdent;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -60,8 +87,11 @@ namespace FPTL
 		{
 		public:
 
-			explicit ListNode(const ASTNodeType aType) : ASTNode(aType, Ident()) {}
-			~ListNode() override;
+			explicit ListNode(const ASTNodeType aType) : ASTNode(aType) {}
+			~ListNode();
+
+			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
 			ListNode* addElement(ASTNode * aElem)
 			{
@@ -75,8 +105,8 @@ namespace FPTL
 				return mChilds.size();
 			}
 
-			void accept(NodeVisitor * aVisitor) override;
-			//ListNode * copy() const override;
+			std::string childNameToString(size_t) override;
+
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -85,20 +115,25 @@ namespace FPTL
 		class DefinitionNode : public ASTNode
 		{
 		public:
+
 			DefinitionNode(ASTNodeType aType, const Ident &aName, ASTNode * aDefinition);
 			~DefinitionNode();
 
-			Ident         getDefinitionName() const { return mIdent; }
+			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
+
+			Ident         getDefinitionName() const { return mDefinitionName; }
 			ASTNode *     getDefinition() const { return mChilds[mDefinition]; }
 
-			void accept(NodeVisitor * aVisitor) override;
-
-			//ASTNode * copy() const override;
+			std::string childNameToString(size_t child) override;
 
 			enum
 			{
 				mDefinition
 			};
+
+		private:
+			Ident mDefinitionName;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -112,14 +147,16 @@ namespace FPTL
 			~NameRefNode();
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
-			Ident                    getName() const { return mIdent; }
-			ListNode *               getParameters() const { return static_cast<ListNode*>(mChilds[mParameters]); }
-			//ASTNode *                copy() const override;
-			int                      numParameters() const override
+			Ident getName() const { return mTypeName; }
+			ListNode* getParameters() const { return static_cast<ListNode*>(mChilds[mParameters]); }
+			int numParameters() const override
 			{
 				return mChilds[mParameters] ? static_cast<int>(static_cast<ListNode*>(mChilds[mParameters])->mChilds.size()) : 0;
 			}
+
+			std::string childNameToString(size_t child) override;
 
 			enum
 			{
@@ -127,6 +164,10 @@ namespace FPTL
 			};
 
 			ASTNode* mTarget;
+
+		private:
+
+			Ident mTypeName;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -137,15 +178,16 @@ namespace FPTL
 		public:
 
 			ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName);
-			virtual ~ConstructorNode();
+			~ConstructorNode();
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
-			Ident                 getCtorName() const { return mIdent; }
+			Ident                 getCtorName() const { return mName; }
 			Ident                 getCtorResultTypeName() const { return mCtorResultTypeName; }
 			ListNode *            getCtorParameters() const { return static_cast<ListNode*>(mChilds[mCtorParameters]); }
 
-			//ASTNode *             copy() const override;
+			std::string childNameToString(size_t child) override;
 
 			enum
 			{
@@ -153,6 +195,7 @@ namespace FPTL
 			};
 
 		private:
+			Ident mName;
 			Ident mCtorResultTypeName;
 		};
 
@@ -167,17 +210,19 @@ namespace FPTL
 			~DataNode();
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
 			ListNode *      getConstructors() const { return static_cast<ListNode*>(mChilds[mConstructors]); }
-			Ident           getDataName() const { return mIdent; }
+			Ident           getDataName() const { return mTypeName; }
 			ListNode *      getTypeDefs() const { return static_cast<ListNode*>(mChilds[mTypeDefinitions]); }
 			ListNode *      getTypeParams() const { return static_cast<ListNode*>(mChilds[mTypeParameters]); }
 
-			//ASTNode *       copy() const override;
 			int numParameters() const override
 			{
 				return mChilds[mTypeParameters] ? static_cast<int>(static_cast<ListNode*>(mChilds[mTypeParameters])->mChilds.size()) : 0;
 			}
+
+			std::string childNameToString(size_t child) override;
 
 			enum
 			{
@@ -185,6 +230,9 @@ namespace FPTL
 				mTypeDefinitions,
 				mTypeParameters
 			};
+
+		private:
+			Ident mTypeName;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -198,17 +246,19 @@ namespace FPTL
 			~FunctionNode();
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
-			Ident             getFuncName() const { return mIdent; }
+			Ident             getFuncName() const { return mFuncName; }
 			ListNode *        getFormalParameters() const { return static_cast<ListNode*>(mChilds[mFormalParameters]); }
 			ListNode *        getDefinitions() const { return static_cast<ListNode*>(mChilds[mDefinitions]); }
 			DefinitionNode *  getDefinition(const Ident &aName) const;
 
-			//FunctionNode *    copy() const override;
 			int numParameters() const override
 			{
 				return mChilds[mFormalParameters] ? static_cast<int>(static_cast<ListNode*>(mChilds[mFormalParameters])->mChilds.size()) : 0;
 			}
+
+			std::string childNameToString(size_t child) override;
 
 			std::vector<FunctionNode *>    getFunctionNodes() const;
 
@@ -217,6 +267,9 @@ namespace FPTL
 				mDefinitions,
 				mFormalParameters
 			};
+
+		private:
+			Ident mFuncName;
 		};
 
 		//-------------------------------------------------------------------------------------
@@ -230,12 +283,13 @@ namespace FPTL
 			~ApplicationBlock();
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
 			NameRefNode * getRunningSchemeName() const { return static_cast<NameRefNode*>(mChilds[mRunSchemeName]); }
 			ASTNode *     getSchemeParameters() const { return mChilds[mSchemeParameters]; }
 			ListNode *    getDataVarDefinitions() const { return static_cast<ListNode*>(mChilds[mDataVarDefinitions]); }
 
-			//ApplicationBlock *  copy() const override;
+			std::string childNameToString(size_t child) override;
 
 			enum
 			{
@@ -255,11 +309,13 @@ namespace FPTL
 			~FunctionalProgram();
 
 			void accept(NodeVisitor * aVisitor) override;
+			void handle(NodeHandler* aHandler) override;
 
 			ListNode*             getDataDefinitions() const { return static_cast<ListNode*>(mChilds[mDataDefinitions]); }
 			FunctionNode*         getScheme() const { return static_cast<FunctionNode*>(mChilds[mScheme]); }
 			ApplicationBlock*     getApplication() const { return static_cast<ApplicationBlock*>(mChilds[mApplication]); }
 
+			std::string childNameToString(size_t child) override;
 			//ASTNode * copy() const override;
 
 			enum

@@ -15,6 +15,7 @@
 #include "GC/GarbageCollector.h"
 #include "Evaluator/Context.h"
 #include "Evaluator/Run.h"
+#include "Parser/ASTSerializer.h"
 
 namespace FPTL 
 {
@@ -40,7 +41,7 @@ namespace FPTL
 				const std::vector<std::string> inputTuple = CLParser.GetInputTuple();
 
 				std::string programStr;
-				if (programText == "")
+				if (programText.empty())
 				{
 					std::ifstream programFile(programPath);
 					if (!programFile.good())
@@ -61,6 +62,12 @@ namespace FPTL
 
 				support.getErrorList(std::cout);
 				if (support.WasErrors() || !astRoot) return 1;
+
+				if (CLParser.GetSaveAST())
+				{
+					Parser::ASTSerializer serializer;
+					serializer.serialize(astRoot);
+				}
 
 				const bool showInfo = CLParser.GetShowInfo();
 				const bool showTime = CLParser.GetShowTime();

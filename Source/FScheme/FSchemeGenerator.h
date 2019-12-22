@@ -31,6 +31,7 @@ namespace FPTL
 			void visit(Parser::NameRefNode * aNameRefNode) override;
 			void visit(Parser::DefinitionNode * aDefinitionNode) override;
 			void visit(Parser::ExpressionNode * aExpressionNode) override;
+			void visit(Parser::ConditionNode * aExpressionNode) override;
 			void visit(Parser::ConstantNode * aNode) override;
 
 			// Получение результата.

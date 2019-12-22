@@ -49,7 +49,7 @@
 
 #line 51 "parser.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 50 "parser.yy" // lalr1.cc:413
+#line 55 "parser.yy" // lalr1.cc:413
 
 #include "../Support.h"
 #include "../FlexTokenizer.h"
@@ -369,7 +369,7 @@ namespace FPTL { namespace Parser {
     {
             case 12: // NUMBER
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -380,7 +380,7 @@ namespace FPTL { namespace Parser {
 
       case 13: // REALNUMBER
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -391,7 +391,7 @@ namespace FPTL { namespace Parser {
 
       case 14: // STRING
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -402,7 +402,7 @@ namespace FPTL { namespace Parser {
 
       case 56: // FunctionalProgram
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -413,7 +413,7 @@ namespace FPTL { namespace Parser {
 
       case 57: // DataTypeDefinitionsBlocks
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -424,7 +424,7 @@ namespace FPTL { namespace Parser {
 
       case 58: // DataTypeDefinitionsBlock
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -435,7 +435,7 @@ namespace FPTL { namespace Parser {
 
       case 60: // TypeParametersList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -446,7 +446,7 @@ namespace FPTL { namespace Parser {
 
       case 61: // TypeParameterDef
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
@@ -457,7 +457,7 @@ namespace FPTL { namespace Parser {
 
       case 62: // ConstructorsDefinitionList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -468,7 +468,7 @@ namespace FPTL { namespace Parser {
 
       case 63: // ConstructorDef
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -479,7 +479,7 @@ namespace FPTL { namespace Parser {
 
       case 64: // ConstructorParametersList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -490,7 +490,7 @@ namespace FPTL { namespace Parser {
 
       case 65: // TypesDefinitionList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -501,7 +501,7 @@ namespace FPTL { namespace Parser {
 
       case 66: // TypesDefinitionList2
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -512,7 +512,7 @@ namespace FPTL { namespace Parser {
 
       case 67: // TypeDefinition
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
@@ -523,7 +523,7 @@ namespace FPTL { namespace Parser {
 
       case 68: // TypeDefConstructor
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -534,7 +534,7 @@ namespace FPTL { namespace Parser {
 
       case 69: // TypeExpression
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -545,7 +545,7 @@ namespace FPTL { namespace Parser {
 
       case 70: // AtomType
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -556,7 +556,7 @@ namespace FPTL { namespace Parser {
 
       case 72: // TypeExpressionsList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -567,7 +567,7 @@ namespace FPTL { namespace Parser {
 
       case 75: // Scheme
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scFun);
 	delete node;
@@ -578,7 +578,7 @@ namespace FPTL { namespace Parser {
 
       case 77: // FormalParametersList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -589,7 +589,7 @@ namespace FPTL { namespace Parser {
 
       case 78: // FormalParameter
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
@@ -600,7 +600,7 @@ namespace FPTL { namespace Parser {
 
       case 79: // DefinitionsList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -611,7 +611,7 @@ namespace FPTL { namespace Parser {
 
       case 80: // Definition
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -622,7 +622,7 @@ namespace FPTL { namespace Parser {
 
       case 81: // Term
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -633,7 +633,7 @@ namespace FPTL { namespace Parser {
 
       case 82: // AtomTerm
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -644,7 +644,7 @@ namespace FPTL { namespace Parser {
 
       case 83: // FuncObjectWithParameters
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -655,7 +655,7 @@ namespace FPTL { namespace Parser {
 
       case 84: // FuncArgumentList
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -666,7 +666,7 @@ namespace FPTL { namespace Parser {
 
       case 85: // FuncParameterName
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -677,7 +677,7 @@ namespace FPTL { namespace Parser {
 
       case 86: // SequentialTerm
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -688,7 +688,7 @@ namespace FPTL { namespace Parser {
 
       case 87: // CompositionTerm
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -699,7 +699,7 @@ namespace FPTL { namespace Parser {
 
       case 88: // ConditionTerm
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -710,7 +710,7 @@ namespace FPTL { namespace Parser {
 
       case 89: // VariantTerm
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -721,7 +721,7 @@ namespace FPTL { namespace Parser {
 
       case 90: // FuncObjectName
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -732,7 +732,7 @@ namespace FPTL { namespace Parser {
 
       case 91: // ConstructionFun
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scFun);
 	delete node;
@@ -743,7 +743,7 @@ namespace FPTL { namespace Parser {
 
       case 96: // ElementaryFunctionName
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -754,7 +754,7 @@ namespace FPTL { namespace Parser {
 
       case 97: // Constructor
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -765,7 +765,7 @@ namespace FPTL { namespace Parser {
 
       case 98: // Destructor
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -776,7 +776,7 @@ namespace FPTL { namespace Parser {
 
       case 99: // BuiltInFunction
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -787,7 +787,7 @@ namespace FPTL { namespace Parser {
 
       case 100: // TupleElement
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -798,7 +798,7 @@ namespace FPTL { namespace Parser {
 
       case 101: // Constant
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -809,7 +809,7 @@ namespace FPTL { namespace Parser {
 
       case 102: // BuiltInFunctionName
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -820,7 +820,7 @@ namespace FPTL { namespace Parser {
 
       case 103: // Application
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scApp);
 	delete node;
@@ -831,7 +831,7 @@ namespace FPTL { namespace Parser {
 
       case 104: // DataInit
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
@@ -842,7 +842,7 @@ namespace FPTL { namespace Parser {
 
       case 105: // OneDataInit
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
@@ -853,7 +853,7 @@ namespace FPTL { namespace Parser {
 
       case 107: // InterpFunProgramName
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
@@ -864,7 +864,7 @@ namespace FPTL { namespace Parser {
 
       case 108: // Data
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -875,7 +875,7 @@ namespace FPTL { namespace Parser {
 
       case 109: // OneData
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -886,7 +886,7 @@ namespace FPTL { namespace Parser {
 
       case 110: // ValueAtom
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -897,7 +897,7 @@ namespace FPTL { namespace Parser {
 
       case 111: // ValueConstructor
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -908,7 +908,7 @@ namespace FPTL { namespace Parser {
 
       case 112: // ValueComposition
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -919,7 +919,7 @@ namespace FPTL { namespace Parser {
 
       case 113: // Value
 
-#line 57 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:614
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
@@ -1153,7 +1153,7 @@ namespace FPTL { namespace Parser {
           switch (yyn)
             {
   case 2:
-#line 180 "parser.yy" // lalr1.cc:859
+#line 185 "parser.yy" // lalr1.cc:859
     {
 			mASTRoot = new FunctionalProgram( (yystack_[2].value.scList), (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			(yystack_[2].value.scList)->mParent = mASTRoot;
@@ -1167,7 +1167,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 3:
-#line 190 "parser.yy" // lalr1.cc:859
+#line 195 "parser.yy" // lalr1.cc:859
     {
 			mASTRoot = new FunctionalProgram( 0, (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			(yystack_[1].value.scFun)->mParent = mASTRoot;
@@ -1178,7 +1178,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 4:
-#line 202 "parser.yy" // lalr1.cc:859
+#line 207 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode(  ASTNode::DataTypeDefinitionsBlocks );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1188,7 +1188,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 5:
-#line 208 "parser.yy" // lalr1.cc:859
+#line 213 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1197,7 +1197,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 6:
-#line 216 "parser.yy" // lalr1.cc:859
+#line 221 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0, 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1206,7 +1206,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 7:
-#line 221 "parser.yy" // lalr1.cc:859
+#line 226 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList), 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1216,7 +1216,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 8:
-#line 227 "parser.yy" // lalr1.cc:859
+#line 232 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[7].value.scIdent), (yystack_[1].value.scList), 0, (yystack_[3].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1226,7 +1226,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 9:
-#line 233 "parser.yy" // lalr1.cc:859
+#line 238 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[10].value.scIdent), (yystack_[1].value.scList), (yystack_[8].value.scList), (yystack_[3].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1237,7 +1237,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 11:
-#line 247 "parser.yy" // lalr1.cc:859
+#line 252 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypeParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1247,7 +1247,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 12:
-#line 253 "parser.yy" // lalr1.cc:859
+#line 258 "parser.yy" // lalr1.cc:859
     {		
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 			(yystack_[2].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1256,7 +1256,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 13:
-#line 261 "parser.yy" // lalr1.cc:859
+#line 266 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
@@ -1264,7 +1264,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 14:
-#line 268 "parser.yy" // lalr1.cc:859
+#line 273 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorsDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1274,7 +1274,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 15:
-#line 274 "parser.yy" // lalr1.cc:859
+#line 279 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1283,7 +1283,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 16:
-#line 282 "parser.yy" // lalr1.cc:859
+#line 287 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), 0, (yystack_[3].value.scIdent) );
 		}
@@ -1291,7 +1291,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 17:
-#line 286 "parser.yy" // lalr1.cc:859
+#line 291 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), (yystack_[5].value.scList), (yystack_[3].value.scIdent) );
 			(yystack_[5].value.scList)->mParent = (yylhs.value.scNode);
@@ -1300,7 +1300,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 18:
-#line 293 "parser.yy" // lalr1.cc:859
+#line 298 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
@@ -1310,7 +1310,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 19:
-#line 299 "parser.yy" // lalr1.cc:859
+#line 304 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 			(yystack_[2].value.scName)->mParent = (yystack_[0].value.scList);
@@ -1319,7 +1319,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 20:
-#line 308 "parser.yy" // lalr1.cc:859
+#line 313 "parser.yy" // lalr1.cc:859
     {
 			if( (yystack_[0].value.scList)->mChilds.size() > 1 )
 			{
@@ -1333,7 +1333,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 21:
-#line 321 "parser.yy" // lalr1.cc:859
+#line 326 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypesDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1343,7 +1343,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 22:
-#line 327 "parser.yy" // lalr1.cc:859
+#line 332 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 			(yystack_[1].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1352,7 +1352,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 23:
-#line 335 "parser.yy" // lalr1.cc:859
+#line 340 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scDef);
@@ -1361,7 +1361,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 24:
-#line 340 "parser.yy" // lalr1.cc:859
+#line 345 "parser.yy" // lalr1.cc:859
     {
 			pSupport->semanticError( ParserErrTypes::NestedDataDefinition, static_cast<DataNode*>((yystack_[0].value.scNode))->getDataName() );
 			delete (yystack_[0].value.scNode);
@@ -1371,7 +1371,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 25:
-#line 349 "parser.yy" // lalr1.cc:859
+#line 354 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), (yystack_[2].value.scList) );
 			(yystack_[2].value.scList)->mParent = (yylhs.value.scNode);
@@ -1380,7 +1380,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 26:
-#line 354 "parser.yy" // lalr1.cc:859
+#line 359 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), 0 );
 		}
@@ -1388,9 +1388,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 28:
-#line 362 "parser.yy" // lalr1.cc:859
+#line 367 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::TypeExpression, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::TypeExpression, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -1398,7 +1398,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 29:
-#line 372 "parser.yy" // lalr1.cc:859
+#line 377 "parser.yy" // lalr1.cc:859
     {	
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scToken), NameRefNode::BaseType, nullptr );
 		}
@@ -1406,7 +1406,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 30:
-#line 376 "parser.yy" // lalr1.cc:859
+#line 381 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::Type, nullptr );
 		}
@@ -1414,7 +1414,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 31:
-#line 380 "parser.yy" // lalr1.cc:859
+#line 385 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::Template, (yystack_[1].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scName);
@@ -1423,7 +1423,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 32:
-#line 385 "parser.yy" // lalr1.cc:859
+#line 390 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::TypeParamName, nullptr );
 		}
@@ -1431,7 +1431,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 40:
-#line 402 "parser.yy" // lalr1.cc:859
+#line 407 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypeExpressionsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
@@ -1441,7 +1441,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 41:
-#line 408 "parser.yy" // lalr1.cc:859
+#line 413 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 			(yystack_[2].value.scName)->mParent = (yystack_[0].value.scList);
@@ -1450,7 +1450,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 44:
-#line 422 "parser.yy" // lalr1.cc:859
+#line 427 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
@@ -1460,7 +1460,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 45:
-#line 428 "parser.yy" // lalr1.cc:859
+#line 433 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
@@ -1471,7 +1471,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 46:
-#line 438 "parser.yy" // lalr1.cc:859
+#line 443 "parser.yy" // lalr1.cc:859
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 			(yylhs.value.scIdent) = (yystack_[0].value.scIdent);
@@ -1480,7 +1480,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 47:
-#line 446 "parser.yy" // lalr1.cc:859
+#line 451 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::FormalParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1490,7 +1490,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 48:
-#line 452 "parser.yy" // lalr1.cc:859
+#line 457 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 			(yystack_[2].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1499,7 +1499,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 49:
-#line 460 "parser.yy" // lalr1.cc:859
+#line 465 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
@@ -1507,7 +1507,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 50:
-#line 467 "parser.yy" // lalr1.cc:859
+#line 472 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::DefinitionsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1517,7 +1517,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 51:
-#line 473 "parser.yy" // lalr1.cc:859
+#line 478 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1526,7 +1526,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 52:
-#line 481 "parser.yy" // lalr1.cc:859
+#line 486 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1535,7 +1535,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 53:
-#line 486 "parser.yy" // lalr1.cc:859
+#line 491 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1544,25 +1544,25 @@ namespace FPTL { namespace Parser {
     break;
 
   case 54:
-#line 491 "parser.yy" // lalr1.cc:859
+#line 496 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scFun); }
 #line 1550 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 56:
-#line 500 "parser.yy" // lalr1.cc:859
+#line 505 "parser.yy" // lalr1.cc:859
     {	(yylhs.value.scNode) = (yystack_[1].value.scNode); }
 #line 1556 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 58:
-#line 503 "parser.yy" // lalr1.cc:859
+#line 508 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1562 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 59:
-#line 505 "parser.yy" // lalr1.cc:859
+#line 510 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName, nullptr );
 		}
@@ -1570,7 +1570,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 60:
-#line 512 "parser.yy" // lalr1.cc:859
+#line 517 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::FuncObjectWithParameters, (yystack_[1].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scName);
@@ -1579,7 +1579,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 61:
-#line 519 "parser.yy" // lalr1.cc:859
+#line 524 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::FuncArgumentsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1589,7 +1589,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 62:
-#line 525 "parser.yy" // lalr1.cc:859
+#line 530 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1598,7 +1598,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 63:
-#line 533 "parser.yy" // lalr1.cc:859
+#line 538 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncParameterName, nullptr );
 		}
@@ -1606,15 +1606,15 @@ namespace FPTL { namespace Parser {
     break;
 
   case 65:
-#line 538 "parser.yy" // lalr1.cc:859
+#line 543 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1612 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 67:
-#line 544 "parser.yy" // lalr1.cc:859
+#line 549 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::SequentialTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::SequentialTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -1622,9 +1622,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 69:
-#line 554 "parser.yy" // lalr1.cc:859
+#line 559 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::CompositionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::CompositionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -1632,9 +1632,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 71:
-#line 564 "parser.yy" // lalr1.cc:859
+#line 569 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ConditionTerm, (yystack_[4].value.scNode), (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
+			(yylhs.value.scNode) = new ConditionNode( ASTNode::ConditionTerm, (yystack_[4].value.scNode), (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[4].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1643,9 +1643,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 72:
-#line 571 "parser.yy" // lalr1.cc:859
+#line 576 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ConditionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
+			(yylhs.value.scNode) = new ConditionNode( ASTNode::ConditionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -1653,9 +1653,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 74:
-#line 581 "parser.yy" // lalr1.cc:859
+#line 586 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::VariantTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::VariantTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -1663,7 +1663,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 75:
-#line 590 "parser.yy" // lalr1.cc:859
+#line 595 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncObjectName, nullptr );
 		}
@@ -1671,7 +1671,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 77:
-#line 598 "parser.yy" // lalr1.cc:859
+#line 603 "parser.yy" // lalr1.cc:859
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
@@ -1679,7 +1679,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 78:
-#line 602 "parser.yy" // lalr1.cc:859
+#line 607 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[4].value.scIdent), (yystack_[1].value.scList), 0 );
 			pSupport->popIdent();
@@ -1689,7 +1689,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 79:
-#line 608 "parser.yy" // lalr1.cc:859
+#line 613 "parser.yy" // lalr1.cc:859
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
@@ -1697,7 +1697,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 80:
-#line 612 "parser.yy" // lalr1.cc:859
+#line 617 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[7].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			pSupport->popIdent();
@@ -1708,19 +1708,19 @@ namespace FPTL { namespace Parser {
     break;
 
   case 84:
-#line 631 "parser.yy" // lalr1.cc:859
+#line 636 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1714 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 85:
-#line 633 "parser.yy" // lalr1.cc:859
+#line 638 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1720 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 86:
-#line 638 "parser.yy" // lalr1.cc:859
+#line 643 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::ConstructorName, nullptr );
 		}
@@ -1728,7 +1728,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 87:
-#line 645 "parser.yy" // lalr1.cc:859
+#line 650 "parser.yy" // lalr1.cc:859
     {	
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::DestructorName, nullptr );
 		}
@@ -1736,13 +1736,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 88:
-#line 652 "parser.yy" // lalr1.cc:859
+#line 657 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1742 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 91:
-#line 659 "parser.yy" // lalr1.cc:859
+#line 664 "parser.yy" // lalr1.cc:859
     {
 		ConstantNode * number = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
 		(yylhs.value.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
@@ -1752,7 +1752,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 95:
-#line 670 "parser.yy" // lalr1.cc:859
+#line 675 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new ConstantNode( ASTNode::TrueValue, (yystack_[0].value.scToken) );
 		}
@@ -1760,7 +1760,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 96:
-#line 674 "parser.yy" // lalr1.cc:859
+#line 679 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
 		}
@@ -1768,7 +1768,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 97:
-#line 682 "parser.yy" // lalr1.cc:859
+#line 687 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction, nullptr );
 		}
@@ -1776,7 +1776,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 98:
-#line 689 "parser.yy" // lalr1.cc:859
+#line 694 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, 0 );
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scApp);
@@ -1785,7 +1785,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 99:
-#line 694 "parser.yy" // lalr1.cc:859
+#line 699 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), 0 );
 			(yystack_[3].value.scName)->mParent = (yylhs.value.scApp);
@@ -1795,7 +1795,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 100:
-#line 700 "parser.yy" // lalr1.cc:859
+#line 705 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, (yystack_[1].value.scList) ); 
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scApp);
@@ -1805,7 +1805,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 101:
-#line 706 "parser.yy" // lalr1.cc:859
+#line 711 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 			(yystack_[3].value.scName)->mParent = (yylhs.value.scApp);
@@ -1816,7 +1816,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 102:
-#line 716 "parser.yy" // lalr1.cc:859
+#line 721 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::InputVarDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1826,7 +1826,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 103:
-#line 722 "parser.yy" // lalr1.cc:859
+#line 727 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 			(yystack_[1].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1835,7 +1835,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 104:
-#line 730 "parser.yy" // lalr1.cc:859
+#line 735 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scDef);
@@ -1844,7 +1844,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 106:
-#line 740 "parser.yy" // lalr1.cc:859
+#line 745 "parser.yy" // lalr1.cc:859
     { 
 			(yylhs.value.scName) = new NameRefNode((yystack_[0].value.scIdent), ASTNode::RunningSchemeName, nullptr );
 		}
@@ -1852,7 +1852,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 107:
-#line 747 "parser.yy" // lalr1.cc:859
+#line 752 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = (yystack_[0].value.scNode);
 		}
@@ -1860,9 +1860,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 108:
-#line 751 "parser.yy" // lalr1.cc:859
+#line 756 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr);
+			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode));
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -1870,7 +1870,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 109:
-#line 760 "parser.yy" // lalr1.cc:859
+#line 765 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName, nullptr );
 		}
@@ -1878,13 +1878,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 112:
-#line 770 "parser.yy" // lalr1.cc:859
+#line 775 "parser.yy" // lalr1.cc:859
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1884 "parser.tab.cc" // lalr1.cc:859
     break;
 
   case 113:
-#line 772 "parser.yy" // lalr1.cc:859
+#line 777 "parser.yy" // lalr1.cc:859
     {
 			(yylhs.value.scNode) = (yystack_[1].value.scNode);
 		}
@@ -1892,9 +1892,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 115:
-#line 780 "parser.yy" // lalr1.cc:859
+#line 785 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName), nullptr );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scNode);
 		}
@@ -1902,9 +1902,9 @@ namespace FPTL { namespace Parser {
     break;
 
   case 117:
-#line 790 "parser.yy" // lalr1.cc:859
+#line 795 "parser.yy" // lalr1.cc:859
     {
-			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
+			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
@@ -2398,18 +2398,18 @@ namespace FPTL { namespace Parser {
   const unsigned short int
   BisonParser::yyrline_[] =
   {
-       0,   179,   179,   189,   201,   207,   215,   220,   226,   232,
-     242,   246,   252,   260,   267,   273,   281,   285,   292,   298,
-     307,   320,   326,   334,   339,   348,   353,   360,   361,   371,
-     375,   379,   384,   391,   392,   393,   394,   395,   396,   397,
-     401,   407,   414,   416,   421,   427,   437,   445,   451,   459,
-     466,   472,   480,   485,   490,   495,   499,   501,   502,   504,
-     511,   518,   524,   532,   536,   537,   542,   543,   552,   553,
-     562,   563,   570,   579,   580,   589,   593,   598,   597,   608,
-     607,   621,   625,   629,   630,   632,   637,   644,   651,   653,
-     654,   658,   666,   667,   668,   669,   673,   681,   688,   693,
-     699,   705,   715,   721,   729,   736,   739,   746,   750,   759,
-     763,   768,   769,   771,   778,   779,   788,   789,   797
+       0,   184,   184,   194,   206,   212,   220,   225,   231,   237,
+     247,   251,   257,   265,   272,   278,   286,   290,   297,   303,
+     312,   325,   331,   339,   344,   353,   358,   365,   366,   376,
+     380,   384,   389,   396,   397,   398,   399,   400,   401,   402,
+     406,   412,   419,   421,   426,   432,   442,   450,   456,   464,
+     471,   477,   485,   490,   495,   500,   504,   506,   507,   509,
+     516,   523,   529,   537,   541,   542,   547,   548,   557,   558,
+     567,   568,   575,   584,   585,   594,   598,   603,   602,   613,
+     612,   626,   630,   634,   635,   637,   642,   649,   656,   658,
+     659,   663,   671,   672,   673,   674,   678,   686,   693,   698,
+     704,   710,   720,   726,   734,   741,   744,   751,   755,   764,
+     768,   773,   774,   776,   783,   784,   793,   794,   802
   };
 
   // Print the state stack on the debug stream.

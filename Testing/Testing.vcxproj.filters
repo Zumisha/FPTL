@@ -156,6 +156,12 @@
     <ClInclude Include="..\Source\DataTypes\Ops\ADTValue.h">
       <Filter>FPTL</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Parser\ASTSerializer.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Utils\FileStreamHelper.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneralizedTests.cpp">
@@ -318,6 +324,9 @@
       <Filter>Исходные файлы\ADTTests</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\DataTypes\Ops\ADTValue.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\ASTSerializer.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
   </ItemGroup>

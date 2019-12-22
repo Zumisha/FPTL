@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Nodes.h"
 
 namespace FPTL
 {
@@ -13,6 +14,7 @@ namespace FPTL
 		class FunctionalProgram;
 		class ApplicationBlock;
 		class ExpressionNode;
+		class ConditionNode;
 		class ConstantNode;
 		class ListNode;
 
@@ -20,7 +22,7 @@ namespace FPTL
 		{
 		public:
 
-			virtual ~NodeVisitor() {}
+			virtual ~NodeVisitor() = default;
 
 			//
 			// Группа методов, вызываемых при входе в конкртеный узел, до обхода его дочерних узлов.
@@ -35,6 +37,7 @@ namespace FPTL
 			virtual void visit(FunctionalProgram * aFuncProgram);
 			virtual void visit(ApplicationBlock * aApplicationBlock);
 			virtual void visit(ExpressionNode * aExpressionNode);
+			virtual void visit(ConditionNode * aExpressionNode);
 			virtual void visit(ConstantNode * aConstantNode);
 
 			//XXX made public to be callable from TypeBuilder::visit

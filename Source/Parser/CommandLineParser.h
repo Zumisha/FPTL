@@ -31,6 +31,8 @@ namespace FPTL
 			bool GetShowTime() const { return mVM["time"].as<bool>(); }
 			size_t GetCoresNum() const { return static_cast<size_t>(mVM["num-cores"].as<long long>()); }
 			bool GetAllowProactive() const { return mVM["proactive"].as<bool>(); }
+			bool GetSaveAST() const { return mVM["ast-save"].as<bool>(); }
+			bool GetSaveScheme() const { return mVM["scheme-save"].as<bool>(); }
 
 			Runtime::GcConfig GetGcConfig() const 
 			{

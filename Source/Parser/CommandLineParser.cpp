@@ -10,15 +10,19 @@ namespace FPTL
 		CommandLineParser::CommandLineParser() : mDesc("Available options:")
 		{
 			mDesc.add_options()
-				("help,h", "Provides information about startup options.")
-				("version,v", "Displays the date and time of the interpreter build.")
 				("source-file,s", po::value<std::string>(&mProgramPath), "Path to FPTL program file.")
 				("num-cores,n", po::value<long long>()->default_value(1)->required(), "Number of work threads.")
 				("input-tuple,in", po::value<std::vector<std::string>>(&mInputTuple)->multitoken(), "Input variables.")
+				("proactive", po::bool_switch(), "Enable proactive calculations.")
+
+				("help,h", "Provides information about startup options.")
+				("version,v", "Displays the date and time of the interpreter build.")
 				("time,t", po::bool_switch(), "Displays interpretation and evaluation times.")
 				("info,i", po::bool_switch(), "Displays information about the interpretation and evaluation processes.")
-				("proactive", po::bool_switch(), "Enable proactive calculations.")
 				("ansi", po::bool_switch(), "Allow ANSI text formatting.")
+				("ast-save", po::bool_switch(),"Serialize AST to the file.")
+				("scheme-save", po::bool_switch(), "Serialize functional schemes to the file.")
+
 				("disable-gc", po::bool_switch(), "Disable garbage collector.")
 				("verbose-gc", po::bool_switch(), "Displays information about the work of the garbage collector.")
 				("young-gen", po::value<long long>()->default_value(20), "Young generation size in MiB.")

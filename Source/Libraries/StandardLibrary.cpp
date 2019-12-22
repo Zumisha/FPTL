@@ -19,34 +19,13 @@
 #include "DataTypes/Ops/StringOps.h"
 #include "DataTypes/Ops/ArrayOps.h"
 #include "DataTypes/Ops/IntegerOps.h"
+#include "Utils/FileStreamHelper.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
 		namespace {
-
-			std::string getIfStreamError(std::fstream& input)
-			{
-				std::string errMsg = "";
-				if (!input.is_open())
-				{
-					const size_t error_len = 1024;
-					char error_buf[error_len];
-					strerror_s(error_buf, error_len, errno);
-					errMsg = error_buf;
-				}
-				else
-				{
-					if (input.bad())
-						errMsg = "error while reading file";
-					else if (input.fail())
-						errMsg = "characters extracted could not be interpreted as a valid value of the appropriate type";
-					input.close();
-				}
-				return errMsg;
-			}
-
 			void id(SExecutionContext & aCtx)
 			{
 				// Копируем данные аргументы от начала фрейма.
@@ -479,7 +458,7 @@ namespace FPTL
 				catch (const std::ios_base::failure& exc)
 				{
 					val = DataBuilders::createUndefinedValue();
-					errMsg = getIfStreamError(input);
+					errMsg = Utils::getfStreamError(input);
 					if (errMsg == "") errMsg = exc.what();
 				}
 				aCtx.push(val);
@@ -515,7 +494,7 @@ namespace FPTL
 				catch (const std::ios_base::failure& exc)
 				{
 					res = DataBuilders::createBoolean(false);
-					errMsg = getIfStreamError(output);
+					errMsg = Utils::getfStreamError(output);
 					if (errMsg == "") errMsg = exc.what();
 				}
 				aCtx.push(res);
@@ -637,7 +616,7 @@ namespace FPTL
 				catch (const std::ios_base::failure& exc)
 				{
 					arrVal = DataBuilders::createUndefinedValue();
-					errMsg = getIfStreamError(input);
+					errMsg = Utils::getfStreamError(input);
 					if (errMsg == "") errMsg = exc.what();
 				}
 				aCtx.push(arrVal);

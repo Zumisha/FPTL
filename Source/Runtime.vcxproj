@@ -140,6 +140,7 @@
     <ClCompile Include="Libraries\FunctionLibrary.cpp" />
     <ClCompile Include="Libraries\StandardLibrary.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Parser\ASTSerializer.cpp" />
     <ClCompile Include="Parser\CommandLineParser.cpp" />
     <ClCompile Include="Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="Parser\Generated\parser.tab.cc" />
@@ -176,16 +177,19 @@
     <ClInclude Include="Libraries\StandardLibrary.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Parser\AST.h" />
+    <ClInclude Include="Parser\ASTSerializer.h" />
     <ClInclude Include="Parser\CommandLineParser.h" />
     <ClInclude Include="Parser\FlexTokenizer.h" />
     <ClInclude Include="Parser\Generated\Flex\FlexLexer.h" />
     <ClInclude Include="Parser\Generated\parser.tab.hh" />
     <ClInclude Include="Parser\Generated\stack.hh" />
     <ClInclude Include="Parser\Ident.h" />
+    <ClInclude Include="Parser\NodeHandler.h" />
     <ClInclude Include="Parser\Nodes.h" />
     <ClInclude Include="Parser\NodeVisitor.h" />
     <ClInclude Include="Parser\SemanticCheck.h" />
     <ClInclude Include="Parser\Support.h" />
+    <ClInclude Include="Utils\FileStreamHelper.h" />
     <ClInclude Include="Utils\FormattedOutput.h" />
   </ItemGroup>
   <ItemGroup>

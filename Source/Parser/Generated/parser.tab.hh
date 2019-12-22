@@ -46,21 +46,26 @@
 
 	namespace FPTL {
 	namespace Parser {
-
+	
 		class ASTNode;
-			class ListNode;
-			class DefinitionNode;
-			class DataNode;
-			class FunctionNode;
-			class ApplicationBlock;
 			class NameRefNode;
+			class FunctionNode;
+			class DefinitionNode;
+			class ConstructorNode;
+			class DataNode;
+			class FunctionalProgram;
+			class ApplicationBlock;
+			class ExpressionNode;
+			class ConditionNode;
+			class ConstantNode;
+			class ListNode;
 		class Tokenizer;
 		class Support;
 
 	} // Parser
 	} // FPTL
 
-#line 64 "parser.tab.hh" // lalr1.cc:377
+#line 69 "parser.tab.hh" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -132,7 +137,7 @@
 
 #line 2 "parser.yy" // lalr1.cc:377
 namespace FPTL { namespace Parser {
-#line 136 "parser.tab.hh" // lalr1.cc:377
+#line 141 "parser.tab.hh" // lalr1.cc:377
 
 
 
@@ -146,7 +151,7 @@ namespace FPTL { namespace Parser {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 38 "parser.yy" // lalr1.cc:377
+    #line 43 "parser.yy" // lalr1.cc:377
 
 	Ident			   scToken;
 	Ident			   scIdent;
@@ -157,7 +162,7 @@ namespace FPTL { namespace Parser {
 	DefinitionNode *   scDef;
 	NameRefNode *      scName;
 
-#line 161 "parser.tab.hh" // lalr1.cc:377
+#line 166 "parser.tab.hh" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -529,7 +534,7 @@ namespace FPTL { namespace Parser {
 
 #line 2 "parser.yy" // lalr1.cc:377
 } } // FPTL::Parser
-#line 533 "parser.tab.hh" // lalr1.cc:377
+#line 538 "parser.tab.hh" // lalr1.cc:377
 
 
 

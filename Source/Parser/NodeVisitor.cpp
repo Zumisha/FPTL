@@ -50,8 +50,14 @@ namespace FPTL
 		void NodeVisitor::visit(ExpressionNode * aExpressionNode)
 		{
 			process(aExpressionNode->getLeft());
-			process(aExpressionNode->getMiddle());
 			process(aExpressionNode->getRight());
+		}
+
+		void NodeVisitor::visit(ConditionNode * aExpressionNode)
+		{
+			process(aExpressionNode->getThen());
+			process(aExpressionNode->getCond());
+			process(aExpressionNode->getElse());
 		}
 
 		void NodeVisitor::visit(ConstantNode * aConstantNode)

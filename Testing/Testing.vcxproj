@@ -191,6 +191,7 @@
     <ClInclude Include="..\Source\Libraries\StandardLibrary.h" />
     <ClInclude Include="..\Source\Macros.h" />
     <ClInclude Include="..\Source\Parser\AST.h" />
+    <ClInclude Include="..\Source\Parser\ASTSerializer.h" />
     <ClInclude Include="..\Source\Parser\CommandLineParser.h" />
     <ClInclude Include="..\Source\Parser\FlexTokenizer.h" />
     <ClInclude Include="..\Source\Parser\Generated\Flex\FlexLexer.h" />
@@ -202,6 +203,7 @@
     <ClInclude Include="..\Source\Parser\SemanticCheck.h" />
     <ClInclude Include="..\Source\Parser\Support.h" />
     <ClInclude Include="..\Source\Parser\Tokenizer.h" />
+    <ClInclude Include="..\Source\Utils\FileStreamHelper.h" />
     <ClInclude Include="..\Source\Utils\FormattedOutput.h" />
     <ClInclude Include="Shared.h" />
   </ItemGroup>
@@ -226,6 +228,7 @@
     <ClCompile Include="..\Source\Interpreter\Interpreter.cpp" />
     <ClCompile Include="..\Source\Libraries\FunctionLibrary.cpp" />
     <ClCompile Include="..\Source\Libraries\StandardLibrary.cpp" />
+    <ClCompile Include="..\Source\Parser\ASTSerializer.cpp" />
     <ClCompile Include="..\Source\Parser\CommandLineParser.cpp" />
     <ClCompile Include="..\Source\Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="..\Source\Parser\Generated\parser.tab.cc" />

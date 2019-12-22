@@ -2,24 +2,24 @@
 
 #include "Support.h"
 #include "Nodes.h"
+#include "NodeVisitor.h"
+#include "NodeHandler.h"
 
 namespace FPTL {
 	namespace Parser {
 
-		ExpressionNode::ExpressionNode(const ASTNodeType aType, ASTNode* aLeft, ASTNode* aRight, ASTNode* aMiddle)
-			: ASTNode(aType, Ident())
+		ExpressionNode::ExpressionNode(const ASTNodeType aType, ASTNode* aLeft, ASTNode* aRight)
+			: ASTNode(aType)
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mLeft] = aLeft;
 			mChilds[mRight] = aRight;
-			mChilds[mMiddle] = aMiddle;
 		}
 
 		ExpressionNode::~ExpressionNode()
 		{
 			delete mChilds[mLeft];
 			delete mChilds[mRight];
-			delete mChilds[mMiddle];
 		}
 
 		void ExpressionNode::accept(NodeVisitor* aVisitor)
@@ -27,16 +27,88 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*ASTNode* ExpressionNode::copy() const
+		void ExpressionNode::handle(NodeHandler* aHandler)
 		{
-			auto copy = new ExpressionNode(getType(),
-				mChilds[mLeft] ? mChilds[mLeft]->copy() : nullptr,
-				mChilds[mRight] ? mChilds[mRight]->copy() : nullptr,
-				mChilds[mMiddle] ? mChilds[mMiddle]->copy() : nullptr);
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
+			aHandler->handle(this);
+		}
+
+		std::string ExpressionNode::childNameToString(size_t child)
+		{
+			switch (child)
+			{
+			case mLeft:
+				return "Left";
+			case mRight:
+				return "Right";
+			default:
+				return "Error!";
+			}
+		}
+
+		//-------------------------------------------------------------------------------------------
+
+		ConditionNode::ConditionNode(const ASTNodeType aType, ASTNode* aLeft, ASTNode* aRight, ASTNode* aMiddle)
+				: ASTNode(aType)
+			{
+				mChilds = std::vector<ASTNode*>(3);
+				mChilds[mThen] = aLeft;
+				mChilds[mElse] = aRight;
+				mChilds[mCond] = aMiddle;
+			}
+
+			ConditionNode::~ConditionNode()
+			{
+				delete mChilds[mThen];
+				delete mChilds[mElse];
+				delete mChilds[mCond];
+			}
+
+			void ConditionNode::accept(NodeVisitor * aVisitor)
+			{
+				aVisitor->visit(this);
+			}
+
+			void ConditionNode::handle(NodeHandler* aHandler)
+			{
+				aHandler->handle(this);
+			}
+
+			std::string ConditionNode::childNameToString(size_t child)
+			{
+				switch (child)
+				{
+				case mThen:
+					return "Then";
+				case mElse:
+					return "Else";
+				case mCond:
+					return "Else";
+				default:
+					return "Error!";
+				}
+			}
+
+		//-------------------------------------------------------------------------------------------
+
+		void ConstantNode::accept(NodeVisitor * aVisitor)
+		{
+			aVisitor->visit(this);
+		}
+
+		void ConstantNode::handle(NodeHandler* aHandler)
+		{
+			aHandler->handle(this);
+		}
+
+		bool ConstantNode::isNatural() const
+		{
+			return getType() == IntConstant && atoi(mIdent.getStr().c_str()) > 0;
+		}
+
+		std::string ConstantNode::childNameToString(size_t)
+		{
+			return "Error!";
+		}
 
 		//-------------------------------------------------------------------------------------------
 
@@ -51,22 +123,20 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*ListNode * ListNode::copy() const
+		void ListNode::handle(NodeHandler* aHandler)
 		{
-			auto newList = new ListNode(getType());
-			newList->mChilds = std::vector<ASTNode*>(mChilds.size());
-			for (auto aElem : mChilds)
-			{
-				newList->mChilds.push_back(aElem->copy());
-				newList->mChilds.back()->mParent = newList;
-			}
-			return newList;
-		}*/
+			aHandler->handle(this);
+		}
+
+		std::string ListNode::childNameToString(size_t)
+		{
+			return "Node";
+		}
 
 		//-------------------------------------------------------------------------------------------
 
 		DefinitionNode::DefinitionNode(const ASTNodeType aType, const Ident &aName, ASTNode * aDefinition)
-			: ASTNode(aType, aName)
+			: ASTNode(aType), mDefinitionName(aName)
 		{
 			mChilds = std::vector<ASTNode*>(1);
 			mChilds[mDefinition] = aDefinition;
@@ -82,20 +152,26 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*ASTNode * DefinitionNode::copy() const
+		void DefinitionNode::handle(NodeHandler* aHandler)
 		{
-			auto copy = new DefinitionNode(getType(),
-				mDefinitionName,
-				mChilds[mDefinition] ? mChilds[mDefinition]->copy() : nullptr);
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
+			aHandler->handle(this);
+		}
+
+		std::string DefinitionNode::childNameToString(size_t child)
+		{
+			switch (child)
+			{
+			case mDefinition:
+				return "Definition";
+			default:
+				return "Error!";
+			}
+		}
 
 		//-----------------------------------------------------------
 
 		NameRefNode::NameRefNode(const Ident &aTypeName, const ASTNodeType aNodeType, ListNode * aParams)
-			: ASTNode(aNodeType, aTypeName)
+			: ASTNode(aNodeType), mTypeName(aTypeName)
 		{
 			mChilds = std::vector<ASTNode*>(2);
 			mChilds[mParameters] = aParams;
@@ -112,20 +188,26 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*ASTNode * NameRefNode::copy() const
+		void NameRefNode::handle(NodeHandler* aHandler)
 		{
-			auto copy = new NameRefNode(mTypeName, getType(),
-				mChilds[mParameters] ? static_cast<ListNode*>(mChilds[mParameters])->copy() : nullptr);
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
+			aHandler->handle(this);
+		}
+
+		std::string NameRefNode::childNameToString(size_t child)
+		{
+			switch (child)
+			{
+			case mParameters:
+				return "Parameters";
+			default:
+				return "Error!";
+			}
+		}
 
 		//-------------------------------------------------------------------------------------------
 
 		ConstructorNode::ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName)
-			: ASTNode(Constructor, aName),
-			mCtorResultTypeName(aCtorResultTypeName)
+			: ASTNode(Constructor), mName(aName), mCtorResultTypeName(aCtorResultTypeName)
 		{
 			mChilds = std::vector<ASTNode*>(1);
 			mChilds[mCtorParameters] = aCtorParameters;
@@ -136,23 +218,31 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
+		void ConstructorNode::handle(NodeHandler* aHandler)
+		{
+			aHandler->handle(this);
+		}
+
 		ConstructorNode::~ConstructorNode()
 		{
 			delete mChilds[mCtorParameters];
 		}
 
-		/*ASTNode * ConstructorNode::copy() const
+		std::string ConstructorNode::childNameToString(size_t child)
 		{
-			auto copy = new ConstructorNode(mName, mChilds[mCtorParameters] ? static_cast<ListNode*>(mChilds[mCtorParameters])->copy() : nullptr, mCtorResultTypeName);
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
+			switch (child)
+			{
+			case mCtorParameters:
+				return "ConstructorParameters";
+			default:
+				return "Error!";
+			}
+		}
 
 		//-------------------------------------------------------------------------------------------
 
 		DataNode::DataNode(const Ident &aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors)
-			: ASTNode(DataTypeDefinitionBlock, aTypeName)
+			: ASTNode(DataTypeDefinitionBlock), mTypeName(aTypeName)
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mConstructors] = aConstructors;
@@ -172,22 +262,30 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*ASTNode * DataNode::copy() const
+		void DataNode::handle(NodeHandler* aHandler)
 		{
-			auto copy = new DataNode(mTypeName,
-				mChilds[mTypeDefinitions] ? static_cast<ListNode*>(mChilds[mTypeDefinitions])->copy() : nullptr,
-				mChilds[mTypeParameters] ? static_cast<ListNode*>(mChilds[mTypeParameters])->copy() : nullptr,
-				mChilds[mConstructors] ? static_cast<ListNode*>(mChilds[mConstructors])->copy() : nullptr);
+			aHandler->handle(this);
+		}
 
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
+		std::string DataNode::childNameToString(size_t child)
+		{
+			switch (child)
+			{
+			case mConstructors:
+				return "Constructors";
+			case mTypeDefinitions:
+				return "TypeDefinitions";
+			case mTypeParameters:
+				return "TypeParameters";
+			default:
+				return "Error!";
+			}
+		}
 
 		//-------------------------------------------------------------------------------------------
 
 		FunctionNode::FunctionNode(const Ident &aFuncName, ListNode * aDefinitions, ListNode * aFormalParams)
-			: ASTNode(FunctionBlock, aFuncName)
+			: ASTNode(FunctionBlock), mFuncName(aFuncName)
 		{
 			mChilds = std::vector<ASTNode*>(2);
 			mChilds[mFormalParameters] = (aFormalParams);
@@ -205,16 +303,10 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*FunctionNode * FunctionNode::copy() const
+		void FunctionNode::handle(NodeHandler* aHandler)
 		{
-			auto copy = new FunctionNode(mFuncName,
-				mChilds[mDefinitions] ? static_cast<ListNode*>(mChilds[mDefinitions])->copy() : nullptr,
-				mChilds[mFormalParameters] ? static_cast<ListNode*>(mChilds[mFormalParameters]->copy()) : nullptr);
-
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
+			aHandler->handle(this);
+		}
 
 		DefinitionNode * FunctionNode::getDefinition(const Ident &aName) const
 		{
@@ -251,10 +343,66 @@ namespace FPTL {
 			return functions;
 		}
 
+		std::string FunctionNode::childNameToString(size_t child)
+		{
+			switch (child)
+			{
+			case mDefinitions:
+				return "Definitions";
+			case mFormalParameters:
+				return "FormalParameters";
+			default:
+				return "Error!";
+			}
+		}
+
+		//-------------------------------------------------------------------------------------------
+
+		ApplicationBlock::ApplicationBlock(NameRefNode * aRunSchemeName, ASTNode * aSchemeParameters, ListNode * aDataVarDefs)
+			: ASTNode(Application)
+		{
+			mChilds = std::vector<ASTNode*>(3);
+			mChilds[mRunSchemeName] = aRunSchemeName;
+			mChilds[mSchemeParameters] = aSchemeParameters;
+			mChilds[mDataVarDefinitions] = aDataVarDefs;
+		}
+
+		ApplicationBlock::~ApplicationBlock()
+		{
+			delete mChilds[mRunSchemeName];
+			delete mChilds[mSchemeParameters];
+			delete mChilds[mDataVarDefinitions];
+		}
+
+		void ApplicationBlock::accept(NodeVisitor * aVisitor)
+		{
+			aVisitor->visit(this);
+		}
+
+		void ApplicationBlock::handle(NodeHandler* aHandler)
+		{
+			aHandler->handle(this);
+		}
+
+		std::string ApplicationBlock::childNameToString(size_t child)
+		{
+			switch (child)
+			{
+			case mRunSchemeName:
+				return "RunSchemeName";
+			case mSchemeParameters:
+				return "SchemeParameters";
+			case mDataVarDefinitions:
+				return "DataVarDefinitions";
+			default:
+				return "Error!";
+			}
+		}
+
 		//-------------------------------------------------------------------------------------------
 
 		FunctionalProgram::FunctionalProgram(ASTNode * aDataDefinitions, FunctionNode * aScheme, ApplicationBlock * aApplication)
-		: ASTNode(FunctionalProgramDef, Ident())
+		: ASTNode(FunctionalProgramDef)
 		{
 			mChilds = std::vector<ASTNode*>(3);
 			mChilds[mDataDefinitions] = aDataDefinitions;
@@ -274,67 +422,24 @@ namespace FPTL {
 			aVisitor->visit(this);
 		}
 
-		/*ASTNode * FunctionalProgram::copy() const
+		void FunctionalProgram::handle(NodeHandler* aHandler)
 		{
-			auto copy = new FunctionalProgram(
-				mChilds[mDataDefinitions] ? mChilds[mDataDefinitions]->copy() : nullptr,
-				mChilds[mScheme] ? static_cast<FunctionNode*>(mChilds[mScheme])->copy() : nullptr,
-				mChilds[mApplication] ? static_cast<ApplicationBlock*>(mChilds[mApplication])->copy() : nullptr);
-
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
-
-		//-------------------------------------------------------------------------------------------
-
-		ApplicationBlock::ApplicationBlock(NameRefNode * aRunSchemeName, ASTNode * aSchemeParameters, ListNode * aDataVarDefs)
-		: ASTNode(Application, Ident())
-		{
-			mChilds = std::vector<ASTNode*>(3);
-			mChilds[mRunSchemeName] = aRunSchemeName;
-			mChilds[mSchemeParameters] = aSchemeParameters;
-			mChilds[mDataVarDefinitions] = aDataVarDefs;
+			aHandler->handle(this);
 		}
 
-		ApplicationBlock::~ApplicationBlock()
+		std::string FunctionalProgram::childNameToString(size_t child)
 		{
-			delete mChilds[mRunSchemeName];
-			delete mChilds[mSchemeParameters];
-			delete mChilds[mDataVarDefinitions];
-		}
-
-		/*ApplicationBlock * ApplicationBlock::copy() const
-		{
-			auto copy = new ApplicationBlock(static_cast<NameRefNode*>(mChilds[mRunSchemeName]), 
-				mChilds[mSchemeParameters] ? mChilds[mSchemeParameters]->copy() : nullptr,
-				mChilds[mDataVarDefinitions] ? static_cast<ListNode*>(mChilds[mDataVarDefinitions])->copy() : nullptr);
-
-			for (auto& child : copy->mChilds)
-				child->mParent = copy;
-			return copy;
-		}*/
-
-		void ApplicationBlock::accept(NodeVisitor * aVisitor)
-		{
-			aVisitor->visit(this);
-		}
-
-		//-------------------------------------------------------------------------------------------
-
-		void ConstantNode::accept(NodeVisitor * aVisitor)
-		{
-			aVisitor->visit(this);
-		}
-
-		/*ASTNode * ConstantNode::copy() const
-		{
-			return new ConstantNode(getType(), mIdent);
-		}*/
-
-		bool ConstantNode::isNatural() const
-		{
-			return getType() == IntConstant && atoi(mIdent.getStr().c_str()) > 0;
+			switch (child)
+			{
+			case mDataDefinitions:
+				return "DataDefinitions";
+			case mScheme:
+				return "Scheme";
+			case mApplication:
+				return "Application";
+			default:
+				return "Error!";
+			}
 		}
 	}
 }

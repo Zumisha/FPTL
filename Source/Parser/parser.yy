@@ -9,14 +9,19 @@
 
 	namespace FPTL {
 	namespace Parser {
-
+	
 		class ASTNode;
-			class ListNode;
-			class DefinitionNode;
-			class DataNode;
-			class FunctionNode;
-			class ApplicationBlock;
 			class NameRefNode;
+			class FunctionNode;
+			class DefinitionNode;
+			class ConstructorNode;
+			class DataNode;
+			class FunctionalProgram;
+			class ApplicationBlock;
+			class ExpressionNode;
+			class ConditionNode;
+			class ConstantNode;
+			class ListNode;
 		class Tokenizer;
 		class Support;
 
@@ -309,7 +314,7 @@ TypesDefinitionList
 			if( $1->mChilds.size() > 1 )
 			{
 				for(ASTNode* child : $1->mChilds)
-					pSupport->semanticError( ErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>(child)->getDefinitionName() );
+					pSupport->semanticError( ParserErrTypes::MultipleTypeExpression, static_cast<DefinitionNode*>(child)->getDefinitionName() );
 			}
 
 			$$ = $1;
@@ -338,7 +343,7 @@ TypeDefinition
 		}
 	| DataTypeDefinitionsBlock
 		{
-			pSupport->semanticError( ErrTypes::NestedDataDefinition, static_cast<DataNode*>($1)->getDataName() );
+			pSupport->semanticError( ParserErrTypes::NestedDataDefinition, static_cast<DataNode*>($1)->getDataName() );
 			delete $1;
 			$$ = 0;
 		}
@@ -360,7 +365,7 @@ TypeExpression
 	: TypeDefConstructor
 	| TypeDefConstructor T_UNION TypeExpression
 		{
-			$$ = new ExpressionNode( ASTNode::TypeExpression, $1, $3, nullptr );
+			$$ = new ExpressionNode( ASTNode::TypeExpression, $1, $3 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -542,7 +547,7 @@ SequentialTerm
 	: AtomTerm
 	| SequentialTerm '.' AtomTerm
 		{
-			$$ = new ExpressionNode( ASTNode::SequentialTerm, $1, $3, nullptr );
+			$$ = new ExpressionNode( ASTNode::SequentialTerm, $1, $3 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -552,7 +557,7 @@ CompositionTerm
 	: SequentialTerm
 	| CompositionTerm '*' SequentialTerm
 		{
-			$$ = new ExpressionNode( ASTNode::CompositionTerm, $1, $3, nullptr );
+			$$ = new ExpressionNode( ASTNode::CompositionTerm, $1, $3 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -562,14 +567,14 @@ ConditionTerm
 	: CompositionTerm
 	| CompositionTerm T_FARROW CompositionTerm ',' ConditionTerm
 		{
-			$$ = new ExpressionNode( ASTNode::ConditionTerm, $1, $3, $5 );
+			$$ = new ConditionNode( ASTNode::ConditionTerm, $1, $3, $5 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 			$5->mParent = $$;
 		}
 	| CompositionTerm T_FARROW CompositionTerm
 		{
-			$$ = new ExpressionNode( ASTNode::ConditionTerm, $1, $3, nullptr );
+			$$ = new ConditionNode( ASTNode::ConditionTerm, $1, $3, nullptr );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -579,7 +584,7 @@ VariantTerm
 	: ConditionTerm
 	| VariantTerm '+' ConditionTerm
 		{
-			$$ = new ExpressionNode( ASTNode::VariantTerm, $1, $3, nullptr );
+			$$ = new ExpressionNode( ASTNode::VariantTerm, $1, $3 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -749,7 +754,7 @@ Data
 		}
 	| OneData ',' Data
 		{
-			$$ = new ExpressionNode(ASTNode::InputVarList, $1, $3, nullptr);
+			$$ = new ExpressionNode(ASTNode::InputVarList, $1, $3);
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -778,7 +783,7 @@ ValueConstructor
 	: ValueAtom
 	| ValueAtom '.' Constructor
 		{
-			$$ = new ExpressionNode( ASTNode::ValueConstructor, $1, $3, nullptr );
+			$$ = new ExpressionNode( ASTNode::ValueConstructor, $1, $3 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}
@@ -788,7 +793,7 @@ ValueComposition
 	: ValueConstructor
 	| ValueConstructor '*' ValueComposition
 		{
-			$$ = new ExpressionNode( ASTNode::ValueComposition, $1, $3, nullptr );
+			$$ = new ExpressionNode( ASTNode::ValueComposition, $1, $3 );
 			$1->mParent = $$;
 			$3->mParent = $$;
 		}

@@ -17,7 +17,7 @@ namespace FPTL {
 
 			bool operator <(const Ident & aOther) const { return *Ptr < *aOther.Ptr; }
 
-			const std::string & getStr() const { return *Ptr; }
+			const std::string& getStr() const { return *Ptr; }
 		};
 
 	}

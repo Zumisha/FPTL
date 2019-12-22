@@ -85,16 +85,124 @@ namespace FPTL
 				ValueConstructor			// конструктор какого-либо данного
 			};
 
-			explicit ASTNode(const ASTNodeType& aType, Ident aIdent)
-			: mParent(nullptr), mIdent(std::move(aIdent)), mType(aType), mCyclicIndex(0) {}
+			static std::string NodeTypeToString(ASTNodeType a_type)
+			{
+				switch (a_type)
+				{
+				case FunctionalProgramDef:
+					return "FunctionalProgramDef";
+				case DataTypeDefinitionsBlocks:
+					return "DataTypeDefinitionsBlocks";
+				case DataTypeDefinitionBlock:
+					return "DataTypeDefinitionBlock";
+				case ConstructorsDefinitionList:
+					return "ConstructorsDefinitionList";
+				case Constructor:
+					return "Constructor";
+				case ConstructorParametersList:
+					return "ConstructorParametersList";
+				case TypeExpression:
+					return "TypeExpression";
+				case TypeExpressionsList:
+					return "TypeExpressionsList";
+				case TypesDefinitionList:
+					return "TypesDefinitionList";
+				case DefinitionsList:
+					return "DefinitionsList";
+				case TypeParametersList:
+					return "TypeParametersList";
+				case TypeParameterDefinition:
+					return "TypeParameterDefinition";
+				case TypeDefinition:
+					return "TypeDefinition";
+				case TypeConstructorDefinition:
+					return "TypeConstructorDefinition";
+				case Definition:
+					return "Definition";
+				case InputVarDefinition:
+					return "InputVarDefinition";
+				case FunctionParameterDefinition:
+					return "FunctionParameterDefinition";
+				case VariantTerm:
+					return "VariantTerm";
+				case ConditionTerm:
+					return "ConditionTerm";
+				case CompositionTerm:
+					return "CompositionTerm";
+				case SequentialTerm:
+					return "SequentialTerm";
+				case FormalParametersList:
+					return "FormalParametersList";
+				case FunctionBlock:
+					return "FunctionBlock";
+				case FuncArgumentsList:
+					return "FuncArgumentsList";
+				case BaseType:
+					return "BaseType";
+				case Template:
+					return "Template";
+				case Type:
+					return "Type";
+				case ConstructorName:
+					return "ConstructorName";
+				case DestructorName:
+					return "DestructorName";
+				case BuildInFunction:
+					return "BuildInFunction";
+				case FuncObjectName:
+					return "FuncObjectName";
+				case TypeParamName:
+					return "TypeParamName";
+				case FuncObjectWithParameters:
+					return "FuncObjectWithParameters";
+				case InputVarName:
+					return "InputVarName";
+				case FuncParameterName:
+					return "FuncParameterName";
+				case RunningSchemeName:
+					return "RunningSchemeName";
+				case Application:
+					return "Application";
+				case InputVarDefinitionList:
+					return "InputVarDefinitionList";
+				case InputVarList:
+					return "InputVarList";
+				case TupleElemNumber:
+					return "TupleElemNumber";
+				case DoubleConstant:
+					return "DoubleConstant";
+				case FloatConstant:
+					return "FloatConstant";
+				case StringConstant:
+					return "StringConstant";
+				case IntConstant:
+					return "IntConstant";
+				case LongLongConstant:
+					return "LongLongConstant";
+				case TrueValue:
+					return "TrueValue";
+				case FalseValue:
+					return "FalseValue";
+				case ValueComposition:
+					return "ValueComposition";
+				case ValueConstructor:
+					return "ValueConstructor";
+				case Unknown:
+				default:
+					return "Unknown";
+				}
+			}
+
+			explicit ASTNode(const ASTNodeType& aType)
+			: mParent(nullptr), mType(aType), mCyclicIndex(0) {}
 
 			virtual ~ASTNode() = default;
 
 			ASTNodeType getType() const { return mType; }
 
-			virtual void accept(class NodeVisitor * aVisitor) = 0;
-
-			//virtual ASTNode* copy() const = 0;
+			virtual void accept(class NodeVisitor* aVisitor) = 0;
+			virtual void handle(class NodeHandler* aVisitor) = 0;
+			virtual std::string childNameToString(size_t) = 0;
 
 			// Возвращает количество циклов, в которых состоит эта вершина.
 			size_t cyclicIndex() const { return mCyclicIndex; }
@@ -116,7 +224,6 @@ namespace FPTL
 			ASTNode & operator=(const ASTNode &) = delete;
 			const ASTNode * mParent;
 			std::vector<ASTNode*> mChilds;
-			Ident mIdent;
 
 		private:
 			ASTNodeType mType;

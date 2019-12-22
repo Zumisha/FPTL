@@ -7,3 +7,5 @@ Debug/
 Parser/parser.output
 build/
 *.TMP
+Source/ast.xml
+Source/Parser/parser.output
