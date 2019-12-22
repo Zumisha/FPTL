@@ -34,7 +34,6 @@ namespace FPTL {
 			assert(dV1.getOps()->sub(dV1, dV2).mDoubleVal == -30.0);
 			assert(dV1.getOps()->mul(dV1, dV2).mDoubleVal == -200.0);
 			assert(dV2.getOps()->div(dV2, dV1).mDoubleVal == -2.0);
-			assert(dV1.getOps()->mod(dV1, dV2).mDoubleVal == -10.0);
 			assert(dV1.getOps()->abs(dV1).mDoubleVal == 10.0);
 
 			assert(dV1.getOps()->equal(dV1, dV1).mIntVal);
@@ -48,7 +47,6 @@ namespace FPTL {
 			assert(iV1.getOps()->combine(dV2.getOps())->sub(iV1, dV2).mDoubleVal == -30.0);
 			assert(dV2.getOps()->combine(iV1.getOps())->mul(iV1, dV2).mDoubleVal == -200.0);
 			assert(iV1.getOps()->combine(dV2.getOps())->div(iV2, dV1).mDoubleVal == -2.0);
-			assert(dV2.getOps()->combine(iV1.getOps())->mod(iV1, dV2).mDoubleVal == -10.0);
 
 			assert(iV1.getOps()->combine(dV1.getOps())->equal(iV1, dV1).mIntVal);
 			assert(!dV2.getOps()->combine(iV1.getOps())->equal(dV2, iV1).mIntVal);

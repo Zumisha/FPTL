@@ -82,5 +82,5 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 .								{
 									Ident errSymb = { static_cast<size_t>(mCol), static_cast<size_t>(mLine), 0 };
 									mSupport->newIdent( YYText(), 0, errSymb );
-									mSupport->semanticError( ErrTypes::IllegalCharacter, errSymb );
+									mSupport->semanticError( ParserErrTypes::IllegalCharacter, errSymb );
 								}

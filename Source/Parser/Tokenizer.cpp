@@ -109,25 +109,28 @@ namespace FPTL {
 		{
 			// Обрабатываем многострочные комментарии.
 			// Проще так, чем через flex.
-			char ch;
+			int ch = yyinput();
+			mCol +=2;
 			do
 			{
-				do
+				while (ch != '*')
 				{
-					ch = yyinput();
 					if (ch == '\n')
 					{
 						mCol = 0;
 						mLine++;
 					}
-					else if (ch == EOF)
+					else if (ch == EOF || ch == 0)
 					{
 						mSupport->semanticError(ParserErrTypes::EOFInComment, getErrorIdent(""));
 						return 0;
 					}
-				} while (ch != '*');
+					ch = yyinput();
+					mCol++;
+				} 
 
 				ch = yyinput();
+				mCol++;
 
 			} while (ch != '/');
 
@@ -189,7 +192,7 @@ namespace FPTL {
 		//-------------------------------------------------------------------------------------------
 		Ident Tokenizer::getErrorIdent(const std::string& msg) const
 		{
-			return mSupport->newConstant(msg, mLine, mCol);
+			return mSupport->newConstant(msg, mLine, mCol - mLastTokenLen);
 		}
 
 
