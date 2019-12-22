@@ -29,7 +29,7 @@ namespace FPTL
 			std::vector<std::string> GetInputTuple() const { return mInputTuple; }
 			bool GetShowInfo() const { return mVM["info"].as<bool>(); }
 			bool GetShowTime() const { return mVM["time"].as<bool>(); }
-			size_t GetCoresNum() const { return mVM["num-cores"].as<size_t>(); }
+			size_t GetCoresNum() const { return static_cast<size_t>(mVM["num-cores"].as<long long>()); }
 			bool GetAllowProactive() const { return mVM["proactive"].as<bool>(); }
 
 			Runtime::GcConfig GetGcConfig() const 
@@ -37,8 +37,8 @@ namespace FPTL
 				Runtime::GcConfig gcConfig;
 				gcConfig.setEnabled(!mVM["disable-gc"].as<bool>());
 				gcConfig.setVerbose(mVM["verbose-gc"].as<bool>());
-				gcConfig.setYoungGenSize(mVM["young-gen"].as<size_t>() * 1024 * 1024);
-				gcConfig.setOldGenSize(mVM["old-gen"].as<size_t>() * 1024 * 1024);
+				gcConfig.setYoungGenSize(static_cast<size_t>(mVM["young-gen"].as<long long>()) * 1024 * 1024);
+				gcConfig.setOldGenSize(static_cast<size_t>(mVM["old-gen"].as<long long>()) * 1024 * 1024);
 				gcConfig.setOldGenThreshold(mVM["old-gen-ratio"].as<double>());
 				return gcConfig;
 			}
