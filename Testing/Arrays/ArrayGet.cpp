@@ -55,7 +55,7 @@ namespace UnitTests
 				print);
 			)";
 
-			const std::string expected = R"(["asd", "sdf", "dfg"]"sdf"["asd", "sdf", "dfg"])";
+			const std::string expected = R"([asd, sdf, dfg]sdf[asd, sdf, dfg])";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}

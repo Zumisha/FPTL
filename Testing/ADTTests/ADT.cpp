@@ -19,7 +19,7 @@ namespace UnitTests
 			std::string innerCode = "@ = ((\"My\"*(\"name\"*c_nil). c_cons).c_cons).print;";
 			innerCode = ListDefinition + MakeTestProgram(innerCode);
 
-			const std::string expected = "(\"My\"*(\"name\"*c_nil).c_cons).c_cons";
+			const std::string expected = "(My*(name*c_nil).c_cons).c_cons";
 
 			GeneralizedTest(standardInput, expected, innerCode);
 		}

@@ -17,9 +17,9 @@
 #include "Evaluator/Run.h"
 #include "Parser/ASTSerializer.h"
 
-namespace FPTL 
+namespace FPTL
 {
-	namespace Runtime 
+	namespace Runtime
 	{
 		int Interpreter::Eval(const int argc, const char ** argv, const std::string& programText) const
 		{
@@ -58,7 +58,7 @@ namespace FPTL
 				}
 
 				Parser::Support support;
-				Parser::ASTNode * astRoot = support.getInternalForm(inputTuple, programStr);
+				astRoot = support.getInternalForm(inputTuple, programStr);
 
 				support.getErrorList(std::cout);
 				if (support.WasErrors() || !astRoot) return 1;

@@ -27,10 +27,10 @@ namespace UnitTests
 		TEST(ADTDblParamTest, String)
 		{
 			
-			std::string innerCode = "@ = ((\"st\"*\"r\").c_pair).print;";
+			std::string innerCode = R"(@ = (("st"*"r").c_pair).print;)";
 			innerCode = PairDefinition + MakeTestProgram(innerCode);
 
-			const std::string expected = "(\"st\"*\"r\").c_pair";
+			const std::string expected = "(st*r).c_pair";
 
 			GeneralizedTest(standardInput, expected, innerCode);
 		}

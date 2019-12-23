@@ -41,7 +41,7 @@ namespace UnitTests
 				).arrayFromFile.print;
 			)";
 
-			const std::string expected = R"(undefined * "characters extracted could not be interpreted as a valid value of the appropriate type")";
+			const std::string expected = R"(undefined * characters extracted could not be interpreted as a valid value of the appropriate type)";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}
@@ -54,7 +54,7 @@ namespace UnitTests
 				).arrayFromFile.print;
 			)";
 
-			const std::string expected = R"(undefined * "No such file or directory")";
+			const std::string expected = R"(undefined * No such file or directory)";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}

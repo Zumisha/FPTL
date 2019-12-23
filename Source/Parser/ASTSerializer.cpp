@@ -22,7 +22,7 @@ namespace FPTL
 				astSerialize(root);
 				mFile.close();
 			}
-			catch (const std::ios_base::failure& exc)
+			catch (const std::ios_base::failure&)
 			{
 				throw std::runtime_error(Utils::getfStreamError(mFile));
 			}

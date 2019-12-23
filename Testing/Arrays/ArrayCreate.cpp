@@ -35,7 +35,7 @@ namespace UnitTests
 		{
 			const std::string innerCode = R"(@ = (2 * "asd").arrayCreate.(print * printType);)";
 
-			const std::string expected = R"(["asd", "asd"](array[string]))";
+			const std::string expected = R"([asd, asd](array[string]))";
 
 			GeneralizedTest(standardInput, expected, MakeTestProgram(innerCode));
 		}
