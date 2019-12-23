@@ -14,7 +14,7 @@ namespace FPTL
 	{
 		struct StringData : public Collectable
 		{
-			char * const value;
+			char* const value;
 			const size_t length;
 
 			explicit StringData(const size_t aLength)
@@ -163,7 +163,8 @@ namespace FPTL
 			void print(const DataValue & aVal, std::ostream & aStream) const override
 			{
 				const auto str = aVal.mString;
-				aStream << "\"" << aVal.mString->str() << "\"";
+				if (str->str().empty())	aStream << R"("")";
+				else aStream << str->str();
 			}
 
 			void write(const DataValue & aVal, std::ostream & aStream) const override

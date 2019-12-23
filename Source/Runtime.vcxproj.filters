@@ -185,6 +185,9 @@
     <ClCompile Include="Parser\ASTSerializer.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
+    <ClCompile Include="FScheme\FSchemeSerializer.cpp">
+      <Filter>Source Files\FScheme</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTypes\TypeInfo.h">
@@ -230,9 +233,6 @@
       <Filter>Header Files\FScheme</Filter>
     </ClInclude>
     <ClInclude Include="FScheme\FSchemeGenerator.h">
-      <Filter>Header Files\FScheme</Filter>
-    </ClInclude>
-    <ClInclude Include="FScheme\FSchemeVisitor.h">
       <Filter>Header Files\FScheme</Filter>
     </ClInclude>
     <ClInclude Include="FScheme\NodeDeleter.h">
@@ -303,6 +303,15 @@
     </ClInclude>
     <ClInclude Include="Parser\NodeHandler.h">
       <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\FSchemeVisitor.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="FScheme\FSchemeSerializer.h">
+      <Filter>Header Files\FScheme</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\XmlHelper.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

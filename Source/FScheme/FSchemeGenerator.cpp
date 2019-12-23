@@ -264,7 +264,7 @@ namespace FPTL
 
 					// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
 					//Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(child);
-					Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(parameters->mChilds[i]);
+					Parser::DefinitionNode * formalParamName = static_cast<Parser::DefinitionNode *>(parameters->mChilds[i]);
 
 					FScheme *delegateScheme = dynamic_cast<FScheme *>(node);
 					if (!delegateScheme)
@@ -273,7 +273,7 @@ namespace FPTL
 					}
 
 					// Здесь нельзя делать insert(), т.к. значения параметров должны переопределяться каждый раз при заходе во вложенную функцию.
-					mDefinitions[formalParamName->getName().getStr()] = delegateScheme;
+					mDefinitions[formalParamName->getDefinitionName().getStr()] = delegateScheme;
 				}
 
 				// Генерируем схему для функции.

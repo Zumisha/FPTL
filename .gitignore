@@ -9,3 +9,4 @@ build/
 *.TMP
 Source/ast.xml
 Source/Parser/parser.output
+Source/FScheme.xml

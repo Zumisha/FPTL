@@ -13,11 +13,10 @@ namespace FPTL
 		class ASTSerializer : NodeHandler
 		{
 		public:
-			inline static const std::string serialization_path = "ast.xml";
-			inline static const std::string CHILDS = "childs";
-			inline static const std::string INDENT = "ident";
+			inline static const std::string serialization_path = "AST.xml";
+			inline static const std::string CHILDS = "Childs";
 
-			bool serialize(ASTNode* root);
+			void serialize(ASTNode* root);
 
 		private:
 			std::fstream mFile;

@@ -1,24 +1,19 @@
 #include <fstream>
 #include <string>
-#include <experimental/filesystem>
 
 #include "ASTSerializer.h"
 #include "Ident.h"
 #include "Nodes.h"
 #include "Utils/FileStreamHelper.h"
+#include "Utils/XmlHelper.h"
 
 namespace FPTL
 {
 	namespace Parser
 	{
-
-		bool ASTSerializer::serialize(ASTNode* root)
+		void ASTSerializer::serialize(ASTNode* root)
 		{
-			if (std::experimental::filesystem::exists(std::experimental::filesystem::status(serialization_path)))
-			{
-				std::experimental::filesystem::permissions(serialization_path,
-					std::experimental::filesystem::perms::add_perms | std::experimental::filesystem::perms::owner_all | std::experimental::filesystem::perms::group_all);
-			}
+			Utils::setPermissions(serialization_path);
 
 			mFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 			try
@@ -31,8 +26,6 @@ namespace FPTL
 			{
 				throw std::runtime_error(Utils::getfStreamError(mFile));
 			}
-
-			return true;
 		}
 
 		void ASTSerializer::astSerialize(ASTNode* root)
@@ -40,28 +33,28 @@ namespace FPTL
 			if (root == nullptr) return;
 
 			const std::string xml_element_name = ASTNode::NodeTypeToString(root->getType());
-			
-			mFile << "<" << xml_element_name << ">";
+
+			Utils::OpenTag(mFile, xml_element_name);
 			{
 				root->handle(this);
 
 				if (!root->mChilds.empty())
 				{
-					mFile << "<" << CHILDS << ">";
+					Utils::OpenTag(mFile, CHILDS);
 					{
 						for (size_t i = 0; i < root->mChilds.size(); ++i)
 						{
 							if (root->mChilds[i] == nullptr) continue;
 
-							mFile << "<" << root->childNameToString(i) << ">";
+							Utils::OpenTag(mFile, root->childNameToString(i));
 							astSerialize(root->mChilds[i]);
-							mFile << "</" << root->childNameToString(i) << ">";
+							Utils::CloseTag(mFile, root->childNameToString(i));
 						}
 					}
-					mFile << "</" << CHILDS << ">";
+					Utils::CloseTag(mFile, CHILDS);
 				}
 			}
-			mFile << "</" << xml_element_name << ">";
+			Utils::CloseTag(mFile, xml_element_name);
 		}
 
 		void ASTSerializer::handle(ExpressionNode* aExpressionNode)
@@ -92,9 +85,10 @@ namespace FPTL
 			if (aNameRefNode->mTarget != nullptr)
 			{
 				const std::string xml_element_name = ASTNode::NodeTypeToString(aNameRefNode->mTarget->getType());
-				mFile << "<Target>" << "<" << xml_element_name << ">";
+
+				Utils::OpenTag(mFile, xml_element_name);
 				aNameRefNode->mTarget->handle(this);
-				mFile << "</" << xml_element_name << ">" << "</Target>";
+				Utils::CloseTag(mFile, xml_element_name);
 			}
 		}
 

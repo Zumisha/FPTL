@@ -472,12 +472,8 @@ namespace FPTL
 				const auto & file = aCtx.getArg(1);
 
 				const auto fileName = file.getOps()->toString(file);
-
-				if (std::experimental::filesystem::exists(std::experimental::filesystem::status(fileName->str())))
-				{
-					std::experimental::filesystem::permissions(fileName->str(),
-						std::experimental::filesystem::perms::add_perms | std::experimental::filesystem::perms::owner_all | std::experimental::filesystem::perms::group_all);
-				}
+				
+				Utils::setPermissions(fileName->str());
 
 				DataValue res;
 				std::string errMsg = "";

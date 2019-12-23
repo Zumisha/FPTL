@@ -58,6 +58,11 @@ namespace FPTL
 			visited.insert(node);
 		}
 
+		void NodeDeleter::visit(const FStringConstant * node)
+		{
+			visited.insert(node);
+		}
+
 		void NodeDeleter::releaseGraph(const FSchemeNode * node)
 		{
 			visited.clear();

@@ -4,6 +4,7 @@
 
 #include "Evaluator/Context.h"
 #include "Libraries/FunctionLibrary.h"
+#include "FSchemeSerializer.h"
 
 namespace FPTL
 {
@@ -159,6 +160,9 @@ namespace FPTL
 
 			TypeInfo type() const { return mType; }
 			DataValue data() const { return mData; }
+			size_t col() const { return mCol; }
+			size_t line() const { return mLine; }
+			std::pair<size_t, size_t> pos() const { return{ mLine, mCol }; }
 
 		private:
 			DataValue mData;
@@ -167,24 +171,42 @@ namespace FPTL
 			size_t mCol;
 		};
 
-		class FStringConstant : public FConstantNode
+		class FStringConstant : public FSchemeNode
 		{
 		public:
 			FStringConstant(std::string aStr, const size_t aLine, const size_t aCol) :
-				FConstantNode(TypeInfo("string"), DataValue(), aLine, aCol),
-				mStr(std::move(aStr))
+				FSchemeNode(false),
+				mStr(std::move(aStr)),
+				mData(DataValue()),
+				mType(TypeInfo("string")),
+				mLine(aLine),
+				mCol(aCol)
 			{}
 
+			void accept(FSchemeVisitor * aVisitor) const override;
+
 			std::string str() const { return mStr; }
+			TypeInfo type() const { return mType; }
+			DataValue data() const { return mData; }
+			size_t col() const { return mCol; }
+			size_t line() const { return mLine; }
+			std::pair<size_t, size_t> pos() const { return{ mLine, mCol }; }
 
 		private:
 			std::string mStr;
+			DataValue mData;
+			TypeInfo mType;
+			size_t mLine;
+			size_t mCol;
 		};
 
 		//---------------------------------------------------------------------------------------------
 		// Функциональная схема.
 		class FScheme : public FSchemeNode
 		{
+			friend class FSchemeSerializer;
+			//friend FSchemeVisitor;
+
 		public:
 			explicit FScheme(FSchemeNode * aFirstNode);
 			FScheme(FSchemeNode * aFirstNode, std::string aName);

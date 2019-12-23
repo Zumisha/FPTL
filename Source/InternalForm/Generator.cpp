@@ -111,24 +111,20 @@ namespace FPTL
 
 		void Generator::visit(const FConstantNode * node)
 		{
-			const auto str = dynamic_cast<const FStringConstant *>(node);
-			if (str)
-			{
-				// Для строк создаем функцию-констурктор,
-				// т.к. строка может создаваться только при наличии контекста.
+			mResult = std::make_shared<Constant>(mTail, node->data());
+		}
 
-				std::string constant = str->str();
-				mResult = std::make_shared<BasicFn>(
-					mTail,
-					"c_string",
-					std::make_pair(0, 0),
-					[constant](SExecutionContext & ctx) { Constant::pushString(ctx, constant); }
-				);
-			}
-			else
-			{
-				mResult = std::make_shared<Constant>(mTail, node->data());
-			}
+		void Generator::visit(const FStringConstant * node)
+		{
+			// Для строк создаем функцию-констурктор,
+			// т.к. строка может создаваться только при наличии контекста.
+			std::string constant = node->str();
+			mResult = std::make_shared<BasicFn>(
+				mTail,
+				"c_string",
+				std::make_pair(0, 0),
+				[constant](SExecutionContext & ctx) { Constant::pushString(ctx, constant); }
+			);
 		}
 
 		FunctionalProgram * Generator::generate(FSchemeNode * node, const bool Proactive)

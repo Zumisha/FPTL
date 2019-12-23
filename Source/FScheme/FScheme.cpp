@@ -1,6 +1,4 @@
-﻿#include <iostream>
-#include <cassert>
-#include <utility>
+﻿#include <utility>
 
 #include "FScheme.h"
 #include "FSchemeVisitor.h"
@@ -114,6 +112,11 @@ namespace FPTL {
 		}
 		//-----------------------------------------------------------------------------------
 		void FConstantNode::accept(FSchemeVisitor * aVisitor) const
+		{
+			aVisitor->visit(this);
+		}
+		//-----------------------------------------------------------------------------------
+		void FStringConstant::accept(FSchemeVisitor * aVisitor) const
 		{
 			aVisitor->visit(this);
 		}

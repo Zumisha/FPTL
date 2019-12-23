@@ -2,11 +2,21 @@
 
 #include <string>
 #include <fstream>
+#include <experimental/filesystem>
 
 namespace FPTL
 {
 	namespace Utils
 	{
+		static void setPermissions(const std::string& fName)
+		{
+			if (std::experimental::filesystem::exists(std::experimental::filesystem::status(fName)))
+			{
+				std::experimental::filesystem::permissions(fName,
+					std::experimental::filesystem::perms::add_perms | std::experimental::filesystem::perms::owner_all | std::experimental::filesystem::perms::group_all);
+			}
+		}
+
 		static std::string getfStreamError(std::fstream& input)
 		{
 			std::string errMsg;

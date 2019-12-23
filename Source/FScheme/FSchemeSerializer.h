@@ -1,16 +1,26 @@
 #pragma once
 
-#include <unordered_set>
+#include <string>
+#include <fstream>
 
+#include "FScheme/FScheme.h"
 #include "FSchemeVisitor.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
-		class NodeDeleter : public FSchemeVisitor
+		class FSchemeSerializer : public FSchemeVisitor
 		{
 		public:
+			inline static const std::string serialization_path = "FScheme.xml";
+			inline static const std::string CHILDS = "Childs";
+
+			void serialize(const FSchemeNode * node);
+
+		private:
+			std::fstream mFile;
+
 			void visit(const FFunctionNode * node) override;
 			void visit(const FParallelNode * node) override;
 			void visit(const FSequentialNode * node) override;
@@ -18,14 +28,7 @@ namespace FPTL
 			void visit(const FScheme * scheme) override;
 			void visit(const FTakeNode * node) override;
 			void visit(const FConstantNode * node) override;
-			void visit(const FStringConstant * node) override;
-
-			void releaseGraph(const FSchemeNode * node);
-
-		private:
-			void process(const FSchemeNode * node);
-
-			std::unordered_set<const FSchemeNode*> visited;
+			void visit(const FStringConstant* node) override;
 		};
 	}
 }

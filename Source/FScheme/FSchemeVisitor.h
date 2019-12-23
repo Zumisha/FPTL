@@ -11,6 +11,7 @@ namespace FPTL {
 		class FScheme;
 		class FTakeNode;
 		class FConstantNode;
+		class FStringConstant;
 
 		class FSchemeVisitor
 		{
@@ -22,6 +23,7 @@ namespace FPTL {
 			virtual void visit(const FScheme * aScheme) = 0;
 			virtual void visit(const FTakeNode * aNode) = 0;
 			virtual void visit(const FConstantNode * aNode) = 0;
+			virtual void visit(const FStringConstant* node) = 0;
 
 			virtual ~FSchemeVisitor() {};
 		};

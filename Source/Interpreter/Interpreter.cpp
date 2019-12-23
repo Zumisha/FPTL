@@ -82,7 +82,15 @@ namespace FPTL
 				}
 
 				FSchemeGenerator schemeGenerator(astRoot);
-				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(schemeGenerator.getProgram(), proactive));
+				const auto FScheme = schemeGenerator.getProgram();
+
+				if (CLParser.GetSaveScheme())
+				{
+					FSchemeSerializer serializer;
+					serializer.serialize(FScheme);
+				}
+
+				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(FScheme, proactive));
 				IFExecutionContext ctx(internalForm->main().get());
 
 				const auto interpTime = timer.elapsed();

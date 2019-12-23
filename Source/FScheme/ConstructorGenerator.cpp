@@ -64,8 +64,8 @@ namespace FPTL {
 
 				for (auto& child : data->getTypeParams()->mChilds)
 				{
-					auto* paramName = static_cast<Parser::NameRefNode *>(child);
-					newType.typeParameters.emplace_back(paramName->getName().getStr(), mTypeTuple[i]);
+					auto* paramName = static_cast<Parser::DefinitionNode*>(child);
+					newType.typeParameters.emplace_back(paramName->getDefinitionName().getStr(), mTypeTuple[i]);
 					i++;
 				}
 

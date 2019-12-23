@@ -70,6 +70,7 @@ namespace FPTL
 			void visit(const FScheme * scheme) override;
 			void visit(const FTakeNode * node) override;
 			void visit(const FConstantNode * node) override;
+			void visit(const FStringConstant* node) override;
 
 			static FunctionalProgram * generate(FSchemeNode * node, const bool Proactive);
 
