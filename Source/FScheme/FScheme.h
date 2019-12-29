@@ -205,7 +205,6 @@ namespace FPTL
 		class FScheme : public FSchemeNode
 		{
 			friend class FSchemeSerializer;
-			//friend FSchemeVisitor;
 
 		public:
 			explicit FScheme(FSchemeNode * aFirstNode);

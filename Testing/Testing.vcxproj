@@ -177,6 +177,7 @@
     <ClInclude Include="..\Source\FScheme\ConstructorGenerator.h" />
     <ClInclude Include="..\Source\FScheme\FScheme.h" />
     <ClInclude Include="..\Source\FScheme\FSchemeGenerator.h" />
+    <ClInclude Include="..\Source\FScheme\FSchemeSerializer.h" />
     <ClInclude Include="..\Source\FScheme\FSchemeVisitor.h" />
     <ClInclude Include="..\Source\FScheme\NodeDeleter.h" />
     <ClInclude Include="..\Source\GC\BlockingQueue.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="..\Source\Parser\Tokenizer.h" />
     <ClInclude Include="..\Source\Utils\FileStreamHelper.h" />
     <ClInclude Include="..\Source\Utils\FormattedOutput.h" />
+    <ClInclude Include="..\Source\Utils\XmlHelper.h" />
     <ClInclude Include="Shared.h" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +221,7 @@
     <ClCompile Include="..\Source\FScheme\ConstructorGenerator.cpp" />
     <ClCompile Include="..\Source\FScheme\FScheme.cpp" />
     <ClCompile Include="..\Source\FScheme\FSchemeGenerator.cpp" />
+    <ClCompile Include="..\Source\FScheme\FSchemeSerializer.cpp" />
     <ClCompile Include="..\Source\FScheme\NewFSchemeGenerator.cpp" />
     <ClCompile Include="..\Source\FScheme\NodeDeleter.cpp" />
     <ClCompile Include="..\Source\GC\CollectedHeap.cpp" />
@@ -242,6 +245,20 @@
     <ClCompile Include="ADTTests\ADTDoubleParamErrorsTest.cpp" />
     <ClCompile Include="ADTTests\ADTErrorsTest.cpp" />
     <ClCompile Include="ADTTests\ADTStressTest.cpp" />
+    <ClCompile Include="Arithmetic\add.cpp" />
+    <ClCompile Include="Arithmetic\addErrors.cpp" />
+    <ClCompile Include="Arithmetic\ArithmeticPerfomance.cpp" />
+    <ClCompile Include="Arithmetic\div.cpp" />
+    <ClCompile Include="Arithmetic\divErrors.cpp" />
+    <ClCompile Include="Arithmetic\E.cpp" />
+    <ClCompile Include="Arithmetic\mod.cpp" />
+    <ClCompile Include="Arithmetic\modErrors.cpp" />
+    <ClCompile Include="Arithmetic\mul.cpp" />
+    <ClCompile Include="Arithmetic\mulErrors.cpp" />
+    <ClCompile Include="Arithmetic\P.cpp" />
+    <ClCompile Include="Arithmetic\Rand.cpp" />
+    <ClCompile Include="Arithmetic\sub.cpp" />
+    <ClCompile Include="Arithmetic\subErrors.cpp" />
     <ClCompile Include="Arrays\ArrayCat.cpp" />
     <ClCompile Include="Arrays\ArrayCatErrors.cpp" />
     <ClCompile Include="Arrays\ArrayCreate.cpp" />
@@ -255,6 +272,8 @@
     <ClCompile Include="Arrays\ArraySet.cpp" />
     <ClCompile Include="Arrays\ArraySetErrors.cpp" />
     <ClCompile Include="Arrays\ArraysPerformanceTests.cpp" />
+    <ClCompile Include="CommandLine\Test_Param.cpp" />
+    <ClCompile Include="CommandLine\Test_Param_error.cpp" />
     <ClCompile Include="Compositions\CompositionCondition.cpp" />
     <ClCompile Include="Compositions\CompositionsOrderTest.cpp" />
     <ClCompile Include="Compositions\CompositionOrthogonal.cpp" />
@@ -263,6 +282,14 @@
     <ClCompile Include="Compositions\CompositionsSequential.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GeneralizedTests.cpp" />
+    <ClCompile Include="StringTests\StringCat.cpp" />
+    <ClCompile Include="StringTests\StringGetToken.cpp" />
+    <ClCompile Include="StringTests\StringLength.cpp" />
+    <ClCompile Include="StringTests\StringMatch.cpp" />
+    <ClCompile Include="StringTests\StringReplace.cpp" />
+    <ClCompile Include="StringTests\StringSearch.cpp" />
+    <ClCompile Include="Tuple\Test_tuple.cpp" />
+    <ClCompile Include="Tuple\Test_tuple_error.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

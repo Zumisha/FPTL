@@ -25,7 +25,7 @@ namespace FPTL {
 			virtual void visit(const FConstantNode * aNode) = 0;
 			virtual void visit(const FStringConstant* node) = 0;
 
-			virtual ~FSchemeVisitor() {};
+			virtual ~FSchemeVisitor() = default;;
 		};
 	}
 }

@@ -25,6 +25,18 @@
     <Filter Include="Исходные файлы\ADTTests">
       <UniqueIdentifier>{14a4825f-b5ac-48b3-8b22-447bf20c714d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\Arithmetic">
+      <UniqueIdentifier>{052f2f35-8dd4-412a-b61e-9207b57971eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Tuple">
+      <UniqueIdentifier>{340986cf-cc8f-49ae-b969-d71b137b6dd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\CommandLine">
+      <UniqueIdentifier>{78e9196c-cec6-4b98-a9f1-a52974c99fe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\StringTests">
+      <UniqueIdentifier>{bd6253a2-dd4d-4b5e-a682-2e492f7c6ace}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\FScheme\ConstructorGenerator.h">
@@ -160,6 +172,12 @@
       <Filter>FPTL</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Utils\FileStreamHelper.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FScheme\FSchemeSerializer.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Utils\XmlHelper.h">
       <Filter>FPTL</Filter>
     </ClInclude>
   </ItemGroup>
@@ -328,6 +346,81 @@
     </ClCompile>
     <ClCompile Include="..\Source\Parser\ASTSerializer.cpp">
       <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\add.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\ArithmeticPerfomance.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\div.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\E.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\mod.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\mul.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\P.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\Rand.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\sub.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLine\Test_Param.cpp">
+      <Filter>Исходные файлы\CommandLine</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLine\Test_Param_error.cpp">
+      <Filter>Исходные файлы\CommandLine</Filter>
+    </ClCompile>
+    <ClCompile Include="Tuple\Test_tuple.cpp">
+      <Filter>Исходные файлы\Tuple</Filter>
+    </ClCompile>
+    <ClCompile Include="Tuple\Test_tuple_error.cpp">
+      <Filter>Исходные файлы\Tuple</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FScheme\FSchemeSerializer.cpp">
+      <Filter>FPTL</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\mulErrors.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\subErrors.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\addErrors.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\divErrors.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="Arithmetic\modErrors.cpp">
+      <Filter>Исходные файлы\Arithmetic</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTests\StringCat.cpp">
+      <Filter>Исходные файлы\StringTests</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTests\StringGetToken.cpp">
+      <Filter>Исходные файлы\StringTests</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTests\StringLength.cpp">
+      <Filter>Исходные файлы\StringTests</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTests\StringMatch.cpp">
+      <Filter>Исходные файлы\StringTests</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTests\StringReplace.cpp">
+      <Filter>Исходные файлы\StringTests</Filter>
+    </ClCompile>
+    <ClCompile Include="StringTests\StringSearch.cpp">
+      <Filter>Исходные файлы\StringTests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
