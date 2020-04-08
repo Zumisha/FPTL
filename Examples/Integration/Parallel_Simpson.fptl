@@ -8,14 +8,35 @@ Scheme Test
 		(0.0 * 100.0 * 0.0000001 * P).Integrate(Fun3).print;
 	
 	//(x*x+1)*cos(0.5*x) от 0 до 20
-	Fun1 = ((([1] * [1]).mul * 1.0).add * (0.5 * [1]).mul.cos).mul;
+	Fun1 = (	(	([1] * [1]).mul * 
+					1.0
+				).add * 
+				(0.5 * [1]).mul.cos
+			).mul;
 
 	//(x*x+3*x+11)/(x*x+11*x-7) от 1 до 20
-	Fun2 = (((([1] * [1]).mul * (3.0 * [1]).mul).add * 11.0).add * (((([1] * [1]).mul * (11.0 * [1]).mul)).add * 7.0).sub).div;
+	Fun2 = 	(	(	(	([1] * [1]).mul * 
+						(3.0 * [1]).mul
+					).add * 
+					11.0
+				).add * 
+				(	(	([1] * [1]).mul * 
+						(11.0 * [1]).mul
+					).add * 
+					7.0
+				).sub
+			).div;
 	
 	//f(x) = sin(0.5*x^3)*sin(0.25*x^2)*sin(0.125*x) от 0 до 25
-	Fun3 = 	(	(	((([1] * [1]).mul * [1]).mul * 0.5).mul.sin * 
-					(([1] * [1]).mul * 0.25).mul.sin).mul * 
+	Fun3 = 	(	(	(	(	([1] * [1]).mul * 
+							[1]
+						).mul * 
+						0.5
+					).mul.sin * 
+					(	([1] * [1]).mul * 
+						0.25
+					).mul.sin
+				).mul * 
 				([1] * 0.125).mul.sin
 			).mul;
 	
@@ -57,8 +78,6 @@ Scheme Test
 			lastSum = [8];	
 			I2h = [9];
 			
-			//По правилу Рунге для метода 
-			
 			Fun Sum[fFunction]
 			{
 				A = [1];
@@ -88,6 +107,7 @@ Scheme Test
 							).add,
 							(A * B * ph * 0.0).SeqSum(fFunction);
 						
+					// Последний оператор add - оптимизация хвостовой рекурсии не работает.
 					/*Fun SeqSum[fFunction]
 					{
 						A = [1];
@@ -101,6 +121,7 @@ Scheme Test
 								0;					
 					}*/
 						
+					// Последний оператор SeqSum - срабатывает оптимизация хвостовой рекурсии.
 					Fun SeqSum[fFunction]
 					{
 						A = [1];
@@ -132,14 +153,15 @@ Scheme Test
 							).mul;
 							
 			Ih = [11];
-			
+						
+			//По правилу Рунге для метода 
 			RungeCalc = (	(	(Ih * I2h).sub.abs * 
 								15.0
 							).div * 
 							Eps
 						).less;
 			
-			@ =	/*id.print."\n".print * */(id * oddSumCalc).(id * SimpsonCalc).
+			@ =	id.print."\n".print * (id * oddSumCalc).(id * SimpsonCalc).
 					(	RungeCalc -> 
 							Ih, 
 							(A * B * Eps * p * (h * 2.0).div * Af * Bf * (lastSum * oddSum).add * Ih).Integr

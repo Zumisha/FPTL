@@ -1,0 +1,132 @@
+Scheme mergeSort
+{
+	N = [1].toInt;
+	P = [2].toInt;
+		
+	Array = ([1].EmptyArray * [2]).arrayFromFile.(id -> id, false * "File not found!".print);		
+    EmptyArray = ([1] * 0.0).arrayCreate;
+	
+	@ = (N * 10000).equal -> (id * (N * "10000.txt").Array).([-1] -> (([-1] * P).Sort * 0).arrayGet.print),
+		(N * 100000).equal -> (id * (N * "100000.txt").Array).([-1] -> (([-1] * P).Sort * 0).arrayGet.print),
+		(N * 1000000).equal -> (id * (N * "1000000.txt").Array).([-1] -> (([-1] * P).Sort * 0).arrayGet.print),
+		((100 * "100.txt").Array * P).Sort.print;           
+    
+    Fun Sort{
+        Array = [1];
+        PARALLEL_OP_CNT = [2];
+        
+        Len = Array.arrayLen;
+        TmpArray = (Len * 0.0).arrayCreate;
+        
+        @ = (Len * 1).greater -> 
+            (Array * TmpArray * TmpArray * 0 * Len * PARALLEL_OP_CNT).SortParallel.[1],
+            Array;
+    
+        Fun SortParallel{
+            SourceArray = [1];
+            LeftPartArray = [2];
+            RightPartArray = [3];
+            Start = [4];
+            End = [5];
+            PARALLEL_OP_CNT = [6];
+            
+            LEFT_OP_CNT = (PARALLEL_OP_CNT * 1).equal -> 
+                1,
+                (PARALLEL_OP_CNT * 2).div;
+            RIGHT_OP_CNT = (PARALLEL_OP_CNT * 1).equal -> 
+                1,
+                (PARALLEL_OP_CNT * LEFT_OP_CNT).sub;
+            
+            Middle = ((Start * End).add * 2).div;
+            Len = (End * Start).sub;
+            LenLeft = (Middle * Start).sub;          
+            LenRight = (End * Middle).sub;
+            
+            sort_left = (LenLeft * 1).equal ->
+                (LeftPartArray * Start * (SourceArray * Start).arrayGet).arraySet * SourceArray, 
+                (SourceArray * LeftPartArray * RightPartArray * Start * Middle * LEFT_OP_CNT).SortParallel;
+                                    
+            sort_right = (LenRight * 1).equal ->
+                (RightPartArray * Middle * (SourceArray * Middle).arrayGet).arraySet * RightPartArray,
+                (SourceArray * LeftPartArray * RightPartArray * Middle * End * RIGHT_OP_CNT).SortParallel;
+
+            @ = (PARALLEL_OP_CNT  * 1).greater -> 
+                (sort_left * sort_right * Start * End).mergeTwoArrays, // parallel calculation
+                (id * sort_left).([-2] * [-1] * sort_right * Start * End).mergeTwoArrays; // consecutive calculation
+
+            Fun mergeTwoArrays{
+                LeftPartArray = [1];
+                TargetArray = [2];
+                RightPartArray = [3];
+                // dup TargetArray = [4];
+                Start = [5];
+                End = [6];
+                Middle = ((Start * End).add * 2).div;
+                
+                @ = (LeftPartArray * RightPartArray * TargetArray * Start * Middle * Middle * End * Start).merge;
+                
+                Fun merge{
+                    LeftPartArray = [1];
+                    RightPartArray = [2];
+                    TargetArray = [3];
+                    Left = [4];
+                    Right = [5];
+                    LeftEnd = [6];
+                    RightEnd = [7];
+                    TargetIdx = [8];
+                             
+                    LeftEl = (LeftPartArray * Left).arrayGet;
+                    RightEl = (RightPartArray * Right).arrayGet;
+                    
+                    @ = (Left * LeftEnd).gequal-> 
+                        (RightPartArray * TargetArray * Right * RightEnd * TargetIdx).copyEls * LeftPartArray,
+                        (Right*RightEnd).gequal -> 
+                            (LeftPartArray * TargetArray * Left * LeftEnd * TargetIdx).copyEls * LeftPartArray,
+                            (LeftEl * RightEl).less -> 
+                                (
+                                    LeftPartArray
+                                    * RightPartArray 
+                                    * (TargetArray * TargetIdx * LeftEl).arraySet 
+                                    * (Left * 1).add
+                                    * Right
+                                    * LeftEnd
+                                    * RightEnd
+                                    * (TargetIdx * 1).add                      
+                                ).merge,
+                                (
+                                    LeftPartArray
+                                    * RightPartArray 
+                                    * (TargetArray * TargetIdx * RightEl).arraySet
+                                    * Left
+                                    * (Right * 1).add
+                                    * LeftEnd
+                                    * RightEnd
+                                    * (TargetIdx * 1).add                      
+                                ).merge;                                  
+                }
+                Fun copyEls{
+                    SourceArray = [1];
+                    TargetArray = [2];
+                    First = [3];
+                    Last = [4];
+                    TargetIdx = [5];
+
+                    Element = (SourceArray * First).arrayGet;
+                    @ = (First * Last).gequal -> 
+                        TargetArray,
+                        (
+                            SourceArray
+                            * (TargetArray * TargetIdx * Element).arraySet 
+                            * (First * 1).add
+                            * Last
+                            * (TargetIdx * 1).add  
+                        ).copyEls;
+                }
+            }
+        }
+    }
+}
+
+//параметр = степени параллелизма, размер массива
+Application
+%mergeSort(8, 1000000)
