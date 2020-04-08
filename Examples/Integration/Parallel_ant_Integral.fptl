@@ -1,0 +1,86 @@
+Scheme Test
+{
+	//(a, b, Eps, p)
+	@ = Integrate(Func);
+
+	x = [1];
+	
+	//f(x) = sin(0.5*x^3)*sin(0.25*x^2)*sin(0.125*x)
+	Func = 	(	(	(((x * x).mul * x).mul * 0.5).mul.sin * 
+					((x * x).mul * 0.25).mul.sin).mul * 
+				(x * 0.125).mul.sin
+			).mul;
+				
+	//f(x) = x*sin(x)*cos(Pi*x)
+	Func2 = ((x * x.sin).mul * (Pi * x).mul.cos).mul;
+	
+	//f(x) = sin(x*x)*x*2
+	Func3 = (((((x * x).mul).sin) * x).mul * 2.0).mul;
+	
+	//f(x) = sin(3*x^3)*cos(2*x^2)
+	Func4 = (	(((x * x).mul * x).mul * 3.0).mul.sin * 
+				((x * x).mul * 2.0).mul.sin
+			).mul;
+
+	//f(x) = 1/(x*e^x) 
+	Func5 = (1.0 * (x * x.exp).mul).div;
+				
+	//Интегрирование методом трапеции.
+	//Параметры A*B*Eps - границы отрезка интегрирования, точность, степень параллелизма.
+	Fun Integrate[fFunction]
+	{		
+		//Start_Integr(a, b, Eps)
+		@ = ([3] * [1] * [2] * ([2] * [1]).sub).	//(Eps, a, b, b-a)
+			(	[1] * [2] * [3] * ([4] * 2).div * ([4] * 4).div		
+			).Integr; 								//Integr(Eps, a, b, (b-a)/2, Trp(a, b, a-b))
+			
+		
+		//Integr(Eps, a, b, h, h/2)
+		Integr = 	(	(([2] * [3] * [5]).Trp(fFunction) * ([2] * [3] * [4]).Trp(fFunction) * [1]	//|Trp(h) - Trp(h/2)|/3
+						).(Rungreater -> true, false * [1].print.("\n".print)) ->					//if (runge > Eps)	
+						(	[1] * [2] * [3] * 
+							([5] * 2).div * ([5] * 4).div
+						).Integr						//then Integr(Eps, a, b, h/4, h/8)
+					);
+		
+		Rungreater = (Runge * [3]).greater;
+		
+		
+		//По правилу Рунге для метода трапеции |Trp(h) - Trp(h/2)|/3 <= Eps
+		Fun Runge
+		{
+			Trp2h = [1];
+			Trp = [2];
+			
+			@ = ((Trp * Trp2h).sub.abs * 3.0).div;
+		}
+		
+		
+		//Trp[f(x)](a,b,h) = h * ((f(a)+f(b))/2+Sum(a+h,b-h,h))
+		Fun Trp[fFunction]	// Функция не видит fFunction из-за бага в интерпретаторе, поэтому делаем её функционалом.
+		{	
+			A = [1];
+			B = [2];
+			h = [3];
+		
+			@ = (	(	((A.fFunction * B.fFunction).add * 2.0).div * 
+						((A * h).add * (B * h).sub * h).Sum
+					).add * 
+					h
+				).mul;
+				
+			Sum = (A * B).greater -> 
+						0,
+						(	A.fFunction * 
+							((A * h).add * B * h).Sum
+						).add;
+		}
+	}
+
+}
+
+Application
+A = 0.000001;
+B = 25.0;
+Eps = 0.0000001;
+%Test(A, B, Eps)

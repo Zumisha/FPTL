@@ -1,0 +1,131 @@
+Scheme Test
+{
+	@ = Integrate(Func).print;
+
+	x = [1];
+	
+	//f(x) = sin(0.5*x^3)*sin(0.25*x^2)*sin(0.125*x)
+	Func = 	(	(	(((x * x).mul * x).mul * 0.5).mul.sin * 
+					((x * x).mul * 0.25).mul.sin).mul * 
+				(x * 0.125).mul.sin
+			).mul;
+				
+	//f(x) = x*sin(x)*cos(Pi*x)
+	Func2 = ((x * x.sin).mul * (Pi * x).mul.cos).mul;
+	
+	//f(x) = sin(x*x)*x*2
+	Func3 = (((((x * x).mul).sin) * x).mul * 2.0).mul;
+	
+	//f(x) = sin(3*x^3)*cos(2*x^2)
+	Func4 = (	(((x * x).mul * x).mul * 3.0).mul.sin * 
+				((x * x).mul * 2.0).mul.sin
+			).mul;
+
+	//f(x) = 1/(x*e^x) 
+	Func5 = (1.0 * (x * x.exp).mul).div;	
+	
+	//Интегрирование методом трапеции.
+	Fun Integrate[fFunction]
+	{
+		A = [1];		// левая граница отрезка интегрирования
+		B = [2];		// правая граница отрезка интегрирования
+		Eps = [3];		// точность
+		p = [4].toInt;	// степень параллелизма
+		
+		Eps_p = (Eps * p).div;
+		AB = (B * A).sub;
+		h = (AB * p).div;
+		
+		@ = 	(A * B).greater -> 
+					((((("Ошибка: граница A больше границы B! A = " * A.toString).cat * ", B = ").cat * B.toString).cat * "\n").cat).print,
+					
+				(Eps * 0.0).lequal ->
+					(("Ошибка: точность должна задаваться положительным числом! Eps = " * Eps.toString).cat * "\n").cat.print,
+					
+				(p * 0).lequal ->
+					(("Ошибка: степень параллелизма должна задаваться положительным числом! p = " * p.toString).cat * "\n").cat.print,
+					
+				(A * B * Eps_p * h).Paral(fFunction);
+		
+		
+		Fun Paral[fFunction]	// Функция не видит fFunction из-за бага в интерпретаторе, поэтому делаем её функционалом.
+		{
+			A = [1];
+			B = [2];
+			Eps = [3];
+			h = [4];
+
+			h_2 = (h * 2.0).div;
+			A2 = (A * h).add;
+			
+			
+			@ = (B * A).greater -> 						
+					(	(A * A2 * Eps * h_2 * (A * A2 * h).Trp(fFunction)).Integr(fFunction) * 
+						(A2 * B * Eps * h).Paral
+					).add,					
+					0;
+		}
+		
+		
+		Fun Integr[fFunction]	// Функция не видит fFunction из-за бага в интерпретаторе, поэтому делаем её функционалом.
+		{
+			A = [1];
+			B = [2];
+			Eps = [3];
+			h = [4];
+			Trp_2h = [5];
+			
+			Trp_h = [6];
+			
+			@ =	(id * (A * B * h).Trp(fFunction))
+			// Оптимизация: сформировали новый кортеж из входного и Trp(a, b, h/2),
+			// чтобы в дальнейшем не пересчитавать Trp(a, b, h/2) несколько раз.
+				.(	((Trp_h * Trp_2h).Runge * Eps).greater -> 
+					(A * B * Eps * (h * 2.0).div * Trp_h).Integr,
+						
+					Trp_h
+				);
+			// Условная композиция взята в скобки, 
+			// чтобы не только условие имело доступ к предыдущему кортежу,
+			// но и ветки then и else.
+		}
+		
+		
+		//По правилу Рунге для метода трапеции |Trp(h) - Trp(h/2)|/3 <= Eps
+		Fun Runge
+		{
+			Trp2h = [1];
+			Trp = [2];
+			
+			@ = ((Trp * Trp2h).sub.abs * 3.0).div;
+		}
+		
+		
+		//Trp[f(x)](a,b,h) = h * ((f(a)+f(b))/2+Sum(a+h,b-h,h))
+		Fun Trp[fFunction]	// Функция не видит fFunction из-за бага в интерпретаторе, поэтому делаем её функционалом.
+		{	
+			A = [1];
+			B = [2];
+			h = [3];
+		
+			@ = (	(	((A.fFunction * B.fFunction).add * 2.0).div * 
+						((A * h).add * (B * h).sub * h).(lequal -> (A * B * h).Sum, 0)
+					).add * 
+					h
+				).mul;
+				
+			Sum = (A * B).greater -> 
+						0,
+						(	A.fFunction * 
+							((A * h).add * B * h).Sum
+						).add;
+		}
+	}
+}
+
+Application
+A = 0.000001;
+B = 25.0;
+Eps = 0.0000001;
+p = 8;
+%Test(A, B, Eps, p)

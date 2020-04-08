@@ -1,0 +1,62 @@
+Scheme RandomMatrixToFile
+{
+	Name = ([1].toString * "x" * [2].toString * "_GeneratedRandomMatrix.txt").cat;
+
+	@ = (([1] * [2] * 1 * 0).RandMatrix * Name).createFile;
+	// x = rnd(1)*k+b
+	Fun RandMatrix
+	{
+		n = [1];
+		m = [2];
+		k = [3];
+		b = [4];
+	
+		@ = (m * k * b * (n * (m * 0.0).arrayCreate).arrayCreate * n).MatrGen;		
+		
+		Fun MatrGen
+		{
+			m = [1];
+			k = [2];
+			b = [3];
+			Matr = [4];
+			index = ([5] * 1).sub;
+			
+			@ = (index * 0).gequal -> 
+					(	m * 
+						k * 
+						b * 
+						(Matr * index * (m * k * b).RandArray).arraySet * 
+						index
+					).MatrGen,
+					Matr;
+		}
+		
+		Fun RandArray
+		{
+			m = [1];
+			k = [2];
+			b = [3];
+			
+			@ = (k * b * (m * 0.0).arrayCreate * m).ArrGen;
+		
+			Fun ArrGen
+			{
+				k = [1];
+				b = [2];				
+				Arr = [3];
+				index = ([4] * 1).sub;
+				
+				@ = (index * 0).gequal -> 
+						(	k *
+							b * 
+							(Arr * index * ((rand * k).mul * b).add).arraySet * 
+							index
+						).ArrGen,
+						Arr;
+			}		
+		}
+	}
+}
+	
+Application
+%RandomMatrixToFile(1024, 1024)

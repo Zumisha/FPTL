@@ -1,0 +1,11 @@
+Scheme fRead
+{	
+	@ = ("Generated.txt").readFile.
+		(id ->
+			print,
+			"File not found!".print
+		);
+}
+	
+Application
+%fRead

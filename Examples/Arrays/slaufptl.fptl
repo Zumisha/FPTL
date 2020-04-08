@@ -1,0 +1,387 @@
+Scheme SLAUSolve
+{
+    @ = ((n * m).CreateSLAUArr * n * m).Gauss;
+    n = [1];
+    m = [2];
+
+    Fun CreateSLAUArr
+    {
+        @ = (SLAUNull * "C:\\Git\\Соревнование\\СЛАУ\\1024.txt").arrayFromFile ->
+            id, [2].print;
+
+        SLAUNull = (((n * m).mul * n).add.toInt * 0.0).arrayCreate;
+    }
+
+    Fun Gauss
+    {
+        n = [3];
+        m = [4];
+    
+        NewArr = ([1] * [3] * [4] * 0 * 0).ForwardGauss; 
+
+        FullSLAUSolve = (NewArr * [3] * [4] * [3] * ([3] * 0.0).arrayCreate).ReverseGaussNN;
+        PartSLAUSolve = (NewArr * [3] * [4] * [4] * (((m * (m * n).sub).mul * m).add * 0.0).arrayCreate * 1).ReverseGaussNM;
+
+        SolveArr = (n * m).equal -> 
+                (FullSLAUSolve * [4] * 0).GaussNNPrint,
+                (PartSLAUSolve * [3] * [4] * 0).GaussNMPrint;
+
+        @ = ((NewArr * [3] * [4]).matrixRank * 0).equal ->
+                "\nThe rank of the extended matrix is not equal to the rank of the matrix of the system. The system is incompatible (has no solutions)\n".print,
+                ("\nThe rank of the extended matrix is equal to the rank of the matrix of the system. The system is collaborative (has a solution)\n".print * SolveArr);
+
+
+        Fun GaussNNPrint
+        {
+            Solve = [1];
+            m = [2];
+            cur = [3];
+            SolveStr = ("X" * (cur * 1).add.toString * " = " * (Solve * cur).arrayGet.toString * "\n").cat;
+
+            @ = (cur * m).gequal ->
+                    0,
+                    (Solve * m * (cur * 1).add * SolveStr.print).GaussNNPrint;
+        }
+
+        Fun GaussNMPrint
+        {
+            Solve = [1];
+            n = [2];
+            m = [3];
+            cur = [4];
+
+            SolvePos = (cur * ((m * n).sub * 1).add).mul;
+            Arr = (Solve * SolvePos * ((m * n).sub * 1).add * 0 * 1 * (((m * n).sub * 1).add * 0.0).arrayCreate).arrayRetrieve;
+            SolveStr = ("X" * (cur * 1).add.toString * " = " * (Arr * n * m * 0 * "" * (n * 1).add).CreateSolveStr * "\n").cat;
+
+            @ = (cur * m).gequal ->
+                    0,
+                    (Solve * n * m * (cur * 1).add * SolveStr.print).GaussNMPrint;
+            
+
+            Fun CreateSolveStr
+            {
+                Solve = [1];
+                n = [2];
+                m = [3];
+                cur = [4];
+                Str = [5];
+                var = [6];
+
+                curelem = (Solve * cur).arrayGet;
+                NewSolveFree = (Str * (curelem * Str).SignCheck).cat;
+                NewSolveX = ((curelem * Str).SignCheck * "").equal ->
+                    Str,     
+                    (Str * (curelem * Str).SignCheck * ("*X" * var.toString * " ").cat).cat;
+
+                @ = (cur * ((m * n).sub * 1).add).gequal ->
+                        Str,
+                        ((cur * (m * n).sub).equal ->
+                            (Solve * n * m * (cur * 1).add * NewSolveFree * (var * 1).add).CreateSolveStr,
+                            (Solve * n * m * (cur * 1).add * NewSolveX * (var * 1).add).CreateSolveStr);
+
+                Fun SignCheck
+                {
+                    a = [1];
+                    Str = [2];
+
+                    @ = ((a * 0).greater * (Str * "").nequal).and ->
+                            ("+" * a.toString).cat,
+                            ((a * 0).equal ->
+                                "",
+                                a.toString);
+                }
+            }
+        }
+
+        Fun ForwardGauss
+        {
+            Arr = [1];
+            n = [2];
+            m = [3];
+            curn = [4];
+            curm = [5];
+
+            curelemind = (((curn * m).mul * curn).add * curm).add; 
+            curelem = (Arr * curelemind).arrayGet;
+
+            NewArr = (Arr * n * m * curn * curm * (curn * 1).add).RowCycle;
+            NotNullArr = (Arr * curelemind * ((m * 1).add * curm).sub * ((curelemind * m).add * 1).add * m).findNotNullStr;
+            NewNotNullArr = (NotNullArr * n * m * curn * curm * (curn * 1).add).RowCycle;
+
+            @ = ((curm * m).gequal * (curn * n).gequal).or->
+                    Arr,
+                    (((curelem * 0).equal * ((NotNullArr).arrayLen * 0).nequal).and ->
+                            (NewNotNullArr * n * m * (curn * 1).add * (curm * 1).add).ForwardGauss,
+                            (NewArr  * n * m * (curn * 1).add * (curm * 1).add).ForwardGauss);     
+        
+        }
+
+        Fun RowCycle
+        {
+            Arr = [1];
+            n = [2];
+            m = [3];
+            curn1 = [4]; //главная строка
+            curm = [5];
+            curn2 = [6]; //строка, к которой добавляем главную строку
+
+            Arr1 = (Arr * ((curn1 * m).mul * curn1).add * (m * 1).add * 0 * 1 * ((m * 1).add * 0.0).arrayCreate).arrayRetrieve;
+            Arr2 = (Arr * ((curn2 * m).mul * curn2).add * (m * 1).add * 0 * 1 * ((m * 1).add * 0.0).arrayCreate).arrayRetrieve;
+            
+            Factor = (Arr1 * Arr2 * curm).arrayFindFactor;
+            ArrMul = (Arr1 * Factor * 0).arrayMulFactor;
+            ArrAdd = (ArrMul * Arr2 * 0).arrayAdd;
+            ArrNew = ((Arr).arrayCopy * ArrAdd * ((curn2 * m).mul * curn2).add * 0).arrayPaste;
+
+            @ = (curn2 * n).gequal ->
+                Arr,
+                (ArrNew * n * m * curn1 * curm * (curn2 * 1).add).RowCycle;/////////////////////////////change to arrNew in begin
+        }
+
+        Fun matrixRank
+        {
+            Arr = [1];
+            n = [2];
+            m = [3];
+
+            rankMatrix = (Arr * 0 * m * (m * 1).add * 0).rankStr;
+            rankExpandMatrix = (Arr * 0 * (m * 1).add * (m * 1).add * 0).rankStr;
+
+            @ = (rankMatrix * rankExpandMatrix).equal ->
+                1,
+                0;
+
+        }
+
+        Fun rankStr
+        {
+            Arr = [1];
+            pos = [2];
+            n = [3];
+            addInd = [4];
+            rank = [5];
+
+            Str = (Arr * pos * n * 0 * 1 * (n * 0.0).arrayCreate).arrayRetrieve;
+            notNull = (Str * 0).arrayNotNull;
+
+            @ = (pos * Arr.arrayLen).gequal ->
+                    rank,
+                    (Arr * (pos * addInd).add * n * addInd * (rank * notNull).add).rankStr;
+        }
+
+        Fun arrayNotNull
+        {
+            Arr = [1];
+            cur = [2];
+
+            @ = (cur * Arr.arrayLen).gequal ->
+                0,
+                (((Arr * cur).arrayGet * 0.0).nequal ->
+                    1,
+                    (Arr * (cur * 1).add).arrayNotNull);
+        }
+
+
+        Fun ReverseGaussNN
+        {
+            Arr = [1];
+            n = [2];
+            m = [3];
+            curn = [4];
+            SolveArr = [5];
+
+            curelemind = ((curn * (m * 1).add).mul * (m * 1).add).sub;
+            Str = (Arr * curelemind * (m * 1).add * 0 * 1 * ((m * 1).add * 0.0).arrayCreate).arrayRetrieve;
+            SumRight = (((Str * SolveArr * curn * m * 0.0).arrayMulArray * -1.0).mul * (Str * m).arrayGet).add;
+            X = (SumRight * (Str * (curn * 1).sub).arrayGet).div;
+
+            @ = (curn * 0).lequal ->
+                    SolveArr,
+                    (Arr * n * m * (curn * 1).sub * (SolveArr * (curn * 1).sub * X).arraySet).ReverseGaussNN;
+        }
+
+        Fun ReverseGaussNM
+        {
+            Arr = [1];
+            n = [2];
+            m = [3];
+            curn = [4];//вначале = m
+            SolveArr = [5];
+            curFreeVar = [6];//вначале  = 1
+
+            index = ((((curn * ((m * n).sub * 1).add).mul * 1).sub) * curFreeVar).sub;
+            FreeSolveArr = (SolveArr * index * 1.0).arraySet; 
+            
+            
+            curelemind = (((curn * (m * 1).add).mul * (m * 1).add).sub * curn).add;
+            curSolveArrrInd = (curn * ((m * n).sub * 1).add).mul;
+            curFreeAdd = (Arr * ((curn * (m * 1).add).mul * 1).sub).arrayGet;
+            Str = (Arr * curelemind * ((m * n).sub * (n * curn).sub).add * 0 * 1 * (((m * n).sub * (n * curn).sub).add * 0.0).arrayCreate).arrayRetrieve;
+            DependSolveArr = (Str * SolveArr * 0 * curSolveArrrInd * m * ((m * n).sub * 1).add * (((m * n).sub * 1).add * 0.0).arrayCreate).arrayMulMatrix;
+            RightSolveArr = (DependSolveArr * -1.0 * 0).arrayMulFactor;
+            FreeAddRightSolveArr = (RightSolveArr * (m * n).sub).arrayGet;
+            NewRightSolveArr = (RightSolveArr * (m * n).sub * (FreeAddRightSolveArr * curFreeAdd).add).arraySet;
+            DivElem = (1 * (Arr * (curelemind * 1).sub).arrayGet).div;
+            NewNewRightSolveArr = (NewRightSolveArr * DivElem * 0).arrayMulFactor;
+            NewSolveArr = (SolveArr * NewNewRightSolveArr * (curSolveArrrInd * ((m * n).sub * 1).add).sub * 0).arrayPaste;
+
+            @ = (curn * n).greater ->
+                    (Arr * n * m * (curn * 1).sub * FreeSolveArr * (curFreeVar * 1).add).ReverseGaussNM,
+                    ((curn * 0).lequal ->
+                        SolveArr,
+                        (Arr * n * m * (curn * 1).sub * NewSolveArr * curFreeVar).ReverseGaussNM);
+        }
+
+    Fun arrayMulMatrix
+    {
+        Arr = [1];
+        SolveArr = [2];
+        ArrInd = [3];
+        SolveArrInd = [4];
+        SolveArrStrCount = [5];
+        SolveArrColCount = [6];
+        Result = [7];
+
+        SolveArrStr = (SolveArr * SolveArrInd * SolveArrColCount * 0 * 1 * (SolveArrColCount * 0.0).arrayCreate).arrayRetrieve;
+        FactorSolveArrStr = (SolveArrStr * (Arr * ArrInd).arrayGet * 0).arrayMulFactor;
+        NewResult = (Result * FactorSolveArrStr * 0).arrayAdd;
+
+        @ = (ArrInd * Arr.arrayLen).gequal ->
+                Result,
+                (Arr * SolveArr * (ArrInd * 1).add * (SolveArrInd * SolveArrColCount).add * SolveArrStrCount * SolveArrColCount * NewResult).arrayMulMatrix;
+
+            //(SolveArrStr * ().arrayGet * 0).arrayMulFactor
+    }
+
+
+
+        Fun arrayMulArray
+        {
+            Arr1 = [1];
+            Arr2 = [2];
+            cur = [3];
+            fin = [4];
+            result = [5];
+
+            elem1 = (Arr1 * cur).arrayGet;
+            elem2 = (Arr2 * cur).arrayGet;
+
+            @ = (((cur * Arr1.arrayLen).gequal * (cur * Arr1.arrayLen).gequal).or * (cur * fin).gequal).or ->
+                    result,
+                    (Arr1 * Arr2 * (cur * 1).add * fin* (result * (elem1 * elem2).mul).add).arrayMulArray;
+        }
+
+
+
+
+        Fun arrayRetrieve
+       {
+            Arr = [1];
+            pos = [2];
+            n = [3];
+            cur = [4];
+            addInd = [5];
+            NewArr = [6];
+
+            @ = (((cur * n).gequal * (addInd * 1).equal).and * (pos * (Arr).arrayLen).gequal).or ->
+                NewArr,
+                (Arr * pos * n * (cur * addInd).add * addInd * (NewArr * cur * (Arr * (pos * cur).add).arrayGet).arraySet).arrayRetrieve;
+        }
+
+        Fun findNotNullStr
+        {
+            Arr = [1];
+            pos = [2];
+            m = [3];
+            cur = [4];
+            ncopy = [5];
+
+            @ = ((cur * (Arr).arrayLen).gequal * (((cur * m).add * 1).add * (Arr).arrayLen).gequal).or ->
+                Arr,
+                ((Arr * cur).arrayGet * 0).equal ->
+                    (Arr * pos * m * ((cur * m).add * 1).add * ncopy).findNotNullStr,
+                    (Arr * pos * cur * ncopy).strChange;
+        }
+
+        Fun strChange
+        {
+            Arr = [1];
+            pos1 = [2];
+            pos2 = [3];
+            n = [4];
+
+            Arr1 = (Arr * pos1 * (n * 1).add * 0 * 1 * ((n * 1).add * 0.0).arrayCreate).arrayRetrieve;
+            Arr2 = (Arr * pos2 * (n * 1).add * 0 * 1 * ((n * 1).add * 0.0).arrayCreate).arrayRetrieve;
+
+            ArrNew1 = ((Arr).arrayCopy * Arr2 * pos1 * 0).arrayPaste;
+            ArrNew2 = ((ArrNew1).arrayCopy * Arr1 * pos2 * 0).arrayPaste;
+
+            @ = ArrNew2;
+        }
+
+
+
+
+        Fun arrayAdd
+        {
+            Arr1 = [1];
+            Arr2 = [2];
+            pos = [3];
+            ArrLen = ((Arr1).arrayLen * (Arr2).arrayLen).lequal ->
+                (Arr1).arrayLen,
+                (Arr2).arrayLen;
+
+            elem1 = (Arr1 * pos).arrayGet;
+            elem2 = (Arr2 * pos).arrayGet;
+
+            @ = (pos * ArrLen).gequal ->
+                Arr1,
+                ((Arr1 * pos * (elem1 * elem2).add).arraySet * Arr2 * (pos * 1).add).arrayAdd;
+        }
+
+        Fun arrayMulFactor
+        {
+            Arr = [1];
+            Number = [2];
+            pos = [3];
+
+            elem = (Arr * pos).arrayGet;
+
+            @ = (pos * (Arr).arrayLen).gequal ->
+                Arr,
+                ((Arr * pos * (elem * Number).mul).arraySet * Number * (pos * 1).add).arrayMulFactor;
+        }
+
+        Fun arrayFindFactor
+        {
+            Arr1 = [1];
+            Arr2 = [2];
+            pos = [3];
+
+            Number1 = (Arr1 * pos).arrayGet;
+            Number2 = (Arr2 * pos).arrayGet;
+
+            @ = ((Number2 * 0).equal * (Number2 * 0.0).equal).or ->
+                0,
+                ((Number2 * -1).mul * Number1.toReal).div;
+        }
+
+        Fun arrayPaste
+        {
+            Arr1 = [1];
+            Arr2 = [2];
+            pos = [3];
+            cur = [4];
+
+            elem = (Arr2 * cur).arrayGet;
+
+            @ = (cur * (Arr2).arrayLen).gequal ->
+                Arr1,
+                ((Arr1 * pos * elem).arraySet * Arr2 * (pos * 1).add * (cur * 1).add).arrayPaste;
+        }
+    }
+} 
+
+Application
+%SLAUSolve(4 , 4)

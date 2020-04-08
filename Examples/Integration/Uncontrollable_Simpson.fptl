@@ -1,0 +1,88 @@
+Scheme Test
+{
+	@ = Integrate(Func).print;
+
+	x = [1];
+	
+	//f(x) = sin(0.5*x^3)*sin(0.25*x^2)*sin(0.125*x)
+	Func = 	(	(	(((x * x).mul * x).mul * 0.5).mul.sin * 
+					((x * x).mul * 0.25).mul.sin).mul * 
+				(x * 0.125).mul.sin
+			).mul;
+	
+	// Параметры A*B*Eps - границы отрезка интегрирования и точность.
+	Fun Integrate[fFunction]
+	{
+		A = [1].toReal;
+		B = [2].toReal;
+		Eps = [3].toReal;
+		
+		h = ((B * A).sub * 2).div;
+		h2 = (h * 2).div;
+		h4 = (h2 * 2).div;
+		Ml = (A * h2).add;
+		M = (A * h).add;
+		Mr = (M * h2).add;
+		fA = A.fFunction;
+		fMl = Ml.fFunction;
+		fM = M.fFunction;
+		fMr = Mr.fFunction;
+		fB = B.fFunction;
+		I2h = (fA * fM * fB * h).Simp;
+		
+		@ = (A * Ml * M * Mr * B * Eps * h2 * h4 * fA * fMl * fM * fMr * fB * I2h).Integr(fFunction);
+		
+		Fun Simp
+		{
+			fA = [1];
+			fM = [2];
+			fB = [3];
+			h = [4];
+		
+			@ = ((h * 3).div * ((fA * fB).add * (4 * fM).mul).add).mul;
+		}		
+		
+		Fun Integr[fFunction]
+		{
+			A = [1];
+			Ml = [2];
+			M = [3];
+			Mr = [4];
+			B = [5];
+			Eps = [6];
+			h = [7]; // h = A - Ml
+			h2 = [8]; // h2 = h/2
+			fA = [9];
+			fMl = [10];
+			fM = [11];
+			fMr = [12];
+			fB = [13];
+			I2h = [14];
+					
+			AbsSub = ([1] * [2]).sub.abs;
+			
+			Il = [15];
+			Ir = [16];
+			Eps2 = [17];
+			h4 = [18];
+			Mll = [19];
+			Mlr = [20];
+			Mrl = [21];
+			Mrr = [22];
+			
+			@ = (id * (fA * fMl * fM * h).Simp * (fM * fMr * fB * h).Simp * (Eps * 2).div * (h2 * 2).div * (A * h2).add * (Ml * h2).add * (M * h2).add * (Mr * h2).add).
+				(((I2h * (Il * Ir).add).AbsSub * Eps).less ->
+					(Il * Ir).add,
+					(	(A * Mll * Ml * Mlr * M * Eps2 * h2 * h4 * fA * Mll.fFunction * fMl * Mlr.fFunction * fM * Il).Integr * 		
+						(M * Mrl * Mr * Mrr * B * Eps2 * h2 * h4 * fM * Mrl.fFunction * fMr * Mrr.fFunction * fB * Ir).Integr				
+					).add
+				);		
+		}		
+	}
+}
+
+Application
+A = 0.0;
+B = 100.0;
+Eps = 0.0000001;
+%Test(A, B, Eps)

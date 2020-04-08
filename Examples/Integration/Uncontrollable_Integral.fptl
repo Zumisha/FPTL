@@ -1,0 +1,77 @@
+Scheme Test
+{
+	@ = Integrate(Func).print;
+
+	x = [1];
+	
+	//f(x) = sin(0.5*x^3)*sin(0.25*x^2)*sin(0.125*x)
+	Func = 	(	(	(((x * x).mul * x).mul * 0.5).mul.sin * 
+					((x * x).mul * 0.25).mul.sin).mul * 
+				(x * 0.125).mul.sin
+			).mul;
+				
+	//f(x) = x*sin(x)*cos(Pi*x)
+	Func2 = ((x * x.sin).mul * (Pi * x).mul.cos).mul;
+	
+	//f(x) = sin(x*x)*x*2
+	Func3 = (((((x * x).mul).sin) * x).mul * 2.0).mul;
+	
+	//f(x) = sin(3*x^3)*cos(2*x^2)
+	Func4 = (	(((x * x).mul * x).mul * 3.0).mul.sin * 
+				((x * x).mul * 2.0).mul.sin
+			).mul;
+
+	//f(x) = 1/(x*e^x) 
+	Func5 = (1.0 * (x * x.exp).mul).div;
+	
+	// Параметры A*B*Eps - границы отрезка интегрирования и точность.
+	Fun Integrate[fFunction]
+	{
+		A = [1];
+		B = [2];
+		Eps = [3];
+		
+		AB = (B * A).sub;
+		fA = [4];
+		fB = [5];
+		
+		@ = (id * A.fFunction * B.fFunction).(id * (AB * fA * fB).Trp).Integr;	
+		
+		TrpAB = [6];			
+		M = [7];
+		fM = [8];
+		h = [9];
+		TrpAM = [10];
+		TrpMB = [11];
+		TrpAMB = [12];
+		Eps2 = [13];
+		
+		Integr = (id * (A * B).Mid)
+				.(id * M.fFunction * (M * A).sub)
+				.(id * (fA * fM * h).Trp * (fM * fB * h).Trp)  	
+				.(id * (TrpAM * TrpMB).add * (Eps * 2.0).div)
+				.(	((TrpAB * TrpAMB).Runge * Eps).less ->
+						TrpAMB,
+						(	(A * M * Eps2 * fA * fM * TrpAM).Integr * 		
+							(M * B * Eps2 * fM * fB * TrpMB).Integr				
+						).add
+				); // Integr здесь вычисляются параллельно. Как следствие - неконтролируемый рост зернистости.
+			// Условная композиция взята в скобки, 
+			// чтобы не только условие имело доступ к предыдущему кортежу,
+			// но и ветки then и else.
+			
+		Mid = ((A * B).add * 2.0).div;
+		
+		//Trp(f(a), f(b), h) = h*(f(a)+f(b))/2
+		Trp = (([3] * ([1] * [2]).add).mul * 2.0).div;
+		
+		//По правилу Рунге для метода трапеции |Trp(h) - Trp(h/2)|/3 <= Eps		
+		Runge = (([1] * [2]).sub.abs * 3.0).div;
+	}
+}
+
+Application
+A = 0.000001;
+B = 25.0;
+Eps = 0.0000001;
+%Test(A, B, Eps)

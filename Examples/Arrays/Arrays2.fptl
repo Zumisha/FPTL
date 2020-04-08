@@ -1,0 +1,194 @@
+Scheme Arrays
+{
+	//@ = (5 * 1 * 0).((RandMatrix*[1]).printMatrix * [1]).MatrixNormInf.print;
+	//@ = (10000 * 1 * 0).(RandMatrix * [1]).MatrixNormInf.print;
+	//@ = (1000 * 1 * 0).(RandMatrix * [1]).MatrixMaxEl.print;
+	//@ = (1000 * 1 * 0).(RandMatrix * [1]).MatrixSumEl.print;
+	
+	@ = (1000000 * 1 * 0).(RandArray * [1]).ArrSumEl.print;
+	//Sum elements of Array with 10^8 elements uses about 60-80GB RAM
+	//10^7 uses about 4GB
+	//10^6 uses about 200MB
+	
+	//@ = ((2 * 1 * 0).RandMatrix * "\n\n" * (2 * 1 * 0).RandMatrix * "\n\n" * (2 * 1 * 0).RandMatrix * "\n\n").([1] * [3] * [5] * print).arrayCat.print;
+	
+	Fun RandArray
+	{	//x = rnd(1)*k+b
+		N = [1];
+		k = [2];
+		b = [3];
+		
+		@ = ((N * 0.0).arrayCreate * N * k * b).ArrGen;
+		
+		Fun ArrGen
+		{
+			Arr = [1];
+			N = ([2] * 1).sub;
+			k = [3];
+			b = [4];
+			
+			@ = (N * 0).gequal -> ((Arr * N * ((rand * k).mul * b).add).arraySet * 
+									N * k * b).ArrGen,
+								Arr;
+		}		
+	}
+		
+	Fun ArrSumEl
+	{
+		Arr = [1];
+		N = ([2] * 1).sub;
+		
+		@ = (N * 0).greater -> ((Arr * N).arrayGet * (Arr * N).ArrSumEl).add,
+								(Arr * N).arrayGet;
+	}
+	
+	Fun ArrMaxEl
+	{
+		Arr = [1];
+		N = ([2] * 1).sub;
+		
+		@ = (N * 0).greater -> ((Arr * N).arrayGet * (Arr * N).ArrMaxEl).
+								(([1] * [2]).greater -> [1], [2]),
+							(Arr * N).arrayGet;
+	}
+	
+	Fun RandMatrix
+	{
+		N = [1];
+		k = [2];
+		b = [3];
+		
+		@ = ((N * (N * 0.0).arrayCreate).arrayCreate * N * N * k * b).MatrGen;		
+		
+		Fun MatrGen
+		{
+			Arr = [1];
+			N = [2];
+			i = ([3] * 1).sub;
+			k = [4];
+			b = [5];
+			
+			@ = (i * 0).gequal -> ((Arr * i * (N * k * b).RandArray).arraySet * 
+									N * i * k * b).MatrGen,
+								Arr;
+		}
+		
+		Fun RandArray
+		{	//x = rnd(1)*k+b
+			N = [1];
+			k = [2];
+			b = [3];
+		
+			@ = ((N * 0.0).arrayCreate * N * k * b).ArrGen;
+		
+			Fun ArrGen
+			{
+				Arr = [1];
+				N = ([2] * 1).sub;
+				k = [3];
+				b = [4];
+				
+				@ = (N * 0).gequal -> ((Arr * N * ((rand * k).mul * b).add).arraySet * 
+										N * k * b).ArrGen,
+									Arr;
+			}		
+		}
+	}
+	
+	Fun printMatrix
+	{
+		Matr = [1];
+		N = ([2] * 1).sub;
+		
+		@ = (N * 0).gequal -> (Matr * N).arrayGet.print * 
+							"\n".print * 
+							(Matr * N).printMatrix,
+							Matr;
+	}
+	
+	Fun MatrixSumEl
+	{
+		Matr = [1];
+		N = [2];
+		
+		@ = (Matr * N * N).Sum;
+		
+		Fun Sum
+		{
+			Matr = [1];
+			N = [2];
+			i = ([3] * 1).sub;
+			
+			@ = (i * 0).greater -> (((Matr * i).arrayGet * N).ArrSumEl * (Matr * N * i).Sum).add,
+								((Matr * i).arrayGet * N).ArrSumEl;
+		}
+		
+		Fun ArrSumEl
+		{
+			Arr = [1];
+			N = ([2] * 1).sub;
+		
+			@ = (N * 0).greater -> ((Arr * N).arrayGet * (Arr * N).ArrSumEl).add,
+								(Arr * N).arrayGet;
+		}
+	}
+	
+	Fun MatrixNormInf
+	{
+		Matr = [1];
+		N = [2];
+		
+		@ = (Matr * N * N).InfNorm;
+		
+		Fun InfNorm
+		{
+			Matr = [1];
+			N = [2];
+			i = ([3] * 1).sub;
+			
+			@ = (i * 0).greater -> ((Matr * N * i).InfNorm * ((Matr * i).arrayGet * N).ArrSumEl).
+									(([1] * [2]).greater -> [1], [2]),
+								((Matr * i).arrayGet * N).ArrSumEl;
+		}
+		
+		Fun ArrSumEl
+		{
+			Arr = [1];
+			N = ([2] * 1).sub;
+			
+			@ = (N * 0).greater -> ((Arr * N).arrayGet * (Arr * N).ArrSumEl).add,
+								(Arr * N).arrayGet;
+		}
+	}
+	
+	Fun MatrixMaxEl
+	{
+		Matr = [1];
+		N = [2];
+		
+		@ = (Matr * N * N).MaxEl;
+		
+		Fun MaxEl
+		{
+			Matr = [1];
+			N = [2];
+			i = ([3] * 1).sub;
+		
+			@ = (i * 0).greater -> (((Matr * i).arrayGet * N).ArrMaxEl * (Matr * N * i).MaxEl).
+									(([1] * [2]).greater -> [1], [2]),
+								((Matr * i).arrayGet * N).ArrMaxEl;
+		}
+	
+		Fun ArrMaxEl
+		{
+			Arr = [1];
+			N = ([2] * 1).sub;
+		
+			@ = (N * 0).greater -> ((Arr * N).arrayGet * (Arr * N).ArrMaxEl).
+									(([1] * [2]).greater -> [1], [2]),
+								(Arr * N).arrayGet;
+		}
+	}
+}
+Application
+% Arrays

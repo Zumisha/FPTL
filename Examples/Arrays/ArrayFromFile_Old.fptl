@@ -1,0 +1,71 @@
+Scheme ArrayFromFile
+{
+	// (you must first generate the file)
+	
+	Size = 1024;
+	PathA = "GeneratedRandomMatrix.txt";
+	
+	@ = MatrA.((([1] * 0).arrayGet * 1023).arrayGet * (([1] * 1023).arrayGet * 1023).arrayGet).print;
+	
+	MatrA = ParseMatr(PathA, Size, Size);
+	
+	Fun ParseMatr[path, n, m]
+	{
+		@ = path.readFile.(id -> 
+							(EmptyMatr(n, m) * 0 * id).FillMatr(n, m),
+							EmptyMatr(n, m) * ("Error file read!").print);
+		
+	
+		Fun EmptyMatr[n, m]
+		{
+			@ = (matrixCreate *  0).FillMatr(n, m);
+		
+			matrixCreate = (n * ((m * 0.0).arrayCreate)).arrayCreate;
+		
+			Fun FillMatr[n, m]
+			{
+				matr = [1];
+				index = [2];
+			
+				EmptyArray = (m * 0.0).arrayCreate;
+			
+				@ = (index * n).less -> 
+					((matr * index * EmptyArray).arraySet * (index * 1).add).FillMatr,
+					matr; 
+			}
+		}
+	
+		Fun FillMatr[n, m]
+		{
+			matr = [1];
+			rowIndex = [2];
+			text = [3];
+		
+			Fun FillRow[n]
+			{
+				arr = [1];
+				index = [2];
+				text = [3];
+				
+				Num = text -> 
+						(text * "[0-9]+.?[0-9]*e?[+-]?[0-9]*").getToken.(id -> 
+							[2] * [1], 
+							"" * 0.0 * ("File ended!\n").cat.print), 
+						"" * 0.0 * ("File ended!\n").cat.print;
+				
+				@ = (index * n).less -> 
+						(arr * index * Num).
+							((arr * index * [4].toReal).arraySet * (index * 1).add * text).FillRow,
+						text * arr;
+			}
+		
+			@ = (rowIndex * m).less -> 
+						(matr * rowIndex * ((matr * rowIndex).arrayGet * 0 * text).FillRow(n)).
+							((matr * rowIndex * [4]).arraySet * (rowIndex * 1).add * text).FillMatr,
+						matr;
+		}
+	}
+}
+
+Application
+%ArrayFromFile

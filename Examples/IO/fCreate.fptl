@@ -1,0 +1,17 @@
+Scheme FRead
+{	
+	fName = "Generated.txt";
+	WriteOrCreate = ([1] * fName).appendFile;
+	RewriteOrCreate = ([1] * fName).createFile;
+	
+	@ = (((((-1).WriteOrCreate -> 
+		(0).RewriteOrCreate) -> 
+		(true).WriteOrCreate) ->
+		(2.0).WriteOrCreate) ->
+		("3").WriteOrCreate) ->
+		"File created!".print,
+		"Error!".print;
+}
+	
+Application
+%FRead

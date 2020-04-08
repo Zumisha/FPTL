@@ -1,0 +1,76 @@
+Data List['t] {
+	List = c_nil ++ 't * List['t].c_cons;
+}
+
+Data Pair['s, 't] {
+	Pair = 's * 't.c_pair;
+}
+
+Data JSONValue {
+
+	JSONValue = List[Pair[string, JSONValue]].c_jsonObject ++ 
+				List[JSONValue].c_jsonArray ++
+				string.c_jsonString ++
+				double.c_jsonNumber ++
+				c_jsonTrue ++
+				c_jsonFalse ++
+				c_jsonNull;
+}
+
+Scheme JSONParser {
+	@ = "../Arrays/Arrays.txt".readFile.ParseValue.print;
+	
+	ParseValue = Or(ParseObject, Or(ParseArray, Or(ParseStringValue, Or(ParseNumber, Or(ParseTrue, Or(ParseFalse, ParseNull))))));
+	
+	ParseObject = Or(ParseEmptyObject, Seq(Token("\\{"), Seq(ParseProperties, Token("\\}"), Action1), Action2));
+	Action1 = [1];
+	Action2 = [2].c_jsonObject;
+	
+	ParseEmptyObject = Seq(Token("\\{"), Token("\\}"), EmptyObject);
+	EmptyObject = c_nil.c_jsonObject;
+	
+	ParseProperty = Seq(ParseString, Seq(Token("\\:"), ParseValue, Action3), Action4);
+	Action3 = [2];
+	Action4 = ([1]*[2]).c_pair;
+	
+	ParseProperties = Or(SingleProperty, Seq(ParseProperty, Seq(Token(","), ParseProperties, Action45), Action5));
+	Action45 = [2];
+	Action5 = ([1] * [2]).c_cons;
+	SingleProperty = ParseProperty.(id -> [1]*([2]*c_nil).c_cons);
+	
+	ParseArray = Or(ParseEmptyArray, Seq(Token("\\["), Seq(ParseArrayValues, Token("\\]"), Action6), Action7));
+	Action6 = [1];
+	Action7 = [2].c_jsonArray;
+	
+	ParseEmptyArray = Seq(Token("\\["), Token("\\]"), EmptyArray);
+	EmptyArray = c_nil.c_jsonArray;
+	
+	ParseArrayValues = Or(ParseSingleValue, Seq(ParseValue, Seq(Token(","), ParseArrayValues, [2]), Action8));
+	Action8 = ([1] * [2]).c_cons;
+	
+	ParseSingleValue = ParseValue.(id -> [1]*([2]*c_nil).c_cons);
+	
+	ParseStringValue = ParseString.(id -> [1]*[2].c_jsonString);
+	
+	ParseNull = Token("null").([1]*c_jsonNull);
+	ParseTrue = Token("true").([1]*c_jsonTrue);
+	ParseFalse = Token("false").([1]*c_jsonFalse);
+	
+	ParseString = Token("\"(([^\"\\\\])|(\\\\[\\\\bfnrt\\/\"])|(\\\\u[0-9A-Fa-f]{4}))*\"");
+	ParseNumber = Token("-?(0|[1-9][0-9]*)(.[0-9]+)?([eE][+-]?[0-9]+)?").(id -> [1]*[2].toReal.c_jsonNumber);
+	
+	Fun Seq[Op1, Op2, Action] {
+		@ = Op1.(id -> ([2]*[1].Op2).(id -> ([2]*([1]*[3]).Action)));
+	}
+	
+	Fun Or[Op1, Op2] {
+		@ = Op1 -> (Op2 -> (Op1*Op2).(([1].length * [3].length).less -> [1]*[2], [3]*[4]), Op1), Op2;
+	}
+	
+	Fun Token[ch] {
+		@ = ([1]*ch).getToken.([2]*[1]);
+	}
+}
+
+Application
+% JSONParser("{\"array\":[1, 2, false, null, {}]}")
