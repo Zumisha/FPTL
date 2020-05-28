@@ -52,11 +52,11 @@ namespace FPTL
 
 			NamesChecker(Support * aSupport, ASTNode * root);
 
-			void visit(DataNode * aDataNode) override;
-			void visit(FunctionNode * aFunctionNode) override;
-			void visit(DefinitionNode * aDefinitionNode) override;
-			void visit(NameRefNode * aNameNode) override;
-			void visit(ApplicationBlock * aApplicationBlock) override;
+			void handle(DataNode * aDataNode) override;
+			void handle(FunctionNode * aFunctionNode) override;
+			void handle(DefinitionNode * aDefinitionNode) override;
+			void handle(NameRefNode * aNameNode) override;
+			void handle(ApplicationBlock * aApplicationBlock) override;
 
 		private:
 
@@ -83,7 +83,7 @@ namespace FPTL
 				process(root);
 			}
 
-			void visit(DefinitionNode * aDefinitionNode) override
+			void handle(DefinitionNode * aDefinitionNode) override
 			{
 				mTestDefinitions.push_back(aDefinitionNode->getDefinitionName());
 
@@ -95,7 +95,7 @@ namespace FPTL
 				mTestDefinitions.pop_back();
 			}
 
-			void visit(NameRefNode * aNameRefNode) override
+			void handle(NameRefNode * aNameRefNode) override
 			{
 				if (aNameRefNode->getType() == ASTNode::FuncObjectName || aNameRefNode->getType() == ASTNode::FuncParameterName)
 				{

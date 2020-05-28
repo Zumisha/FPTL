@@ -1,6 +1,5 @@
 #include "InternalForm.h"
 #include "DataTypes/Ops/StringOps.h"
-#include "Libraries/StandardLibrary.h"
 #include "Evaluator/Run.h"
 #include "Evaluator/Context.h"
 #include "Macros.h"
@@ -208,6 +207,15 @@ namespace FPTL
 			mNext->exec(ctx);
 		}
 
+		void printErrTuple(std::ostream& error, const SExecutionContext & ctx)
+		{
+			error << "Input tuple type: ";
+			ctx.printTypes(error);
+			error << std::endl << "Input tuple: ";
+			ctx.print(error);
+			error << std::endl;
+		}
+
 		void BasicFn::callFn(SExecutionContext & ctx) const
 		{
 			try
@@ -218,10 +226,8 @@ namespace FPTL
 			{
 				std::stringstream error;
 				Parser::Support::printError(error, mPos.first, mPos.second, thrown.what());
-				error << "In function \"" << mName << "\"" << std::endl
-					<< "Input tuple type: ";
-				ctx.printTypes(error);
-				error << std::endl;
+				error << "In function \"" << mName << "\"" << std::endl;
+				printErrTuple(error, ctx);
 				throw std::runtime_error(error.str());
 			}
 		}
@@ -253,11 +259,8 @@ namespace FPTL
 			catch (std::exception & thrown)
 			{
 				std::stringstream error;
-				error << thrown.what() << std::endl
-					<< "Line: " << mPos.second << ". Column: " << mPos.first << "." << std::endl
-					<< "Input tuple type: ";
-				ctx.printTypes(error);
-				error << std::endl;
+				Parser::Support::printError(error, mPos.first, mPos.second, thrown.what());
+				printErrTuple(error, ctx);
 				throw std::runtime_error(error.str());
 			}
 		}

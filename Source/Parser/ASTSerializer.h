@@ -4,13 +4,13 @@
 #include <fstream>
 
 #include "AST.h"
-#include "NodeHandler.h"
+#include "NodeVisitor.h"
 
 namespace FPTL
 {
 	namespace Parser
 	{
-		class ASTSerializer : NodeHandler
+		class ASTSerializer : NodeVisitor
 		{
 		public:
 			inline static const std::string serialization_path = "AST.xml";

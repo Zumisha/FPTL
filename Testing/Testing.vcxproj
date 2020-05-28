@@ -179,6 +179,7 @@
     <ClInclude Include="..\Source\FScheme\FSchemeGenerator.h" />
     <ClInclude Include="..\Source\FScheme\FSchemeSerializer.h" />
     <ClInclude Include="..\Source\FScheme\FSchemeVisitor.h" />
+    <ClInclude Include="..\Source\FScheme\NewFSchemeGenerator.h" />
     <ClInclude Include="..\Source\FScheme\NodeDeleter.h" />
     <ClInclude Include="..\Source\GC\BlockingQueue.h" />
     <ClInclude Include="..\Source\GC\CollectedHeap.h" />
@@ -189,7 +190,6 @@
     <ClInclude Include="..\Source\InternalForm\InternalForm.h" />
     <ClInclude Include="..\Source\Interpreter\Interpreter.h" />
     <ClInclude Include="..\Source\Libraries\FunctionLibrary.h" />
-    <ClInclude Include="..\Source\Libraries\StandardLibrary.h" />
     <ClInclude Include="..\Source\Macros.h" />
     <ClInclude Include="..\Source\Parser\AST.h" />
     <ClInclude Include="..\Source\Parser\ASTSerializer.h" />
@@ -199,6 +199,7 @@
     <ClInclude Include="..\Source\Parser\Generated\parser.tab.hh" />
     <ClInclude Include="..\Source\Parser\Generated\stack.hh" />
     <ClInclude Include="..\Source\Parser\Ident.h" />
+    <ClInclude Include="..\Source\Parser\NodeHandler.h" />
     <ClInclude Include="..\Source\Parser\Nodes.h" />
     <ClInclude Include="..\Source\Parser\NodeVisitor.h" />
     <ClInclude Include="..\Source\Parser\SemanticCheck.h" />
@@ -230,11 +231,11 @@
     <ClCompile Include="..\Source\InternalForm\InternalForm.cpp" />
     <ClCompile Include="..\Source\Interpreter\Interpreter.cpp" />
     <ClCompile Include="..\Source\Libraries\FunctionLibrary.cpp" />
-    <ClCompile Include="..\Source\Libraries\StandardLibrary.cpp" />
     <ClCompile Include="..\Source\Parser\ASTSerializer.cpp" />
     <ClCompile Include="..\Source\Parser\CommandLineParser.cpp" />
     <ClCompile Include="..\Source\Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="..\Source\Parser\Generated\parser.tab.cc" />
+    <ClCompile Include="..\Source\Parser\NodeHandler.cpp" />
     <ClCompile Include="..\Source\Parser\Nodes.cpp" />
     <ClCompile Include="..\Source\Parser\NodeVisitor.cpp" />
     <ClCompile Include="..\Source\Parser\Semantic.cpp" />

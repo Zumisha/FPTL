@@ -5,66 +5,66 @@ namespace FPTL
 {
 	namespace Parser
 	{
-		void NodeVisitor::visit(NameRefNode * aNameRefNode)
+		void NodeVisitor::handle(NameRefNode * aNameRefNode)
 		{
 			process(aNameRefNode->getParameters());
 		}
 
-		void NodeVisitor::visit(FunctionNode * aFunctionNode)
+		void NodeVisitor::handle(FunctionNode * aFunctionNode)
 		{
 			process(aFunctionNode->getDefinitions());
 			process(aFunctionNode->getFormalParameters());
 		}
 
-		void NodeVisitor::visit(DefinitionNode * aDefinitionNode)
+		void NodeVisitor::handle(DefinitionNode * aDefinitionNode)
 		{
 			process(aDefinitionNode->getDefinition());
 		}
 
-		void NodeVisitor::visit(ConstructorNode * aConstructorNode)
+		void NodeVisitor::handle(ConstructorNode * aConstructorNode)
 		{
 			process(aConstructorNode->getCtorParameters());
 		}
 
-		void NodeVisitor::visit(DataNode * aDataNode)
+		void NodeVisitor::handle(DataNode * aDataNode)
 		{
 			process(aDataNode->getConstructors());
 			process(aDataNode->getTypeParams());
 			process(aDataNode->getTypeDefs());
 		}
 
-		void NodeVisitor::visit(FunctionalProgram * aFuncProgram)
+		void NodeVisitor::handle(FunctionalProgram * aFuncProgram)
 		{
 			process(aFuncProgram->getDataDefinitions());
 			process(aFuncProgram->getScheme());
 			process(aFuncProgram->getApplication());
 		}
 
-		void NodeVisitor::visit(ApplicationBlock * aApplicationBlock)
+		void NodeVisitor::handle(ApplicationBlock * aApplicationBlock)
 		{
 			process(aApplicationBlock->getRunningSchemeName());
 			process(aApplicationBlock->getSchemeParameters());
 			process(aApplicationBlock->getDataVarDefinitions());
 		}
 
-		void NodeVisitor::visit(ExpressionNode * aExpressionNode)
+		void NodeVisitor::handle(ExpressionNode * aExpressionNode)
 		{
 			process(aExpressionNode->getLeft());
 			process(aExpressionNode->getRight());
 		}
 
-		void NodeVisitor::visit(ConditionNode * aExpressionNode)
+		void NodeVisitor::handle(ConditionNode * aExpressionNode)
 		{
 			process(aExpressionNode->getThen());
 			process(aExpressionNode->getCond());
 			process(aExpressionNode->getElse());
 		}
 
-		void NodeVisitor::visit(ConstantNode * aConstantNode)
+		void NodeVisitor::handle(ConstantNode * aConstantNode)
 		{
 		}
 
-		void NodeVisitor::visit(ListNode * aNode)
+		void NodeVisitor::handle(ListNode * aNode)
 		{
 			//for (auto& node : aNode->mChilds)
 			for (size_t i = aNode->mChilds.size(); i--;)
@@ -78,7 +78,7 @@ namespace FPTL
 		{
 			if (aNode)
 			{
-				aNode->accept(this);
+				aNode->handle(this);
 			}
 		}
 	}

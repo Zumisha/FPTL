@@ -16,21 +16,17 @@ namespace FPTL
 		class FunctionLibrary
 		{
 		public:
-			explicit FunctionLibrary(std::string aLibraryName);
+			FunctionLibrary() = delete;
 
-			void addFunction(const std::string & aFunctionName, const TFunction & aFunction);
+			static void addFunction(const std::string& aFunctionName, const TFunction& aFunction);
+			static void addFunctions(std::map<std::string, TFunction> functions);
 
-			void addFunctions(std::map<std::string, TFunction> functions);
-
-			std::vector<std::string> getFunctionNames() const;
-
-			TFunction getFunction(const std::string & aFunctionName) const;
-
-			std::string getName() const;
+			static std::vector<std::string> getFunctionNames();
+			static TFunction getFunction(const std::string & aFunctionName);
 
 		private:
-			std::string mLibraryName;
-			std::map<std::string, TFunction> mFunctions;
+			// ToDo: type to functions
+			static std::map<std::string, TFunction> mFunctions;
 		};
 	}
 }

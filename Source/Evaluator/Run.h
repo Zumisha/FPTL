@@ -74,7 +74,7 @@ namespace FPTL
 			void moveToMainOrder(SExecutionContext * movingTask);
 
 			// Ожидание завершения процесса выполнения последнего в очереди задания.
-			SExecutionContext * join();
+			SExecutionContext* join();
 
 			//Отмена задания, стоящего в списке ожидающих выполнения на позиции pos с конца.
 			void cancelFromPendingEnd(size_t pos = 1);
@@ -100,7 +100,7 @@ namespace FPTL
 			// Поиск и выполнение задания.
 			void schedule();
 
-			CollectedHeap & heap() const;
+			CollectedHeap& heap() const;
 
 			// Трассировка корней стека.
 			void markDataRoots(ObjectMarker * marker);
@@ -109,7 +109,10 @@ namespace FPTL
 			void popTask();
 
 		private:
+			// Задачи, данные из которых ожидаются.
+			// Они могут как всё ещё находиться в очереди или быть на выполнении, так и быть на 
 			std::vector<SExecutionContext *> pendingTasks;
+			// Выполняемые задачи, в том числе ожидающие данных. 
 			std::vector<SExecutionContext *> runningTasks;
 
 			size_t mJobsCompleted;
@@ -120,6 +123,7 @@ namespace FPTL
 			size_t mProactiveJobsStealed;
 			size_t mProactiveJobsMoved;
 			size_t mProactiveJobsCanceled;
+			// ToDo: Попробовать заменить на boost::lockfree::stack
 			LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
 			boost::lockfree::stack<SExecutionContext *> mProactiveJobQueue;
 			SchemeEvaluator * mEvaluator;

@@ -3,9 +3,10 @@
 #include <map>
 #include <stack>
 
+
+#include "ConstructorGenerator.h"
 #include "Parser/NodeVisitor.h"
 #include "FScheme.h"
-#include "DataTypes/Ops/ADTOps.h"
 
 namespace FPTL
 {
@@ -17,7 +18,7 @@ namespace FPTL
 		//
 		// Генератор функциональных схем по АСД. На вход должно предоставляться только семантически корректное дерево.
 		//
-		class FSchemeGenerator : public Parser::NodeVisitor
+		class FSchemeGenerator: public Parser::NodeVisitor
 		{
 		public:
 
@@ -26,13 +27,13 @@ namespace FPTL
 			FSchemeGenerator(const FSchemeGenerator &generator) = delete;
 			FSchemeGenerator& operator= (const FSchemeGenerator &generator) = delete;
 
-			void visit(Parser::FunctionalProgram * aFuncProgram) override;
-			void visit(Parser::FunctionNode * aFunctionNode) override;
-			void visit(Parser::NameRefNode * aNameRefNode) override;
-			void visit(Parser::DefinitionNode * aDefinitionNode) override;
-			void visit(Parser::ExpressionNode * aExpressionNode) override;
-			void visit(Parser::ConditionNode * aExpressionNode) override;
-			void visit(Parser::ConstantNode * aNode) override;
+			void handle(Parser::FunctionalProgram * aFuncProgram) override;
+			void handle(Parser::FunctionNode * aFunctionNode) override;
+			void handle(Parser::NameRefNode * aNameRefNode) override;
+			void handle(Parser::DefinitionNode * aDefinitionNode) override;
+			void handle(Parser::ExpressionNode * aExpressionNode) override;
+			void handle(Parser::ConditionNode * aExpressionNode) override;
+			void handle(Parser::ConstantNode * aNode) override;
 
 			// Получение результата.
 			FSchemeNode * getProgram() const;
@@ -42,24 +43,18 @@ namespace FPTL
 			void processBuildInFunction(Parser::NameRefNode * aFunctionNameNode);
 			void processFunctionalTerm(Parser::NameRefNode * aFuncTermName);
 
-			Parser::ASTNode * mTree;
-
 			typedef std::map<std::string, FScheme*> TLexicalContext;
 
 			std::stack<FSchemeNode *> mNodeStack;
 
 			TLexicalContext mDefinitions;
-
 			std::stack<TLexicalContext> mDefinitionsStack;
-
-			std::map<std::string, Constructor *> mConstructors;
 
 			FSchemeNode * mScheme;
 			FSchemeNode * mSchemeInput;
 			FSchemeNode * mProgram;
 
-			ConstructorGenerator * mConstructorGenerator;
-			FunctionLibrary * mLibrary;
+			ConstructorGenerator mConstructorGenerator;
 		};
 	}
 }

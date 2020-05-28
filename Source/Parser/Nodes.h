@@ -21,8 +21,11 @@ namespace FPTL
 			ASTNode * getLeft() const { return mChilds[mLeft]; }
 			ASTNode * getRight() const { return mChilds[mRight]; }
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			std::string childNameToString(size_t child) override;
 
@@ -40,8 +43,11 @@ namespace FPTL
 			ConditionNode(const ASTNodeType aType, ASTNode* aLeft, ASTNode* aRight, ASTNode* aMiddle);
 			~ConditionNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			ASTNode * getThen() const { return mChilds[mThen]; }
 			ASTNode * getElse() const { return mChilds[mElse]; }
@@ -67,14 +73,22 @@ namespace FPTL
 			ConstantNode(const ASTNodeType aType, const Ident &aConstant) :
 				ASTNode(aType), mIdent(aConstant) {}
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			bool isNatural() const;
 
 			Ident getConstant() const { return mIdent; }
 
 			std::string childNameToString(size_t) override;
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": " << mIdent;
+			}
 
 		private:
 			Ident          mIdent;
@@ -90,8 +104,11 @@ namespace FPTL
 			explicit ListNode(const ASTNodeType aType) : ASTNode(aType) {}
 			~ListNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			ListNode* addElement(ASTNode * aElem)
 			{
@@ -119,8 +136,11 @@ namespace FPTL
 			DefinitionNode(ASTNodeType aType, const Ident &aName, ASTNode * aDefinition);
 			~DefinitionNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			Ident         getDefinitionName() const { return mDefinitionName; }
 			ASTNode *     getDefinition() const { return mChilds[mDefinition]; }
@@ -131,6 +151,11 @@ namespace FPTL
 			{
 				mDefinition
 			};
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": " << mDefinitionName;
+			}
 
 		private:
 			Ident mDefinitionName;
@@ -146,14 +171,17 @@ namespace FPTL
 			NameRefNode(const Ident &aTypeName, ASTNodeType aNodeType, ListNode * aParams);
 			~NameRefNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			Ident getName() const { return mTypeName; }
 			ListNode* getParameters() const { return static_cast<ListNode*>(mChilds[mParameters]); }
-			int numParameters() const override
+			size_t numParameters() const override
 			{
-				return mChilds[mParameters] ? static_cast<int>(static_cast<ListNode*>(mChilds[mParameters])->mChilds.size()) : 0;
+				return mChilds[mParameters] ? static_cast<size_t>(static_cast<ListNode*>(mChilds[mParameters])->mChilds.size()) : 0;
 			}
 
 			std::string childNameToString(size_t child) override;
@@ -164,6 +192,11 @@ namespace FPTL
 			};
 
 			ASTNode* mTarget;
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": " << mTypeName;
+			}
 
 		private:
 
@@ -180,8 +213,11 @@ namespace FPTL
 			ConstructorNode(const Ident &aName, ListNode * aCtorParameters, const Ident &aCtorResultTypeName);
 			~ConstructorNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			Ident                 getCtorName() const { return mName; }
 			Ident                 getCtorResultTypeName() const { return mCtorResultTypeName; }
@@ -193,6 +229,11 @@ namespace FPTL
 			{
 				mCtorParameters
 			};
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": " << mName << "; " << mCtorResultTypeName;
+			}
 
 		private:
 			Ident mName;
@@ -209,17 +250,20 @@ namespace FPTL
 			DataNode(const Ident &aTypeName, ListNode * aTypeDefs, ListNode * aTypeParams, ListNode * aConstructors);
 			~DataNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			ListNode *      getConstructors() const { return static_cast<ListNode*>(mChilds[mConstructors]); }
 			Ident           getDataName() const { return mTypeName; }
 			ListNode *      getTypeDefs() const { return static_cast<ListNode*>(mChilds[mTypeDefinitions]); }
 			ListNode *      getTypeParams() const { return static_cast<ListNode*>(mChilds[mTypeParameters]); }
 
-			int numParameters() const override
+			size_t numParameters() const override
 			{
-				return mChilds[mTypeParameters] ? static_cast<int>(static_cast<ListNode*>(mChilds[mTypeParameters])->mChilds.size()) : 0;
+				return mChilds[mTypeParameters] ? static_cast<size_t>(static_cast<ListNode*>(mChilds[mTypeParameters])->mChilds.size()) : 0;
 			}
 
 			std::string childNameToString(size_t child) override;
@@ -230,6 +274,11 @@ namespace FPTL
 				mTypeDefinitions,
 				mTypeParameters
 			};
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": " << mTypeName;
+			}
 
 		private:
 			Ident mTypeName;
@@ -245,17 +294,20 @@ namespace FPTL
 			FunctionNode(const Ident &aFuncName, ListNode * aDefinitions, ListNode * aFormalParams);
 			~FunctionNode();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			Ident             getFuncName() const { return mFuncName; }
-			ListNode *        getFormalParameters() const { return static_cast<ListNode*>(mChilds[mFormalParameters]); }
 			ListNode *        getDefinitions() const { return static_cast<ListNode*>(mChilds[mDefinitions]); }
+			ListNode *        getFormalParameters() const { return static_cast<ListNode*>(mChilds[mFormalParameters]); }
 			DefinitionNode *  getDefinition(const Ident &aName) const;
 
-			int numParameters() const override
+			size_t numParameters() const override
 			{
-				return mChilds[mFormalParameters] ? static_cast<int>(static_cast<ListNode*>(mChilds[mFormalParameters])->mChilds.size()) : 0;
+				return mChilds[mFormalParameters] ? static_cast<size_t>(static_cast<ListNode*>(mChilds[mFormalParameters])->mChilds.size()) : 0;
 			}
 
 			std::string childNameToString(size_t child) override;
@@ -267,6 +319,11 @@ namespace FPTL
 				mDefinitions,
 				mFormalParameters
 			};
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": " << mFuncName;
+			}
 
 		private:
 			Ident mFuncName;
@@ -282,8 +339,11 @@ namespace FPTL
 			ApplicationBlock(NameRefNode * aRunSchemeName, ASTNode * aSchemeParameters, ListNode * aDataVarDefs);
 			~ApplicationBlock();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			NameRefNode * getRunningSchemeName() const { return static_cast<NameRefNode*>(mChilds[mRunSchemeName]); }
 			ASTNode *     getSchemeParameters() const { return mChilds[mSchemeParameters]; }
@@ -308,8 +368,11 @@ namespace FPTL
 			FunctionalProgram(ASTNode * aDataDefinitions, FunctionNode * aScheme, ApplicationBlock * aApplication);
 			~FunctionalProgram();
 
-			void accept(NodeVisitor * aVisitor) override;
-			void handle(NodeHandler* aHandler) override;
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
 
 			ListNode*             getDataDefinitions() const { return static_cast<ListNode*>(mChilds[mDataDefinitions]); }
 			FunctionNode*         getScheme() const { return static_cast<FunctionNode*>(mChilds[mScheme]); }

@@ -8,7 +8,7 @@ namespace FPTL {
 		}
 
 		//---------------------------------------------------------------------------
-		void NamesChecker::visit(DataNode * aDataNode)
+		void NamesChecker::handle(DataNode * aDataNode)
 		{
 			if (!mContext.insertName(aDataNode->getDataName(), aDataNode))
 			{
@@ -17,14 +17,14 @@ namespace FPTL {
 
 			pushContext();
 
-			NodeVisitor::visit(aDataNode);
+			NodeVisitor::handle(aDataNode);
 
 			checkNames();
 			popContext();
 		}
 
 		//---------------------------------------------------------------------------
-		void NamesChecker::visit(FunctionNode * aFunctionNode)
+		void NamesChecker::handle(FunctionNode * aFunctionNode)
 		{
 			mContext.insertName(aFunctionNode->getFuncName(), aFunctionNode);
 
@@ -37,7 +37,7 @@ namespace FPTL {
 				}
 			}
 
-			NodeVisitor::visit(aFunctionNode);
+			NodeVisitor::handle(aFunctionNode);
 
 			// Проверяем наличие главного уравнения.
 			if (!aFunctionNode->getDefinition(aFunctionNode->getFuncName()))
@@ -52,7 +52,7 @@ namespace FPTL {
 
 
 		//---------------------------------------------------------------------------
-		void NamesChecker::visit(DefinitionNode * aDefinitionNode)
+		void NamesChecker::handle(DefinitionNode * aDefinitionNode)
 		{
 			switch (aDefinitionNode->getType())
 			{
@@ -75,11 +75,11 @@ namespace FPTL {
 				break;
 			}
 
-			NodeVisitor::visit(aDefinitionNode);
+			NodeVisitor::handle(aDefinitionNode);
 		}
 
 		//---------------------------------------------------------------------------
-		void NamesChecker::visit(NameRefNode * aNameNode)
+		void NamesChecker::handle(NameRefNode * aNameNode)
 		{
 			STermDescriptor termDesc;
 			termDesc.TermName = aNameNode->getName();
@@ -103,13 +103,13 @@ namespace FPTL {
 				break;
 			}
 
-			NodeVisitor::visit(aNameNode);
+			NodeVisitor::handle(aNameNode);
 		}
 
 		//---------------------------------------------------------------------------
-		void NamesChecker::visit(ApplicationBlock * aApplicationBlock)
+		void NamesChecker::handle(ApplicationBlock * aApplicationBlock)
 		{
-			NodeVisitor::visit(aApplicationBlock);
+			NodeVisitor::handle(aApplicationBlock);
 
 			checkNames();
 		}

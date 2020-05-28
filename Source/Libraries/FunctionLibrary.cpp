@@ -7,11 +7,6 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		FunctionLibrary::FunctionLibrary(std::string aLibraryName)
-			: mLibraryName(std::move(aLibraryName))
-		{
-		}
-
 		void FunctionLibrary::addFunction(const std::string & aFunctionName, const TFunction & aFunction)
 		{
 			mFunctions.insert(std::make_pair(aFunctionName, aFunction));
@@ -22,7 +17,7 @@ namespace FPTL
 			mFunctions.insert(functions.begin(), functions.end());
 		}
 
-		TFunction FunctionLibrary::getFunction(const std::string & aFunctionName) const
+		TFunction FunctionLibrary::getFunction(const std::string & aFunctionName)
 		{
 			if (mFunctions.find(aFunctionName) != mFunctions.end())
 			{
@@ -31,7 +26,6 @@ namespace FPTL
 			else
 			{
 				//assert(false); // Функция не найдена в библиотеке.
-
 				// Возвращаем "пустышку".
 				return [](SExecutionContext & aCtx) {
 					aCtx.push(DataBuilders::createUndefinedValue());
@@ -39,21 +33,17 @@ namespace FPTL
 			}
 		}
 
-		std::vector<std::string> FunctionLibrary::getFunctionNames() const
+		std::vector<std::string> FunctionLibrary::getFunctionNames()
 		{
 			std::vector<std::string> result;
 
+			result.reserve(mFunctions.size());
 			for (const auto& aElem : mFunctions)
 			{
 				result.push_back(aElem.first);
 			}
 
 			return result;
-		}
-
-		std::string FunctionLibrary::getName() const
-		{
-			return mLibraryName;
 		}
 	}
 }

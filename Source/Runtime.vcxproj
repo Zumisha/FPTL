@@ -29,6 +29,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
     <PlatformToolset>v141</PlatformToolset>
+    <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -138,25 +139,33 @@
     <ClCompile Include="InternalForm\Generator.cpp" />
     <ClCompile Include="InternalForm\InternalForm.cpp" />
     <ClCompile Include="Interpreter\Interpreter.cpp" />
+    <ClCompile Include="IO\File.cpp" />
+    <ClCompile Include="Libraries\ArithmeticLib.cpp" />
+    <ClCompile Include="Libraries\ArrayLib.cpp" />
+    <ClCompile Include="Libraries\FileLib.cpp" />
     <ClCompile Include="Libraries\FunctionLibrary.cpp" />
-    <ClCompile Include="Libraries\StandardLibrary.cpp" />
+    <ClCompile Include="Libraries\LogicLib.cpp" />
+    <ClCompile Include="Libraries\StandardLib.cpp" />
+    <ClCompile Include="Libraries\StringLib.cpp" />
+    <ClCompile Include="Libraries\TimeLib.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Parser\ASTSerializer.cpp" />
     <ClCompile Include="Parser\CommandLineParser.cpp" />
     <ClCompile Include="Parser\Generated\Flex\FlexScanner.cpp" />
     <ClCompile Include="Parser\Generated\parser.tab.cc" />
+    <ClCompile Include="Parser\NodeHandler.cpp" />
     <ClCompile Include="Parser\Nodes.cpp" />
     <ClCompile Include="Parser\NodeVisitor.cpp" />
     <ClCompile Include="Parser\Semantic.cpp" />
     <ClCompile Include="Parser\Support.cpp" />
     <ClCompile Include="Parser\Tokenizer.cpp" />
-    <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataTypes\Ops\ADTValue.h" />
     <ClInclude Include="DataTypes\Ops\ArrayOps.h" />
     <ClInclude Include="DataTypes\Ops\Ops.h" />
     <ClInclude Include="DataTypes\Ops\StringOps.h" />
+    <ClInclude Include="DataTypes\Ops\TimeOps.h" />
     <ClInclude Include="DataTypes\TypeInfo.h" />
     <ClInclude Include="Evaluator\Context.h" />
     <ClInclude Include="Evaluator\LockFreeWorkStealingQueue.h" />
@@ -166,6 +175,7 @@
     <ClInclude Include="FScheme\FSchemeGenerator.h" />
     <ClInclude Include="FScheme\FSchemeSerializer.h" />
     <ClInclude Include="FScheme\FSchemeVisitor.h" />
+    <ClInclude Include="FScheme\NewFSchemeGenerator.h" />
     <ClInclude Include="FScheme\NodeDeleter.h" />
     <ClInclude Include="GC\BlockingQueue.h" />
     <ClInclude Include="GC\CollectedHeap.h" />
@@ -175,8 +185,15 @@
     <ClInclude Include="InternalForm\Generator.h" />
     <ClInclude Include="InternalForm\InternalForm.h" />
     <ClInclude Include="Interpreter\Interpreter.h" />
+    <ClInclude Include="IO\File.h" />
+    <ClInclude Include="Libraries\ArithmeticLib.h" />
+    <ClInclude Include="Libraries\ArrayLib.h" />
+    <ClInclude Include="Libraries\FileLib.h" />
     <ClInclude Include="Libraries\FunctionLibrary.h" />
-    <ClInclude Include="Libraries\StandardLibrary.h" />
+    <ClInclude Include="Libraries\LogicLib.h" />
+    <ClInclude Include="Libraries\StandardLib.h" />
+    <ClInclude Include="Libraries\StringLib.h" />
+    <ClInclude Include="Libraries\TimeLib.h" />
     <ClInclude Include="Macros.h" />
     <ClInclude Include="Parser\AST.h" />
     <ClInclude Include="Parser\ASTSerializer.h" />
@@ -196,7 +213,6 @@
     <ClInclude Include="Utils\XmlHelper.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Bugs.txt" />
     <None Include="Parser\parser.yy" />
     <None Include="Parser\tokenizer.flex" />
   </ItemGroup>

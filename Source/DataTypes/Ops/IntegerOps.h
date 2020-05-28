@@ -3,6 +3,7 @@
 #include <istream>
 
 #include "Ops.h"
+#include "Evaluator/Context.h"
 
 namespace FPTL
 {
@@ -19,34 +20,14 @@ namespace FPTL
 				return &ops;
 			}
 
-			const Ops * combine(const Ops * aOther) const override
-			{
-				return aOther->withOps(this);
-			}
-
-			const Ops * withOps(const IntegerOps * aOps) const override
-			{
-				return get();
-			}
-
-			const Ops * withOps(const BooleanOps * aOps) const override
-			{
-				throw invalidOperation("combine with boolean");
-			}
-
-			const Ops * withOps(const DoubleOps * aOps) const override
-			{
-				return reinterpret_cast<Ops const*>(aOps);
-			}
-
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("int");
+				static TypeInfo info("Int");
 				return info;
 			}
 
 			// Преобразования типов.
-			long long toInt(const DataValue & aVal) const override
+			int64_t toInt(const DataValue & aVal) const override
 			{
 				return aVal.mIntVal;
 			}
@@ -56,32 +37,42 @@ namespace FPTL
 				return static_cast<double>(aVal.mIntVal);
 			}
 
-			// Базисные функции.
-			DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
+			DataValue& add(DataValue& aLhs, const DataValue& aRhs) const override
 			{
-				return DataBuilders::createInt(aLhs.mIntVal + aRhs.getOps()->toInt(aRhs));
+				aLhs.mIntVal += aRhs.mIntVal;
+				return aLhs;
+			}
+
+			DataValue add(const SExecutionContext& aCtx) const override
+			{
+				int64_t sum = 0;
+				for (size_t i = 0; i < aCtx.argNum; ++i)
+				{
+					sum += aCtx.getArg(i).mIntVal;
+				}				
+				return DataBuilders::createInt(sum);
 			}
 
 			DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createInt(aLhs.mIntVal - aRhs.getOps()->toInt(aRhs));
+				return DataBuilders::createInt(aLhs.mIntVal - aRhs.mIntVal);
 			}
 
 			DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createInt(aLhs.mIntVal * aRhs.getOps()->toInt(aRhs));
+				return DataBuilders::createInt(aLhs.mIntVal * aRhs.mIntVal);
 			}
 
 			DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				const long long Right = aRhs.getOps()->toInt(aRhs);
+				const long long Right = aRhs.mIntVal;
 				if (Right == 0) throw divideByZero();
 				return DataBuilders::createInt(aLhs.mIntVal / Right);
 			}
 
 			DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				const long long Right = aRhs.getOps()->toInt(aRhs);
+				const long long Right = aRhs.mIntVal;
 				if (Right == 0) throw divideByZero();
 				return DataBuilders::createInt(aLhs.mIntVal % Right);
 			}
@@ -92,19 +83,19 @@ namespace FPTL
 			}
 
 			// Функции сравнения.
-			DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool equal(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.mIntVal == aRhs.getOps()->toInt(aRhs));
+				return aLhs.mIntVal == aRhs.mIntVal;
 			}
 
-			DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool less(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.mIntVal < aRhs.getOps()->toInt(aRhs));
+				return aLhs.mIntVal < aRhs.mIntVal;
 			}
 
-			DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool greater(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.mIntVal > aRhs.getOps()->toInt(aRhs));
+				return aLhs.mIntVal > aRhs.mIntVal;
 			}
 
 			// Вывод в поток.
@@ -118,7 +109,7 @@ namespace FPTL
 				aStream << aVal.mIntVal;
 			}
 
-			DataValue read(std::istream & aStream) const override
+			DataValue read(const DataValue&, const SExecutionContext&, std::istream & aStream) const override
 			{
 				DataValue val(get());
 				aStream >> val.mIntVal;
@@ -126,7 +117,7 @@ namespace FPTL
 			}
 		};
 
-		inline DataValue DataBuilders::createInt(long long aVal)
+		inline DataValue DataBuilders::createInt(int64_t aVal)
 		{
 			DataValue val(IntegerOps::get());
 			val.mIntVal = aVal;

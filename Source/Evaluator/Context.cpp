@@ -9,8 +9,7 @@ namespace FPTL
 {
 	namespace Runtime 
 	{
-		SExecutionContext::SExecutionContext()
-			: Scheme(nullptr),
+		SExecutionContext::SExecutionContext():
 			Parent(nullptr),
 			Ready(false),
 			Working(false),
@@ -75,6 +74,7 @@ namespace FPTL
 			}
 
 			argPos = aArgPosOld;
+			// Уменьшение размера вектора в c++ никогда не перевыделяет память.
 			stack.resize(aPos + arity);
 			arity += aArity;
 		}

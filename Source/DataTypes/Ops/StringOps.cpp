@@ -30,153 +30,36 @@ namespace FPTL
 
 		//-----------------------------------------------------------------------------
 
-		class StringOps : public BaseOps
+		void StringOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 		{
-		protected:
-			StringOps() = default;
+			marker->markAlive(aVal.mString, sizeof(StringValue));
+			marker->markAlive(aVal.mString->data, aVal.mString->data->size() * sizeof(aVal.mString->data[0]));
+		}
 
-		public:
-			static StringOps * get()
+		// �������������� �������.
+		DataValue StringOps::add(const SExecutionContext & aCtx) const
+		{
+			size_t len = 0;
+			for (size_t i = 0; i < aCtx.argNum; ++i)
 			{
-				static StringOps ops;
-				return &ops;
+				const auto & arg = aCtx.getArg(i);
+				len += arg.mString->length();
 			}
 
-			const Ops* combine(const Ops * aOther) const override
+			const auto val = StringBuilder::create(aCtx, len);
+			const auto str = val.mString->getChars();
+			size_t curPos = 0;
+
+			for (size_t i = 0; i < aCtx.argNum; ++i)
 			{
-				return aOther->withOps(this);
+				const auto & arg = aCtx.getArg(i);
+				const auto inStr = arg.mString;
+				std::memcpy(str + curPos, inStr->getChars(), inStr->length());
+				curPos += inStr->length();
 			}
 
-			const Ops* withOps(const StringOps * aOther) const override
-			{
-				return get();
-			}
-
-			const Ops* withOps(const Ops * aOps) const override
-			{
-				throw invalidOperation("combine");
-			}
-
-			const Ops* withOps(const BooleanOps * aOps) const override
-			{
-				throw invalidOperation("toBool");
-			}
-
-			const Ops * withOps(const IntegerOps * aOps) const override
-			{
-				throw invalidOperation("toInt");
-			}
-
-			const Ops * withOps(const DoubleOps * aOps) const override
-			{
-				throw invalidOperation("toDouble");
-			}
-
-			TypeInfo getType(const DataValue &aVal) const override
-			{
-				static TypeInfo info("string");
-				return info;
-			}
-
-			// Преобразование типов.
-			long long toInt(const DataValue & aVal) const override
-			{
-				return boost::lexical_cast<long long>(aVal.mString->str());
-			}
-
-			double toDouble(const DataValue & aVal) const override
-			{
-				return boost::lexical_cast<double>(aVal.mString->str());
-			}
-
-			StringValue * toString(const DataValue & aVal) const override
-			{
-				return aVal.mString;
-			}
-
-			// Арифметические функции.
-			DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				throw invalidOperation("add");
-			}
-
-			DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				throw invalidOperation("sub");
-			}
-
-			DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				throw invalidOperation("mul");
-			}
-
-			DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				throw invalidOperation("div");
-			}
-
-			DataValue mod(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				throw invalidOperation("mod");
-			}
-
-			DataValue abs(const DataValue & aArg) const override
-			{
-				throw invalidOperation("abs");
-			}
-
-			// Функции сравнения.
-			DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				const auto lhs = aLhs.mString;
-				const auto rhs = aRhs.mString;
-				return DataBuilders::createBoolean(
-					lhs->length() == rhs->length() && std::equal(lhs->getChars(), lhs->getChars() + lhs->length(), rhs->getChars())
-				);
-			}
-
-			DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				const auto lhs = aLhs.mString;
-				const auto rhs = aRhs.mString;
-				return DataBuilders::createBoolean(
-					std::lexicographical_compare(lhs->getChars(), lhs->getChars() + lhs->length(), rhs->getChars(), rhs->getChars() + rhs->length())
-				);
-			}
-
-			DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				const auto lhs = aLhs.mString;
-				const auto rhs = aRhs.mString;
-				return DataBuilders::createBoolean(
-					std::lexicographical_compare(rhs->getChars(), rhs->getChars() + rhs->length(), lhs->getChars(), lhs->getChars() + lhs->length())
-				);
-			}
-
-			void mark(const DataValue & aVal, ObjectMarker * marker) const override
-			{
-				marker->markAlive(aVal.mString, sizeof(StringValue));
-				marker->markAlive(aVal.mString->data, aVal.mString->data->size() * sizeof(aVal.mString->data[0]));
-			}
-
-			// Вывод в поток.
-			void print(const DataValue & aVal, std::ostream & aStream) const override
-			{
-				const auto str = aVal.mString;
-				if (str->str().empty())	aStream << R"("")";
-				else aStream << str->str();
-			}
-
-			void write(const DataValue & aVal, std::ostream & aStream) const override
-			{
-				aStream << aVal.mString->data->value;
-			}
-
-			DataValue read(std::istream & aStream) const override
-			{
-				throw invalidOperation("read");
-			}
-		};
+			return val;
+		}
 
 		//-----------------------------------------------------------------------------
 

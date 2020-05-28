@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "Ops.h"
+#include "Evaluator/Context.h"
 
 namespace FPTL
 {
@@ -23,20 +24,17 @@ namespace FPTL
 		}
 
 		//-----------------------------------------------------------------------------
-		const Ops* BaseOps::withOps(const Ops * aOther) const
-		{
-			throw invalidOperation("combine");
-		}
-
-		const Ops* BaseOps::withOps(StringOps const * aOther) const
-		{
-			throw invalidOperation("combine");
-		}
-
 		// Базисные функции.
-		DataValue BaseOps::add(const DataValue & aLhs, const DataValue & aRhs) const
+		
+		DataValue& BaseOps::add(DataValue& aLhs, const DataValue & aRhs) const
 		{
 			throw invalidOperation(aRhs.getOps()->getType(aRhs), "add");
+		}
+
+		DataValue BaseOps::add(const SExecutionContext & aCtx) const
+		{
+			const auto& arg = aCtx.getArg(0);
+			throw invalidOperation(arg.getOps()->getType(arg), "add");
 		}
 
 		DataValue BaseOps::sub(const DataValue & aLhs, const DataValue & aRhs) const
@@ -65,17 +63,17 @@ namespace FPTL
 		}
 
 		// Функции сравнения.
-		DataValue BaseOps::equal(const DataValue & aLhs, const DataValue & aRhs) const
+		bool BaseOps::equal(const DataValue & aLhs, const DataValue & aRhs) const
 		{
 			throw invalidOperation(aRhs.getOps()->getType(aRhs), "equal");
 		}
 
-		DataValue BaseOps::less(const DataValue & aLhs, const DataValue & aRhs) const
+		bool BaseOps::less(const DataValue & aLhs, const DataValue & aRhs) const
 		{
 			throw invalidOperation(aRhs.getOps()->getType(aRhs), "less");
 		}
 
-		DataValue BaseOps::greater(const DataValue & aLhs, const DataValue & aRhs) const
+		bool BaseOps::greater(const DataValue & aLhs, const DataValue & aRhs) const
 		{
 			throw invalidOperation(aRhs.getOps()->getType(aRhs), "greater");
 		}
@@ -91,23 +89,25 @@ namespace FPTL
 			throw invalidOperation(aVal.getOps()->getType(aVal), "toDouble");
 		}
 
-		StringValue * BaseOps::toString(const DataValue & aVal) const
-		{
-			throw invalidOperation(aVal.getOps()->getType(aVal), "toString");
-		}
-
 		void BaseOps::write(const class DataValue& aVal, std::ostream& aStream) const
 		{
 			throw invalidOperation(aVal.getOps()->getType(aVal), "write");
 		}
 
-		DataValue BaseOps::read(std::istream & aStream) const
+		DataValue BaseOps::read(const DataValue & aVal, const SExecutionContext & aCtx, std::istream & aStream) const
 		{
 			throw invalidOperation("read");
 		}
 
 		void BaseOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 		{
+		}
+		
+		std::runtime_error  BaseOps::invalidOperation(const TypeInfo& valType1, const TypeInfo& valType2, const std::string& funcName)
+		{
+			std::stringstream error;
+			error << invalidCombineMsg << valType1 << " and " << valType2 << " in " << funcName;
+			return std::runtime_error(error.str());			
 		}
 
 		std::runtime_error BaseOps::invalidOperation(const TypeInfo& valType, const std::string& funcName)

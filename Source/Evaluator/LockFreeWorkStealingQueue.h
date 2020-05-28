@@ -16,11 +16,11 @@ namespace FPTL
 			LockFreeWorkStealingQueue();
 
 			// Добавление задачи в конец очереди
-			void push(const T & aElem);
-			// Удаление задачи из начала очереди
-			bool pop(T & aElem);
-			// Кража задачи из конца очереди
-			bool steal(T & aElem);
+			void push(const T& aElem);
+			// Изъятие задачи из начала очереди
+			bool pop(T& aElem);
+			// Изъятие задачи из конца очереди
+			bool steal(T& aElem);
 
 		private:
 			std::atomic_size_t mHeadPos;

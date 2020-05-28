@@ -1,8 +1,8 @@
-// A Bison parser, made by GNU Bison 3.0.4.
+// A Bison parser, made by GNU Bison 3.3.2.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2019 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,32 +30,24 @@
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
 
+// Undocumented macros, especially those whose name start with YY_,
+// are private implementation details.  Do not rely on them.
 
-// First part of user declarations.
 
-#line 37 "parser.tab.cc" // lalr1.cc:404
 
-# ifndef YY_NULLPTR
-#  if defined __cplusplus && 201103L <= __cplusplus
-#   define YY_NULLPTR nullptr
-#  else
-#   define YY_NULLPTR 0
-#  endif
-# endif
+
 
 #include "parser.tab.hh"
 
-// User implementation prologue.
 
-#line 51 "parser.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 55 "parser.yy" // lalr1.cc:413
+#line 55 "parser.yy" // lalr1.cc:435
 
 #include "../Support.h"
 #include "../FlexTokenizer.h"
 #include "../Nodes.h"
 
-#line 59 "parser.tab.cc" // lalr1.cc:413
+#line 51 "parser.tab.cc" // lalr1.cc:435
 
 
 #ifndef YY_
@@ -67,6 +59,15 @@
 # endif
 # ifndef YY_
 #  define YY_(msgid) msgid
+# endif
+#endif
+
+// Whether we are compiled with exception support.
+#ifndef YY_EXCEPTIONS
+# if defined __GNUC__ && !defined __EXCEPTIONS
+#  define YY_EXCEPTIONS 0
+# else
+#  define YY_EXCEPTIONS 1
 # endif
 #endif
 
@@ -87,7 +88,7 @@
     {                                           \
       *yycdebug_ << Title << ' ';               \
       yy_print_ (*yycdebug_, Symbol);           \
-      *yycdebug_ << std::endl;                  \
+      *yycdebug_ << '\n';                       \
     }                                           \
   } while (false)
 
@@ -106,9 +107,9 @@
 #else // !YYDEBUG
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE(Symbol)
-# define YY_REDUCE_PRINT(Rule)           static_cast<void>(0)
-# define YY_STACK_PRINT()                static_cast<void>(0)
+# define YY_SYMBOL_PRINT(Title, Symbol)  YYUSE (Symbol)
+# define YY_REDUCE_PRINT(Rule)           static_cast<void> (0)
+# define YY_STACK_PRINT()                static_cast<void> (0)
 
 #endif // !YYDEBUG
 
@@ -120,9 +121,9 @@
 #define YYERROR         goto yyerrorlab
 #define YYRECOVERING()  (!!yyerrstatus_)
 
-#line 2 "parser.yy" // lalr1.cc:479
+#line 2 "parser.yy" // lalr1.cc:510
 namespace FPTL { namespace Parser {
-#line 126 "parser.tab.cc" // lalr1.cc:479
+#line 127 "parser.tab.cc" // lalr1.cc:510
 
   /* Return YYSTR after stripping away unnecessary quotes and
      backslashes, so that it's suitable for yyerror.  The heuristic is
@@ -134,7 +135,7 @@ namespace FPTL { namespace Parser {
   {
     if (*yystr == '"')
       {
-        std::string yyr = "";
+        std::string yyr;
         char const *yyp = yystr;
 
         for (;;)
@@ -147,7 +148,10 @@ namespace FPTL { namespace Parser {
             case '\\':
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
-              // Fall through.
+              else
+                goto append;
+
+            append:
             default:
               yyr += *yyp;
               break;
@@ -177,105 +181,84 @@ namespace FPTL { namespace Parser {
   BisonParser::~BisonParser ()
   {}
 
+  BisonParser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
+  {}
 
   /*---------------.
   | Symbol types.  |
   `---------------*/
 
-  inline
-  BisonParser::syntax_error::syntax_error (const std::string& m)
-    : std::runtime_error (m)
-  {}
-
   // basic_symbol.
+#if 201103L <= YY_CPLUSPLUS
   template <typename Base>
-  inline
-  BisonParser::basic_symbol<Base>::basic_symbol ()
-    : value ()
+  BisonParser::basic_symbol<Base>::basic_symbol (basic_symbol&& that)
+    : Base (std::move (that))
+    , value (std::move (that.value))
   {}
+#endif
 
   template <typename Base>
-  inline
-  BisonParser::basic_symbol<Base>::basic_symbol (const basic_symbol& other)
-    : Base (other)
-    , value ()
-  {
-    value = other.value;
-  }
-
-
-  template <typename Base>
-  inline
-  BisonParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const semantic_type& v)
-    : Base (t)
-    , value (v)
+  BisonParser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+    : Base (that)
+    , value (that.value)
   {}
 
 
   /// Constructor for valueless symbols.
   template <typename Base>
-  inline
   BisonParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t)
     : Base (t)
     , value ()
   {}
 
   template <typename Base>
-  inline
-  BisonParser::basic_symbol<Base>::~basic_symbol ()
-  {
-    clear ();
-  }
+  BisonParser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, YY_RVREF (semantic_type) v)
+    : Base (t)
+    , value (YY_MOVE (v))
+  {}
 
   template <typename Base>
-  inline
-  void
-  BisonParser::basic_symbol<Base>::clear ()
-  {
-    Base::clear ();
-  }
-
-  template <typename Base>
-  inline
   bool
-  BisonParser::basic_symbol<Base>::empty () const
+  BisonParser::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
     return Base::type_get () == empty_symbol;
   }
 
   template <typename Base>
-  inline
   void
   BisonParser::basic_symbol<Base>::move (basic_symbol& s)
   {
-    super_type::move(s);
-    value = s.value;
+    super_type::move (s);
+    value = YY_MOVE (s.value);
   }
 
   // by_type.
-  inline
   BisonParser::by_type::by_type ()
     : type (empty_symbol)
   {}
 
-  inline
-  BisonParser::by_type::by_type (const by_type& other)
-    : type (other.type)
+#if 201103L <= YY_CPLUSPLUS
+  BisonParser::by_type::by_type (by_type&& that)
+    : type (that.type)
+  {
+    that.clear ();
+  }
+#endif
+
+  BisonParser::by_type::by_type (const by_type& that)
+    : type (that.type)
   {}
 
-  inline
   BisonParser::by_type::by_type (token_type t)
     : type (yytranslate_ (t))
   {}
 
-  inline
   void
   BisonParser::by_type::clear ()
   {
     type = empty_symbol;
   }
 
-  inline
   void
   BisonParser::by_type::move (by_type& that)
   {
@@ -283,33 +266,28 @@ namespace FPTL { namespace Parser {
     that.clear ();
   }
 
-  inline
   int
-  BisonParser::by_type::type_get () const
+  BisonParser::by_type::type_get () const YY_NOEXCEPT
   {
     return type;
   }
 
 
   // by_state.
-  inline
-  BisonParser::by_state::by_state ()
+  BisonParser::by_state::by_state () YY_NOEXCEPT
     : state (empty_state)
   {}
 
-  inline
-  BisonParser::by_state::by_state (const by_state& other)
-    : state (other.state)
+  BisonParser::by_state::by_state (const by_state& that) YY_NOEXCEPT
+    : state (that.state)
   {}
 
-  inline
   void
-  BisonParser::by_state::clear ()
+  BisonParser::by_state::clear () YY_NOEXCEPT
   {
     state = empty_state;
   }
 
-  inline
   void
   BisonParser::by_state::move (by_state& that)
   {
@@ -317,14 +295,12 @@ namespace FPTL { namespace Parser {
     that.clear ();
   }
 
-  inline
-  BisonParser::by_state::by_state (state_type s)
+  BisonParser::by_state::by_state (state_type s) YY_NOEXCEPT
     : state (s)
   {}
 
-  inline
   BisonParser::symbol_number_type
-  BisonParser::by_state::type_get () const
+  BisonParser::by_state::type_get () const YY_NOEXCEPT
   {
     if (state == empty_state)
       return empty_symbol;
@@ -332,32 +308,38 @@ namespace FPTL { namespace Parser {
       return yystos_[state];
   }
 
-  inline
   BisonParser::stack_symbol_type::stack_symbol_type ()
   {}
 
-
-  inline
-  BisonParser::stack_symbol_type::stack_symbol_type (state_type s, symbol_type& that)
-    : super_type (s)
+  BisonParser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.value))
   {
-    value = that.value;
+#if 201103L <= YY_CPLUSPLUS
+    // that is emptied.
+    that.state = empty_state;
+#endif
+  }
+
+  BisonParser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
+    : super_type (s, YY_MOVE (that.value))
+  {
     // that is emptied.
     that.type = empty_symbol;
   }
 
-  inline
+#if YY_CPLUSPLUS < 201103L
   BisonParser::stack_symbol_type&
-  BisonParser::stack_symbol_type::operator= (const stack_symbol_type& that)
+  BisonParser::stack_symbol_type::operator= (stack_symbol_type& that)
   {
     state = that.state;
     value = that.value;
+    // that is emptied.
+    that.state = empty_state;
     return *this;
   }
-
+#endif
 
   template <typename Base>
-  inline
   void
   BisonParser::yy_destroy_ (const char* yymsg, basic_symbol<Base>& yysym) const
   {
@@ -367,567 +349,515 @@ namespace FPTL { namespace Parser {
     // User destructor.
     switch (yysym.type_get ())
     {
-            case 12: // NUMBER
-
-#line 62 "parser.yy" // lalr1.cc:614
+      case 12: // NUMBER
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 379 "parser.tab.cc" // lalr1.cc:614
+#line 360 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 13: // REALNUMBER
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 390 "parser.tab.cc" // lalr1.cc:614
+#line 370 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 14: // STRING
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 401 "parser.tab.cc" // lalr1.cc:614
+#line 380 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 56: // FunctionalProgram
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 412 "parser.tab.cc" // lalr1.cc:614
+#line 390 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 57: // DataTypeDefinitionsBlocks
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 423 "parser.tab.cc" // lalr1.cc:614
+#line 400 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 58: // DataTypeDefinitionsBlock
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 434 "parser.tab.cc" // lalr1.cc:614
+#line 410 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 60: // TypeParametersList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 445 "parser.tab.cc" // lalr1.cc:614
+#line 420 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 61: // TypeParameterDef
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
 
 }
-#line 456 "parser.tab.cc" // lalr1.cc:614
+#line 430 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 62: // ConstructorsDefinitionList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 467 "parser.tab.cc" // lalr1.cc:614
+#line 440 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 63: // ConstructorDef
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 478 "parser.tab.cc" // lalr1.cc:614
+#line 450 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 64: // ConstructorParametersList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 489 "parser.tab.cc" // lalr1.cc:614
+#line 460 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 65: // TypesDefinitionList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 500 "parser.tab.cc" // lalr1.cc:614
+#line 470 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 66: // TypesDefinitionList2
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 511 "parser.tab.cc" // lalr1.cc:614
+#line 480 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 67: // TypeDefinition
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
 
 }
-#line 522 "parser.tab.cc" // lalr1.cc:614
+#line 490 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 68: // TypeDefConstructor
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 533 "parser.tab.cc" // lalr1.cc:614
+#line 500 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 69: // TypeExpression
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 544 "parser.tab.cc" // lalr1.cc:614
+#line 510 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 70: // AtomType
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 555 "parser.tab.cc" // lalr1.cc:614
+#line 520 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 72: // TypeExpressionsList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 566 "parser.tab.cc" // lalr1.cc:614
+#line 530 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 75: // Scheme
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scFun);
 	delete node;
 
 }
-#line 577 "parser.tab.cc" // lalr1.cc:614
+#line 540 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 77: // FormalParametersList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 588 "parser.tab.cc" // lalr1.cc:614
+#line 550 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 78: // FormalParameter
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
 
 }
-#line 599 "parser.tab.cc" // lalr1.cc:614
+#line 560 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 79: // DefinitionsList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 610 "parser.tab.cc" // lalr1.cc:614
+#line 570 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 80: // Definition
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 621 "parser.tab.cc" // lalr1.cc:614
+#line 580 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 81: // Term
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 632 "parser.tab.cc" // lalr1.cc:614
+#line 590 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 82: // AtomTerm
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 643 "parser.tab.cc" // lalr1.cc:614
+#line 600 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 83: // FuncObjectWithParameters
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 654 "parser.tab.cc" // lalr1.cc:614
+#line 610 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 84: // FuncArgumentList
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 665 "parser.tab.cc" // lalr1.cc:614
+#line 620 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 85: // FuncParameterName
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 676 "parser.tab.cc" // lalr1.cc:614
+#line 630 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 86: // SequentialTerm
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 687 "parser.tab.cc" // lalr1.cc:614
+#line 640 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 87: // CompositionTerm
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 698 "parser.tab.cc" // lalr1.cc:614
+#line 650 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 88: // ConditionTerm
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 709 "parser.tab.cc" // lalr1.cc:614
+#line 660 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 89: // VariantTerm
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 720 "parser.tab.cc" // lalr1.cc:614
+#line 670 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 90: // FuncObjectName
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 731 "parser.tab.cc" // lalr1.cc:614
+#line 680 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 91: // ConstructionFun
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scFun);
 	delete node;
 
 }
-#line 742 "parser.tab.cc" // lalr1.cc:614
+#line 690 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 96: // ElementaryFunctionName
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 753 "parser.tab.cc" // lalr1.cc:614
+#line 700 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 97: // Constructor
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 764 "parser.tab.cc" // lalr1.cc:614
+#line 710 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 98: // Destructor
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 775 "parser.tab.cc" // lalr1.cc:614
+#line 720 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 99: // BuiltInFunction
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 786 "parser.tab.cc" // lalr1.cc:614
+#line 730 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 100: // TupleElement
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 797 "parser.tab.cc" // lalr1.cc:614
+#line 740 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 101: // Constant
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 808 "parser.tab.cc" // lalr1.cc:614
+#line 750 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 102: // BuiltInFunctionName
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 819 "parser.tab.cc" // lalr1.cc:614
+#line 760 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 103: // Application
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scApp);
 	delete node;
 
 }
-#line 830 "parser.tab.cc" // lalr1.cc:614
+#line 770 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 104: // DataInit
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
 	delete node;
 
 }
-#line 841 "parser.tab.cc" // lalr1.cc:614
+#line 780 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 105: // OneDataInit
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
 	delete node;
 
 }
-#line 852 "parser.tab.cc" // lalr1.cc:614
+#line 790 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 107: // InterpFunProgramName
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
 	delete node;
 
 }
-#line 863 "parser.tab.cc" // lalr1.cc:614
+#line 800 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 108: // Data
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 874 "parser.tab.cc" // lalr1.cc:614
+#line 810 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 109: // OneData
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 885 "parser.tab.cc" // lalr1.cc:614
+#line 820 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 110: // ValueAtom
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 896 "parser.tab.cc" // lalr1.cc:614
+#line 830 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 111: // ValueConstructor
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 907 "parser.tab.cc" // lalr1.cc:614
+#line 840 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 112: // ValueComposition
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 918 "parser.tab.cc" // lalr1.cc:614
+#line 850 "parser.tab.cc" // lalr1.cc:652
         break;
 
       case 113: // Value
-
-#line 62 "parser.yy" // lalr1.cc:614
+#line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
 	delete node;
 
 }
-#line 929 "parser.tab.cc" // lalr1.cc:614
+#line 860 "parser.tab.cc" // lalr1.cc:652
         break;
-
 
       default:
         break;
@@ -943,10 +873,12 @@ namespace FPTL { namespace Parser {
     std::ostream& yyoutput = yyo;
     YYUSE (yyoutput);
     symbol_number_type yytype = yysym.type_get ();
+#if defined __GNUC__ && ! defined __clang__ && ! defined __ICC && __GNUC__ * 100 + __GNUC_MINOR__ <= 408
     // Avoid a (spurious) G++ 4.8 warning about "array subscript is
     // below array bounds".
     if (yysym.empty ())
       std::abort ();
+#endif
     yyo << (yytype < yyntokens_ ? "token" : "nterm")
         << ' ' << yytname_[yytype] << " (";
     YYUSE (yytype);
@@ -954,26 +886,27 @@ namespace FPTL { namespace Parser {
   }
 #endif
 
-  inline
   void
-  BisonParser::yypush_ (const char* m, state_type s, symbol_type& sym)
-  {
-    stack_symbol_type t (s, sym);
-    yypush_ (m, t);
-  }
-
-  inline
-  void
-  BisonParser::yypush_ (const char* m, stack_symbol_type& s)
+  BisonParser::yypush_ (const char* m, YY_MOVE_REF (stack_symbol_type) sym)
   {
     if (m)
-      YY_SYMBOL_PRINT (m, s);
-    yystack_.push (s);
+      YY_SYMBOL_PRINT (m, sym);
+    yystack_.push (YY_MOVE (sym));
   }
 
-  inline
   void
-  BisonParser::yypop_ (unsigned int n)
+  BisonParser::yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym)
+  {
+#if 201103L <= YY_CPLUSPLUS
+    yypush_ (m, stack_symbol_type (s, std::move (sym)));
+#else
+    stack_symbol_type ss (s, sym);
+    yypush_ (m, ss);
+#endif
+  }
+
+  void
+  BisonParser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -1005,7 +938,7 @@ namespace FPTL { namespace Parser {
   }
 #endif // YYDEBUG
 
-  inline BisonParser::state_type
+  BisonParser::state_type
   BisonParser::yy_lr_goto_state_ (state_type yystate, int yysym)
   {
     int yyr = yypgoto_[yysym - yyntokens_] + yystate;
@@ -1015,16 +948,22 @@ namespace FPTL { namespace Parser {
       return yydefgoto_[yysym - yyntokens_];
   }
 
-  inline bool
+  bool
   BisonParser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
-  inline bool
+  bool
   BisonParser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
+  }
+
+  int
+  BisonParser::operator() ()
+  {
+    return parse ();
   }
 
   int
@@ -1045,11 +984,11 @@ namespace FPTL { namespace Parser {
     /// The return value of parse ().
     int yyresult;
 
-    // FIXME: This shoud be completely indented.  It is not yet to
-    // avoid gratuitous conflicts when merging into the master branch.
+#if YY_EXCEPTIONS
     try
+#endif // YY_EXCEPTIONS
       {
-    YYCDEBUG << "Starting parse" << std::endl;
+    YYCDEBUG << "Starting parse\n";
 
 
     /* Initialize the stack.  The initial state will be set in
@@ -1057,21 +996,25 @@ namespace FPTL { namespace Parser {
        location values to have been already stored, initialize these
        stacks with a primary value.  */
     yystack_.clear ();
-    yypush_ (YY_NULLPTR, 0, yyla);
+    yypush_ (YY_NULLPTR, 0, YY_MOVE (yyla));
 
-    // A new symbol was pushed on the stack.
+  /*-----------------------------------------------.
+  | yynewstate -- push a new symbol on the stack.  |
+  `-----------------------------------------------*/
   yynewstate:
-    YYCDEBUG << "Entering state " << yystack_[0].state << std::endl;
+    YYCDEBUG << "Entering state " << yystack_[0].state << '\n';
 
     // Accept?
     if (yystack_[0].state == yyfinal_)
-      goto yyacceptlab;
+      YYACCEPT;
 
     goto yybackup;
 
-    // Backup.
-  yybackup:
 
+  /*-----------.
+  | yybackup.  |
+  `-----------*/
+  yybackup:
     // Try to take a decision without lookahead.
     yyn = yypact_[yystack_[0].state];
     if (yy_pact_value_is_default_ (yyn))
@@ -1081,15 +1024,20 @@ namespace FPTL { namespace Parser {
     if (yyla.empty ())
       {
         YYCDEBUG << "Reading a token: ";
+#if YY_EXCEPTIONS
         try
+#endif // YY_EXCEPTIONS
           {
             yyla.type = yytranslate_ (yylex (&yyla.value, pSupport, aTokenizer));
           }
+#if YY_EXCEPTIONS
         catch (const syntax_error& yyexc)
           {
+            YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
             error (yyexc);
             goto yyerrlab1;
           }
+#endif // YY_EXCEPTIONS
       }
     YY_SYMBOL_PRINT ("Next token is", yyla);
 
@@ -1114,8 +1062,9 @@ namespace FPTL { namespace Parser {
       --yyerrstatus_;
 
     // Shift the lookahead token.
-    yypush_ ("Shifting", yyn, yyla);
+    yypush_ ("Shifting", yyn, YY_MOVE (yyla));
     goto yynewstate;
+
 
   /*-----------------------------------------------------------.
   | yydefault -- do the default action for the current state.  |
@@ -1126,14 +1075,15 @@ namespace FPTL { namespace Parser {
       goto yyerrlab;
     goto yyreduce;
 
+
   /*-----------------------------.
-  | yyreduce -- Do a reduction.  |
+  | yyreduce -- do a reduction.  |
   `-----------------------------*/
   yyreduce:
     yylen = yyr2_[yyn];
     {
       stack_symbol_type yylhs;
-      yylhs.state = yy_lr_goto_state_(yystack_[yylen].state, yyr1_[yyn]);
+      yylhs.state = yy_lr_goto_state_ (yystack_[yylen].state, yyr1_[yyn]);
       /* If YYLEN is nonzero, implement the default value of the
          action: '$$ = $1'.  Otherwise, use the top of the stack.
 
@@ -1148,12 +1098,14 @@ namespace FPTL { namespace Parser {
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
+#if YY_EXCEPTIONS
       try
+#endif // YY_EXCEPTIONS
         {
           switch (yyn)
             {
   case 2:
-#line 185 "parser.yy" // lalr1.cc:859
+#line 185 "parser.yy" // lalr1.cc:919
     {
 			mASTRoot = new FunctionalProgram( (yystack_[2].value.scList), (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			(yystack_[2].value.scList)->mParent = mASTRoot;
@@ -1163,163 +1115,169 @@ namespace FPTL { namespace Parser {
 			// Возвращаем 0, иначе все дерево будет "срублено" деструктором парсера.
 			(yylhs.value.scNode) = 0;
 		}
-#line 1167 "parser.tab.cc" // lalr1.cc:859
+#line 1119 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 3:
-#line 195 "parser.yy" // lalr1.cc:859
+#line 195 "parser.yy" // lalr1.cc:919
     {
 			mASTRoot = new FunctionalProgram( 0, (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			(yystack_[1].value.scFun)->mParent = mASTRoot;
 			(yystack_[0].value.scApp)->mParent = mASTRoot;
 			(yylhs.value.scNode) = 0;
 		}
-#line 1178 "parser.tab.cc" // lalr1.cc:859
+#line 1130 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 4:
-#line 207 "parser.yy" // lalr1.cc:859
+#line 207 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode(  ASTNode::DataTypeDefinitionsBlocks );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scList);
 		}
-#line 1188 "parser.tab.cc" // lalr1.cc:859
+#line 1140 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 5:
-#line 213 "parser.yy" // lalr1.cc:859
+#line 213 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
 		}
-#line 1197 "parser.tab.cc" // lalr1.cc:859
+#line 1149 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 6:
-#line 221 "parser.yy" // lalr1.cc:859
+#line 221 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0, 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
 		}
-#line 1206 "parser.tab.cc" // lalr1.cc:859
+#line 1158 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 7:
-#line 226 "parser.yy" // lalr1.cc:859
+#line 226 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList), 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
 			(yystack_[4].value.scList)->mParent = (yylhs.value.scNode);
 		}
-#line 1216 "parser.tab.cc" // lalr1.cc:859
+#line 1168 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 8:
-#line 232 "parser.yy" // lalr1.cc:859
+#line 232 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[7].value.scIdent), (yystack_[1].value.scList), 0, (yystack_[3].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
 			(yystack_[3].value.scList)->mParent = (yylhs.value.scNode);
 		}
-#line 1226 "parser.tab.cc" // lalr1.cc:859
+#line 1178 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 9:
-#line 238 "parser.yy" // lalr1.cc:859
+#line 238 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[10].value.scIdent), (yystack_[1].value.scList), (yystack_[8].value.scList), (yystack_[3].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
 			(yystack_[8].value.scList)->mParent = (yylhs.value.scNode);
 			(yystack_[3].value.scList)->mParent = (yylhs.value.scNode);
 		}
-#line 1237 "parser.tab.cc" // lalr1.cc:859
+#line 1189 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 10:
+#line 247 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
+#line 1195 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 11:
-#line 252 "parser.yy" // lalr1.cc:859
+#line 252 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypeParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 			(yystack_[0].value.scDef)->mParent = (yylhs.value.scList);
 		}
-#line 1247 "parser.tab.cc" // lalr1.cc:859
+#line 1205 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 12:
-#line 258 "parser.yy" // lalr1.cc:859
+#line 258 "parser.yy" // lalr1.cc:919
     {		
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 			(yystack_[2].value.scDef)->mParent = (yystack_[0].value.scList);
 		}
-#line 1256 "parser.tab.cc" // lalr1.cc:859
+#line 1214 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 13:
-#line 266 "parser.yy" // lalr1.cc:859
+#line 266 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
-#line 1264 "parser.tab.cc" // lalr1.cc:859
+#line 1222 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 14:
-#line 273 "parser.yy" // lalr1.cc:859
+#line 273 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorsDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scList);
 		}
-#line 1274 "parser.tab.cc" // lalr1.cc:859
+#line 1232 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 15:
-#line 279 "parser.yy" // lalr1.cc:859
+#line 279 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
 		}
-#line 1283 "parser.tab.cc" // lalr1.cc:859
+#line 1241 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 16:
-#line 287 "parser.yy" // lalr1.cc:859
+#line 287 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), 0, (yystack_[3].value.scIdent) );
 		}
-#line 1291 "parser.tab.cc" // lalr1.cc:859
+#line 1249 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 17:
-#line 291 "parser.yy" // lalr1.cc:859
+#line 291 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), (yystack_[5].value.scList), (yystack_[3].value.scIdent) );
 			(yystack_[5].value.scList)->mParent = (yylhs.value.scNode);
 		}
-#line 1300 "parser.tab.cc" // lalr1.cc:859
+#line 1258 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 18:
-#line 298 "parser.yy" // lalr1.cc:859
+#line 298 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scList);
 		}
-#line 1310 "parser.tab.cc" // lalr1.cc:859
+#line 1268 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 19:
-#line 304 "parser.yy" // lalr1.cc:859
+#line 304 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 			(yystack_[2].value.scName)->mParent = (yystack_[0].value.scList);
 		}
-#line 1319 "parser.tab.cc" // lalr1.cc:859
+#line 1277 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 20:
-#line 313 "parser.yy" // lalr1.cc:859
+#line 313 "parser.yy" // lalr1.cc:919
     {
 			if( (yystack_[0].value.scList)->mChilds.size() > 1 )
 			{
@@ -1329,608 +1287,804 @@ namespace FPTL { namespace Parser {
 
 			(yylhs.value.scList) = (yystack_[0].value.scList);
 		}
-#line 1333 "parser.tab.cc" // lalr1.cc:859
+#line 1291 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 21:
-#line 326 "parser.yy" // lalr1.cc:859
+#line 326 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypesDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 			(yystack_[0].value.scDef)->mParent = (yylhs.value.scList);
 		}
-#line 1343 "parser.tab.cc" // lalr1.cc:859
+#line 1301 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 22:
-#line 332 "parser.yy" // lalr1.cc:859
+#line 332 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 			(yystack_[1].value.scDef)->mParent = (yystack_[0].value.scList);
 		}
-#line 1352 "parser.tab.cc" // lalr1.cc:859
+#line 1310 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 23:
-#line 340 "parser.yy" // lalr1.cc:859
+#line 340 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scDef);
 		}
-#line 1361 "parser.tab.cc" // lalr1.cc:859
+#line 1319 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 24:
-#line 345 "parser.yy" // lalr1.cc:859
+#line 345 "parser.yy" // lalr1.cc:919
     {
 			pSupport->semanticError( ParserErrTypes::NestedDataDefinition, static_cast<DataNode*>((yystack_[0].value.scNode))->getDataName() );
 			delete (yystack_[0].value.scNode);
 			(yylhs.value.scDef) = 0;
 		}
-#line 1371 "parser.tab.cc" // lalr1.cc:859
+#line 1329 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 25:
-#line 354 "parser.yy" // lalr1.cc:859
+#line 354 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), (yystack_[2].value.scList) );
 			(yystack_[2].value.scList)->mParent = (yylhs.value.scNode);
 		}
-#line 1380 "parser.tab.cc" // lalr1.cc:859
+#line 1338 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 26:
-#line 359 "parser.yy" // lalr1.cc:859
+#line 359 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), 0 );
 		}
-#line 1388 "parser.tab.cc" // lalr1.cc:859
+#line 1346 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 27:
+#line 365 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1352 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 28:
-#line 367 "parser.yy" // lalr1.cc:859
+#line 367 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::TypeExpression, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1398 "parser.tab.cc" // lalr1.cc:859
+#line 1362 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 29:
-#line 377 "parser.yy" // lalr1.cc:859
+#line 377 "parser.yy" // lalr1.cc:919
     {	
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scToken), NameRefNode::BaseType, nullptr );
 		}
-#line 1406 "parser.tab.cc" // lalr1.cc:859
+#line 1370 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 30:
-#line 381 "parser.yy" // lalr1.cc:859
+#line 381 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::Type, nullptr );
 		}
-#line 1414 "parser.tab.cc" // lalr1.cc:859
+#line 1378 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 31:
-#line 385 "parser.yy" // lalr1.cc:859
+#line 385 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::Template, (yystack_[1].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scName);
 		}
-#line 1423 "parser.tab.cc" // lalr1.cc:859
+#line 1387 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 32:
-#line 390 "parser.yy" // lalr1.cc:859
+#line 390 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::TypeParamName, nullptr );
 		}
-#line 1431 "parser.tab.cc" // lalr1.cc:859
+#line 1395 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 33:
+#line 396 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1401 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 34:
+#line 397 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1407 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 35:
+#line 398 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1413 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 36:
+#line 399 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1419 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 37:
+#line 400 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1425 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 38:
+#line 401 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1431 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 39:
+#line 402 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
+#line 1437 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 40:
-#line 407 "parser.yy" // lalr1.cc:859
+#line 407 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypeExpressionsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scList);
 		}
-#line 1441 "parser.tab.cc" // lalr1.cc:859
+#line 1447 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 41:
-#line 413 "parser.yy" // lalr1.cc:859
+#line 413 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 			(yystack_[2].value.scName)->mParent = (yystack_[0].value.scList);
 		}
-#line 1450 "parser.tab.cc" // lalr1.cc:859
+#line 1456 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 42:
+#line 419 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
+#line 1462 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 43:
+#line 421 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
+#line 1468 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 44:
-#line 427 "parser.yy" // lalr1.cc:859
+#line 427 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
 			pSupport->popIdent();
 		}
-#line 1460 "parser.tab.cc" // lalr1.cc:859
+#line 1478 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 45:
-#line 433 "parser.yy" // lalr1.cc:859
+#line 433 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
 			(yystack_[4].value.scList)->mParent = (yylhs.value.scFun);
 			pSupport->popIdent();
 		}
-#line 1471 "parser.tab.cc" // lalr1.cc:859
+#line 1489 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 46:
-#line 443 "parser.yy" // lalr1.cc:859
+#line 443 "parser.yy" // lalr1.cc:919
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 			(yylhs.value.scIdent) = (yystack_[0].value.scIdent);
 		}
-#line 1480 "parser.tab.cc" // lalr1.cc:859
+#line 1498 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 47:
-#line 451 "parser.yy" // lalr1.cc:859
+#line 451 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::FormalParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 			(yystack_[0].value.scDef)->mParent = (yylhs.value.scList);
 		}
-#line 1490 "parser.tab.cc" // lalr1.cc:859
+#line 1508 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 48:
-#line 457 "parser.yy" // lalr1.cc:859
+#line 457 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 			(yystack_[2].value.scDef)->mParent = (yystack_[0].value.scList);
 		}
-#line 1499 "parser.tab.cc" // lalr1.cc:859
+#line 1517 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 49:
-#line 465 "parser.yy" // lalr1.cc:859
+#line 465 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
-#line 1507 "parser.tab.cc" // lalr1.cc:859
+#line 1525 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 50:
-#line 472 "parser.yy" // lalr1.cc:859
+#line 472 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::DefinitionsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scList);
 		}
-#line 1517 "parser.tab.cc" // lalr1.cc:859
+#line 1535 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 51:
-#line 478 "parser.yy" // lalr1.cc:859
+#line 478 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
 		}
-#line 1526 "parser.tab.cc" // lalr1.cc:859
+#line 1544 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 52:
-#line 486 "parser.yy" // lalr1.cc:859
+#line 486 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1535 "parser.tab.cc" // lalr1.cc:859
+#line 1553 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 53:
-#line 491 "parser.yy" // lalr1.cc:859
+#line 491 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1544 "parser.tab.cc" // lalr1.cc:859
+#line 1562 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 54:
-#line 496 "parser.yy" // lalr1.cc:859
+#line 496 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scFun); }
-#line 1550 "parser.tab.cc" // lalr1.cc:859
+#line 1568 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 55:
+#line 500 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1574 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 56:
-#line 505 "parser.yy" // lalr1.cc:859
+#line 505 "parser.yy" // lalr1.cc:919
     {	(yylhs.value.scNode) = (yystack_[1].value.scNode); }
-#line 1556 "parser.tab.cc" // lalr1.cc:859
+#line 1580 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 57:
+#line 506 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1586 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 58:
-#line 508 "parser.yy" // lalr1.cc:859
+#line 508 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1562 "parser.tab.cc" // lalr1.cc:859
+#line 1592 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 59:
-#line 510 "parser.yy" // lalr1.cc:859
+#line 510 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName, nullptr );
 		}
-#line 1570 "parser.tab.cc" // lalr1.cc:859
+#line 1600 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 60:
-#line 517 "parser.yy" // lalr1.cc:859
+#line 517 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::FuncObjectWithParameters, (yystack_[1].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scName);
 		}
-#line 1579 "parser.tab.cc" // lalr1.cc:859
+#line 1609 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 61:
-#line 524 "parser.yy" // lalr1.cc:859
+#line 524 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::FuncArgumentsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scList);
 		}
-#line 1589 "parser.tab.cc" // lalr1.cc:859
+#line 1619 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 62:
-#line 530 "parser.yy" // lalr1.cc:859
+#line 530 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yystack_[0].value.scList);
 		}
-#line 1598 "parser.tab.cc" // lalr1.cc:859
+#line 1628 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 63:
-#line 538 "parser.yy" // lalr1.cc:859
+#line 538 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncParameterName, nullptr );
 		}
-#line 1606 "parser.tab.cc" // lalr1.cc:859
+#line 1636 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 64:
+#line 541 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1642 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 65:
-#line 543 "parser.yy" // lalr1.cc:859
+#line 543 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1612 "parser.tab.cc" // lalr1.cc:859
+#line 1648 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 66:
+#line 547 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1654 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 67:
-#line 549 "parser.yy" // lalr1.cc:859
+#line 549 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::SequentialTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1622 "parser.tab.cc" // lalr1.cc:859
+#line 1664 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 68:
+#line 557 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1670 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 69:
-#line 559 "parser.yy" // lalr1.cc:859
+#line 559 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::CompositionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1632 "parser.tab.cc" // lalr1.cc:859
+#line 1680 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 70:
+#line 567 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1686 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 71:
-#line 569 "parser.yy" // lalr1.cc:859
+#line 569 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConditionNode( ASTNode::ConditionTerm, (yystack_[4].value.scNode), (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[4].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1643 "parser.tab.cc" // lalr1.cc:859
+#line 1697 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 72:
-#line 576 "parser.yy" // lalr1.cc:859
+#line 576 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConditionNode( ASTNode::ConditionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1653 "parser.tab.cc" // lalr1.cc:859
+#line 1707 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 73:
+#line 584 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1713 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 74:
-#line 586 "parser.yy" // lalr1.cc:859
+#line 586 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::VariantTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1663 "parser.tab.cc" // lalr1.cc:859
+#line 1723 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 75:
-#line 595 "parser.yy" // lalr1.cc:859
+#line 595 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncObjectName, nullptr );
 		}
-#line 1671 "parser.tab.cc" // lalr1.cc:859
+#line 1731 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 76:
+#line 598 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scName) = (yystack_[0].value.scName); }
+#line 1737 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 77:
-#line 603 "parser.yy" // lalr1.cc:859
+#line 603 "parser.yy" // lalr1.cc:919
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
-#line 1679 "parser.tab.cc" // lalr1.cc:859
+#line 1745 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 78:
-#line 607 "parser.yy" // lalr1.cc:859
+#line 607 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[4].value.scIdent), (yystack_[1].value.scList), 0 );
 			pSupport->popIdent();
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
 		}
-#line 1689 "parser.tab.cc" // lalr1.cc:859
+#line 1755 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 79:
-#line 613 "parser.yy" // lalr1.cc:859
+#line 613 "parser.yy" // lalr1.cc:919
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
-#line 1697 "parser.tab.cc" // lalr1.cc:859
+#line 1763 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 80:
-#line 617 "parser.yy" // lalr1.cc:859
+#line 617 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[7].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			pSupport->popIdent();
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
 			(yystack_[4].value.scList)->mParent = (yylhs.value.scFun);
 		}
-#line 1708 "parser.tab.cc" // lalr1.cc:859
+#line 1774 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 81:
+#line 626 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
+#line 1780 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 82:
+#line 630 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
+#line 1786 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 83:
+#line 634 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1792 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 84:
-#line 636 "parser.yy" // lalr1.cc:859
+#line 636 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1714 "parser.tab.cc" // lalr1.cc:859
+#line 1798 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 85:
-#line 638 "parser.yy" // lalr1.cc:859
+#line 638 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1720 "parser.tab.cc" // lalr1.cc:859
+#line 1804 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 86:
-#line 643 "parser.yy" // lalr1.cc:859
+#line 643 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::ConstructorName, nullptr );
 		}
-#line 1728 "parser.tab.cc" // lalr1.cc:859
+#line 1812 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 87:
-#line 650 "parser.yy" // lalr1.cc:859
+#line 650 "parser.yy" // lalr1.cc:919
     {	
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::DestructorName, nullptr );
 		}
-#line 1736 "parser.tab.cc" // lalr1.cc:859
+#line 1820 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 88:
-#line 657 "parser.yy" // lalr1.cc:859
+#line 657 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1742 "parser.tab.cc" // lalr1.cc:859
+#line 1826 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 89:
+#line 658 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1832 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 90:
+#line 659 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1838 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 91:
-#line 664 "parser.yy" // lalr1.cc:859
+#line 664 "parser.yy" // lalr1.cc:919
     {
 		ConstantNode * number = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
 		(yylhs.value.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
 		delete number;
 	}
-#line 1752 "parser.tab.cc" // lalr1.cc:859
+#line 1848 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 92:
+#line 671 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1854 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 93:
+#line 672 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1860 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 94:
+#line 673 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1866 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 95:
-#line 675 "parser.yy" // lalr1.cc:859
+#line 675 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConstantNode( ASTNode::TrueValue, (yystack_[0].value.scToken) );
 		}
-#line 1760 "parser.tab.cc" // lalr1.cc:859
+#line 1874 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 96:
-#line 679 "parser.yy" // lalr1.cc:859
+#line 679 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
 		}
-#line 1768 "parser.tab.cc" // lalr1.cc:859
+#line 1882 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 97:
-#line 687 "parser.yy" // lalr1.cc:859
+#line 687 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction, nullptr );
 		}
-#line 1776 "parser.tab.cc" // lalr1.cc:859
+#line 1890 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 98:
-#line 694 "parser.yy" // lalr1.cc:859
+#line 694 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, 0 );
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scApp);
 		}
-#line 1785 "parser.tab.cc" // lalr1.cc:859
+#line 1899 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 99:
-#line 699 "parser.yy" // lalr1.cc:859
+#line 699 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), 0 );
 			(yystack_[3].value.scName)->mParent = (yylhs.value.scApp);
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scApp);
 		}
-#line 1795 "parser.tab.cc" // lalr1.cc:859
+#line 1909 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 100:
-#line 705 "parser.yy" // lalr1.cc:859
+#line 705 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, (yystack_[1].value.scList) ); 
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scApp);
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scApp);
 		}
-#line 1805 "parser.tab.cc" // lalr1.cc:859
+#line 1919 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 101:
-#line 711 "parser.yy" // lalr1.cc:859
+#line 711 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 			(yystack_[3].value.scName)->mParent = (yylhs.value.scApp);
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scApp);
 			(yystack_[4].value.scList)->mParent = (yylhs.value.scApp);
 		}
-#line 1816 "parser.tab.cc" // lalr1.cc:859
+#line 1930 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 102:
-#line 721 "parser.yy" // lalr1.cc:859
+#line 721 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::InputVarDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 			(yystack_[0].value.scDef)->mParent = (yylhs.value.scList);
 		}
-#line 1826 "parser.tab.cc" // lalr1.cc:859
+#line 1940 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 103:
-#line 727 "parser.yy" // lalr1.cc:859
+#line 727 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 			(yystack_[1].value.scDef)->mParent = (yystack_[0].value.scList);
 		}
-#line 1835 "parser.tab.cc" // lalr1.cc:859
+#line 1949 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 104:
-#line 735 "parser.yy" // lalr1.cc:859
+#line 735 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scDef);
 		}
-#line 1844 "parser.tab.cc" // lalr1.cc:859
+#line 1958 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 105:
+#line 741 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
+#line 1964 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 106:
-#line 745 "parser.yy" // lalr1.cc:859
+#line 745 "parser.yy" // lalr1.cc:919
     { 
 			(yylhs.value.scName) = new NameRefNode((yystack_[0].value.scIdent), ASTNode::RunningSchemeName, nullptr );
 		}
-#line 1852 "parser.tab.cc" // lalr1.cc:859
+#line 1972 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 107:
-#line 752 "parser.yy" // lalr1.cc:859
+#line 752 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = (yystack_[0].value.scNode);
 		}
-#line 1860 "parser.tab.cc" // lalr1.cc:859
+#line 1980 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 108:
-#line 756 "parser.yy" // lalr1.cc:859
+#line 756 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode));
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1870 "parser.tab.cc" // lalr1.cc:859
+#line 1990 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 109:
-#line 765 "parser.yy" // lalr1.cc:859
+#line 765 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName, nullptr );
 		}
-#line 1878 "parser.tab.cc" // lalr1.cc:859
+#line 1998 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 110:
+#line 768 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2004 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 111:
+#line 773 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2010 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 112:
-#line 775 "parser.yy" // lalr1.cc:859
+#line 775 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 1884 "parser.tab.cc" // lalr1.cc:859
+#line 2016 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 113:
-#line 777 "parser.yy" // lalr1.cc:859
+#line 777 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = (yystack_[1].value.scNode);
 		}
-#line 1892 "parser.tab.cc" // lalr1.cc:859
+#line 2024 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 114:
+#line 783 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2030 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 115:
-#line 785 "parser.yy" // lalr1.cc:859
+#line 785 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scNode);
 		}
-#line 1902 "parser.tab.cc" // lalr1.cc:859
+#line 2040 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 116:
+#line 793 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2046 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 117:
-#line 795 "parser.yy" // lalr1.cc:859
+#line 795 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1912 "parser.tab.cc" // lalr1.cc:859
+#line 2056 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 118:
+#line 802 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2062 "parser.tab.cc" // lalr1.cc:919
     break;
 
 
-#line 1916 "parser.tab.cc" // lalr1.cc:859
+#line 2066 "parser.tab.cc" // lalr1.cc:919
             default:
               break;
             }
         }
+#if YY_EXCEPTIONS
       catch (const syntax_error& yyexc)
         {
+          YYCDEBUG << "Caught exception: " << yyexc.what() << '\n';
           error (yyexc);
           YYERROR;
         }
+#endif // YY_EXCEPTIONS
       YY_SYMBOL_PRINT ("-> $$ =", yylhs);
       yypop_ (yylen);
       yylen = 0;
       YY_STACK_PRINT ();
 
       // Shift the result of the reduction.
-      yypush_ (YY_NULLPTR, yylhs);
+      yypush_ (YY_NULLPTR, YY_MOVE (yylhs));
     }
     goto yynewstate;
+
 
   /*--------------------------------------.
   | yyerrlab -- here on detecting error.  |
@@ -1967,17 +2121,17 @@ namespace FPTL { namespace Parser {
   | yyerrorlab -- error raised explicitly by YYERROR.  |
   `---------------------------------------------------*/
   yyerrorlab:
-
-    /* Pacify compilers like GCC when the user code never invokes
-       YYERROR and the label yyerrorlab therefore never appears in user
-       code.  */
+    /* Pacify compilers when the user code never invokes YYERROR and
+       the label yyerrorlab therefore never appears in user code.  */
     if (false)
-      goto yyerrorlab;
+      YYERROR;
+
     /* Do not reclaim the symbols of the rule whose action triggered
        this YYERROR.  */
     yypop_ (yylen);
     yylen = 0;
     goto yyerrlab1;
+
 
   /*-------------------------------------------------------------.
   | yyerrlab1 -- common code for both syntax error and YYERROR.  |
@@ -2012,20 +2166,30 @@ namespace FPTL { namespace Parser {
 
       // Shift the error token.
       error_token.state = yyn;
-      yypush_ ("Shifting", error_token);
+      yypush_ ("Shifting", YY_MOVE (error_token));
     }
     goto yynewstate;
 
-    // Accept.
+
+  /*-------------------------------------.
+  | yyacceptlab -- YYACCEPT comes here.  |
+  `-------------------------------------*/
   yyacceptlab:
     yyresult = 0;
     goto yyreturn;
 
-    // Abort.
+
+  /*-----------------------------------.
+  | yyabortlab -- YYABORT comes here.  |
+  `-----------------------------------*/
   yyabortlab:
     yyresult = 1;
     goto yyreturn;
 
+
+  /*-----------------------------------------------------.
+  | yyreturn -- parsing is finished, return the result.  |
+  `-----------------------------------------------------*/
   yyreturn:
     if (!yyla.empty ())
       yy_destroy_ ("Cleanup: discarding lookahead", yyla);
@@ -2041,12 +2205,12 @@ namespace FPTL { namespace Parser {
 
     return yyresult;
   }
+#if YY_EXCEPTIONS
     catch (...)
       {
-        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
-                 << std::endl;
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack\n";
         // Do not try to display the values of the reclaimed symbols,
-        // as their printer might throw an exception.
+        // as their printers might throw an exception.
         if (!yyla.empty ())
           yy_destroy_ (YY_NULLPTR, yyla);
 
@@ -2057,12 +2221,13 @@ namespace FPTL { namespace Parser {
           }
         throw;
       }
+#endif // YY_EXCEPTIONS
   }
 
   void
   BisonParser::error (const syntax_error& yyexc)
   {
-    error (yyexc.what());
+    error (yyexc.what ());
   }
 
   // Generate an error message.
@@ -2138,12 +2303,13 @@ namespace FPTL { namespace Parser {
         case N:                               \
           yyformat = S;                       \
         break
-        YYCASE_(0, YY_("syntax error"));
-        YYCASE_(1, YY_("syntax error, unexpected %s"));
-        YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-        YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-        YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-        YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+      default: // Avoid compiler warnings.
+        YYCASE_ (0, YY_("syntax error"));
+        YYCASE_ (1, YY_("syntax error, unexpected %s"));
+        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
+        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
 #undef YYCASE_
       }
 
@@ -2162,11 +2328,11 @@ namespace FPTL { namespace Parser {
   }
 
 
-  const short int BisonParser::yypact_ninf_ = -135;
+  const short BisonParser::yypact_ninf_ = -135;
 
   const signed char BisonParser::yytable_ninf_ = -80;
 
-  const short int
+  const short
   BisonParser::yypact_[] =
   {
       50,    22,    32,    52,    42,    48,    53,     9,  -135,  -135,
@@ -2220,7 +2386,7 @@ namespace FPTL { namespace Parser {
        0,    17,     0,    80,     9
   };
 
-  const short int
+  const short
   BisonParser::yypgoto_[] =
   {
     -135,  -135,   204,    31,    -2,   159,  -135,  -110,  -135,   -56,
@@ -2231,7 +2397,7 @@ namespace FPTL { namespace Parser {
     -135,    27,   209,   -60,  -135,  -135,  -135,    98,   -28
   };
 
-  const short int
+  const short
   BisonParser::yydefgoto_[] =
   {
       -1,     3,     4,    38,   119,    44,    45,   120,   121,   122,
@@ -2242,7 +2408,7 @@ namespace FPTL { namespace Parser {
       24,    81,    26,    82,    83,    77,    78,    79,    84
   };
 
-  const short int
+  const short
   BisonParser::yytable_[] =
   {
       10,    56,   129,    75,    75,   126,   132,    76,    76,   110,
@@ -2271,7 +2437,7 @@ namespace FPTL { namespace Parser {
      204,    49,    48,   166,     0,     0,   178
   };
 
-  const short int
+  const short
   BisonParser::yycheck_[] =
   {
        2,    31,    61,    50,    51,    61,    66,    50,    51,    59,
@@ -2395,7 +2561,7 @@ namespace FPTL { namespace Parser {
   };
 
 #if YYDEBUG
-  const unsigned short int
+  const unsigned short
   BisonParser::yyrline_[] =
   {
        0,   184,   184,   194,   206,   212,   220,   225,   231,   237,
@@ -2422,18 +2588,18 @@ namespace FPTL { namespace Parser {
            i_end = yystack_.end ();
          i != i_end; ++i)
       *yycdebug_ << ' ' << i->state;
-    *yycdebug_ << std::endl;
+    *yycdebug_ << '\n';
   }
 
   // Report on the debug stream that the rule \a yyrule is going to be reduced.
   void
   BisonParser::yy_reduce_print_ (int yyrule)
   {
-    unsigned int yylno = yyrline_[yyrule];
+    unsigned yylno = yyrline_[yyrule];
     int yynrhs = yyr2_[yyrule];
     // Print the symbols being reduced, and their result.
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-               << " (line " << yylno << "):" << std::endl;
+               << " (line " << yylno << "):\n";
     // The symbols being reduced.
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -2441,16 +2607,16 @@ namespace FPTL { namespace Parser {
   }
 #endif // YYDEBUG
 
-  // Symbol number corresponding to token number t.
-  inline
   BisonParser::token_number_type
   BisonParser::yytranslate_ (int t)
   {
+    // YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to
+    // TOKEN-NUM as returned by yylex.
     static
     const token_number_type
     translate_table[] =
     {
-     0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,    54,     2,     2,
@@ -2481,17 +2647,17 @@ namespace FPTL { namespace Parser {
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38
     };
-    const unsigned int user_token_number_max_ = 293;
+    const unsigned user_token_number_max_ = 293;
     const token_number_type undef_token_ = 2;
 
-    if (static_cast<int>(t) <= yyeof_)
+    if (static_cast<int> (t) <= yyeof_)
       return yyeof_;
-    else if (static_cast<unsigned int> (t) <= user_token_number_max_)
+    else if (static_cast<unsigned> (t) <= user_token_number_max_)
       return translate_table[t];
     else
       return undef_token_;
   }
 
-#line 2 "parser.yy" // lalr1.cc:1167
+#line 2 "parser.yy" // lalr1.cc:1242
 } } // FPTL::Parser
-#line 2498 "parser.tab.cc" // lalr1.cc:1167
+#line 2664 "parser.tab.cc" // lalr1.cc:1242

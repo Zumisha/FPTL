@@ -16,18 +16,24 @@
 #include "Evaluator/Context.h"
 #include "Evaluator/Run.h"
 #include "Parser/ASTSerializer.h"
+#include "Macros.h"
+#include "FScheme/NewFSchemeGenerator.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
+		std::map<std::string, TFunction> FunctionLibrary::mFunctions;
+		
 		int Interpreter::Eval(const int argc, const char ** argv, const std::string& programText) const
 		{
-			setlocale(LC_ALL, "ru-ru");
+			//setlocale(LC_ALL, "ru-ru");
 			std::cout.precision(std::numeric_limits<double>::max_digits10); 
 			Parser::ASTNode * astRoot = nullptr;
+#if !disableExceptionHandling
 			try
 			{
+#endif
 				boost::timer::cpu_timer timer;
 
 				auto CLParser = Parser::CommandLineParser();
@@ -38,7 +44,7 @@ namespace FPTL
 
 				const Utils::FormattedOutput fo = CLParser.GetFormattedOutput();
 				const std::string programPath = CLParser.GetProgramPath();
-				const std::vector<std::string> inputTuple = CLParser.GetInputTuple();
+				std::vector<std::string> inputTuple = CLParser.GetInputTuple();
 
 				std::string programStr;
 				if (programText.empty())
@@ -58,7 +64,7 @@ namespace FPTL
 				}
 
 				Parser::Support support;
-				astRoot = support.getInternalForm(inputTuple, programStr);
+				astRoot = support.getAST(inputTuple, programStr);
 
 				support.getErrorList(std::cout);
 				if (support.WasErrors() || !astRoot) return 1;
@@ -82,6 +88,7 @@ namespace FPTL
 				}
 
 				FSchemeGenerator schemeGenerator(astRoot);
+				//NewFSchemeGenerator schemeGenerator(astRoot);
 				const auto FScheme = schemeGenerator.getProgram();
 
 				if (CLParser.GetSaveScheme())
@@ -113,24 +120,26 @@ namespace FPTL
 				const auto evalTime = timer.elapsed();
 				if (showTime) std::cout << "\n\nEvaluation time: " << boost::timer::format(evalTime, 3, "%ws\n");
 
-				if (astRoot) delete astRoot;
+				delete astRoot;
 				if (evaluator.WasErrors()) return 1;
+#if !disableExceptionHandling
 			}
 			catch (std::exception& e)
 			{
 				std::cerr << "Error: " << e.what() << std::endl
 					<< "Execution aborted." << std::endl;
-				if (astRoot) delete astRoot;
+				delete astRoot;
 				return 1;
 			}
-			catch (...) // SEH not catch
+			catch (...)
 			{
 				std::cerr << "Congratulations, you found the entrance to Narnia!" << std::endl
 					<< "(Not std::exception error.)" << std::endl
 					<< "Execution aborted." << std::endl;
-				if (astRoot) delete astRoot;
+				delete astRoot;
 				return 1;
 			}
+#endif
 
 			return 0;
 		}

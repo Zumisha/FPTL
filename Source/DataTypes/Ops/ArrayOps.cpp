@@ -1,6 +1,7 @@
 #include <sstream>
 #include <queue>
 #include <boost/format.hpp>
+#include <algorithm>
 
 #include "ArrayOps.h"
 #include "GC/GarbageCollector.h"
@@ -10,45 +11,7 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		// Операции над массивами.
-		class ArrayOps : public BaseOps
-		{
-			ArrayOps() = default;
-
-		public:
-			static ArrayOps * get()
-			{
-				static ArrayOps ops;
-				return &ops;
-			}
-
-			TypeInfo getType(const DataValue & aVal) const override
-			{
-				return aVal.mArray->type;
-			}
-
-			// Добавлять сюда методы по мере добавления новых типов.
-			const Ops * combine(const Ops * aOther) const override
-			{
-				throw invalidOperation("combine");
-			}
-
-			const Ops * withOps(class IntegerOps const * aOps) const override
-			{
-				throw invalidOperation("toInt");
-			}
-
-			const Ops * withOps(class BooleanOps const * aOps) const override
-			{
-				throw invalidOperation("toBoolean");
-			}
-
-			const Ops * withOps(class DoubleOps const * aOps) const override
-			{
-				throw invalidOperation("toDouble");
-			}
-
-			void mark(const DataValue & aVal, ObjectMarker * marker) const override
+			void ArrayOps::mark(const DataValue & aVal, ObjectMarker * marker) const
 			{
 				if (marker->markAlive(aVal.mArray, sizeof(ArrayValue) + sizeof(aVal.mArray->arrayData[0]) * aVal.mArray->length))
 				{
@@ -60,7 +23,7 @@ namespace FPTL
 			}
 
 			// Вывод содержимого массива.
-			void print(const DataValue & aVal, std::ostream & aStream) const override
+			void  ArrayOps::print(const DataValue & aVal, std::ostream & aStream) const
 			{
 				ArrayValue * arr = aVal.mArray;
 
@@ -74,21 +37,34 @@ namespace FPTL
 					delimiter = ", ";
 				}
 
+				size_t i = 0;
 				aStream << "[";
-				for (size_t i = 0; i < arr->length; ++i)
+				for (; i < std::min(arr->length, 5llu); ++i)
 				{
-					DataValue & val = arr->arrayData[i];
-					val.getOps()->print(val, aStream);
-
-					if (i < arr->length - 1)
+					if (i > 0)
 					{
 						aStream << delimiter;
 					}
+					
+					DataValue & val = arr->arrayData[i];
+					val.getOps()->print(val, aStream);
+				}
+				if (arr->length - i > 5)
+				{
+					i = arr->length - 5;
+					aStream << delimiter << "... ";
+				}
+				for (; i < arr->length; ++i)
+				{
+					aStream << delimiter;
+					
+					DataValue & val = arr->arrayData[i];
+					val.getOps()->print(val, aStream);
 				}
 				aStream << "]";
 			}
 
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void  ArrayOps::write(const DataValue & aVal, std::ostream & aStream) const
 			{
 				ArrayValue::arrayValueCheck(aVal);
 
@@ -103,11 +79,15 @@ namespace FPTL
 				}
 			}
 
-			DataValue read(std::istream & aStream) const override
+			DataValue ArrayOps::read(const DataValue & aVal, const SExecutionContext & aCtx, std::istream & aStream) const
 			{
-				throw invalidOperation("read");
+				auto* const arrVal = aVal.mArray;
+				for (size_t i = 0; i < arrVal->length; ++i)
+				{
+					arrVal->arrayData[i] = arrVal->arrayData[i].getOps()->read(arrVal->arrayData[i], aCtx, aStream);
+				}
+				return aVal;
 			}
-		};
 
 		//-----------------------------------------------------------------------------
 		DataValue ArrayValue::create(SExecutionContext & ctx, size_t length, const DataValue& initial)
@@ -178,70 +158,10 @@ namespace FPTL
 			}
 		}
 
-		DataValue ArrayValue::dot(SExecutionContext & ctx, const DataValue & arr1, const DataValue & arr2)
-		{
-			ArrayValue * arr1Val = arr1.mArray;
-			ArrayValue * arr2Val = arr2.mArray;
-
-			const auto arr1Type = arr1Val->type;
-			const auto arr2Type = arr2Val->type;
-
-			if (arr1Type != arr2Type)
-			{
-				std::stringstream error;
-				error << "Cannot find dot product of an array of type " << arr1Type << " and an array of type " << arr2Type;
-				throw std::runtime_error(error.str());
-			}
-
-			const auto arr1Len = arr1Val->length;
-			const auto arr2Len = arr2Val->length;
-
-			if (arr1Len != arr2Len)
-			{
-				std::stringstream error;
-				error << "Cannot find dot product of an array of size " << arr1Len << " and an array of size " << arr2Len;
-				throw std::runtime_error(error.str());
-			}
-
-			class DataValueComparator
-			{
-			public:
-				bool operator() (const DataValue& p1, const DataValue& p2) const
-				{
-					return p1.getOps()->greater(p1, p2).mIntVal;
-				}
-			};
-
-			std::priority_queue < DataValue, std::vector<DataValue>, DataValueComparator > pq;
-
-			for (size_t i = 0; i < arr1Len; ++i)
-			{
-				pq.push(arr1Val->arrayData[i].getOps()->sub(arr1Val->arrayData[i], arr2Val->arrayData[i]));
-			}
-
-			while (pq.size() > 1)
-			{
-				auto res = pq.top();
-				pq.pop();
-				res = res.getOps()->add(res, pq.top());
-				pq.pop();
-				pq.push(res);
-			}
-
-			return pq.top();
-		}
-
 		//-----------------------------------------------------------------------------
 		DataValue ArrayValue::get(const DataValue & arr, size_t pos)
 		{
-			ArrayValue * trg = arr.mArray;
-
-			if (pos >= trg->length)
-			{
-				throw std::runtime_error(badIndexMsg(trg->length, pos));
-			}
-
-			return trg->arrayData[pos];
+			return arr.mArray->arrayData[pos];
 		}
 
 		//-----------------------------------------------------------------------------
@@ -269,66 +189,6 @@ namespace FPTL
 		size_t ArrayValue::getLen(const DataValue & arr)
 		{
 			return arr.mArray->length;
-		}
-
-		DataValue ArrayValue::concat(const SExecutionContext & ctx)
-		{
-			for (size_t i = 0; i < ctx.argNum; ++i)
-			{
-				arrayValueCheck(ctx.getArg(i));
-			}
-
-			auto firstArr = ctx.getArg(0).mArray;
-			const auto type = firstArr->type;
-			size_t len = firstArr->length;
-
-			for (size_t i = 1; i < ctx.argNum; ++i)
-			{
-				const auto rArr = ctx.getArg(i).mArray;
-				if (rArr->type != type)
-				{					
-					throw std::runtime_error(concatErrMsg(std::string(type), std::string(rArr->type)));
-				}
-				len += rArr->length;
-			}
-
-			// Выделяем память в контролируемой куче под хранение массива.
-			auto val = ctx.heap().alloc<ArrayValue>(
-				[firstArr, len](void * m) { return new(m) ArrayValue(len, firstArr->arrayData[0]); },
-				sizeof(ArrayValue) + sizeof(firstArr->arrayData[0]) * len);
-
-			// Создаем массив и заполняем его.
-			val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
-			size_t curPos = 0;
-			for (size_t i = 0; i < ctx.argNum; ++i)
-			{
-				const auto& arr = ctx.getArg(i);
-				for (size_t j = 0; j < arr.mArray->length; ++j)
-				{
-					val->arrayData[curPos + j] = arr.mArray->arrayData[j];
-				}
-				curPos += arr.mArray->length;
-			}
-
-			DataValue res = DataBuilders::createVal(ArrayOps::get());
-			res.mArray = val.ptr();
-			return res;
-		}
-
-		void ArrayValue::fromString(const DataValue & arr, std::istream &aStream)
-		{
-			const auto arrVal = arr.mArray;
-			for (size_t i = 0; i < arrVal->length; ++i)
-			{
-				if (arrVal->arrayData[i].getOps() == ArrayOps::get())
-				{
-					fromString(arrVal->arrayData[i], aStream);
-				}
-				else
-				{
-					arrVal->arrayData[i] = arrVal->arrayData[i].getOps()->read(aStream);
-				}
-			}
 		}
 	}
 }

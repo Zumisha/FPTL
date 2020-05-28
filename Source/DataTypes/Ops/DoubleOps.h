@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "Ops.h"
+#include "Evaluator/Context.h"
 
 namespace FPTL
 {
@@ -20,36 +21,16 @@ namespace FPTL
 				return &ops;
 			}
 
-			const Ops * combine(const Ops * aOther) const override
-			{
-				return aOther->withOps(this);
-			}
-
-			const Ops * withOps(const IntegerOps * aOther) const override
-			{
-				return get();
-			}
-
-			const Ops * withOps(const BooleanOps * aOther) const override
-			{
-				throw invalidOperation("combine");
-			}
-
-			const Ops * withOps(const DoubleOps * aOther) const override
-			{
-				return get();
-			}
-
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("double");
+				static TypeInfo info("Double");
 				return info;
 			}
 
 			// Функции преобразования.
-			long long toInt(const DataValue & aVal) const override
+			int64_t toInt(const DataValue & aVal) const override
 			{
-				return static_cast<long long>(aVal.mDoubleVal);
+				return static_cast<int64_t>(aVal.mDoubleVal);
 			}
 
 			double toDouble(const DataValue & aVal) const override
@@ -57,27 +38,37 @@ namespace FPTL
 				return aVal.mDoubleVal;
 			}
 
-			// Базисные функции.
-			DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
+			DataValue& add(DataValue& aLhs, const DataValue& aRhs) const override
 			{
-				return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) + aRhs.getOps()->toDouble(aRhs));
+				aLhs.mDoubleVal += aRhs.mDoubleVal;
+				return aLhs;
+			}
+
+			DataValue add(const SExecutionContext& aCtx) const override
+			{
+				double sum = 0;
+				for (size_t i = 0; i < aCtx.argNum; ++i)
+				{
+					sum += aCtx.getArg(i).mDoubleVal;
+				}
+				return DataBuilders::createDouble(sum);
 			}
 
 			DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) - aRhs.getOps()->toDouble(aRhs));
+				return DataBuilders::createDouble(aLhs.mDoubleVal - aRhs.mDoubleVal);
 			}
 
 			DataValue mul(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) * aRhs.getOps()->toDouble(aRhs));
+				return DataBuilders::createDouble(aLhs.mDoubleVal * aRhs.mDoubleVal);
 			}
 
 			DataValue div(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				const auto Right = aRhs.getOps()->toDouble(aRhs);
+				const auto Right = aRhs.mDoubleVal;
 				if (Right == 0) throw divideByZero();
-				return DataBuilders::createDouble(aLhs.getOps()->toDouble(aLhs) / Right);
+				return DataBuilders::createDouble(aLhs.mDoubleVal / Right);
 			}
 
 			DataValue abs(const DataValue & aArg) const override
@@ -86,19 +77,19 @@ namespace FPTL
 			}
 
 			// Функции сравнения.
-			DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool equal(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) == aRhs.getOps()->toDouble(aRhs));
+				return aLhs.mDoubleVal == aRhs.mDoubleVal;
 			}
 
-			DataValue less(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool less(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) < aRhs.getOps()->toDouble(aRhs));
+				return aLhs.mDoubleVal < aRhs.mDoubleVal;
 			}
 
-			DataValue greater(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool greater(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.getOps()->toDouble(aLhs) > aRhs.getOps()->toDouble(aRhs));
+				return aLhs.mDoubleVal > aRhs.mDoubleVal;
 			}
 
 			// Вывод в поток.
@@ -112,7 +103,7 @@ namespace FPTL
 				aStream << aVal.mDoubleVal;
 			}
 
-			DataValue read(std::istream & aStream) const override
+			DataValue read(const DataValue&, const SExecutionContext&, std::istream & aStream) const override
 			{
 				DataValue val(get());
 				aStream >> val.mDoubleVal;

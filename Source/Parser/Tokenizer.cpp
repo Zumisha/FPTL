@@ -87,21 +87,85 @@ namespace FPTL {
 		ConstantNode * Tokenizer::formStringConstant(void) const
 		{
 			std::string str = YYText();
-			str = std::string(str.begin() + str.find_first_of('\"') + 1, str.begin() + str.find_last_of('\"'));
-
+			std::stringstream ss;
+			size_t backSlashCount = 0;
+			
 			// Заменяем escape-символы.
+			// Первый и последний всегда кавычки - часть синтаксиса языка.
+			for (size_t i = 1; i < str.length() - 1; ++i)
+			{
+				if (str[i] == '\\')
+				{
+					backSlashCount++;
+				}
+				else if (backSlashCount != 0)
+				{
+					for (size_t j = 0; j < backSlashCount / 2; ++j)
+						ss << "\\";
+					if (backSlashCount % 2 == 0)
+					{
+						ss << str[i];
+					}
+					else
+					{
+						switch (str[i])
+						{
+						case '\"':
+							{
+							ss << '\"';
+								break;
+							}
+						case 'a':
+						{
+							ss << '\a';
+							break;
+						}
+						case 'b':
+						{
+							ss << '\b';
+							break;
+						}
+						case 'f':
+						{
+							ss << '\f';
+							break;
+						}
+						case 'n':
+						{
+							ss << '\n';
+							break;
+						}
+						case 'r':
+						{
+							ss << '\r';
+							break;
+						}
+						case 't':
+						{
+							ss << '\t';
+							break;
+						}
+						case 'v':
+						{
+							ss << '\v';
+							break;
+						}
+						default:
+						{
+							ss << '\\' << str[i];
+							break;
+						}
+						}					
+					}
+					backSlashCount = 0;
+				}
+				else
+				{
+					ss << str[i];
+				}
+			}
 
-			str = std::regex_replace(str, std::regex(R"(\\\\)"), std::string("\\"));
-			str = std::regex_replace(str, std::regex("[\\\\][a]"), std::string("\a"));
-			str = std::regex_replace(str, std::regex("[\\\\][b]"), std::string("\b"));
-			str = std::regex_replace(str, std::regex("[\\\\][f]"), std::string("\f"));
-			str = std::regex_replace(str, std::regex("[\\\\][n]"), std::string("\n"));
-			str = std::regex_replace(str, std::regex("[\\\\][r]"), std::string("\r"));
-			str = std::regex_replace(str, std::regex("[\\\\][t]"), std::string("\t"));
-			str = std::regex_replace(str, std::regex("[\\\\][v]"), std::string("\v"));
-			str = std::regex_replace(str, std::regex(R"([\\]")"), std::string("\""));
-
-			return new ConstantNode(ASTNode::StringConstant, mSupport->newConstant(str, mLine, mCol));
+			return new ConstantNode(ASTNode::StringConstant, mSupport->newConstant(ss.str(), mLine, mCol));
 		}
 
 		//-------------------------------------------------------------------------------------------

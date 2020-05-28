@@ -1,7 +1,7 @@
 %defines
 %define api.namespace {FPTL::Parser}
-%define parser_class_name {BisonParser}
-%error-verbose
+%define api.parser.class {BisonParser}
+%define parse.error verbose
 
 %code requires
 {

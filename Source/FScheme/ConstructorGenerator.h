@@ -21,9 +21,9 @@ namespace FPTL
 
 			void work(Parser::FunctionalProgram * aFuncProgram);
 
-			void visit(Parser::DataNode * aData) override;
-			void visit(Parser::NameRefNode * aNameReference) override;
-			void visit(Parser::DefinitionNode * aDefinition) override;
+			void handle(Parser::DataNode * aData) override;
+			void handle(Parser::NameRefNode * aNameReference) override;
+			void handle(Parser::DefinitionNode * aDefinition) override;
 
 			Constructor * getConstructor(const std::string & aConstructorName) const;
 			std::vector<std::string> constructors() const;

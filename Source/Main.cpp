@@ -1,10 +1,13 @@
 ﻿#include <limits>
 #include <clocale>
 #include <iostream>
+#include <map>
+
 
 #include "jemalloc/jemalloc.h"
 
 #include "Interpreter/Interpreter.h"
+#include "Libraries/FunctionLibrary.h"
 
 void * operator new (const std::size_t count)
 {
@@ -28,6 +31,6 @@ void operator delete[](void * ptr) noexcept
 
 int main(const int argc, const char ** argv)
 {
-	FPTL::Runtime::Interpreter interpreter;
+	const FPTL::Runtime::Interpreter interpreter;
 	return interpreter.Eval(argc, argv);
 }

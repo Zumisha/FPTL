@@ -81,9 +81,6 @@
     <ClInclude Include="..\Source\Libraries\FunctionLibrary.h">
       <Filter>FPTL</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Libraries\StandardLibrary.h">
-      <Filter>FPTL</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Parser\AST.h">
       <Filter>FPTL</Filter>
     </ClInclude>
@@ -180,6 +177,12 @@
     <ClInclude Include="..\Source\Utils\XmlHelper.h">
       <Filter>FPTL</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\FScheme\NewFSchemeGenerator.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Parser\NodeHandler.h">
+      <Filter>FPTL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneralizedTests.cpp">
@@ -216,9 +219,6 @@
       <Filter>FPTL</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Libraries\FunctionLibrary.cpp">
-      <Filter>FPTL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Libraries\StandardLibrary.cpp">
       <Filter>FPTL</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Parser\CommandLineParser.cpp">
@@ -421,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="StringTests\StringSearch.cpp">
       <Filter>Исходные файлы\StringTests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Parser\NodeHandler.cpp">
+      <Filter>FPTL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

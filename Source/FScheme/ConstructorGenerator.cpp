@@ -22,17 +22,17 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		void ConstructorGenerator::visit(Parser::DataNode * aData)
+		void ConstructorGenerator::handle(Parser::DataNode * aData)
 		{
 			mCurrentData = aData;
 
-			NodeVisitor::visit(aData);
+			NodeVisitor::handle(aData);
 
 			mTypeParameters.clear();
 		}
 
 		//-------------------------------------------------------------------------------------------
-		void ConstructorGenerator::visit(Parser::NameRefNode * aNameReference)
+		void ConstructorGenerator::handle(Parser::NameRefNode * aNameReference)
 		{
 			if (aNameReference->getType() == Parser::ASTNode::Template)
 			{
@@ -40,7 +40,7 @@ namespace FPTL {
 				mTypeTuple.clear();
 			}
 
-			NodeVisitor::visit(aNameReference);
+			NodeVisitor::handle(aNameReference);
 
 			switch (aNameReference->getType())
 			{
@@ -78,9 +78,9 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		void ConstructorGenerator::visit(Parser::DefinitionNode * aDefinition)
+		void ConstructorGenerator::handle(Parser::DefinitionNode * aDefinition)
 		{
-			NodeVisitor::visit(aDefinition);
+			NodeVisitor::handle(aDefinition);
 
 			if (aDefinition->getType() == Parser::ASTNode::TypeConstructorDefinition)
 			{

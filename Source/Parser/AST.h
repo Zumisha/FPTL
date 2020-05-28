@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-#include <utility>
 #include "DataTypes/TypeInfo.h"
-#include "Ident.h"
 
 namespace FPTL 
 {
 	namespace Parser 
 	{
+		class NodeVisitor;
+		class NodeHandler;
 		class TTuple;
 
 		//
@@ -198,10 +198,24 @@ namespace FPTL
 
 			virtual ~ASTNode() = default;
 
+			friend std::ostream& operator<<(std::ostream& aStream, const ASTNode* node) {
+				node->serialize(aStream, node);
+				return aStream;
+			}
+			
+			virtual void serialize(std::ostream& aStream, const ASTNode* node) const
+			{
+				aStream << NodeTypeToString(node->getType());
+			}
+
 			ASTNodeType getType() const { return mType; }
 
-			virtual void accept(class NodeVisitor* aVisitor) = 0;
-			virtual void handle(class NodeHandler* aVisitor) = 0;
+			virtual ASTNode* getChild(NodeHandler* aHandler, size_t childNum) = 0;
+			virtual size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) = 0;
+			virtual void intermediateProcessing(NodeHandler* aHandler, size_t childNum) = 0;
+			virtual void ChildHandled(NodeHandler* aHandler, size_t childNum) = 0;
+
+			virtual void handle(NodeVisitor* aHandler) = 0;
 			virtual std::string childNameToString(size_t) = 0;
 
 			// Возвращает количество циклов, в которых состоит эта вершина.
@@ -213,22 +227,24 @@ namespace FPTL
 
 			// Некоторые узлы дерева могут иметь параметры, например функции и типы данных.
 			// Данный метод упрощает проверку числа параметров.
-			virtual int numParameters() const { return 0; }
+			virtual size_t numParameters() const { return 0; }
 
 			// Информация о типе узла.
 			std::vector<Runtime::TypeInfo> getTypeTuple() const { return mTypeTuple; }
 			void setTypeTuple(const std::vector<Runtime::TypeInfo> & aTuple) { mTypeTuple = aTuple; }
 
 			// deleted
-			ASTNode(const ASTNode &) = delete;
-			ASTNode & operator=(const ASTNode &) = delete;
-			const ASTNode * mParent;
+			ASTNode(const ASTNode&) = delete;
+			ASTNode& operator=(const ASTNode&) = delete;
 			std::vector<ASTNode*> mChilds;
 
 		private:
+			ASTNode* mParent;
 			ASTNodeType mType;
 			size_t mCyclicIndex;
 			std::vector<Runtime::TypeInfo> mTypeTuple;
+
+		friend class BisonParser;
 		};
 	}
 }

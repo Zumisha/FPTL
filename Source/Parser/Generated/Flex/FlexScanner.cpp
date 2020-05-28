@@ -1,7 +1,7 @@
-#line 2 "FlexScanner.cpp"
+#line 1 "FlexScanner.cpp"
 #include <cstdint>
 
-#line 5 "FlexScanner.cpp"
+#line 4 "FlexScanner.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -346,9 +346,9 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    4,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    5,    6,    6,    6,    1,    7,    6,
+        1,    2,    1,    5,    1,    1,    6,    1,    7,    6,
         6,    8,    9,    6,   10,   11,   12,   13,   13,   13,
-       13,   13,   13,   13,   14,   14,   14,    6,    6,    6,
+       13,   13,   13,   13,   14,   14,   14,    1,    6,    1,
        15,   16,   17,    6,   18,   18,   18,   18,   19,   20,
        21,   21,   21,   21,   21,   22,   21,   21,   21,   21,
        21,   21,   21,   21,   23,   21,   21,   21,   21,   21,
@@ -410,7 +410,7 @@ static const flex_int16_t yy_def[82] =
 static const flex_int16_t yy_nxt[289] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,    9,   11,   12,
-       13,   14,   15,   15,   16,    9,    4,   17,   17,   17,
+       13,   14,   15,   15,   16,    4,    4,   17,   17,   17,
        17,   18,   17,    4,    4,   17,   17,   17,   17,   17,
        17,   20,   24,   20,   25,   25,   28,   26,   27,   27,
        29,   27,   27,   44,   44,   43,   35,   45,   45,   46,
@@ -494,8 +494,8 @@ static const flex_int16_t yy_chk[289] =
 #include "../../Support.h"
 #include "../../Nodes.h"
 
+#line 497 "FlexScanner.cpp"
 #line 498 "FlexScanner.cpp"
-#line 499 "FlexScanner.cpp"
 
 #define INITIAL 0
 
@@ -506,7 +506,7 @@ static const flex_int16_t yy_chk[289] =
  */
 #include <unistd.h>
 #endif
-
+    
 #ifndef YY_EXTRA_TYPE
 #define YY_EXTRA_TYPE void *
 #endif
@@ -630,7 +630,7 @@ YY_DECL
 #line 35 "tokenizer.flex"
 
 
-#line 634 "FlexScanner.cpp"
+#line 633 "FlexScanner.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -791,7 +791,7 @@ YY_RULE_SETUP
 #line 87 "tokenizer.flex"
 ECHO;
 	YY_BREAK
-#line 795 "FlexScanner.cpp"
+#line 794 "FlexScanner.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

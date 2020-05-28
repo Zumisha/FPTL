@@ -57,19 +57,21 @@ namespace FPTL
 				{
 					break;
 				}
+#if !disableExceptionHandling
 				catch (std::exception& e)
 				{
 					std::cerr << e.what() << std::endl
 						<< "Execution aborted." << std::endl;
 					mEvaluator->abort();
 				}
-				catch (...) // SEH not catch
+				catch (...)
 				{
 					std::cerr << "Congratulations, you found the entrance to Narnia!" << std::endl
 						<< "(Not std::exception error.)" << std::endl
 						<< "Execution aborted." << std::endl;
 					mEvaluator->abort();
 				}
+#endif
 			}
 
 			// Выводим статистику.
@@ -110,6 +112,7 @@ namespace FPTL
 
 		SExecutionContext *EvaluatorUnit::join()
 		{
+			// Отменена
 			if (pendingTasks.empty())
 				return new IFExecutionContext(new EndOp());
 

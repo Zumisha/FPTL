@@ -19,34 +19,14 @@ namespace FPTL
 				return &ops;
 			}
 
-			const Ops * combine(const Ops * aOther) const override
-			{
-				return aOther->withOps(this);
-			}
-
-			const Ops * withOps(const IntegerOps * aOps) const override
-			{
-				throw invalidOperation("combine with int");
-			}
-
-			const Ops * withOps(const BooleanOps * aOps) const override
-			{
-				return get();
-			}
-
-			const Ops * withOps(const DoubleOps * aOps) const override
-			{
-				throw invalidOperation("combine with double");
-			}
-
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("boolean");
+				static TypeInfo info("Boolean");
 				return info;
 			}
 
 			// Преобразования типов.
-			long long toInt(const DataValue & aVal) const override
+			int64_t toInt(const DataValue & aVal) const override
 			{
 				return (aVal.mIntVal ? 1 : 0);
 			}
@@ -57,9 +37,9 @@ namespace FPTL
 			}
 
 			// Функции сравнения. Оба аргумента обязаны быть типа boolean.
-			DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool equal(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(aLhs.mIntVal == aRhs.mIntVal);
+				return (aLhs.mIntVal == 0) == (aRhs.mIntVal == 0);
 			}
 
 			// Вывод в поток.
@@ -74,7 +54,7 @@ namespace FPTL
 				aStream << (aVal.mIntVal ? "1" : "0");
 			}
 
-			DataValue read(std::istream & aStream) const override
+			DataValue read(const DataValue&, const SExecutionContext&, std::istream & aStream) const override
 			{
 				DataValue val(get());
 				aStream >> val.mIntVal;

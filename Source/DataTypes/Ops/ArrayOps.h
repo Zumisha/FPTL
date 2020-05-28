@@ -37,15 +37,9 @@ namespace FPTL
 
 			static size_t getLen(const DataValue & arr);
 
-			static DataValue concat(const SExecutionContext & ctx);
-
 			static DataValue copy(SExecutionContext & ctx, const DataValue & arr);
 
-			static DataValue dot(SExecutionContext & ctx, const DataValue & arr1, const DataValue & arr2);
-
 			static void arrayValueCheck(const DataValue & arr);
-
-			static void fromString(const DataValue & arr, std::istream & aStream);
 
 			inline static const std::string typeName = "array";
 
@@ -91,6 +85,33 @@ namespace FPTL
 				TypeInfo info(typeName, elType);
 				return info;
 			}
+		};
+		
+		// Операции над массивами.
+		class ArrayOps : public BaseOps
+		{
+			ArrayOps() = default;
+
+		public:
+			static ArrayOps * get()
+			{
+				static ArrayOps ops;
+				return &ops;
+			}
+
+			TypeInfo getType(const DataValue & aVal) const override
+			{
+				return aVal.mArray->type;
+			}
+
+			void mark(const DataValue & aVal, ObjectMarker * marker) const override;
+
+			// Вывод содержимого массива.
+			void print(const DataValue & aVal, std::ostream & aStream) const override;
+
+			void write(const DataValue & aVal, std::ostream & aStream) const override;
+
+			DataValue read(const DataValue & aVal, const SExecutionContext & aCtx, std::istream & aStream) const override;
 		};
 	}
 }

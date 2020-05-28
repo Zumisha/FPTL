@@ -31,37 +31,7 @@ namespace FPTL
 			{
 				return *aVal.mADT->ctor->targetType();
 			}
-
-			const Ops * combine(const Ops * aOther) const override
-			{
-				throw invalidOperation("combine");
-			}
-
-			const Ops * withOps(class Ops const * aOps) const override
-			{
-				throw invalidOperation("with Ops");
-			}
-
-			const Ops * withOps(class IntegerOps const * aOps) const override
-			{
-				throw invalidOperation("with IntegerOps");
-			}
-
-			const Ops * withOps(class BooleanOps const * aOps) const override
-			{
-				throw invalidOperation("with BooleanOps");
-			}
-
-			const Ops * withOps(class DoubleOps const * aOps) const override
-			{
-				throw invalidOperation("with DoubleOps");
-			}
-
-			const Ops * withOps(class StringOps const * aOps) const override
-			{
-				throw invalidOperation("with StringOps");
-			}
-
+			
 			void mark(const DataValue & aVal, ObjectMarker * marker) const override
 			{
 				if (marker->markAlive(aVal.mADT->values, aVal.mADT->size()))
@@ -103,7 +73,7 @@ namespace FPTL
 				throw invalidOperation(aVal.getOps()->getType(aVal), "write");
 			}
 
-			DataValue read(std::istream & aStream) const override
+			DataValue read(const DataValue&, const SExecutionContext&, std::istream & aStream) const override
 			{
 				throw invalidOperation("read");
 			}

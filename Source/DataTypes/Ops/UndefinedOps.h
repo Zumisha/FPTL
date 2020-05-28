@@ -19,42 +19,22 @@ namespace FPTL
 				return &ops;
 			}
 
-			const Ops * combine(const Ops * aOther) const override
-			{
-				return get();
-			}
-
-			const Ops * withOps(const BooleanOps * aOps) const override
-			{
-				return get();
-			}
-
-			const Ops * withOps(const IntegerOps * aOps) const override
-			{
-				return get();
-			}
-
-			const Ops * withOps(const DoubleOps * aOps) const override
-			{
-				return get();
-			}
-
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("undefined");
+				static TypeInfo info("Undefined");
 				return info;
 			}
 
 			// Функция сравнения со значением true определена.
-			DataValue equal(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool equal(const DataValue & aLhs, const DataValue & aRhs) const override
 			{
-				return DataBuilders::createBoolean(false);
+				return false;
 			}
 
 			// Вывод в поток.
 			void print(const DataValue & aVal, std::ostream & aStream) const override
 			{
-				aStream << "undefined";
+				aStream << "Undefined";
 			}
 		};
 

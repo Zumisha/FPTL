@@ -4,10 +4,10 @@
 #include <set>
 #include <atomic>
 #include <memory>
+#include <sstream>
 
 #include "DataTypes/Ops/Ops.h"
 #include "InternalForm/ControlValue.h"
-#include <sstream>
 
 namespace FPTL {
 	namespace Runtime {
@@ -21,11 +21,9 @@ namespace FPTL {
 		struct SExecutionContext
 		{
 			virtual ~SExecutionContext() = default;
-			// Указатель на схему.
-			FSchemeNode * Scheme;
 
 			// Указатель на родительский контекст.
-			SExecutionContext * Parent;
+			SExecutionContext* Parent;
 
 			// Указатели на порождённые задачи.
 			std::set<SExecutionContext *> Childs;

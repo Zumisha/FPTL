@@ -1,15 +1,21 @@
 ﻿#include <memory>
 #include <string>
+#include <sstream>
 
 #include "Generated/parser.tab.hh"
 
 #include "Support.h"
-#include "NodeVisitor.h"
 #include "SemanticCheck.h"
 #include "Nodes.h"
-#include "Libraries/StandardLibrary.h"
 #include "Tokenizer.h"
 #include "Evaluator/Run.h"
+#include "Libraries/ArithmeticLib.h"
+#include "Libraries/ArrayLib.h"
+#include "Libraries/FileLib.h"
+#include "Libraries/LogicLib.h"
+#include "Libraries/StandardLib.h"
+#include "Libraries/StringLib.h"
+#include "Libraries/TimeLib.h"
 
 namespace FPTL {
 	namespace Parser {
@@ -59,9 +65,17 @@ namespace FPTL {
 			registerKeyword("true", BisonParser::token::T_TRUE);
 			registerKeyword("false", BisonParser::token::T_FALSE);
 
-			for (auto fName : Runtime::StandardLibrary::mFunctions)
+			// ToDo: сделать нормальный импорт
+			Runtime::ArithmeticLib::Register();
+			Runtime::LogicLib::Register();
+			Runtime::StandardLib::Register();
+			Runtime::StringLib::Register();
+			Runtime::ArrayLib::Register();
+			Runtime::FileLib::Register();
+			Runtime::TimeLib::Register();
+			for (auto fName : Runtime::FunctionLibrary::getFunctionNames())
 			{
-				registerKeyword(fName.first, BisonParser::token::BFNAME);
+				registerKeyword(fName, BisonParser::token::BFNAME);
 			}
 		}
 
@@ -209,8 +223,18 @@ namespace FPTL {
 			return mIdentStack.back();
 		}
 
+		void inputTokenToStream(std::stringstream& inputTupleStream, const std::string& str)
+		{
+			for (size_t i = 0; i < str.size(); ++i)
+			{
+				if (str[i] == '\\') inputTupleStream << "\\\\";
+				else if (str[i] == '"') inputTupleStream << "\\\"";
+				else inputTupleStream << str[i];
+			}
+		}
+
 		//-------------------------------------------------------------------------------------------
-		ASTNode* Support::getInternalForm(const std::vector<std::string>& inputTuple, const std::string& programStr)
+		ASTNode* Support::getAST(std::vector<std::string>& inputTuple, const std::string& programStr)
 		{
 			std::stringstream program;
 
@@ -225,14 +249,16 @@ namespace FPTL {
 			// Изменится с реализацией именованных параметров.
 			if (!inputTuple.empty())
 			{
-				std::string inputTupleStr;
+				std::stringstream inputTupleStream;
 
-				inputTupleStr += "(" + inputTuple[0];
+				inputTupleStream << "(\"";
+				inputTokenToStream(inputTupleStream, inputTuple[0]);
 				for (size_t i = 1; i < inputTuple.size(); ++i)
 				{
-					inputTupleStr += ", " + inputTuple[i];
+					inputTupleStream << "\", \"";
+					inputTokenToStream(inputTupleStream, inputTuple[i]);
 				}
-				inputTupleStr += ")";
+				inputTupleStream << "\")";
 
 				const size_t inPos = programStr.rfind('%');
 				if (inPos != static_cast<size_t>(-1))
@@ -255,7 +281,7 @@ namespace FPTL {
 					{
 						program << programStr.substr(0, inPos);
 						program << end.substr(0, fPos);
-						program << inputTupleStr;
+						program << inputTupleStream.str();
 						program << end.substr(lPos, end.length());
 					}
 					else program << programStr;
@@ -263,6 +289,8 @@ namespace FPTL {
 				else program << programStr;
 			}//*/
 			else program << programStr;
+
+			//std::cout << program.str();
 
 			Tokenizer tokenizer(program);
 			ASTNode *root = nullptr;

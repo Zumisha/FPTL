@@ -5,22 +5,19 @@
 
 #include "FSchemeGenerator.h"
 #include "ConstructorGenerator.h"
-#include "Libraries/StandardLibrary.h"
 #include "NodeDeleter.h"
 #include "Parser/Nodes.h"
 #include "DataTypes/Ops/DoubleOps.h"
+#include "DataTypes/Ops/ADTValue.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
-		FSchemeGenerator::FSchemeGenerator(Parser::ASTNode * astRoot)
-			: mTree(nullptr),
+		FSchemeGenerator::FSchemeGenerator(Parser::ASTNode * astRoot):
 			mScheme(nullptr),
 			mSchemeInput(nullptr),
-			mProgram(nullptr),
-			mConstructorGenerator(new ConstructorGenerator),
-			mLibrary(new StandardLibrary)
+			mProgram(nullptr)
 		{
 			process(astRoot);
 		}
@@ -29,9 +26,6 @@ namespace FPTL
 		{
 			NodeDeleter deleter;
 			deleter.releaseGraph(mProgram);
-
-			delete mLibrary;
-			delete mConstructorGenerator;
 		}
 
 		FSchemeNode * FSchemeGenerator::getProgram() const
@@ -40,7 +34,7 @@ namespace FPTL
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::ConstantNode * aNode)
+		void FSchemeGenerator::handle(Parser::ConstantNode * aNode)
 		{
 			FSchemeNode * node = nullptr;
 
@@ -96,9 +90,9 @@ namespace FPTL
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::NameRefNode * aNameRefNode)
+		void FSchemeGenerator::handle(Parser::NameRefNode * aNameRefNode)
 		{
-			NodeVisitor::visit(aNameRefNode);
+			NodeVisitor::handle(aNameRefNode);
 
 			switch (aNameRefNode->getType())
 			{
@@ -118,7 +112,7 @@ namespace FPTL
 
 			case Parser::ASTNode::ConstructorName:
 			{
-				const auto ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
+				auto* const ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 				auto name = aNameRefNode->getName();
 				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), name.getStr(), name.Line, name.Col);
 				mNodeStack.push(node);
@@ -127,7 +121,7 @@ namespace FPTL
 
 			case Parser::ASTNode::DestructorName:
 			{
-				const auto ctor = mConstructorGenerator->getConstructor(aNameRefNode->getName().getStr());
+				const auto ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 				auto name = aNameRefNode->getName();
 				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), "~" + name.getStr(), name.Line, name.Col);
 				mNodeStack.push(node);
@@ -147,7 +141,7 @@ namespace FPTL
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::DefinitionNode * aDefinitionNode)
+		void FSchemeGenerator::handle(Parser::DefinitionNode * aDefinitionNode)
 		{
 			if (aDefinitionNode->getType() == Parser::ASTNode::Definition)
 			{
@@ -156,7 +150,7 @@ namespace FPTL
 				auto* me = new FScheme(nullptr, name);
 				mDefinitions.insert(std::make_pair(name, me));
 
-				NodeVisitor::visit(aDefinitionNode);
+				NodeVisitor::handle(aDefinitionNode);
 
 				const auto contents = mNodeStack.top();
 				mNodeStack.pop();
@@ -164,14 +158,14 @@ namespace FPTL
 			}
 			else
 			{
-				NodeVisitor::visit(aDefinitionNode);
+				NodeVisitor::handle(aDefinitionNode);
 			}
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::ExpressionNode * aExpressionNode)
+		void FSchemeGenerator::handle(Parser::ExpressionNode * aExpressionNode)
 		{
-			NodeVisitor::visit(aExpressionNode);
+			NodeVisitor::handle(aExpressionNode);
 
 			switch (aExpressionNode->getType())
 			{
@@ -220,24 +214,24 @@ namespace FPTL
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::ConditionNode * aExpressionNode)
+		void FSchemeGenerator::handle(Parser::ConditionNode * aExpressionNode)
 		{
-			NodeVisitor::visit(aExpressionNode);
-				const auto thenBranch = mNodeStack.top();
+			NodeVisitor::handle(aExpressionNode);
+			const auto thenBranch = mNodeStack.top();
+			mNodeStack.pop();
+
+			const auto middle = aExpressionNode->getCond();
+			FSchemeNode * elseBranch = nullptr;
+			if (middle)
+			{
+				elseBranch = mNodeStack.top();
 				mNodeStack.pop();
+			}
 
-				const auto middle = aExpressionNode->getCond();
-				FSchemeNode * elseBranch = nullptr;
-				if (middle)
-				{
-					elseBranch = mNodeStack.top();
-					mNodeStack.pop();
-				}
+			const auto condition = mNodeStack.top();
+			mNodeStack.pop();
 
-				const auto condition = mNodeStack.top();
-				mNodeStack.pop();
-
-				mNodeStack.push(new FConditionNode(condition, thenBranch, elseBranch));
+			mNodeStack.push(new FConditionNode(condition, thenBranch, elseBranch));
 		}
 
 		//-----------------------------------------------------------------------------
@@ -326,13 +320,13 @@ namespace FPTL
 			Parser::Ident name = aFunctionNameNode->getName();
 
 			// Ищем функцию в библиотеке.
-			const auto function = new FFunctionNode(mLibrary->getFunction(name.getStr()), name.getStr(), name.Line, name.Col);
+			const auto function = new FFunctionNode(FunctionLibrary::getFunction(name.getStr()), name.getStr(), name.Line, name.Col);
 
 			mNodeStack.push(function);
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::FunctionNode * aFunctionNode)
+		void FSchemeGenerator::handle(Parser::FunctionNode * aFunctionNode)
 		{
 			auto name = aFunctionNode->getFuncName();
 			const auto mainDef = aFunctionNode->getDefinition(name);
@@ -368,10 +362,10 @@ namespace FPTL
 		}
 
 		//-----------------------------------------------------------------------------
-		void FSchemeGenerator::visit(Parser::FunctionalProgram * aFuncProgram)
+		void FSchemeGenerator::handle(Parser::FunctionalProgram * aFuncProgram)
 		{
 			// Обрабатываем блоки данных.	
-			mConstructorGenerator->work(aFuncProgram);
+			mConstructorGenerator.work(aFuncProgram);
 
 			// Обрабатываем только схему.
 			process(aFuncProgram->getScheme());
