@@ -2,6 +2,7 @@
 
 #include "Run.h"
 #include "InternalForm/InternalForm.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL
 {

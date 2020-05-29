@@ -19,9 +19,15 @@ namespace FPTL
 				return &ops;
 			}
 
+			inline static const std::string typeName = "Boolean";
+			const std::string& getTypeName() const override
+			{
+				return typeName;
+			}
+
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("Boolean");
+				static TypeInfo info(typeName);
 				return info;
 			}
 
@@ -49,7 +55,7 @@ namespace FPTL
 			}
 
 			// Вывод в поток.
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
 			{
 				aStream << (aVal.mIntVal ? "1" : "0");
 			}

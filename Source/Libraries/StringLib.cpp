@@ -6,8 +6,6 @@
 #include "Macros.h"
 #include "DataTypes/Ops/Ops.h"
 #include "DataTypes/Ops/StringOps.h"
-#include "DataTypes/Ops/BooleanOps.h"
-#include "LogicLib.h"
 
 namespace FPTL
 {
@@ -18,12 +16,9 @@ namespace FPTL
 			// Длина строки.
 			void length(SExecutionContext & aCtx)
 			{
-				const auto & arg = aCtx.getArg(0);
+				const auto& arg = aCtx.getArg(0);
 
-#if fptlDebugBuild
-				if (arg.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg.getOps()->getType(arg), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), arg);
 
 				aCtx.push(DataBuilders::createInt(static_cast<long long>(arg.mString->length())));
 			}
@@ -34,15 +29,11 @@ namespace FPTL
 				const auto & arg0 = aCtx.getArg(0);
 				const auto & arg1 = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (arg0.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg0.getOps()->getType(arg0), __func__);
-				if (arg1.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg1.getOps()->getType(arg1), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), arg0);
+				BaseOps::opsCheck(StringOps::get(), arg1);
 
-				auto* const src = arg0.mString;
-				auto* const regEx = arg1.mString;
+				const auto* const src = arg0.mString;
+				const auto* const regEx = arg1.mString;
 
 				std::regex rx(regEx->str());
 				std::cmatch matchResults;
@@ -65,18 +56,14 @@ namespace FPTL
 			// Проверка соответствия по регулярному выражению.
 			void match(SExecutionContext & aCtx)
 			{
-				const auto & arg0 = aCtx.getArg(0);
-				const auto & arg1 = aCtx.getArg(1);
+				const auto& arg0 = aCtx.getArg(0);
+				const auto& arg1 = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (arg0.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg0.getOps()->getType(arg0), __func__);
-				if (arg1.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg1.getOps()->getType(arg1), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), arg0);
+				BaseOps::opsCheck(StringOps::get(), arg1);
 
-				auto* const src = arg0.mString;
-				auto* const regEx = arg1.mString;
+				const auto* const src = arg0.mString;
+				const auto* const regEx = arg1.mString;
 
 				std::regex rx(regEx->str());
 				std::cmatch match;
@@ -85,7 +72,7 @@ namespace FPTL
 				{
 					for (size_t i = 0; i < rx.mark_count(); ++i)
 					{
-						const auto & m = match[i + 1];
+						const auto& m = match[i + 1];
 						const auto val = StringBuilder::create(aCtx, src, m.first - src->contents(), m.second - src->contents());
 						aCtx.push(val);
 					}
@@ -99,22 +86,17 @@ namespace FPTL
 			// Замена по регулярному выражению.
 			void replace(SExecutionContext & aCtx)
 			{
-				const auto & arg0 = aCtx.getArg(0);
-				const auto & arg1 = aCtx.getArg(1);
-				const auto & arg2 = aCtx.getArg(2);
+				const auto& arg0 = aCtx.getArg(0);
+				const auto& arg1 = aCtx.getArg(1);
+				const auto& arg2 = aCtx.getArg(2);
 
-#if fptlDebugBuild
-				if (arg0.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg0.getOps()->getType(arg0), __func__);
-				if (arg1.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg1.getOps()->getType(arg1), __func__);
-				if (arg2.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg2.getOps()->getType(arg2), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), arg0);
+				BaseOps::opsCheck(StringOps::get(), arg1);
+				BaseOps::opsCheck(StringOps::get(), arg2);
 
-				const auto src = arg0.mString;
-				const auto pattern = arg1.mString;
-				const auto format = arg2.mString;
+				const auto* const src = arg0.mString;
+				const auto* const pattern = arg1.mString;
+				const auto* const format = arg2.mString;
 
 				const std::regex rx(pattern->str());
 				const auto result = std::regex_replace(src->str(), rx, format->str());
@@ -127,29 +109,29 @@ namespace FPTL
 				const auto & arg0 = aCtx.getArg(0);
 				const auto & arg1 = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (arg0.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg0.getOps()->getType(arg0), __func__);
-				if (arg1.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(arg1.getOps()->getType(arg1), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), arg0);
+				BaseOps::opsCheck(StringOps::get(), arg1);
 
-				const auto src = arg0.mString;
-				const auto pattern = arg1.mString;
+				const auto* const src = arg0.mString;
+				const auto* const pattern = arg1.mString;
 
 				const std::regex rx("^(?:\\s*)(" + pattern->str() + ")");
 
 				std::cmatch matchResults;
 
-				const auto first = static_cast<const char *>(src->getChars());
-				const auto last = static_cast<const char *>(src->getChars() + src->length());
+				const auto* const first = static_cast<const char *>(src->getChars());
+				const auto* const last = static_cast<const char *>(src->getChars() + src->length());
 
 				if (std::regex_search(first, last, matchResults, rx))
 				{
-					const auto prefix = StringBuilder::create(aCtx, src, matchResults[1].first - src->contents(), matchResults[1].second - src->contents());
+					const auto prefix = StringBuilder::create(aCtx, src, 
+						matchResults[1].first - src->contents(), 
+						matchResults[1].second - src->contents());
 					aCtx.push(prefix);
 
-					const auto suffix = StringBuilder::create(aCtx, src, matchResults.suffix().first - src->contents(), matchResults.suffix().second - src->contents());
+					const auto suffix = StringBuilder::create(aCtx, src, 
+						matchResults.suffix().first - src->contents(), 
+						matchResults.suffix().second - src->contents());
 					aCtx.push(suffix);
 				}
 				else
@@ -162,9 +144,9 @@ namespace FPTL
 			void toString(SExecutionContext & aCtx)
 			{
 				std::stringstream strStream;
-				const auto & arg = aCtx.getArg(0);
+				const auto& arg = aCtx.getArg(0);
 
-				arg.getOps()->write(arg, strStream);
+				arg.getOps()->rawPrint(arg, strStream);
 
 				aCtx.push(StringBuilder::create(aCtx, strStream.str()));
 			}

@@ -33,10 +33,24 @@ namespace FPTL
 
 			void Print(const SExecutionContext & aCtx)
 			{
-				static boost::mutex outputMutex;
-				boost::lock_guard<boost::mutex> guard(outputMutex);
+				std::stringstream ss;
+				aCtx.print(ss);
+				std::cout << ss.rdbuf();
+			}
 
-				aCtx.print(std::cout);
+			void PrintLine(const SExecutionContext & aCtx)
+			{
+				std::stringstream ss;
+				aCtx.print(ss);
+				ss << "\n";
+				std::cout << ss.rdbuf();
+			}
+
+			void RawPrint(const SExecutionContext & aCtx)
+			{
+				std::stringstream ss;
+				aCtx.rawPrint(ss);
+				std::cout << ss.rdbuf();
 			}
 
 			void PrintType(const SExecutionContext & aCtx)
@@ -71,13 +85,11 @@ namespace FPTL
 #if fptlDebugBuild
 				for (size_t i = 1; i < aCtx.argNum; ++i)
 				{
-					const auto& arg = aCtx.getArg(i);
-					if (firstOps != arg.getOps())
-						throw BaseOps::invalidOperation(firstOps->getType(first), arg.getOps()->getType(arg), __func__);
+					BaseOps::opsCheck(firstOps, aCtx.getArg(i));
 				}
 #endif
 
-				aCtx.push(firstOps->add(aCtx));
+				aCtx.push(firstOps->add(aCtx, aCtx.firstArg(), aCtx.lastArg()));
 			}
 
 			void Sub(SExecutionContext & aCtx)
@@ -85,10 +97,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(lhs.getOps()->sub(lhs, rhs));
 			}
@@ -98,10 +107,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(lhs.getOps()->mul(lhs, rhs));
 			}
@@ -111,10 +117,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(lhs.getOps()->div(lhs, rhs));
 			}
@@ -124,10 +127,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(lhs.getOps()->mod(lhs, rhs));
 			}
@@ -151,6 +151,8 @@ namespace FPTL
 
 			// Ввод / вывод.
 			{"print", &Print},
+			{"printLine", &PrintLine},
+			{"rawPrint", &RawPrint},
 			{"printType", &PrintType},
 			
 			{"add",&Add},

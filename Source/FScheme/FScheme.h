@@ -5,6 +5,7 @@
 #include "Evaluator/Context.h"
 #include "Libraries/FunctionLibrary.h"
 #include "FSchemeSerializer.h"
+#include "DataTypes/TypeInfo.h"
 
 namespace FPTL
 {

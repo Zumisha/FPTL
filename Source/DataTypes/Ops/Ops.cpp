@@ -3,6 +3,7 @@
 
 #include "Ops.h"
 #include "Evaluator/Context.h"
+#include "Macros.h"
 
 namespace FPTL
 {
@@ -26,95 +27,95 @@ namespace FPTL
 		//-----------------------------------------------------------------------------
 		// Базисные функции.
 		
-		DataValue& BaseOps::add(DataValue& aLhs, const DataValue & aRhs) const
+		DataValue BaseOps::add(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "add");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::add(const SExecutionContext & aCtx) const
+		DataValue BaseOps::add(const SExecutionContext&, const DataValue* const, const DataValue* const) const
 		{
-			const auto& arg = aCtx.getArg(0);
-			throw invalidOperation(arg.getOps()->getType(arg), "add");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::sub(const DataValue & aLhs, const DataValue & aRhs) const
+		DataValue BaseOps::sub(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "sub");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::mul(const DataValue & aLhs, const DataValue & aRhs) const
+		DataValue BaseOps::sub(const SExecutionContext&, const DataValue* const, const DataValue* const) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "mul");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::div(const DataValue & aLhs, const DataValue & aRhs) const
+		DataValue BaseOps::mul(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "div");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::mod(const DataValue & aLhs, const DataValue & aRhs) const
+		DataValue BaseOps::mul(const SExecutionContext&, const DataValue* const, const DataValue* const) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "mod");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::abs(const DataValue & aVal) const
+		DataValue BaseOps::div(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aVal.getOps()->getType(aVal), "abs");
+			throw invalidOperation(__func__);
+		}
+
+		DataValue BaseOps::div(const SExecutionContext&, const DataValue* const, const DataValue* const) const
+		{
+			throw invalidOperation(__func__);
+		}
+
+		DataValue BaseOps::mod(const DataValue&, const DataValue&) const
+		{
+			throw invalidOperation(__func__);
+		}
+
+		DataValue BaseOps::mod(const SExecutionContext&, const DataValue* const, const DataValue* const) const
+		{
+			throw invalidOperation(__func__);
+		}
+
+		DataValue BaseOps::abs(const DataValue&) const
+		{
+			throw invalidOperation(__func__);
 		}
 
 		// Функции сравнения.
-		bool BaseOps::equal(const DataValue & aLhs, const DataValue & aRhs) const
+		bool BaseOps::equal(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "equal");
+			throw invalidOperation(__func__);
 		}
 
-		bool BaseOps::less(const DataValue & aLhs, const DataValue & aRhs) const
+		bool BaseOps::less(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "less");
+			throw invalidOperation(__func__);
 		}
 
-		bool BaseOps::greater(const DataValue & aLhs, const DataValue & aRhs) const
+		bool BaseOps::greater(const DataValue&, const DataValue&) const
 		{
-			throw invalidOperation(aRhs.getOps()->getType(aRhs), "greater");
+			throw invalidOperation(__func__);
 		}
 
 		// Функции преобразования.
-		long long BaseOps::toInt(const DataValue & aVal) const
+		long long BaseOps::toInt(const DataValue&) const
 		{
-			throw invalidOperation(aVal.getOps()->getType(aVal), "toInt");
+			throw invalidOperation(__func__);
 		}
 
-		double BaseOps::toDouble(const DataValue & aVal) const
+		double BaseOps::toDouble(const DataValue&) const
 		{
-			throw invalidOperation(aVal.getOps()->getType(aVal), "toDouble");
+			throw invalidOperation(__func__);
 		}
 
-		void BaseOps::write(const class DataValue& aVal, std::ostream& aStream) const
+		DataValue BaseOps::read(const DataValue&, const SExecutionContext&, std::istream&) const
 		{
-			throw invalidOperation(aVal.getOps()->getType(aVal), "write");
+			throw invalidOperation(__func__);
 		}
 
-		DataValue BaseOps::read(const DataValue & aVal, const SExecutionContext & aCtx, std::istream & aStream) const
+		void BaseOps::mark(const DataValue &, ObjectMarker*) const
 		{
-			throw invalidOperation("read");
-		}
-
-		void BaseOps::mark(const DataValue & aVal, ObjectMarker * marker) const
-		{
-		}
-		
-		std::runtime_error  BaseOps::invalidOperation(const TypeInfo& valType1, const TypeInfo& valType2, const std::string& funcName)
-		{
-			std::stringstream error;
-			error << invalidCombineMsg << valType1 << " and " << valType2 << " in " << funcName;
-			return std::runtime_error(error.str());			
-		}
-
-		std::runtime_error BaseOps::invalidOperation(const TypeInfo& valType, const std::string& funcName)
-		{
-			std::stringstream error;
-			error << invalidOpsMsg << valType << ": " << funcName;
-			return std::runtime_error(error.str());
 		}
 
 		std::runtime_error BaseOps::invalidOperation(const std::string& funcName) const
@@ -122,6 +123,34 @@ namespace FPTL
 			std::stringstream error;
 			error << invalidOpsMsg << this->getType(*reinterpret_cast<DataValue const*>(this)) << ": " << funcName;
 			return std::runtime_error(error.str());
+		}
+		
+		std::runtime_error BaseOps::invalidValueType(const std::string& refType, const std::string& valType)
+		{
+			std::stringstream error;
+			error << invalidOpsMsg << valType << "\". Expected value of type \"" << refType << "\".";
+			return std::runtime_error(error.str());			
+		}
+
+		void BaseOps::opsCheck(const Ops* ops, const DataValue& val)
+		{
+#if fptlDebugBuild
+			if (val.getOps() != ops)
+			{
+				throw invalidValueType(ops->getTypeName(), std::string(val.getOps()->getType(val)));
+			}
+#endif
+		}
+		
+		void BaseOps::typeCheck(const DataValue& refVal, const DataValue& val)
+		{
+#if fptlDebugBuild
+			if (val.getOps()->getType(val) != refVal.getOps()->getType(refVal))
+			{
+				throw invalidValueType(std::string(val.getOps()->getType(val)), 
+					std::string(refVal.getOps()->getType(refVal)));
+			}
+#endif
 		}
 
 		std::runtime_error BaseOps::divideByZero()

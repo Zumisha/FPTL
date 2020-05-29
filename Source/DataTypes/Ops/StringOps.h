@@ -4,6 +4,7 @@
 
 #include "Evaluator/Context.h"
 #include "GC/CollectedHeap.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL {
 	namespace Runtime {
@@ -17,8 +18,8 @@ namespace FPTL {
 			size_t begin;
 			size_t end;
 
-			char * getChars() const;
-			char * contents() const;
+			char* getChars() const;
+			char* contents() const;
 			size_t length() const;
 			std::string str() const;
 		};
@@ -28,9 +29,9 @@ namespace FPTL {
 		class StringBuilder
 		{
 		public:
-			static DataValue create(const SExecutionContext & aCtx, const std::string & aData);
-			static DataValue create(const SExecutionContext & aCtx, size_t aSize);
-			static DataValue create(const SExecutionContext & aCtx, const StringValue * aOther, size_t aBegin, size_t aEnd);
+			static DataValue create(const SExecutionContext& aCtx, const std::string& aData);
+			static DataValue create(const SExecutionContext& aCtx, size_t aSize);
+			static DataValue create(const SExecutionContext& aCtx, const StringValue* aOther, size_t aBegin, size_t aEnd);
 		};
 
 		//-----------------------------------------------------------------------------
@@ -41,34 +42,40 @@ namespace FPTL {
 			StringOps() = default;
 
 		public:
-			static StringOps * get()
+			static StringOps* get()
 			{
 				static StringOps ops;
 				return &ops;
 			}
 
-			TypeInfo getType(const DataValue &aVal) const override
+			inline static const std::string typeName = "String";
+			const std::string& getTypeName() const override
 			{
-				static TypeInfo info("String");
+				return typeName;
+			}
+
+			TypeInfo getType(const DataValue& aVal) const override
+			{
+				static TypeInfo info(typeName);
 				return info;
 			}
 
 			// Преобразование типов.
-			int64_t toInt(const DataValue & aVal) const override
+			int64_t toInt(const DataValue& aVal) const override
 			{
 				return boost::lexical_cast<int64_t>(aVal.mString->str());
 			}
 
-			double toDouble(const DataValue & aVal) const override
+			double toDouble(const DataValue& aVal) const override
 			{
 				return boost::lexical_cast<double>(aVal.mString->str());
 			}
 
 			// Арифметические функции.
-			DataValue add(const SExecutionContext & aCtx) const override;
+			DataValue add(const SExecutionContext& aCtx, const DataValue* const first, const DataValue* const last) const override;
 
 			// Функции сравнения.
-			bool equal(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool equal(const DataValue& aLhs, const DataValue& aRhs) const override
 			{
 				const auto* lhs = aLhs.mString;
 				const auto* rhs = aRhs.mString;
@@ -79,7 +86,7 @@ namespace FPTL {
 						rhs->getChars());
 			}
 
-			bool less(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool less(const DataValue& aLhs, const DataValue& aRhs) const override
 			{
 				const auto* lhs = aLhs.mString;
 				const auto* rhs = aRhs.mString;
@@ -90,7 +97,7 @@ namespace FPTL {
 					rhs->getChars() + rhs->length());
 			}
 
-			bool greater(const DataValue & aLhs, const DataValue & aRhs) const override
+			bool greater(const DataValue& aLhs, const DataValue& aRhs) const override
 			{
 				const auto lhs = aLhs.mString;
 				const auto rhs = aRhs.mString;
@@ -101,20 +108,20 @@ namespace FPTL {
 					lhs->getChars() + lhs->length());
 			}
 
-			void mark(const DataValue & aVal, ObjectMarker * marker) const override;
+			void mark(const DataValue& aVal, ObjectMarker* marker) const override;
 
 			// Вывод в поток.
-			void print(const DataValue & aVal, std::ostream & aStream) const override
+			void print(const DataValue& aVal, std::ostream& aStream) const override
 			{
 				aStream << "\"" << aVal.mString->str() << "\"";
 			}
 
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(const DataValue& aVal, std::ostream& aStream) const override
 			{
 				aStream << aVal.mString->str();
 			}
 
-			DataValue read(const DataValue & aVal, const SExecutionContext & aCtx, std::istream & aStream) const override
+			DataValue read(const DataValue& aVal, const SExecutionContext& aCtx, std::istream& aStream) const override
 			{
 				std::string str;
 				aStream >> str;

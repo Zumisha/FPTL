@@ -6,7 +6,7 @@
 #include <memory>
 #include <sstream>
 
-#include "DataTypes/Ops/Ops.h"
+#include "DataTypes/Values/DataValue.h"
 #include "InternalForm/ControlValue.h"
 
 namespace FPTL {
@@ -67,12 +67,15 @@ namespace FPTL {
 			bool isReady() const;
 
 			// Методы работы с данными.
-			const DataValue & getArg(size_t aIndex) const;
+			const DataValue& getArg(size_t aIndex) const;
+			const DataValue* firstArg() const;
+			const DataValue* lastArg() const;
 			void push(const DataValue & aData);
 			void advance();
 			void unwind(size_t aArgPosOld, size_t aArity, size_t aPos);
 			void join();
 			void print(std::ostream & aStream) const;
+			void rawPrint(std::ostream & aStream) const;
 			void printTypes(std::ostream & aStream) const;
 
 			// Запуск выполнения.

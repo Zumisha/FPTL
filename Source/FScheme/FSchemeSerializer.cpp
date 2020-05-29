@@ -1,6 +1,7 @@
 #include "FSchemeSerializer.h"
 #include "Utils/FileStreamHelper.h"
 #include "Utils/XmlHelper.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL
 {

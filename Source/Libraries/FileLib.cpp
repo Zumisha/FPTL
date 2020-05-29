@@ -21,19 +21,16 @@ namespace FPTL
 			void openFile(SExecutionContext & aCtx)
 			{
 				// Проверяем имя файла.
-				const auto& fileName = aCtx.getArg(0);
+				const auto& fileNameVal = aCtx.getArg(0);
 				const auto& val = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (fileName.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(fileName.getOps()->getType(fileName), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), fileNameVal);
 
 				std::fstream input;
 				input.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 				try
 				{
-					input.open(fileName.mString->str());
+					input.open(fileNameVal.mString->str());
 					val.getOps()->read(val, aCtx, input);
 					input.close();
 					aCtx.push(val);
@@ -50,24 +47,21 @@ namespace FPTL
 			void writeToFile(SExecutionContext & aCtx, std::ios::openmode mode)
 			{
 				// Проверяем имя файла.
-				const auto & val = aCtx.getArg(0);
-				const auto & file = aCtx.getArg(1);
+				const auto& val = aCtx.getArg(0);
+				const auto& fileNameVal = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (file.getOps() != StringOps::get())
-					throw BaseOps::invalidOperation(file.getOps()->getType(file), __func__);
-#endif
+				BaseOps::opsCheck(StringOps::get(), fileNameVal);
 
-				const auto fileName = file.mString;
-				Utils::setPermissions(fileName->str());
+				const auto& fileName = fileNameVal.mString->str();
+				Utils::setPermissions(fileName);
 
 				std::fstream output;
 				output.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 				try
 				{
-					output.open(fileName->str(), mode);
+					output.open(fileName, mode);
 					output.precision(std::numeric_limits<double>::max_digits10);
-					val.getOps()->write(val, output);
+					val.getOps()->rawPrint(val, output);
 					output.close();
 					aCtx.push(DataBuilders::createBoolean(true));
 				}

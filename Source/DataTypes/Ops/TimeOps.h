@@ -20,9 +20,15 @@ namespace FPTL
 				return &ops;
 			}
 
+			inline static const std::string typeName = "Time";
+			const std::string& getTypeName() const override
+			{
+				return typeName;
+			}
+
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("Time");
+				static TypeInfo info(typeName);
 				return info;
 			}
 
@@ -36,9 +42,9 @@ namespace FPTL
 				aStream << _ctime64(&aVal.mIntVal);
 			}
 
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
 			{
-				aStream << _ctime64(&aVal.mIntVal);
+				aStream << aVal.mIntVal;
 			}
 		};
 

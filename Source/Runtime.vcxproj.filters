@@ -47,6 +47,12 @@
     <Filter Include="Source\Libraries\Time">
       <UniqueIdentifier>{e82e4196-7668-4179-92ff-a4e4187bf28e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Libraries\ADT">
+      <UniqueIdentifier>{c7d9d4c4-3d74-490a-9240-2c6d611eb654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Libraries\String">
+      <UniqueIdentifier>{68504f3c-f6a8-4a70-9292-20a35b2026d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataTypes\Ops\UndefinedOps.h">
@@ -58,22 +64,10 @@
     <ClCompile Include="DataTypes\Ops\DoubleOps.h">
       <Filter>Source\Libraries\Std</Filter>
     </ClCompile>
-    <ClCompile Include="DataTypes\Ops\ADTOps.h">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClCompile>
     <ClCompile Include="DataTypes\Ops\BooleanOps.h">
       <Filter>Source\Libraries\Std</Filter>
     </ClCompile>
-    <ClCompile Include="DataTypes\Ops\ADTValue.cpp">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClCompile>
-    <ClCompile Include="DataTypes\Ops\ArrayOps.cpp">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClCompile>
     <ClCompile Include="DataTypes\Ops\Ops.cpp">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClCompile>
-    <ClCompile Include="DataTypes\Ops\StringOps.cpp">
       <Filter>Source\Libraries\Std</Filter>
     </ClCompile>
     <ClCompile Include="DataTypes\TypeInfo.cpp">
@@ -130,9 +124,6 @@
     <ClCompile Include="Libraries\FunctionLibrary.cpp">
       <Filter>Source\Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\StringLib.cpp">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\ArithmeticLib.cpp">
       <Filter>Source\Libraries\Std</Filter>
     </ClCompile>
@@ -180,6 +171,24 @@
     </ClCompile>
     <ClCompile Include="Libraries\TimeLib.cpp">
       <Filter>Source\Libraries\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\ArrayOps.cpp">
+      <Filter>Source\Libraries\Array</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\ADTOps.h">
+      <Filter>Source\Libraries\ADT</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\ADTValue.cpp">
+      <Filter>Source\Libraries\ADT</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\StringLib.cpp">
+      <Filter>Source\Libraries\String</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Ops\StringOps.cpp">
+      <Filter>Source\Libraries\String</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTypes\Values\ArrayValue.cpp">
+      <Filter>Source\Libraries\Array</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -306,17 +315,8 @@
     <ClInclude Include="DataTypes\Ops\Ops.h">
       <Filter>Source\Libraries\Std</Filter>
     </ClInclude>
-    <ClInclude Include="Libraries\StringLib.h">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClInclude>
-    <ClInclude Include="DataTypes\Ops\StringOps.h">
-      <Filter>Source\Libraries\Std</Filter>
-    </ClInclude>
     <ClInclude Include="DataTypes\Ops\ArrayOps.h">
       <Filter>Source\Libraries\Array</Filter>
-    </ClInclude>
-    <ClInclude Include="DataTypes\Ops\ADTValue.h">
-      <Filter>Source\Libraries\Std</Filter>
     </ClInclude>
     <ClInclude Include="DataTypes\TypeInfo.h">
       <Filter>Source\Libraries</Filter>
@@ -332,6 +332,24 @@
     </ClInclude>
     <ClInclude Include="Libraries\TimeLib.h">
       <Filter>Source\Libraries\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\ADTValue.h">
+      <Filter>Source\Libraries\ADT</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\StringLib.h">
+      <Filter>Source\Libraries\String</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Ops\StringOps.h">
+      <Filter>Source\Libraries\String</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\ArrayValue.h">
+      <Filter>Source\Libraries\Array</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\DataValue.h">
+      <Filter>Source\Libraries\Std</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes\Values\UndefinedValue.h">
+      <Filter>Source\Libraries\Std</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

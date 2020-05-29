@@ -4,6 +4,7 @@
 #include "Context.h"
 #include "Run.h"
 #include "InternalForm/InternalForm.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL 
 {
@@ -40,7 +41,7 @@ namespace FPTL
 			return mEvaluatorUnit->heap();
 		}
 
-		const DataValue & SExecutionContext::getArg(const size_t aIndex) const
+		const DataValue& SExecutionContext::getArg(const size_t aIndex) const
 		{
 #if fptlDebugBuild
 			// ToDo: производить статический анализ.
@@ -50,6 +51,16 @@ namespace FPTL
 			}
 #endif
 			return stack.at(argPos + aIndex);
+		}
+		
+		const DataValue* SExecutionContext::firstArg() const
+		{
+			return &stack.at(argPos);
+		}
+		
+		const DataValue* SExecutionContext::lastArg() const
+		{
+			return &stack.at(argPos + argNum - 1);
 		}
 
 		void SExecutionContext::push(const DataValue & aData)
@@ -104,6 +115,19 @@ namespace FPTL
 				aStream << " * ";
 				arg = getArg(i);
 				arg.getOps()->print(arg, aStream);
+			}
+		}
+
+		void SExecutionContext::rawPrint(std::ostream & aStream) const
+		{
+			if (argNum == 0) return;
+			auto arg = getArg(0);
+			arg.getOps()->rawPrint(arg, aStream);
+			for (size_t i = 1; i < argNum; ++i)
+			{
+				aStream << " * ";
+				arg = getArg(i);
+				arg.getOps()->rawPrint(arg, aStream);
 			}
 		}
 

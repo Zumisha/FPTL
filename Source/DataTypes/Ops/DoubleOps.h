@@ -21,9 +21,15 @@ namespace FPTL
 				return &ops;
 			}
 
+			inline static const std::string typeName = "Boolean";
+			const std::string& getTypeName() const override
+			{
+				return typeName;
+			}
+
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("Double");
+				static TypeInfo info(typeName);
 				return info;
 			}
 
@@ -38,18 +44,19 @@ namespace FPTL
 				return aVal.mDoubleVal;
 			}
 
-			DataValue& add(DataValue& aLhs, const DataValue& aRhs) const override
+			DataValue add(const DataValue& aLhs, const DataValue& aRhs) const override
 			{
-				aLhs.mDoubleVal += aRhs.mDoubleVal;
-				return aLhs;
+				return DataBuilders::createDouble(aLhs.mDoubleVal + aRhs.mDoubleVal);
 			}
 
-			DataValue add(const SExecutionContext& aCtx) const override
+			DataValue add(const SExecutionContext& aCtx, const DataValue* const first, const DataValue* const last) const override
 			{
 				double sum = 0;
-				for (size_t i = 0; i < aCtx.argNum; ++i)
+				const DataValue* iterator = first;
+				while (iterator <= last)
 				{
-					sum += aCtx.getArg(i).mDoubleVal;
+					sum += iterator->mDoubleVal;
+					iterator++;
 				}
 				return DataBuilders::createDouble(sum);
 			}
@@ -98,7 +105,7 @@ namespace FPTL
 				aStream << aVal.mDoubleVal;
 			}
 
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
 			{
 				aStream << aVal.mDoubleVal;
 			}

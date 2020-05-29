@@ -34,7 +34,7 @@ namespace FPTL
 				ss << *this;
 				return ss.str();
 			};
-			friend std::ostream & operator <<(std::ostream& aStream, const TypeInfo& aTypeInfo);
+			friend std::ostream& operator <<(std::ostream& aStream, const TypeInfo& aTypeInfo);
 			friend bool operator ==(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);
 			friend bool operator !=(const TypeInfo& lTypeInfo, const TypeInfo& rTypeInfo);
 

@@ -27,6 +27,12 @@ namespace FPTL
 				return &ops;
 			}
 
+			inline static const std::string typeName = "ADT";
+			const std::string& getTypeName() const override
+			{
+				return typeName;
+			}
+
 			TypeInfo getType(const DataValue & aVal) const override
 			{
 				return *aVal.mADT->ctor->targetType();
@@ -43,7 +49,7 @@ namespace FPTL
 				}
 			}
 
-			void print(const DataValue & aVal, std::ostream & aStream) const override
+			void print(const DataValue& aVal, std::ostream& aStream) const override
 			{
 				const auto val = aVal.mADT;
 				const size_t arity = val->ctor->arity();
@@ -68,14 +74,9 @@ namespace FPTL
 				aStream << val->ctor->name();
 			}
 
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(const DataValue& aVal, std::ostream& aStream) const override
 			{
-				throw invalidOperation(aVal.getOps()->getType(aVal), "write");
-			}
-
-			DataValue read(const DataValue&, const SExecutionContext&, std::istream & aStream) const override
-			{
-				throw invalidOperation("read");
+				print(aVal, aStream);
 			}
 
 			static std::string assignErrMsg(const std::string& fType, const std::string& sType)

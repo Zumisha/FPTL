@@ -19,10 +19,7 @@ namespace FPTL
 			{
 				const auto & arg = aCtx.getArg(0);
 
-#if fptlDebugBuild
-				if (arg.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(arg.getOps()->getType(arg), __func__);
-#endif
+				BaseOps::opsCheck(BooleanOps::get(), arg);
 
 				aCtx.push(DataBuilders::createBoolean(!arg.getOps()->toInt(arg)));
 			}
@@ -32,12 +29,8 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), __func__);
-				if (rhs.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(BooleanOps::get(), lhs);
+				BaseOps::opsCheck(BooleanOps::get(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) * rhs.getOps()->toInt(rhs))));
 			}
@@ -47,12 +40,8 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), __func__);
-				if (rhs.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(BooleanOps::get(), lhs);
+				BaseOps::opsCheck(BooleanOps::get(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) + rhs.getOps()->toInt(rhs))));
 			}
@@ -62,12 +51,8 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), __func__);
-				if (rhs.getOps() != BooleanOps::get())
-					throw BaseOps::invalidOperation(rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(BooleanOps::get(), lhs);
+				BaseOps::opsCheck(BooleanOps::get(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) ^ rhs.getOps()->toInt(rhs))));
 			}
@@ -77,10 +62,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), lhs);
 
 				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->equal(lhs, rhs)));
 			}
@@ -90,10 +72,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), lhs);
 
 				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->equal(lhs, rhs)));
 			}
@@ -103,10 +82,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), lhs);
 
 				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->greater(lhs, rhs)));
 			}
@@ -116,10 +92,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), lhs);
 
 				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->less(lhs, rhs)));
 			}
@@ -129,10 +102,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), lhs);
 
 				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->less(lhs, rhs)));
 			}
@@ -142,10 +112,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (lhs.getOps() != rhs.getOps())
-					throw BaseOps::invalidOperation(lhs.getOps()->getType(lhs), rhs.getOps()->getType(rhs), __func__);
-#endif
+				BaseOps::opsCheck(lhs.getOps(), lhs);
 
 				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->greater(lhs, rhs)));
 			}

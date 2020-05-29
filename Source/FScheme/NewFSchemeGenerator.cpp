@@ -1,7 +1,10 @@
 #include "NewFSchemeGenerator.h"
+
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
+
 #include "NodeDeleter.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL
 {

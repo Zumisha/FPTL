@@ -37,25 +37,27 @@ namespace FPTL
 		}
 
 		// Арифметические функции.
-		DataValue StringOps::add(const SExecutionContext & aCtx) const
+		DataValue StringOps::add(const SExecutionContext & aCtx, const DataValue* const first, const DataValue* const last) const
 		{
 			size_t len = 0;
-			for (size_t i = 0; i < aCtx.argNum; ++i)
+			const DataValue* iterator = first;
+			while (iterator <= last)
 			{
-				const auto & arg = aCtx.getArg(i);
-				len += arg.mString->length();
+				len += iterator->mString->length();
+				iterator++;
 			}
 
 			const auto val = StringBuilder::create(aCtx, len);
 			const auto str = val.mString->getChars();
 			size_t curPos = 0;
 
-			for (size_t i = 0; i < aCtx.argNum; ++i)
+			iterator = first;
+			while (iterator <= last)
 			{
-				const auto & arg = aCtx.getArg(i);
-				const auto inStr = arg.mString;
+				const auto inStr = iterator->mString;
 				std::memcpy(str + curPos, inStr->getChars(), inStr->length());
 				curPos += inStr->length();
+				iterator++;
 			}
 
 			return val;

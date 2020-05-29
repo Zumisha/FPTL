@@ -125,6 +125,7 @@
     <ClCompile Include="DataTypes\Ops\StringOps.cpp" />
     <ClCompile Include="DataTypes\Ops\UndefinedOps.h" />
     <ClCompile Include="DataTypes\TypeInfo.cpp" />
+    <ClCompile Include="DataTypes\Values\ArrayValue.cpp" />
     <ClCompile Include="Evaluator\Context.cpp" />
     <ClCompile Include="Evaluator\EvaluatorUnit.cpp" />
     <ClCompile Include="Evaluator\Run.cpp" />
@@ -167,6 +168,9 @@
     <ClInclude Include="DataTypes\Ops\StringOps.h" />
     <ClInclude Include="DataTypes\Ops\TimeOps.h" />
     <ClInclude Include="DataTypes\TypeInfo.h" />
+    <ClInclude Include="DataTypes\Values\ArrayValue.h" />
+    <ClInclude Include="DataTypes\Values\DataValue.h" />
+    <ClInclude Include="DataTypes\Values\UndefinedValue.h" />
     <ClInclude Include="Evaluator\Context.h" />
     <ClInclude Include="Evaluator\LockFreeWorkStealingQueue.h" />
     <ClInclude Include="Evaluator\Run.h" />

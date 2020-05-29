@@ -3,6 +3,7 @@
 #include "FScheme.h"
 #include "FSchemeVisitor.h"
 #include "Evaluator/Run.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL {
 	namespace Runtime {

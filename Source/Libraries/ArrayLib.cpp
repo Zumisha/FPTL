@@ -1,7 +1,6 @@
 #include <regex>
 #include <random>
 #include <string>
-#include <queue>
 
 #include "ArrayLib.h"
 
@@ -11,6 +10,8 @@
 #include "DataTypes/Ops/IntegerOps.h"
 #include "DataTypes/Ops/StringOps.h"
 #include "Utils/FileStreamHelper.h"
+#include "DataTypes/Values/DataValue.h"
+#include "DataTypes/Values/ArrayValue.h"
 
 namespace FPTL
 {
@@ -21,125 +22,93 @@ namespace FPTL
 			// Создание массива.
 			void CreateArray(SExecutionContext & aCtx)
 			{
-				const auto sizeVal = aCtx.getArg(0);
-				const auto& initialVal = aCtx.getArg(1);
+				const DataValue& sizeVal = aCtx.getArg(0);
+				const DataValue& initialVal = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				if (sizeVal.getOps() != IntegerOps::get())
-					throw BaseOps::invalidOperation(sizeVal.getOps()->getType(sizeVal), __func__);
-#endif
+				BaseOps::opsCheck(IntegerOps::get(), sizeVal);
 
-				const auto intSize = sizeVal.getOps()->toInt(sizeVal);
+				const int64_t intSize = sizeVal.getOps()->toInt(sizeVal);
 
-#if fptlDebugBuild
-				if (intSize <= 0) throw std::invalid_argument(ArrayValue::negativeSizeMsg(intSize));
-#endif
-
-				const auto size = static_cast<size_t>(intSize);
-				aCtx.push(ArrayValue::create(aCtx, size, initialVal));
+				ArrayValue::nonPositiveSizeCheck(intSize);
+				
+				aCtx.push(ArrayValue::create(aCtx, static_cast<size_t>(intSize), initialVal));
 			}
 
 			// Чтение элемента из массива.
 			void GetArrayElement(SExecutionContext & aCtx)
 			{
-				const auto & arrVal = aCtx.getArg(0);
-				const auto & posVal = aCtx.getArg(1);
+				const DataValue& arrVal = aCtx.getArg(0);
+				const DataValue& posVal = aCtx.getArg(1);
 
-#if fptlDebugBuild
-				ArrayValue::arrayValueCheck(arrVal);
-				if (posVal.getOps() != IntegerOps::get())
-					throw BaseOps::invalidOperation(posVal.getOps()->getType(posVal), __func__);
-#endif
+				BaseOps::opsCheck(ArrayOps::get(), arrVal);
+				BaseOps::opsCheck(IntegerOps::get(), posVal);
 				
-				const size_t pos = posVal.getOps()->toInt(posVal);
+				const int64_t intPos = posVal.getOps()->toInt(posVal);
 
-#if fptlDebugBuild
-				if (pos >= arrVal.mArray->length)
-					throw std::runtime_error(ArrayValue::badIndexMsg(arrVal.mArray->length, pos));
-#endif
+				const size_t pos = ArrayValue::checkIndex(arrVal.mArray->length, intPos);
 
-				aCtx.push(ArrayValue::get(arrVal, pos));
+				aCtx.push(ArrayValue::uncheckedGet(arrVal, pos));
 			}
 
 			// Запись элемента в массив.
 			void SetArrayElement(SExecutionContext & aCtx)
 			{
-				const auto & arrVal = aCtx.getArg(0);
-				const auto & posVal = aCtx.getArg(1);
-				const auto & val = aCtx.getArg(2);
+				const DataValue& arrVal = aCtx.getArg(0);
+				const DataValue& posVal = aCtx.getArg(1);
+				const DataValue& val = aCtx.getArg(2);
 
-#if fptlDebugBuild
-				ArrayValue::arrayValueCheck(arrVal);
-				if (posVal.getOps() != IntegerOps::get())
-					throw BaseOps::invalidOperation(posVal.getOps()->getType(posVal), __func__);
-#endif
+				BaseOps::opsCheck(ArrayOps::get(), arrVal);
+				BaseOps::opsCheck(IntegerOps::get(), posVal);
+				BaseOps::typeCheck(arrVal.mArray->arrayData[0], val);
+				
+				const int64_t intPos = posVal.getOps()->toInt(posVal);
+				const size_t pos = ArrayValue::checkIndex(arrVal.mArray->length, intPos);
 
-				const size_t pos = posVal.getOps()->toInt(posVal);
-
-#if fptlDebugBuild
-				if (pos >= arrVal.mArray->length)
-					throw std::runtime_error(ArrayValue::badIndexMsg(arrVal.mArray->length, pos));
-#endif
-
-				ArrayValue::set(const_cast<DataValue &>(arrVal), pos, val);
+				ArrayValue::uncheckedSet(const_cast<DataValue &>(arrVal), pos, val);
 
 				aCtx.push(arrVal);
 			}
 
 			void GetArrayLength(SExecutionContext & aCtx)
 			{
-				const auto & arrVal = aCtx.getArg(0);
-				
-#if fptlDebugBuild
-				ArrayValue::arrayValueCheck(arrVal);
-#endif
+				const DataValue& arrVal = aCtx.getArg(0);
+
+				BaseOps::opsCheck(ArrayOps::get(), arrVal);
 				
 				aCtx.push(DataBuilders::createInt(ArrayValue::getLen(arrVal)));
 			}
 
 			void ArrayConcat(SExecutionContext & aCtx)
 			{
-				const auto& first = aCtx.getArg(0);
+				const DataValue& first = aCtx.getArg(0);				
 				
 #if fptlDebugBuild
-				ArrayValue::arrayValueCheck(first);
-				const auto* const firstOps = first.getOps();
+				BaseOps::opsCheck(ArrayOps::get(), first);
 				for (size_t i = 1; i < aCtx.argNum; ++i)
 				{
-					const auto& arg = aCtx.getArg(i);
-					ArrayValue::arrayValueCheck(arg);
-					if (firstOps != arg.getOps())
-						throw BaseOps::invalidOperation(firstOps->getType(first), arg.getOps()->getType(arg), __func__);
+					BaseOps::typeCheck(first, aCtx.getArg(i));
 				}
 #endif
 
-				auto* firstArr = first.mArray;
-				const auto type = firstArr->type;
+				const ArrayValue* firstArr = first.mArray;
+				
 				size_t len = firstArr->length;
-
 				for (size_t i = 1; i < aCtx.argNum; ++i)
 				{
-					auto* const rArr = aCtx.getArg(i).mArray;
-#if fptlDebugBuild
-					if (rArr->type != type)
-					{
-						throw std::runtime_error(ArrayValue::concatErrMsg(std::string(type), std::string(rArr->type)));
-					}
-#endif
-					len += rArr->length;
+					len += aCtx.getArg(i).mArray->length;
 				}
 
 				// Выделяем память в контролируемой куче под хранение массива.
 				auto val = aCtx.heap().alloc<ArrayValue>(
 					[firstArr, len](void* m) { return new(m) ArrayValue(len, firstArr->arrayData[0]); },
 					sizeof(ArrayValue) + sizeof(firstArr->arrayData[0]) * len);
-
 				// Создаем массив и заполняем его.
 				val->arrayData = new (reinterpret_cast<char *>(val.ptr()) + sizeof(ArrayValue)) DataValue();
+				
 				size_t curPos = 0;
 				for (size_t i = 0; i < aCtx.argNum; ++i)
 				{
-					const auto& arr = aCtx.getArg(i);
+					const DataValue& arr = aCtx.getArg(i);
 					for (size_t j = 0; j < arr.mArray->length; ++j)
 					{
 						val->arrayData[curPos + j] = arr.mArray->arrayData[j];
@@ -152,92 +121,69 @@ namespace FPTL
 				aCtx.push(res);
 			}
 
-			void ArrayDot(SExecutionContext & aCtx)
-			{
-				const auto & arrVal1 = aCtx.getArg(0);
-				const auto & arrVal2 = aCtx.getArg(1);
-				
-#if fptlDebugBuild
-				ArrayValue::arrayValueCheck(arrVal1);
-				ArrayValue::arrayValueCheck(arrVal2);
-#endif
-				
-				ArrayValue * arr1Val = arrVal1.mArray;
-				ArrayValue * arr2Val = arrVal2.mArray;
-				const auto arr1Len = arr1Val->length;
-				
-#if fptlDebugBuild
-				const auto arr1Type = arr1Val->type;
-				const auto arr2Len = arr2Val->length;
-				const auto arr2Type = arr2Val->type;
-				if (arr1Type != arr2Type)
-				{
-					std::stringstream error;
-					error << "Cannot find dot product of an array of type " << arr1Type << " and an array of type " << arr2Type;
-					throw std::runtime_error(error.str());
-				}
-				if (arr1Len != arr2Len)
-				{
-					std::stringstream error;
-					error << "Cannot find dot product of an array of size " << arr1Len << " and an array of size " << arr2Len;
-					throw std::runtime_error(error.str());
-				}
-#endif
-				
-				/*class DataValueComparator
-				{
-				public:
-					bool operator() (const DataValue& p1, const DataValue& p2) const
-					{
-						return p1.getOps()->greater(p1, p2);
-					}
-				};
-
-				std::priority_queue< DataValue, std::vector<DataValue>, DataValueComparator > pq;
-
-				for (size_t i = 0; i < arr1Len; ++i)
-				{
-					pq.push(arr1Val->arrayData[i].getOps()->sub(arr1Val->arrayData[i], arr2Val->arrayData[i]));
-				}
-
-				while (pq.size() > 1)
-				{
-					auto res = pq.top();
-					pq.pop();
-					res = res.getOps()->add(res, pq.top());
-					pq.pop();
-					pq.push(res);
-				}*/
-
-				const auto* const ops = arr1Val->arrayData[0].getOps();
-				auto dot = ops->mul(arr1Val->arrayData[0], arr2Val->arrayData[0]);
-				for (size_t i = 1; i < arr1Len; ++i)
-				{
-					dot = ops->add(dot, ops->mul(arr1Val->arrayData[i], arr2Val->arrayData[i]));
-				}				
-				
-				aCtx.push(dot);
-			}
-
 			void ArraySum(SExecutionContext & aCtx)
 			{
-				const auto & arrVal1 = aCtx.getArg(0);
-				
-#if fptlDebugBuild
-				ArrayValue::arrayValueCheck(arrVal1);
-#endif
+				const DataValue& arrVal = aCtx.getArg(0);
 
-				ArrayValue * val = arrVal1.mArray;
-				const auto len = val->length;
+				BaseOps::opsCheck(ArrayOps::get(), arrVal);
 
-				const auto* const ops = val->arrayData[0].getOps();
-				auto sum = val->arrayData[0];
-				for (size_t i = 1; i < len; ++i)
-				{
-					sum = ops->add(sum, val->arrayData[i]);
-				}
+				ArrayValue* arr = arrVal.mArray;
+
+				const DataValue sum = arr->arrayData[0].getOps()->add(aCtx, arr->arrayData, arr->last());
 
 				aCtx.push(sum);
+			}
+
+			void ArrayMax(SExecutionContext & aCtx)
+			{
+				const DataValue& arrVal = aCtx.getArg(0);
+
+				BaseOps::opsCheck(ArrayOps::get(), arrVal);
+
+				const ArrayValue* arr = arrVal.mArray;
+				const size_t len = arr->length;
+
+				const auto* const ops = arr->arrayData[0].getOps();
+				auto max = arr->arrayData[0];
+				for (size_t i = 1; i < len; ++i)
+				{
+					if (ops->less(max, arr->arrayData[i]))
+						max = arr->arrayData[i];
+				}
+
+				aCtx.push(max);
+			}
+
+			void ArrayIndexOf(SExecutionContext & aCtx)
+			{
+				const DataValue& arrVal = aCtx.getArg(0);
+				const DataValue& val = aCtx.getArg(1);
+				
+				BaseOps::opsCheck(ArrayOps::get(), arrVal);
+				BaseOps::typeCheck(arrVal.mArray->arrayData[0], val);
+
+				const ArrayValue* arr = arrVal.mArray;
+				const size_t len = arr->length;
+				const auto* const ops = val.getOps();
+				size_t index = -1;
+				for (size_t i = 0; i < len; ++i)
+				{
+					if (ops->equal(val, arr->arrayData[i]))
+					{
+						index = i;
+						break;
+					}
+				}
+
+				const int64_t res = static_cast<int64_t>(index);
+				if (res < 0)
+				{
+					aCtx.push(DataBuilders::createUndefinedValue());					
+				}
+				else
+				{
+					aCtx.push(DataBuilders::createInt(index));
+				}
 			}
 			
 		} // anonymous namespace
@@ -245,13 +191,14 @@ namespace FPTL
 		const std::map<std::string, TFunction> functions =
 		{
 			// Работа с массивами.
-			{"arrayCreate", &CreateArray},
+			{ "arrayCreate", &CreateArray },
 			{ "arrayGet", &GetArrayElement },
 			{ "arraySet", &SetArrayElement },
 			{ "arrayLen", &GetArrayLength },
 			{ "arrayCat", &ArrayConcat },
-			{ "arrayDot", &ArrayDot },
 			{ "arraySum", &ArraySum },
+			{ "arrayMax", &ArrayMax },
+			{ "arrayIndexOf", &ArrayIndexOf }
 		};
 
 		void ArrayLib::Register()

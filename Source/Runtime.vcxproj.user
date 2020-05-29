@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-n 8 -i -t -v "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\SorokaDV-Lab4.fptl" 64 3000 3000 "C:\Git\Auto-Statistic\bin\x64\Release\A3000x3000.txt" "C:\Git\Auto-Statistic\bin\x64\Release\b3000.txt" </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-n 8 -i -t -v "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\SorokaDV-Lab4.fptl" 64 3000 3000 "C:\Git\_test\A3000x3000.txt" "C:\Git\_test\b3000.txt" </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>-n 8 -i -t "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\SorokaDV-Lab4.fptl" 64 5 5 "C:\Git\Auto-Statistic\bin\x64\Release\A5x5.txt" "C:\Git\Auto-Statistic\bin\x64\Release\b5.txt" </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-n 8 -i -t "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\SorokaDV-Lab4.fptl" 64 5 5 "C:\Git\_test\A5x5.txt" "C:\Git\_test\b5.txt" </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

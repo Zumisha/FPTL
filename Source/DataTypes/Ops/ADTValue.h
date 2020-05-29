@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "DataTypes/TypeInfo.h"
 #include "GC/CollectedHeap.h"
 
 //#include "../TypeInfo.h"

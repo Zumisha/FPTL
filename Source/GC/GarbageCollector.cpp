@@ -11,6 +11,7 @@
 #include "GarbageCollector.h"
 #include "CollectedHeap.h"
 #include "BlockingQueue.h"
+#include "DataTypes/Ops/Ops.h"
 
 namespace FPTL
 {

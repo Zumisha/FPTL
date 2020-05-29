@@ -14,15 +14,21 @@ namespace FPTL
 			IntegerOps() = default;
 
 		public:
-			static IntegerOps * get()
+			static IntegerOps* get()
 			{
 				static IntegerOps ops;
 				return &ops;
 			}
 
+			inline static const std::string typeName = "Int";
+			const std::string& getTypeName() const override
+			{
+				return typeName;
+			}
+
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("Int");
+				static TypeInfo info(typeName);
 				return info;
 			}
 
@@ -37,18 +43,19 @@ namespace FPTL
 				return static_cast<double>(aVal.mIntVal);
 			}
 
-			DataValue& add(DataValue& aLhs, const DataValue& aRhs) const override
+			DataValue add(const DataValue& aLhs, const DataValue& aRhs) const override
 			{
-				aLhs.mIntVal += aRhs.mIntVal;
-				return aLhs;
+				return DataBuilders::createInt(aLhs.mIntVal + aRhs.mIntVal);
 			}
 
-			DataValue add(const SExecutionContext& aCtx) const override
+			DataValue add(const SExecutionContext&, const DataValue* const first, const DataValue* const last) const override
 			{
 				int64_t sum = 0;
-				for (size_t i = 0; i < aCtx.argNum; ++i)
+				const DataValue* iterator = first;
+				while (iterator <= last)
 				{
-					sum += aCtx.getArg(i).mIntVal;
+					sum += iterator->mIntVal;
+					iterator++;
 				}				
 				return DataBuilders::createInt(sum);
 			}
@@ -104,7 +111,7 @@ namespace FPTL
 				aStream << aVal.mIntVal;
 			}
 
-			void write(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
 			{
 				aStream << aVal.mIntVal;
 			}

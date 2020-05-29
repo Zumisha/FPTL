@@ -19,9 +19,15 @@ namespace FPTL
 				return &ops;
 			}
 
+			inline static const std::string typeName = "Undefined";
+			const std::string& getTypeName() const override
+			{
+				return typeName;
+			}
+
 			TypeInfo getType(const DataValue &aVal) const override
 			{
-				static TypeInfo info("Undefined");
+				static TypeInfo info(typeName);
 				return info;
 			}
 
@@ -35,6 +41,11 @@ namespace FPTL
 			void print(const DataValue & aVal, std::ostream & aStream) const override
 			{
 				aStream << "Undefined";
+			}
+			
+			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
+			{
+				print(aVal, aStream);
 			}
 		};
 
