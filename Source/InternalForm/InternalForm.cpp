@@ -252,7 +252,7 @@ namespace FPTL
 #else
 			for (size_t i = from; i <= to; ++i)
 			{
-				aCtx.push(aCtx.getArg(i));
+				ctx.push(ctx.getArg(i));
 			}
 #endif
 			mNext->exec(ctx);

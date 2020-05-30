@@ -6,7 +6,6 @@
 #include <boost/thread/mutex.hpp>
 
 #include "FileLib.h"
-#include "Macros.h"
 #include "DataTypes/Ops/Ops.h"
 #include "DataTypes/Ops/StringOps.h"
 #include "Utils/FileStreamHelper.h"
