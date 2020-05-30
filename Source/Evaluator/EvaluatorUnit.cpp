@@ -1,4 +1,6 @@
 #include <iostream>
+#include <boost/format/format_fwd.hpp>
+
 
 #include "Run.h"
 #include "InternalForm/InternalForm.h"
@@ -23,6 +25,7 @@ namespace FPTL
 			mHeap(aSchemeEvaluator->garbageCollector()),
 			mCollector(aSchemeEvaluator->garbageCollector())
 		{
+			mWorkTimer.stop();
 		}
 
 		void EvaluatorUnit::addJob(SExecutionContext * aContext)
@@ -56,6 +59,7 @@ namespace FPTL
 				}
 				catch (boost::thread_interrupted)
 				{
+					mEvaluator->StopRunTime();
 					break;
 				}
 #if !disableExceptionHandling
@@ -80,13 +84,22 @@ namespace FPTL
 			if (evalConf.Info())
 			{
 				std::stringstream ss;
-				auto fo = evalConf.Output();
+				ss << std::fixed << std::setprecision(3);
+				const auto fo = evalConf.Output();
 				ss << "\n" << fo.Underlined("Thread ID") << " = " << boost::this_thread::get_id() << ". Jobs " << fo.Bold(fo.Cyan("created: ")) << mJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mJobsStealed << ".";
 
 				if (evalConf.Proactive())
 				{
 					ss << "\nProactive jobs " << fo.Bold(fo.Cyan("created: ")) << mProactiveJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mProactiveJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mProactiveJobsStealed << ", " << fo.Bold(fo.Yellow("moved: ")) << mProactiveJobsMoved << ", " << fo.Bold(fo.Red("canceled: ")) << mProactiveJobsCanceled << ".";
 				}
+
+				const auto workTime = static_cast<double>(GetWorkTime().wall) / 1000000000;
+				const auto runTime = static_cast<double>(mEvaluator->GetRunTime().wall) / 1000000000;
+				const auto idleTime  = runTime - workTime;
+				ss << fo.Bold(fo.Green("\nUseful work time: ")) << workTime << "s. " <<
+					fo.Bold(fo.Red("Idle time: ")) << idleTime << "s. " <<
+					fo.Bold(fo.Cyan(" Utilization: ")) << workTime / runTime * 100 << "%\n";
+				
 				static boost::mutex outputMutex;
 				boost::lock_guard<boost::mutex> guard(outputMutex);
 				std::cout << ss.str();
@@ -129,11 +142,11 @@ namespace FPTL
 			{
 				schedule();
 			}
+			mWorkTimer.resume();
 
 			//joinTask->Parent->Childs.erase(joinTask);
 			pendingTasks.pop_back();
 			return joinTask;
-
 		}
 
 		void EvaluatorUnit::moveToMainOrder(SExecutionContext * movingTask)
@@ -166,6 +179,7 @@ namespace FPTL
 				{
 					schedule();
 				}
+				mWorkTimer.resume();
 
 				//Убираем из очереди ожидающих выполнения задач.
 				pendingTasks.erase(pendingTasks.end() - pos);
@@ -194,9 +208,13 @@ namespace FPTL
 			}
 		}
 
-		void EvaluatorUnit::safePoint() const
+		void EvaluatorUnit::safePoint()
 		{
-			mCollector->safePoint();
+			if (mCollector->needGC())
+			{
+				mWorkTimer.stop();
+				mCollector->safePoint();
+			}
 		}
 
 		void EvaluatorUnit::schedule()
@@ -209,6 +227,7 @@ namespace FPTL
 			// Берем задание из своей очереди.
 			if (mJobQueue.pop(context))
 			{
+				mWorkTimer.resume();
 				context->run(this);
 				mJobsCompleted++;
 				return;
@@ -218,6 +237,7 @@ namespace FPTL
 			context = mEvaluator->findJob(this);
 			if (context)
 			{
+				mWorkTimer.resume();
 				context->run(this);
 				mJobsStealed++;
 				mJobsCompleted++;
@@ -229,6 +249,7 @@ namespace FPTL
 				// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
 				if (mProactiveJobQueue.pop(context) && !context->Canceled.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))
 				{
+					mWorkTimer.resume();
 					context->Working.store(true, std::memory_order_release);
 					context->run(this);
 					mProactiveJobsCompleted++;
@@ -239,6 +260,7 @@ namespace FPTL
 				context = mEvaluator->findProactiveJob(this);
 				if (context && !context->Canceled.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))
 				{
+					mWorkTimer.resume();
 					context->Working.store(true, std::memory_order_release);
 					context->run(this);
 					mProactiveJobsStealed++;
@@ -248,6 +270,7 @@ namespace FPTL
 			}
 
 			// Если заданий нет - приостанавливаем поток.
+			mWorkTimer.stop();
 			boost::this_thread::sleep_for(boost::chrono::milliseconds(1));
 		}
 

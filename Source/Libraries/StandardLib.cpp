@@ -26,6 +26,7 @@ namespace FPTL
 			void Print(const SExecutionContext & aCtx)
 			{
 				std::stringstream ss;
+				ss.precision(std::numeric_limits<double>::max_digits10);
 				aCtx.print(ss);
 				std::cout << ss.rdbuf();
 			}
@@ -33,6 +34,7 @@ namespace FPTL
 			void PrintLine(const SExecutionContext & aCtx)
 			{
 				std::stringstream ss;
+				ss.precision(std::numeric_limits<double>::max_digits10);
 				aCtx.print(ss);
 				ss << "\n";
 				std::cout << ss.rdbuf();
@@ -41,16 +43,16 @@ namespace FPTL
 			void RawPrint(const SExecutionContext & aCtx)
 			{
 				std::stringstream ss;
+				ss.precision(std::numeric_limits<double>::max_digits10);
 				aCtx.rawPrint(ss);
 				std::cout << ss.rdbuf();
 			}
 
 			void PrintType(const SExecutionContext & aCtx)
 			{
-				static boost::mutex outputMutex;
-				boost::lock_guard<boost::mutex> guard(outputMutex);
-
-				aCtx.printTypes(std::cout);
+				std::stringstream ss;
+				aCtx.printTypes(ss);
+				std::cout << ss.rdbuf();
 			}
 
 			// Преобразование в вещественное число.
@@ -131,27 +133,24 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
-			// Работа с кортежем.
-			{"tupleLen", &TupleLength},
-
-			// Преобразования типов.
-			{"toInt", &ToInteger},
-			{"toReal", &ToDouble},
-
-			// Ввод / вывод.
-			{"print", &Print},
-			{"printLine", &PrintLine},
-			{"rawPrint", &RawPrint},
-			{"printType", &PrintType},
+			{ "tupleLen", std::make_pair(&TupleLength, false) },
 			
-			{"add",&Add},
-			{"sub", &Sub},
-			{"mul", &Mul},
-			{"div", &Div},
-			{"mod", &Mod},
-			{"abs", &Abs}
+			{ "toInt", std::make_pair(&ToInteger, false) },
+			{ "toReal", std::make_pair(&ToDouble, false) },
+			
+			{ "print", std::make_pair(&Print, false) },
+			{ "printLine", std::make_pair(&PrintLine, false) },
+			{ "rawPrint", std::make_pair(&RawPrint, false) },
+			{ "printType", std::make_pair(&PrintType, false) },
+			
+			{ "add", std::make_pair(&Add, false) },
+			{ "sub", std::make_pair(&Sub, false) },
+			{ "mul", std::make_pair(&Mul, false) },
+			{ "div", std::make_pair(&Div, false) },
+			{ "mod", std::make_pair(&Mod, false) },
+			{ "abs", std::make_pair(&Abs, false) },
 		};
 
 		void StandardLib::Register()

@@ -169,7 +169,7 @@ namespace FPTL
 				// Проверяем, не начал ли кто-нибудь другой сборку мусора.
 				while (!mGcMutex.try_lock())
 				{
-					safePoint();
+					if (needGC()) safePoint();
 				}
 
 				boost::timer::cpu_timer pauseTimer;
@@ -221,18 +221,21 @@ namespace FPTL
 			}
 
 			// Этот метод выполняется другими потоками для ожидании сканирования корней.
+			bool needGC() override
+			{
+				return mStop.load(std::memory_order_acquire) == 1;
+			}
+
+			// Этот метод выполняется другими потоками для ожидании сканирования корней.
 			void safePoint() override
 			{
-				if (mStop.load(std::memory_order_acquire) == 1)
-				{
-					std::unique_lock<std::mutex> lock(mRunMutex);
+				std::unique_lock<std::mutex> lock(mRunMutex);
 
-					mStopped++;
-					mRunCond.notify_all();
+				mStopped++;
+				mRunCond.notify_all();
 
-					mRunCond.wait(lock, [this] { return mStop.load(std::memory_order_relaxed) == 0; });
-					mStopped--;
-				}
+				mRunCond.wait(lock, [this] { return mStop.load(std::memory_order_relaxed) == 0; });
+				mStopped--;
 			}
 
 			void registerHeap(CollectedHeap * heap) override
@@ -304,11 +307,11 @@ namespace FPTL
 							<< mOldGenSize / (1024 * 1024) << " MiB \n";
 					}
 
-					if (mOldGenSize > mConfig.oldGenSize())
+					/*if (mOldGenSize > mConfig.oldGenSize())
 					{
-						std::cout << "\n\nERROR: out of memory\n";
+						std::cout << "\n\nGC ERROR: out of memory\n";
 						::exit(1);
-					}
+					}*/
 
 					if (mOldGenSize > mConfig.oldGenGCThreshold())
 					{

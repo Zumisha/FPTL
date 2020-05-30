@@ -7,17 +7,17 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		void FunctionLibrary::addFunction(const std::string & aFunctionName, const TFunction & aFunction)
+		void FunctionLibrary::addFunction(const std::string & aFunctionName, const TFunction & aFunction, const bool isLong)
 		{
-			mFunctions.insert(std::make_pair(aFunctionName, aFunction));
+			mFunctions.insert(std::make_pair(aFunctionName, std::make_pair(aFunction, isLong)));
 		}
 
-		void FunctionLibrary::addFunctions(std::map<std::string, TFunction> functions)
+		void FunctionLibrary::addFunctions(std::map<std::string, std::pair<TFunction, bool>> functions)
 		{
 			mFunctions.insert(functions.begin(), functions.end());
 		}
 
-		TFunction FunctionLibrary::getFunction(const std::string & aFunctionName)
+		std::pair<TFunction, bool> FunctionLibrary::getFunction(const std::string & aFunctionName)
 		{
 			if (mFunctions.find(aFunctionName) != mFunctions.end())
 			{
@@ -27,9 +27,10 @@ namespace FPTL
 			{
 				//assert(false); // Функция не найдена в библиотеке.
 				// Возвращаем "пустышку".
-				return [](SExecutionContext & aCtx) {
-					aCtx.push(DataBuilders::createUndefinedValue());
-				};
+				return std::make_pair(
+					[](SExecutionContext & aCtx) {
+					aCtx.push(DataBuilders::createUndefinedValue());},
+					false);
 			}
 		}
 

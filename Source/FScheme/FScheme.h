@@ -60,8 +60,8 @@ namespace FPTL
 			}
 
 			template <typename F>
-			FFunctionNode(const F & aFunction, const std::string & aName, const size_t aLine, const size_t aCol) :
-				FSchemeNode(false),
+			FFunctionNode(const F & aFunction, const bool isLong, const std::string & aName, const size_t aLine, const size_t aCol) :
+				FSchemeNode(isLong),
 				mFunction(aFunction),
 				mName(aName),
 				mLine(aLine),

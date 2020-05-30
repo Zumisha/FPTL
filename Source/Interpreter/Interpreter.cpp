@@ -23,7 +23,7 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		std::map<std::string, TFunction> FunctionLibrary::mFunctions;
+		std::map<std::string, std::pair<TFunction, bool>> FunctionLibrary::mFunctions;
 		
 		int Interpreter::Eval(const int argc, const char ** argv, const std::string& programText) const
 		{
@@ -109,6 +109,7 @@ namespace FPTL
 				EvalConfig evalConfig;
 				evalConfig.SetNumCores(numCores);
 				evalConfig.SetInfo(showInfo);
+				evalConfig.SetTime(showTime);
 				evalConfig.SetProactive(proactive);
 				evalConfig.SetOutput(fo);
 

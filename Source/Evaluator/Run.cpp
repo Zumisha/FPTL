@@ -8,10 +8,14 @@
 namespace FPTL {
 	namespace Runtime {
 
-		SchemeEvaluator::SchemeEvaluator() = default;
+		SchemeEvaluator::SchemeEvaluator()
+		{
+			mRunTimer.stop();
+		}
 
 		void SchemeEvaluator::abort()
 		{
+			StopRunTime();
 			boost::lock_guard<boost::mutex> guard(mStopMutex);
 			mWasErrors = true;
 			mThreadGroup.interrupt_all();
@@ -103,6 +107,7 @@ namespace FPTL {
 			// Добавляем задание в очередь к первому потоку.
 			mEvaluatorUnits[0]->addJob(&controlContext);
 
+			mRunTimer.start();
 			// Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
 			mStopMutex.lock();
 			// Создаем потоки.
@@ -114,6 +119,30 @@ namespace FPTL {
 
 			mThreadGroup.join_all();
 
+			if (mEvalConfig.Time()) {
+				const auto& fo = mEvalConfig.Output();
+				std::stringstream ss;
+				ss << std::fixed << std::setprecision(3);
+
+				const auto runTime = static_cast<double>(GetRunTime().wall) / 1000000000;
+				const auto totalWallTime = runTime * mEvaluatorUnits.size();
+				double totalWorkTime = 0;
+				for (auto unit : mEvaluatorUnits)
+				{
+					totalWorkTime += unit->GetWorkTime().wall;
+				}
+				totalWorkTime /= 1000000000;
+				ss << fo.Bold(fo.Yellow("\n\nTotal runtime: ")) << totalWallTime << "s. " <<
+					fo.Bold(fo.Green("Total useful: ")) << totalWorkTime << "s. " <<
+					fo.Bold(fo.Red("Total idle: ")) << totalWallTime - totalWorkTime << "s. " <<
+					fo.Bold(fo.Green("\nRuntime: ")) << runTime << "s. " <<
+					fo.Bold(fo.Cyan("Parallelization efficiency: ")) << (totalWorkTime - runTime) / (totalWallTime - runTime) * 100 << "%";
+
+				static boost::mutex outputMutex;
+				boost::lock_guard<boost::mutex> guard(outputMutex);
+				std::cout << ss.str();				
+			}
+				
 			for (auto unit : mEvaluatorUnits) { delete unit; }
 			mEvaluatorUnits.clear();
 		}

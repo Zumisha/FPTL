@@ -516,8 +516,9 @@ namespace FPTL
 				case Parser::ASTNode::BuildInFunction:
 				{
 					const auto name = aNameRefNode->getName();
+					const auto func = FunctionLibrary::getFunction(name.getStr());
 					// »щем функцию в библиотеке.
-					const auto function = new FFunctionNode(FunctionLibrary::getFunction(name.getStr()), name.getStr(), name.Line, name.Col);
+					const auto function = new FFunctionNode(func.first, func.second, name.getStr(), name.Line, name.Col);
 					mNodeStack.push(function);
 					break;
 				}
@@ -579,7 +580,7 @@ namespace FPTL
 				{
 					const auto ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 					const auto name = aNameRefNode->getName();
-					FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), name.getStr(), name.Line, name.Col);
+					FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), false, name.getStr(), name.Line, name.Col);
 					mNodeStack.push(node);
 					break;
 				}
@@ -588,7 +589,7 @@ namespace FPTL
 				{
 					const auto ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 					const auto name = aNameRefNode->getName();
-					FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), "~" + name.getStr(), name.Line, name.Col);
+					FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), false, "~" + name.getStr(), name.Line, name.Col);
 					mNodeStack.push(node);
 					break;
 				}

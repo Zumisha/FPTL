@@ -20,7 +20,7 @@ namespace FPTL
 
 				BaseOps::opsCheck(StringOps::get(), arg);
 
-				aCtx.push(DataBuilders::createInt(static_cast<long long>(arg.mString->length())));
+				aCtx.push(DataBuilders::createInt(static_cast<int64_t>(arg.mString->length())));
 			}
 
 			// Поиск по регулярному выражению.
@@ -144,6 +144,7 @@ namespace FPTL
 			void toString(SExecutionContext & aCtx)
 			{
 				std::stringstream strStream;
+				strStream.precision(std::numeric_limits<double>::max_digits10);
 				const auto& arg = aCtx.getArg(0);
 
 				arg.getOps()->rawPrint(arg, strStream);
@@ -152,15 +153,14 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
-			{"toString", &toString},
-			
-			{"length", &length},
-			{"search", &search},
-			{"replace", &replace},
-			{"match", &match},
-			{"getToken", &getToken}
+			{ "toString", std::make_pair(&toString, true) },
+			{ "length", std::make_pair(&length, false) },
+			{ "search", std::make_pair(&search, true) },
+			{ "replace", std::make_pair(&replace, true) },
+			{ "match", std::make_pair(&match, true) },
+			{ "getToken", std::make_pair(&getToken, true) },
 		};
 
 		void StringLib::Register()

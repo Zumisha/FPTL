@@ -86,11 +86,12 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
-			{"openFile", &openFile},
-			{"createFile", &createFile},
-			{"appendFile", &appendFile},
+			// Работа с массивами.
+			{ "openFile", std::make_pair(&openFile, true) },
+			{ "createFile", std::make_pair(&createFile, true) },
+			{ "appendFile", std::make_pair(&appendFile, true) },
 		};
 
 		void FileLib::Register()

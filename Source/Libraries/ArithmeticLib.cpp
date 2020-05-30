@@ -92,21 +92,20 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
-			// Арифметические.
-			{"sqrt", &sqrt},
-			{"exp", &exp},
-			{"ln", &log},
-			{"round", &round},
-			{"sin", &sin},
-			{"cos", &cos},
-			{"tan", &tan},
-			{"asin", &asin},
-			{"atan", &atan},
-			{"Pi", &loadPi},
-			{"E", &loadE},
-			{"rand", &rand}
+			{ "sqrt", std::make_pair(&sqrt, false) },
+			{ "exp", std::make_pair(&exp, false) },
+			{ "ln", std::make_pair(&log, false) },
+			{ "round", std::make_pair(&round, false) },
+			{ "sin", std::make_pair(&sin, false) },
+			{ "cos", std::make_pair(&cos, false) },
+			{ "tan", std::make_pair(&tan, false) },
+			{ "asin", std::make_pair(&asin, false) },
+			{ "atan", std::make_pair(&atan, false) },
+			{ "Pi", std::make_pair(&loadPi, false) },
+			{ "E", std::make_pair(&loadE, false) },
+			{ "rand", std::make_pair(&rand, false) },
 		};
 
 		void ArithmeticLib::Register()

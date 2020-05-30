@@ -145,13 +145,18 @@ namespace FPTL
 
 				const auto* const ops = arr->arrayData[0].getOps();
 				auto max = arr->arrayData[0];
+				size_t maxIndex = 0;
 				for (size_t i = 1; i < len; ++i)
 				{
 					if (ops->less(max, arr->arrayData[i]))
+					{
 						max = arr->arrayData[i];
+						maxIndex = i;
+					}
 				}
 
 				aCtx.push(max);
+				aCtx.push(DataBuilders::createInt(maxIndex));
 			}
 
 			void ArrayIndexOf(SExecutionContext & aCtx)
@@ -188,17 +193,17 @@ namespace FPTL
 			
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
 			// Работа с массивами.
-			{ "arrayCreate", &CreateArray },
-			{ "arrayGet", &GetArrayElement },
-			{ "arraySet", &SetArrayElement },
-			{ "arrayLen", &GetArrayLength },
-			{ "arrayCat", &ArrayConcat },
-			{ "arraySum", &ArraySum },
-			{ "arrayMax", &ArrayMax },
-			{ "arrayIndexOf", &ArrayIndexOf }
+			{ "arrayCreate", std::make_pair(&CreateArray, true) },
+			{ "arrayGet", std::make_pair(&GetArrayElement, false) },
+			{ "arraySet", std::make_pair(&SetArrayElement, false) },
+			{ "arrayLen", std::make_pair(&GetArrayLength, false) },
+			{ "arrayCat", std::make_pair(&ArrayConcat, true) },
+			{ "arraySum", std::make_pair(&ArraySum, true) },
+			{ "arrayMax", std::make_pair(&ArrayMax, true) },
+			{ "arrayIndexOf", std::make_pair(&ArrayIndexOf, true) },
 		};
 
 		void ArrayLib::Register()

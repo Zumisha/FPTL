@@ -101,6 +101,7 @@ namespace FPTL {
 		public:
 			virtual void runGc() = 0;
 
+			virtual bool needGC() = 0;
 			virtual void safePoint() = 0;
 
 			virtual void registerHeap(CollectedHeap * heap) = 0;

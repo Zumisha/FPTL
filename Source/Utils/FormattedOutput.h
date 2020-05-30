@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <boost/timer/timer.hpp>
 
 namespace FPTL
 {

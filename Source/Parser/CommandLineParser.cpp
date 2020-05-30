@@ -13,13 +13,13 @@ namespace FPTL
 				("source-file,s", po::value<std::string>(&mProgramPath), "Path to FPTL program file.")
 				("num-cores,n", po::value<long long>()->default_value(1)->required(), "Number of work threads.")
 				("input-tuple,in", po::value<std::vector<std::string>>(&mInputTuple)->multitoken(), "Input variables.")
-				("proactive", po::bool_switch(), "Enable proactive calculations.")
+				("proactive,p", po::bool_switch(), "Enable proactive calculations.")
 
 				("help,h", "Provides information about startup options.")
 				("version,v", "Displays the date and time of the interpreter build.")
 				("time,t", po::bool_switch(), "Displays interpretation and evaluation times.")
 				("info,i", po::bool_switch(), "Displays information about the interpretation and evaluation processes.")
-				("ansi", po::bool_switch(), "Allow ANSI text formatting.")
+				("ansi,a", po::bool_switch(), "Allow ANSI text formatting.")
 				("ast-save", po::bool_switch(),"Serialize AST to the file.")
 				("scheme-save", po::bool_switch(), "Serialize functional schemes to the file.")
 
@@ -65,9 +65,9 @@ namespace FPTL
 			catch (std::exception & e)
 			{
 				if (mVM.count("version") && mVM.size() == 1) return -1;
-				std::cout << "Error: " << e.what() << std::endl
-					<< "\nUse --help or -h to display all available options." << std::endl;
-				return 1;
+					std::cout << "Error: " << e.what() << std::endl
+						<< "\nUse --help or -h to display all available options." << std::endl;
+					return 1;
 			}
 		}
 

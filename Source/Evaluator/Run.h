@@ -4,6 +4,8 @@
 
 #include <boost/thread.hpp>
 #include <boost/lockfree/stack.hpp>
+#include <boost/timer/timer.hpp>
+
 
 #include "LockFreeWorkStealingQueue.h"
 #include "GC/CollectedHeap.h"
@@ -28,6 +30,7 @@ namespace FPTL
 				mOutput(Utils::FormattedOutput()),
 				mNumCores(1),
 				mInfo(false),
+				mTime(false),
 				mProactive(false)
 			{}
 
@@ -35,13 +38,17 @@ namespace FPTL
 
 			void SetInfo(const bool state) { mInfo = state; }
 
+			void SetTime(const bool state) { mTime = state; }
+
 			void SetProactive(const bool state) { mProactive = state; }
 
 			void SetNumCores(const size_t numCores) { mNumCores = numCores; }
 
-			Utils::FormattedOutput Output() const { return mOutput; }
+			const Utils::FormattedOutput& Output() const { return mOutput; }
 
 			bool Info() const { return mInfo; }
+			
+			bool Time() const { return mTime; }
 
 			bool Proactive() const { return mProactive; }
 
@@ -51,6 +58,7 @@ namespace FPTL
 			Utils::FormattedOutput mOutput;
 			size_t mNumCores;
 			bool mInfo;
+			bool mTime;
 			bool mProactive;
 		};
 
@@ -83,7 +91,7 @@ namespace FPTL
 			void cancel(SExecutionContext *cancelingTask);
 
 			// Проверка на необходимость выполнения системного действия (сборка мусора и т.п.).
-			void safePoint() const;
+			void safePoint();
 
 			// Добавление нового задания в очередь.
 			// Вызывается только из потока, к которому привязан или до его создания.
@@ -108,6 +116,11 @@ namespace FPTL
 			void pushTask(SExecutionContext * task);
 			void popTask();
 
+			boost::timer::cpu_times GetWorkTime() const
+			{
+				return mWorkTimer.elapsed();
+			}
+
 		private:
 			// Задачи, данные из которых ожидаются.
 			// Они могут как всё ещё находиться в очереди или быть на выполнении, так и быть на 
@@ -123,6 +136,7 @@ namespace FPTL
 			size_t mProactiveJobsStealed;
 			size_t mProactiveJobsMoved;
 			size_t mProactiveJobsCanceled;
+			boost::timer::cpu_timer mWorkTimer;
 			// ToDo: Попробовать заменить на boost::lockfree::stack
 			LockFreeWorkStealingQueue<SExecutionContext *> mJobQueue;
 			boost::lockfree::stack<SExecutionContext *> mProactiveJobQueue;
@@ -169,6 +183,16 @@ namespace FPTL
 				return mWasErrors;
 			}
 
+			void StopRunTime()
+			{
+				mRunTimer.stop();
+			}
+
+			boost::timer::cpu_times GetRunTime() const
+			{
+				return mRunTimer.elapsed();
+			}
+
 		private:
 			std::vector<EvaluatorUnit *> mEvaluatorUnits;
 			boost::thread_group mThreadGroup;
@@ -176,6 +200,7 @@ namespace FPTL
 			std::unique_ptr<GarbageCollector> mGarbageCollector;
 			GcConfig mGcConfig;
 			EvalConfig mEvalConfig;
+			boost::timer::cpu_timer mRunTimer;
 			bool mWasErrors = false;
 		};
 

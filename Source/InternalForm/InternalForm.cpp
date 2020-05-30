@@ -209,6 +209,7 @@ namespace FPTL
 
 		void printErrTuple(std::ostream& error, const SExecutionContext & ctx)
 		{
+			error.precision(std::numeric_limits<double>::max_digits10);
 			error << "Input tuple type: ";
 			ctx.printTypes(error);
 			error << std::endl << "Input tuple: ";

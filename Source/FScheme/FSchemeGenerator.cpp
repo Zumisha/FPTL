@@ -99,6 +99,13 @@ namespace FPTL
 			}
 			else to = -1;
 
+			if (from == 0 && to == 0)
+			{
+				// Пустой кортеж
+				from = 2;
+				to = 1;
+			}
+
 			FSchemeNode* node = new FTakeNode(from, to, fromIdent.Line, fromIdent.Col);
 
 			mNodeStack.push(node);
@@ -129,7 +136,7 @@ namespace FPTL
 			{
 				auto* const ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 				auto name = aNameRefNode->getName();
-				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), name.getStr(), name.Line, name.Col);
+				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), false, name.getStr(), name.Line, name.Col);
 				mNodeStack.push(node);
 				break;
 			}
@@ -138,7 +145,7 @@ namespace FPTL
 			{
 				const auto ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 				auto name = aNameRefNode->getName();
-				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), "~" + name.getStr(), name.Line, name.Col);
+				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), false, "~" + name.getStr(), name.Line, name.Col);
 				mNodeStack.push(node);
 				break;
 			}
@@ -332,9 +339,9 @@ namespace FPTL
 		void FSchemeGenerator::processBuildInFunction(Parser::NameRefNode * aFunctionNameNode)
 		{
 			Parser::Ident name = aFunctionNameNode->getName();
-
+			const auto func = FunctionLibrary::getFunction(name.getStr());
 			// Ищем функцию в библиотеке.
-			const auto function = new FFunctionNode(FunctionLibrary::getFunction(name.getStr()), name.getStr(), name.Line, name.Col);
+			const auto function = new FFunctionNode(func.first, func.second, name.getStr(), name.Line, name.Col);
 
 			mNodeStack.push(function);
 		}

@@ -19,9 +19,9 @@ namespace FPTL
 			}			
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
-			{"getCurrentTime", &GetCurrentTime}
+			{ "getCurrentTime", std::make_pair(&GetCurrentTime, false) },
 		};
 
 		void TimeLib::Register()

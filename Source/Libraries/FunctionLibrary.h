@@ -18,15 +18,15 @@ namespace FPTL
 		public:
 			FunctionLibrary() = delete;
 
-			static void addFunction(const std::string& aFunctionName, const TFunction& aFunction);
-			static void addFunctions(std::map<std::string, TFunction> functions);
+			static void addFunction(const std::string& aFunctionName, const TFunction& aFunction, const bool isLong);
+			static void addFunctions(std::map<std::string, std::pair<TFunction, bool>> functions);
 
 			static std::vector<std::string> getFunctionNames();
-			static TFunction getFunction(const std::string & aFunctionName);
+			static std::pair<TFunction, bool> getFunction(const std::string & aFunctionName);
 
 		private:
 			// ToDo: type to functions
-			static std::map<std::string, TFunction> mFunctions;
+			static std::map<std::string, std::pair<TFunction, bool>> mFunctions;
 		};
 	}
 }

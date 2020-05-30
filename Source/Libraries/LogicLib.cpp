@@ -118,18 +118,18 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, TFunction> functions =
+		const std::map<std::string, std::pair<TFunction, bool>> functions =
 		{
-			{"not", &Not},
-			{"and", &And},
-			{"or", &Or },
-			{"xor", &Xor },
-			{"equal", &equal},
-			{"nequal", &notEqual},
-			{"greater", &greater},
-			{"gequal", &greaterOrEqual},
-			{"less", &less},
-			{"lequal", &lessOrEqual}
+			{ "not", std::make_pair(&Not, false) },
+			{ "and", std::make_pair(&And, false) },
+			{ "or", std::make_pair(&Or, false) },
+			{ "xor", std::make_pair(&Xor, false) },
+			{ "equal", std::make_pair(&equal, false) },
+			{ "nequal", std::make_pair(&notEqual, false) },
+			{ "greater", std::make_pair(&greater, false) },
+			{ "gequal", std::make_pair(&greaterOrEqual, false) },
+			{ "less", std::make_pair(&less, false) },
+			{ "lequal", std::make_pair(&lessOrEqual, false) },
 		};
 
 		void LogicLib::Register()
