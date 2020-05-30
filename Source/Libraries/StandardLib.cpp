@@ -17,15 +17,7 @@ namespace FPTL
 	namespace Runtime
 	{
 		namespace {
-			void Id(SExecutionContext & aCtx)
-			{
-				// Копируем данные аргументы от начала фрейма.
-				for (size_t i = 0; i < aCtx.argNum; ++i)
-				{
-					aCtx.push(aCtx.getArg(i));
-				}
-			}
-
+			
 			void TupleLength(SExecutionContext & aCtx)
 			{
 				aCtx.push(DataBuilders::createInt(static_cast<long long>(aCtx.argNum)));
@@ -142,7 +134,6 @@ namespace FPTL
 		const std::map<std::string, TFunction> functions =
 		{
 			// Работа с кортежем.
-			{"id", &Id},
 			{"tupleLen", &TupleLength},
 
 			// Преобразования типов.

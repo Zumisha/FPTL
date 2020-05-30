@@ -196,7 +196,11 @@ namespace FPTL {
 			}
 			else
 			{
-				// TODO: выводить число требуемых и фактических параметров.
+				std::stringstream ss;
+				ss << "In function " << aTermDesc.TermName.getStr() << 
+					". Expected: " << target->numParameters() <<
+					". Received: " << aTermDesc.Node->numParameters() << ".";
+				mSupport->newIdent(ss.str(), 0, aTermDesc.TermName);
 				mSupport->semanticError(ParserErrTypes::InvalidNumberOfParameters, aTermDesc.TermName);
 			}
 		}

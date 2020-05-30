@@ -239,28 +239,39 @@ namespace FPTL
 
 		void GetArg::exec(SExecutionContext & ctx) const
 		{
-			size_t argNum;
-			if (mArgNum < 0) argNum = ctx.argNum + mArgNum;
-			else argNum = mArgNum - 1;
+			size_t from;
+			if (mFrom < 0) from = ctx.argNum + mFrom;
+			else from = mFrom - 1;
+			
+			size_t to;
+			if (mTo < 0) to = ctx.argNum + mTo;
+			else to = mTo - 1;
+			
 #if(fptlDebugBuild)
-			ctx.push(TryGetArg(ctx, argNum));
+			TryGetArg(ctx, from, to);
 #else
-			ctx.push(ctx.getArg(argNum));
+			for (size_t i = from; i <= to; ++i)
+			{
+				aCtx.push(aCtx.getArg(i));
+			}
 #endif
 			mNext->exec(ctx);
 		}
 
-		const DataValue& GetArg::TryGetArg(const SExecutionContext& ctx, const size_t argNum) const
+		const void GetArg::TryGetArg(SExecutionContext& aCtx, const size_t from, const size_t to) const
 		{
 			try
 			{
-				return ctx.getArg(argNum);
+				for (size_t i = from; i <= to; ++i)
+				{
+					aCtx.push(aCtx.getArg(i));
+				}
 			}
 			catch (std::exception & thrown)
 			{
 				std::stringstream error;
 				Parser::Support::printError(error, mPos.first, mPos.second, thrown.what());
-				printErrTuple(error, ctx);
+				printErrTuple(error, aCtx);
 				throw std::runtime_error(error.str());
 			}
 		}

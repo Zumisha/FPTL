@@ -26,6 +26,7 @@ namespace FPTL
 			void handle(ExpressionNode* aExpressionNode) override;
 			void handle(ConditionNode* aConditionNode) override;
 			void handle(ConstantNode* aConstantNode) override;
+			void handle(TakeNode* aConstantNode) override;
 			void handle(ListNode* aNode) override;
 			void handle(DefinitionNode* aDefinitionNode) override;
 			void handle(NameRefNode* aNameRefNode) override;

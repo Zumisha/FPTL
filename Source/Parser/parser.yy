@@ -110,6 +110,7 @@
 %token <scToken> T_UNION
 %token <scToken> T_FARROW
 %token <scToken> T_TARROW
+%token <scToken> T_COLON
 
 /* Типы порождаемых конструкций для правил. */
 
@@ -222,7 +223,7 @@ DataTypeDefinitionsBlock
 			$$ = new DataNode(  $2, $4, 0, 0 );
 			$4->mParent = $$;
 		}
-	| T_DATA TypeName '[' TypeParametersList ']' '{' TypesDefinitionList '}'
+	| T_DATA TypeName '<' TypeParametersList '>' '{' TypesDefinitionList '}'
 		{
 			$$ = new DataNode(  $2, $7, $4, 0 );
 			$7->mParent = $$;
@@ -234,7 +235,7 @@ DataTypeDefinitionsBlock
 			$8->mParent = $$;
 			$6->mParent = $$;
 		}
-	| T_DATA TypeName '[' TypeParametersList ']' '{' T_CONSTRUCTORS '{' ConstructorsDefinitionList '}' TypesDefinitionList '}'
+	| T_DATA TypeName '<' TypeParametersList '>' '{' T_CONSTRUCTORS '{' ConstructorsDefinitionList '}' TypesDefinitionList '}'
 		{
 			$$ = new DataNode(  $2, $11, $4, $9 );
 			$11->mParent = $$;
@@ -381,7 +382,7 @@ AtomType
 		{
 			$$ = new NameRefNode( $1, NameRefNode::Type, nullptr );
 		}
-	| TypeName '[' TypeExpressionsList ']'
+	| TypeName '<' TypeExpressionsList '>'
 		{
 			$$ = new NameRefNode( $1, NameRefNode::Template, $3 );
 			$3->mParent = $$;
@@ -429,7 +430,7 @@ Scheme
 			$3->mParent = $$;
 			pSupport->popIdent();
 		}
-	| SchemeBegin '[' FormalParametersList ']' '{' DefinitionsList '}'
+	| SchemeBegin '<' FormalParametersList '>' '{' DefinitionsList '}'
 		{
 			$$ = new FunctionNode( $1, $6, $3 );
 			$6->mParent = $$;
@@ -513,7 +514,7 @@ AtomTerm
 	;
 
 FuncObjectWithParameters
-	: NAME '(' FuncArgumentList ')'
+	: NAME '<' FuncArgumentList '>'
 		{
 			$$ = new NameRefNode( $1, NameRefNode::FuncObjectWithParameters, $3 );
 			$3->mParent = $$;
@@ -613,7 +614,7 @@ ConstructionFun
 		{
 			pSupport->pushIdent( $2 );
 		}
-		'[' FormalParametersList ']' '{' DefinitionsList '}'
+		'<' FormalParametersList '>' '{' DefinitionsList '}'
 		{
 			$$ = new FunctionNode( $2, $8, $5 );
 			pSupport->popIdent();
@@ -661,11 +662,39 @@ BuiltInFunction
 	
 TupleElement
 	: '[' NUMBER ']'
-	{
-		ConstantNode * number = static_cast<ConstantNode*>( $2 );
-		$$ = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
-		delete number;
-	}
+		{
+			ConstantNode * number = static_cast<ConstantNode*>( $2 );
+			$$ = new TakeNode( number->getConstant(), number->getConstant() );
+			delete number;
+		}
+	| '[' T_COLON ']'
+		{
+			Ident from = { $2.Col, $2.Line, nullptr };
+			Ident to = { $2.Col, $2.Line, nullptr };
+			$$ = new TakeNode( from, to);
+		}
+	| '[' NUMBER T_COLON ']'
+		{
+			ConstantNode * from = static_cast<ConstantNode*>( $2 );
+			Ident to = { $3.Col, $3.Line, nullptr };
+			$$ = new TakeNode( from->getConstant(), to);
+			delete from;
+		}
+	| '[' T_COLON NUMBER ']'
+		{
+			Ident from = { $2.Col, $2.Line, nullptr };
+			ConstantNode * to = static_cast<ConstantNode*>( $3 );
+			$$ = new TakeNode( from, to->getConstant() );
+			delete to;
+		}
+	| '[' NUMBER T_COLON NUMBER ']'
+		{
+			ConstantNode * from = static_cast<ConstantNode*>( $2 );
+			ConstantNode * to = static_cast<ConstantNode*>( $4 );
+			$$ = new TakeNode( from->getConstant(), to->getConstant() );
+			delete from;
+			delete to;
+		}
 	
 Constant
 	: NUMBER

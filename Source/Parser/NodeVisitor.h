@@ -26,6 +26,7 @@ namespace FPTL
 			virtual void handle(ExpressionNode * aExpressionNode);
 			virtual void handle(ConditionNode * aExpressionNode);
 			virtual void handle(ConstantNode * aConstantNode);
+			virtual void handle(TakeNode * aTupleElemNode);
 
 			//XXX made public to be callable from TypeBuilder::handle
 			  // Начинает обход дерева.

@@ -76,8 +76,9 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 "++"							{ return BisonParser::token::T_UNION; }
 "->"							{ return BisonParser::token::T_FARROW; }
 "=>"							{ return BisonParser::token::T_TARROW; }
+":"								{ return BisonParser::token::T_COLON; }
 
-[\(\)\.\,\;\[\]\{\}\~\*\=\+\~\@\%]	{ return *YYText(); }
+[\(\)\.\,\;\<\>\[\]\{\}\~\*\=\+\~\@\%]	{ return *YYText(); }
 
 .								{
 									Ident errSymb = { static_cast<size_t>(mCol), static_cast<size_t>(mLine), 0 };

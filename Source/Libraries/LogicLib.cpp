@@ -62,7 +62,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-				BaseOps::opsCheck(lhs.getOps(), lhs);
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->equal(lhs, rhs)));
 			}
@@ -72,7 +72,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-				BaseOps::opsCheck(lhs.getOps(), lhs);
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->equal(lhs, rhs)));
 			}
@@ -82,7 +82,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-				BaseOps::opsCheck(lhs.getOps(), lhs);
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->greater(lhs, rhs)));
 			}
@@ -92,7 +92,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-				BaseOps::opsCheck(lhs.getOps(), lhs);
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->less(lhs, rhs)));
 			}
@@ -102,7 +102,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-				BaseOps::opsCheck(lhs.getOps(), lhs);
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->less(lhs, rhs)));
 			}
@@ -112,7 +112,7 @@ namespace FPTL
 				const auto & lhs = aCtx.getArg(0);
 				const auto & rhs = aCtx.getArg(1);
 
-				BaseOps::opsCheck(lhs.getOps(), lhs);
+				BaseOps::opsCheck(lhs.getOps(), rhs);
 
 				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->greater(lhs, rhs)));
 			}

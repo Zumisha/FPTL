@@ -106,7 +106,7 @@ namespace FPTL
 
 		void Generator::visit(const FTakeNode * node)
 		{
-			mResult = std::make_shared<GetArg>(mTail, node->index(), node->pos());
+			mResult = std::make_shared<GetArg>(mTail, node->from(), node->to(), node->pos());
 		}
 
 		void Generator::visit(const FConstantNode * node)

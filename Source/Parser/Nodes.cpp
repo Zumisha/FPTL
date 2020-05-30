@@ -110,6 +110,34 @@ namespace FPTL {
 				}
 			}
 
+			//-------------------------------------------------------------------------------------------
+
+			void TakeNode::handle(NodeVisitor* aHandler)
+			{
+				aHandler->handle(this);
+			}
+			ASTNode* TakeNode::getChild(NodeHandler* aHandler, size_t childNum)
+			{
+				return aHandler->getChild(this, childNum);
+			}
+			size_t TakeNode::getChildIndex(NodeHandler* aHandler, ASTNode* child)
+			{
+				return aHandler->getChildIndex(this, child);
+			}
+			void TakeNode::intermediateProcessing(NodeHandler* aHandler, size_t childNum)
+			{
+				aHandler->intermediateProcessing(this, childNum);
+			}
+			void TakeNode::ChildHandled(NodeHandler* aHandler, size_t childNum)
+			{
+				aHandler->ChildHandled(this, childNum);
+			}
+
+			std::string TakeNode::childNameToString(size_t)
+			{
+				return "Error!";
+			}
+
 		//-------------------------------------------------------------------------------------------
 
 		void ConstantNode::handle(NodeVisitor* aHandler)
@@ -131,11 +159,6 @@ namespace FPTL {
 		void ConstantNode::ChildHandled(NodeHandler* aHandler, size_t childNum)
 		{
 			aHandler->ChildHandled(this, childNum);
-		}
-
-		bool ConstantNode::isNatural() const
-		{
-			return getType() == IntConstant && atoi(mIdent.getStr().c_str()) > 0;
 		}
 
 		std::string ConstantNode::childNameToString(size_t)

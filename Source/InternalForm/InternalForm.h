@@ -174,14 +174,15 @@ namespace FPTL
 			void exec(SExecutionContext & ctx) const override;
 			void zeroing(SExecutionContext & ctx) override;
 
-			GetArg(IfPtr next, const long long argNum, std::pair<size_t, size_t> pos)
-				: mNext(std::move(next)), mArgNum(argNum), mPos(std::move(pos))
+			GetArg(IfPtr next, const int64_t from, const int64_t to, std::pair<size_t, size_t> pos)
+				: mNext(std::move(next)), mFrom(from), mTo(to), mPos(std::move(pos))
 			{}
 		private:
-			const DataValue& TryGetArg(const SExecutionContext& ctx, size_t argNum) const;
+			const void TryGetArg(SExecutionContext& ctx, const size_t from, const size_t to) const;
 
 			IfPtr mNext;
-			long long mArgNum;
+			int64_t mFrom;
+			int64_t mTo;
 			std::pair<size_t, size_t> mPos;
 		};
 

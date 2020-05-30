@@ -70,6 +70,12 @@ namespace FPTL
 			mFile << "<Value>" << aConstantNode->getConstant().getStr() << "</Value>";
 		}
 
+		void ASTSerializer::handle(TakeNode* aConstantNode)
+		{
+			mFile << "<From>" << aConstantNode->getFrom().getStr() << "</From>";
+			mFile << "<To>" << aConstantNode->getTo().getStr() << "</To>";
+		}
+
 		void ASTSerializer::handle(ListNode* aNode)
 		{
 		}

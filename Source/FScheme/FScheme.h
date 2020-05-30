@@ -125,22 +125,25 @@ namespace FPTL
 		class FTakeNode : public FSchemeNode
 		{
 		public:
-			FTakeNode(const long long aIndex, const size_t aLine, const size_t aCol)
+			FTakeNode(const int64_t from, const int64_t to, const size_t aLine, const size_t aCol)
 				: FSchemeNode(false),
-				mIndex(aIndex),
+				mFrom(from),
+				mTo(to),
 				mLine(aLine),
 				mCol(aCol)
 			{}
 
 			void accept(FSchemeVisitor * aVisitor) const override;
 
-			long long index() const { return mIndex; }
+			int64_t from() const { return mFrom; }
+			int64_t to() const { return mTo; }
 			size_t col() const { return mCol; }
 			size_t line() const { return mLine; }
 			std::pair<size_t, size_t> pos() const { return{ mLine, mCol }; }
 
 		private:
-			long long mIndex;
+			int64_t mFrom;
+			int64_t mTo;
 			size_t mLine;
 			size_t mCol;
 		};

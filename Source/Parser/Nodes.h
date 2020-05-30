@@ -64,6 +64,38 @@ namespace FPTL
 		};
 
 		//-------------------------------------------------------------------------------------
+		// Выбор элемента из кортежа.
+
+		class TakeNode : public ASTNode
+		{
+		public:
+
+			TakeNode(const Ident &from, const Ident &to) :
+				ASTNode(TupleElemNumber), fromIndex(from), toIndex(to) {}
+
+			void handle(NodeVisitor* aHandler) override;
+			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			
+			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
+			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
+			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
+
+			Ident getFrom() const { return fromIndex; }
+			Ident getTo() const { return toIndex; }
+
+			std::string childNameToString(size_t) override;
+
+			void serialize(std::ostream& aStream, const ASTNode* node) const override
+			{
+				aStream << NodeTypeToString(node->getType()) << ": [" << fromIndex << ":" << toIndex << "]";
+			}
+
+		private:
+			Ident fromIndex;
+			Ident toIndex;
+		};
+
+		//-------------------------------------------------------------------------------------
 		// Описание константы.
 
 		class ConstantNode : public ASTNode
@@ -75,11 +107,10 @@ namespace FPTL
 
 			void handle(NodeVisitor* aHandler) override;
 			ASTNode* getChild(NodeHandler* aHandler, size_t childNum) override;
+			
 			size_t getChildIndex(NodeHandler* aHandler, ASTNode* child) override;
 			void intermediateProcessing(NodeHandler* aHandler, size_t childNum) override;
 			void ChildHandled(NodeHandler* aHandler, size_t childNum) override;
-
-			bool isNatural() const;
 
 			Ident getConstant() const { return mIdent; }
 

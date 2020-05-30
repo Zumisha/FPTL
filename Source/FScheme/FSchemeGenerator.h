@@ -32,8 +32,9 @@ namespace FPTL
 			void handle(Parser::NameRefNode * aNameRefNode) override;
 			void handle(Parser::DefinitionNode * aDefinitionNode) override;
 			void handle(Parser::ExpressionNode * aExpressionNode) override;
-			void handle(Parser::ConditionNode * aExpressionNode) override;
+			void handle(Parser::ConditionNode * aConditionNode) override;
 			void handle(Parser::ConstantNode * aNode) override;
+			void handle(Parser::TakeNode * aTakeNode) override;
 
 			// Получение результата.
 			FSchemeNode * getProgram() const;

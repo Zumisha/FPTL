@@ -64,6 +64,10 @@ namespace FPTL
 		{
 		}
 
+		void NodeVisitor::handle(TakeNode * aTupleElemNode)
+		{
+		}
+
 		void NodeVisitor::handle(ListNode * aNode)
 		{
 			//for (auto& node : aNode->mChilds)

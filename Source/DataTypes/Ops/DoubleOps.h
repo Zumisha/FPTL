@@ -21,7 +21,7 @@ namespace FPTL
 				return &ops;
 			}
 
-			inline static const std::string typeName = "Boolean";
+			inline static const std::string typeName = "Real";
 			const std::string& getTypeName() const override
 			{
 				return typeName;

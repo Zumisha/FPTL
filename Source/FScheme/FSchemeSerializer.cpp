@@ -128,8 +128,8 @@ namespace FPTL
 			Utils::OpenTag(mFile, "Take");
 			{
 				mFile << "<Id>" << id << "</Id>";
-				mFile << "<Hard>" << node->isLong() << "</Hard>";
-				mFile << "<Index>" << node->index() << "</Index>";
+				mFile << "<From>" << node->from() << "</From>";
+				mFile << "<To>" << node->to() << "</To>";
 				mFile << "<Line>" << node->line() << "</Line>";
 				mFile << "<Column>" << node->col() << "</Column>";
 			}
@@ -141,7 +141,6 @@ namespace FPTL
 			Utils::OpenTag(mFile, "Constant");
 			{
 				mFile << "<Id>" << id << "</Id>";
-				mFile << "<Hard>" << node->isLong() << "</Hard>";
 				mFile << "<Type>" << node->type() << "</Type>";
 				mFile << "<Value>";
 				node->data().getOps()->print(node->data(), mFile);
@@ -157,8 +156,6 @@ namespace FPTL
 			Utils::OpenTag(mFile, "String");
 			{
 				mFile << "<Id>" << id << "</Id>";
-				mFile << "<Hard>" << node->isLong() << "</Hard>";
-				mFile << "<Type>" << node->type() << "</Type>";
 				mFile << "<Value>" << node->str() << "</Value>";
 				mFile << "<Line>" << node->line() << "</Line>";
 				mFile << "<Column>" << node->col() << "</Column>";

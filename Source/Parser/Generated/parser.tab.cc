@@ -379,7 +379,7 @@ namespace FPTL { namespace Parser {
 #line 380 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 56: // FunctionalProgram
+      case 59: // FunctionalProgram
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -389,7 +389,7 @@ namespace FPTL { namespace Parser {
 #line 390 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 57: // DataTypeDefinitionsBlocks
+      case 60: // DataTypeDefinitionsBlocks
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -399,7 +399,7 @@ namespace FPTL { namespace Parser {
 #line 400 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 58: // DataTypeDefinitionsBlock
+      case 61: // DataTypeDefinitionsBlock
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -409,7 +409,7 @@ namespace FPTL { namespace Parser {
 #line 410 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 60: // TypeParametersList
+      case 63: // TypeParametersList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -419,7 +419,7 @@ namespace FPTL { namespace Parser {
 #line 420 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 61: // TypeParameterDef
+      case 64: // TypeParameterDef
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
@@ -429,7 +429,7 @@ namespace FPTL { namespace Parser {
 #line 430 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 62: // ConstructorsDefinitionList
+      case 65: // ConstructorsDefinitionList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -439,7 +439,7 @@ namespace FPTL { namespace Parser {
 #line 440 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 63: // ConstructorDef
+      case 66: // ConstructorDef
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -449,7 +449,7 @@ namespace FPTL { namespace Parser {
 #line 450 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 64: // ConstructorParametersList
+      case 67: // ConstructorParametersList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -459,7 +459,7 @@ namespace FPTL { namespace Parser {
 #line 460 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 65: // TypesDefinitionList
+      case 68: // TypesDefinitionList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -469,7 +469,7 @@ namespace FPTL { namespace Parser {
 #line 470 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 66: // TypesDefinitionList2
+      case 69: // TypesDefinitionList2
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -479,7 +479,7 @@ namespace FPTL { namespace Parser {
 #line 480 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 67: // TypeDefinition
+      case 70: // TypeDefinition
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
@@ -489,7 +489,7 @@ namespace FPTL { namespace Parser {
 #line 490 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 68: // TypeDefConstructor
+      case 71: // TypeDefConstructor
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -499,7 +499,7 @@ namespace FPTL { namespace Parser {
 #line 500 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 69: // TypeExpression
+      case 72: // TypeExpression
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -509,7 +509,7 @@ namespace FPTL { namespace Parser {
 #line 510 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 70: // AtomType
+      case 73: // AtomType
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -519,7 +519,7 @@ namespace FPTL { namespace Parser {
 #line 520 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 72: // TypeExpressionsList
+      case 75: // TypeExpressionsList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -529,7 +529,7 @@ namespace FPTL { namespace Parser {
 #line 530 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 75: // Scheme
+      case 78: // Scheme
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scFun);
@@ -539,7 +539,7 @@ namespace FPTL { namespace Parser {
 #line 540 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 77: // FormalParametersList
+      case 80: // FormalParametersList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -549,7 +549,7 @@ namespace FPTL { namespace Parser {
 #line 550 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 78: // FormalParameter
+      case 81: // FormalParameter
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
@@ -559,7 +559,7 @@ namespace FPTL { namespace Parser {
 #line 560 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 79: // DefinitionsList
+      case 82: // DefinitionsList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -569,7 +569,7 @@ namespace FPTL { namespace Parser {
 #line 570 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 80: // Definition
+      case 83: // Definition
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -579,7 +579,7 @@ namespace FPTL { namespace Parser {
 #line 580 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 81: // Term
+      case 84: // Term
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -589,7 +589,7 @@ namespace FPTL { namespace Parser {
 #line 590 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 82: // AtomTerm
+      case 85: // AtomTerm
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -599,7 +599,7 @@ namespace FPTL { namespace Parser {
 #line 600 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 83: // FuncObjectWithParameters
+      case 86: // FuncObjectWithParameters
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -609,7 +609,7 @@ namespace FPTL { namespace Parser {
 #line 610 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 84: // FuncArgumentList
+      case 87: // FuncArgumentList
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -619,7 +619,7 @@ namespace FPTL { namespace Parser {
 #line 620 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 85: // FuncParameterName
+      case 88: // FuncParameterName
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -629,7 +629,7 @@ namespace FPTL { namespace Parser {
 #line 630 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 86: // SequentialTerm
+      case 89: // SequentialTerm
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -639,7 +639,7 @@ namespace FPTL { namespace Parser {
 #line 640 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 87: // CompositionTerm
+      case 90: // CompositionTerm
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -649,7 +649,7 @@ namespace FPTL { namespace Parser {
 #line 650 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 88: // ConditionTerm
+      case 91: // ConditionTerm
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -659,7 +659,7 @@ namespace FPTL { namespace Parser {
 #line 660 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 89: // VariantTerm
+      case 92: // VariantTerm
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -669,7 +669,7 @@ namespace FPTL { namespace Parser {
 #line 670 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 90: // FuncObjectName
+      case 93: // FuncObjectName
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -679,7 +679,7 @@ namespace FPTL { namespace Parser {
 #line 680 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 91: // ConstructionFun
+      case 94: // ConstructionFun
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scFun);
@@ -689,7 +689,7 @@ namespace FPTL { namespace Parser {
 #line 690 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 96: // ElementaryFunctionName
+      case 99: // ElementaryFunctionName
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -699,7 +699,7 @@ namespace FPTL { namespace Parser {
 #line 700 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 97: // Constructor
+      case 100: // Constructor
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -709,7 +709,7 @@ namespace FPTL { namespace Parser {
 #line 710 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 98: // Destructor
+      case 101: // Destructor
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -719,7 +719,7 @@ namespace FPTL { namespace Parser {
 #line 720 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 99: // BuiltInFunction
+      case 102: // BuiltInFunction
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -729,7 +729,7 @@ namespace FPTL { namespace Parser {
 #line 730 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 100: // TupleElement
+      case 103: // TupleElement
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -739,7 +739,7 @@ namespace FPTL { namespace Parser {
 #line 740 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 101: // Constant
+      case 104: // Constant
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -749,7 +749,7 @@ namespace FPTL { namespace Parser {
 #line 750 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 102: // BuiltInFunctionName
+      case 105: // BuiltInFunctionName
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -759,7 +759,7 @@ namespace FPTL { namespace Parser {
 #line 760 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 103: // Application
+      case 106: // Application
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scApp);
@@ -769,7 +769,7 @@ namespace FPTL { namespace Parser {
 #line 770 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 104: // DataInit
+      case 107: // DataInit
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scList);
@@ -779,7 +779,7 @@ namespace FPTL { namespace Parser {
 #line 780 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 105: // OneDataInit
+      case 108: // OneDataInit
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scDef);
@@ -789,7 +789,7 @@ namespace FPTL { namespace Parser {
 #line 790 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 107: // InterpFunProgramName
+      case 110: // InterpFunProgramName
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scName);
@@ -799,7 +799,7 @@ namespace FPTL { namespace Parser {
 #line 800 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 108: // Data
+      case 111: // Data
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -809,7 +809,7 @@ namespace FPTL { namespace Parser {
 #line 810 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 109: // OneData
+      case 112: // OneData
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -819,7 +819,7 @@ namespace FPTL { namespace Parser {
 #line 820 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 110: // ValueAtom
+      case 113: // ValueAtom
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -829,7 +829,7 @@ namespace FPTL { namespace Parser {
 #line 830 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 111: // ValueConstructor
+      case 114: // ValueConstructor
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -839,7 +839,7 @@ namespace FPTL { namespace Parser {
 #line 840 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 112: // ValueComposition
+      case 115: // ValueComposition
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -849,7 +849,7 @@ namespace FPTL { namespace Parser {
 #line 850 "parser.tab.cc" // lalr1.cc:652
         break;
 
-      case 113: // Value
+      case 116: // Value
 #line 62 "parser.yy" // lalr1.cc:652
         {
 	ASTNode * node = (yysym.value.scNode);
@@ -1105,7 +1105,7 @@ namespace FPTL { namespace Parser {
           switch (yyn)
             {
   case 2:
-#line 185 "parser.yy" // lalr1.cc:919
+#line 186 "parser.yy" // lalr1.cc:919
     {
 			mASTRoot = new FunctionalProgram( (yystack_[2].value.scList), (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			(yystack_[2].value.scList)->mParent = mASTRoot;
@@ -1119,7 +1119,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 3:
-#line 195 "parser.yy" // lalr1.cc:919
+#line 196 "parser.yy" // lalr1.cc:919
     {
 			mASTRoot = new FunctionalProgram( 0, (yystack_[1].value.scFun), (yystack_[0].value.scApp) );
 			(yystack_[1].value.scFun)->mParent = mASTRoot;
@@ -1130,7 +1130,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 4:
-#line 207 "parser.yy" // lalr1.cc:919
+#line 208 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode(  ASTNode::DataTypeDefinitionsBlocks );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1140,7 +1140,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 5:
-#line 213 "parser.yy" // lalr1.cc:919
+#line 214 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1149,7 +1149,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 6:
-#line 221 "parser.yy" // lalr1.cc:919
+#line 222 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0, 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1158,7 +1158,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 7:
-#line 226 "parser.yy" // lalr1.cc:919
+#line 227 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList), 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1168,7 +1168,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 8:
-#line 232 "parser.yy" // lalr1.cc:919
+#line 233 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[7].value.scIdent), (yystack_[1].value.scList), 0, (yystack_[3].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1178,7 +1178,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 9:
-#line 238 "parser.yy" // lalr1.cc:919
+#line 239 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DataNode(  (yystack_[10].value.scIdent), (yystack_[1].value.scList), (yystack_[8].value.scList), (yystack_[3].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scNode);
@@ -1189,13 +1189,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 10:
-#line 247 "parser.yy" // lalr1.cc:919
+#line 248 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
 #line 1195 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 11:
-#line 252 "parser.yy" // lalr1.cc:919
+#line 253 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypeParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1205,7 +1205,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 12:
-#line 258 "parser.yy" // lalr1.cc:919
+#line 259 "parser.yy" // lalr1.cc:919
     {		
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 			(yystack_[2].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1214,7 +1214,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 13:
-#line 266 "parser.yy" // lalr1.cc:919
+#line 267 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
@@ -1222,7 +1222,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 14:
-#line 273 "parser.yy" // lalr1.cc:919
+#line 274 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorsDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1232,7 +1232,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 15:
-#line 279 "parser.yy" // lalr1.cc:919
+#line 280 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1241,7 +1241,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 16:
-#line 287 "parser.yy" // lalr1.cc:919
+#line 288 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), 0, (yystack_[3].value.scIdent) );
 		}
@@ -1249,7 +1249,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 17:
-#line 291 "parser.yy" // lalr1.cc:919
+#line 292 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConstructorNode( (yystack_[1].value.scIdent), (yystack_[5].value.scList), (yystack_[3].value.scIdent) );
 			(yystack_[5].value.scList)->mParent = (yylhs.value.scNode);
@@ -1258,7 +1258,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 18:
-#line 298 "parser.yy" // lalr1.cc:919
+#line 299 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::ConstructorParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
@@ -1268,7 +1268,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 19:
-#line 304 "parser.yy" // lalr1.cc:919
+#line 305 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 			(yystack_[2].value.scName)->mParent = (yystack_[0].value.scList);
@@ -1277,7 +1277,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 20:
-#line 313 "parser.yy" // lalr1.cc:919
+#line 314 "parser.yy" // lalr1.cc:919
     {
 			if( (yystack_[0].value.scList)->mChilds.size() > 1 )
 			{
@@ -1291,7 +1291,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 21:
-#line 326 "parser.yy" // lalr1.cc:919
+#line 327 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypesDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1301,7 +1301,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 22:
-#line 332 "parser.yy" // lalr1.cc:919
+#line 333 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 			(yystack_[1].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1310,7 +1310,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 23:
-#line 340 "parser.yy" // lalr1.cc:919
+#line 341 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::TypeDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scDef);
@@ -1319,7 +1319,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 24:
-#line 345 "parser.yy" // lalr1.cc:919
+#line 346 "parser.yy" // lalr1.cc:919
     {
 			pSupport->semanticError( ParserErrTypes::NestedDataDefinition, static_cast<DataNode*>((yystack_[0].value.scNode))->getDataName() );
 			delete (yystack_[0].value.scNode);
@@ -1329,7 +1329,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 25:
-#line 354 "parser.yy" // lalr1.cc:919
+#line 355 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), (yystack_[2].value.scList) );
 			(yystack_[2].value.scList)->mParent = (yylhs.value.scNode);
@@ -1338,7 +1338,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 26:
-#line 359 "parser.yy" // lalr1.cc:919
+#line 360 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::TypeConstructorDefinition, (yystack_[0].value.scIdent), 0 );
 		}
@@ -1346,13 +1346,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 27:
-#line 365 "parser.yy" // lalr1.cc:919
+#line 366 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1352 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 28:
-#line 367 "parser.yy" // lalr1.cc:919
+#line 368 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::TypeExpression, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1362,7 +1362,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 29:
-#line 377 "parser.yy" // lalr1.cc:919
+#line 378 "parser.yy" // lalr1.cc:919
     {	
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scToken), NameRefNode::BaseType, nullptr );
 		}
@@ -1370,7 +1370,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 30:
-#line 381 "parser.yy" // lalr1.cc:919
+#line 382 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::Type, nullptr );
 		}
@@ -1378,7 +1378,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 31:
-#line 385 "parser.yy" // lalr1.cc:919
+#line 386 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::Template, (yystack_[1].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scName);
@@ -1387,7 +1387,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 32:
-#line 390 "parser.yy" // lalr1.cc:919
+#line 391 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::TypeParamName, nullptr );
 		}
@@ -1395,49 +1395,49 @@ namespace FPTL { namespace Parser {
     break;
 
   case 33:
-#line 396 "parser.yy" // lalr1.cc:919
+#line 397 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1401 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 34:
-#line 397 "parser.yy" // lalr1.cc:919
+#line 398 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1407 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 35:
-#line 398 "parser.yy" // lalr1.cc:919
+#line 399 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1413 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 36:
-#line 399 "parser.yy" // lalr1.cc:919
+#line 400 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1419 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 37:
-#line 400 "parser.yy" // lalr1.cc:919
+#line 401 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1425 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 38:
-#line 401 "parser.yy" // lalr1.cc:919
+#line 402 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1431 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 39:
-#line 402 "parser.yy" // lalr1.cc:919
+#line 403 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scToken) = (yystack_[0].value.scToken); }
 #line 1437 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 40:
-#line 407 "parser.yy" // lalr1.cc:919
+#line 408 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::TypeExpressionsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scName) );
@@ -1447,7 +1447,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 41:
-#line 413 "parser.yy" // lalr1.cc:919
+#line 414 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scName) );
 			(yystack_[2].value.scName)->mParent = (yystack_[0].value.scList);
@@ -1456,19 +1456,19 @@ namespace FPTL { namespace Parser {
     break;
 
   case 42:
-#line 419 "parser.yy" // lalr1.cc:919
+#line 420 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
 #line 1462 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 43:
-#line 421 "parser.yy" // lalr1.cc:919
+#line 422 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
 #line 1468 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 44:
-#line 427 "parser.yy" // lalr1.cc:919
+#line 428 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[3].value.scIdent), (yystack_[1].value.scList), 0 );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
@@ -1478,7 +1478,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 45:
-#line 433 "parser.yy" // lalr1.cc:919
+#line 434 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[6].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scFun);
@@ -1489,7 +1489,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 46:
-#line 443 "parser.yy" // lalr1.cc:919
+#line 444 "parser.yy" // lalr1.cc:919
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 			(yylhs.value.scIdent) = (yystack_[0].value.scIdent);
@@ -1498,7 +1498,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 47:
-#line 451 "parser.yy" // lalr1.cc:919
+#line 452 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::FormalParametersList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
@@ -1508,7 +1508,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 48:
-#line 457 "parser.yy" // lalr1.cc:919
+#line 458 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scDef) );
 			(yystack_[2].value.scDef)->mParent = (yystack_[0].value.scList);
@@ -1517,7 +1517,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 49:
-#line 465 "parser.yy" // lalr1.cc:919
+#line 466 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::FunctionParameterDefinition, (yystack_[0].value.scIdent), 0 );
 		}
@@ -1525,7 +1525,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 50:
-#line 472 "parser.yy" // lalr1.cc:919
+#line 473 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::DefinitionsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1535,7 +1535,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 51:
-#line 478 "parser.yy" // lalr1.cc:919
+#line 479 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1544,7 +1544,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 52:
-#line 486 "parser.yy" // lalr1.cc:919
+#line 487 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1553,7 +1553,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 53:
-#line 491 "parser.yy" // lalr1.cc:919
+#line 492 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new DefinitionNode( ASTNode::Definition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1562,37 +1562,37 @@ namespace FPTL { namespace Parser {
     break;
 
   case 54:
-#line 496 "parser.yy" // lalr1.cc:919
+#line 497 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scFun); }
 #line 1568 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 55:
-#line 500 "parser.yy" // lalr1.cc:919
+#line 501 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1574 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 56:
-#line 505 "parser.yy" // lalr1.cc:919
+#line 506 "parser.yy" // lalr1.cc:919
     {	(yylhs.value.scNode) = (yystack_[1].value.scNode); }
 #line 1580 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 57:
-#line 506 "parser.yy" // lalr1.cc:919
+#line 507 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1586 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 58:
-#line 508 "parser.yy" // lalr1.cc:919
+#line 509 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1592 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 59:
-#line 510 "parser.yy" // lalr1.cc:919
+#line 511 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new NameRefNode( pSupport->getTopIdent(), ASTNode::FuncObjectName, nullptr );
 		}
@@ -1600,7 +1600,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 60:
-#line 517 "parser.yy" // lalr1.cc:919
+#line 518 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[3].value.scIdent), NameRefNode::FuncObjectWithParameters, (yystack_[1].value.scList) );
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scName);
@@ -1609,7 +1609,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 61:
-#line 524 "parser.yy" // lalr1.cc:919
+#line 525 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::FuncArgumentsList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scNode) );
@@ -1619,7 +1619,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 62:
-#line 530 "parser.yy" // lalr1.cc:919
+#line 531 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[2].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yystack_[0].value.scList);
@@ -1628,7 +1628,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 63:
-#line 538 "parser.yy" // lalr1.cc:919
+#line 539 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncParameterName, nullptr );
 		}
@@ -1636,25 +1636,25 @@ namespace FPTL { namespace Parser {
     break;
 
   case 64:
-#line 541 "parser.yy" // lalr1.cc:919
+#line 542 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1642 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 65:
-#line 543 "parser.yy" // lalr1.cc:919
+#line 544 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1648 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 66:
-#line 547 "parser.yy" // lalr1.cc:919
+#line 548 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1654 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 67:
-#line 549 "parser.yy" // lalr1.cc:919
+#line 550 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::SequentialTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1664,13 +1664,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 68:
-#line 557 "parser.yy" // lalr1.cc:919
+#line 558 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1670 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 69:
-#line 559 "parser.yy" // lalr1.cc:919
+#line 560 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::CompositionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1680,13 +1680,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 70:
-#line 567 "parser.yy" // lalr1.cc:919
+#line 568 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1686 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 71:
-#line 569 "parser.yy" // lalr1.cc:919
+#line 570 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConditionNode( ASTNode::ConditionTerm, (yystack_[4].value.scNode), (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[4].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1697,7 +1697,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 72:
-#line 576 "parser.yy" // lalr1.cc:919
+#line 577 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ConditionNode( ASTNode::ConditionTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode), nullptr );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1707,13 +1707,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 73:
-#line 584 "parser.yy" // lalr1.cc:919
+#line 585 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1713 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 74:
-#line 586 "parser.yy" // lalr1.cc:919
+#line 587 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::VariantTerm, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
@@ -1723,7 +1723,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 75:
-#line 595 "parser.yy" // lalr1.cc:919
+#line 596 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::FuncObjectName, nullptr );
 		}
@@ -1731,13 +1731,13 @@ namespace FPTL { namespace Parser {
     break;
 
   case 76:
-#line 598 "parser.yy" // lalr1.cc:919
+#line 599 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scName) = (yystack_[0].value.scName); }
 #line 1737 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 77:
-#line 603 "parser.yy" // lalr1.cc:919
+#line 604 "parser.yy" // lalr1.cc:919
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
@@ -1745,7 +1745,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 78:
-#line 607 "parser.yy" // lalr1.cc:919
+#line 608 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[4].value.scIdent), (yystack_[1].value.scList), 0 );
 			pSupport->popIdent();
@@ -1755,7 +1755,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 79:
-#line 613 "parser.yy" // lalr1.cc:919
+#line 614 "parser.yy" // lalr1.cc:919
     {
 			pSupport->pushIdent( (yystack_[0].value.scIdent) );
 		}
@@ -1763,7 +1763,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 80:
-#line 617 "parser.yy" // lalr1.cc:919
+#line 618 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scFun) = new FunctionNode( (yystack_[7].value.scIdent), (yystack_[1].value.scList), (yystack_[4].value.scList) );
 			pSupport->popIdent();
@@ -1774,37 +1774,37 @@ namespace FPTL { namespace Parser {
     break;
 
   case 81:
-#line 626 "parser.yy" // lalr1.cc:919
+#line 627 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
 #line 1780 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 82:
-#line 630 "parser.yy" // lalr1.cc:919
+#line 631 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
 #line 1786 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 83:
-#line 634 "parser.yy" // lalr1.cc:919
+#line 635 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1792 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 84:
-#line 636 "parser.yy" // lalr1.cc:919
+#line 637 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1798 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 85:
-#line 638 "parser.yy" // lalr1.cc:919
+#line 639 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1804 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 86:
-#line 643 "parser.yy" // lalr1.cc:919
+#line 644 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::ConstructorName, nullptr );
 		}
@@ -1812,7 +1812,7 @@ namespace FPTL { namespace Parser {
     break;
 
   case 87:
-#line 650 "parser.yy" // lalr1.cc:919
+#line 651 "parser.yy" // lalr1.cc:919
     {	
 			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::DestructorName, nullptr );
 		}
@@ -1820,249 +1820,293 @@ namespace FPTL { namespace Parser {
     break;
 
   case 88:
-#line 657 "parser.yy" // lalr1.cc:919
+#line 658 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scName); }
 #line 1826 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 89:
-#line 658 "parser.yy" // lalr1.cc:919
+#line 659 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1832 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 90:
-#line 659 "parser.yy" // lalr1.cc:919
+#line 660 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
 #line 1838 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 91:
-#line 664 "parser.yy" // lalr1.cc:919
+#line 665 "parser.yy" // lalr1.cc:919
     {
-		ConstantNode * number = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
-		(yylhs.value.scNode) = new ConstantNode( ASTNode::TupleElemNumber, number->getConstant() );
-		delete number;
-	}
+			ConstantNode * number = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new TakeNode( number->getConstant(), number->getConstant() );
+			delete number;
+		}
 #line 1848 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 92:
 #line 671 "parser.yy" // lalr1.cc:919
-    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 1854 "parser.tab.cc" // lalr1.cc:919
+    {
+			Ident from = { (yystack_[1].value.scToken).Col, (yystack_[1].value.scToken).Line, nullptr };
+			Ident to = { (yystack_[1].value.scToken).Col, (yystack_[1].value.scToken).Line, nullptr };
+			(yylhs.value.scNode) = new TakeNode( from, to);
+		}
+#line 1858 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 93:
-#line 672 "parser.yy" // lalr1.cc:919
-    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 1860 "parser.tab.cc" // lalr1.cc:919
+#line 677 "parser.yy" // lalr1.cc:919
+    {
+			ConstantNode * from = static_cast<ConstantNode*>( (yystack_[2].value.scNode) );
+			Ident to = { (yystack_[1].value.scToken).Col, (yystack_[1].value.scToken).Line, nullptr };
+			(yylhs.value.scNode) = new TakeNode( from->getConstant(), to);
+			delete from;
+		}
+#line 1869 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 94:
-#line 673 "parser.yy" // lalr1.cc:919
-    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 1866 "parser.tab.cc" // lalr1.cc:919
+#line 684 "parser.yy" // lalr1.cc:919
+    {
+			Ident from = { (yystack_[2].value.scToken).Col, (yystack_[2].value.scToken).Line, nullptr };
+			ConstantNode * to = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new TakeNode( from, to->getConstant() );
+			delete to;
+		}
+#line 1880 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 95:
-#line 675 "parser.yy" // lalr1.cc:919
+#line 691 "parser.yy" // lalr1.cc:919
     {
-			(yylhs.value.scNode) = new ConstantNode( ASTNode::TrueValue, (yystack_[0].value.scToken) );
+			ConstantNode * from = static_cast<ConstantNode*>( (yystack_[3].value.scNode) );
+			ConstantNode * to = static_cast<ConstantNode*>( (yystack_[1].value.scNode) );
+			(yylhs.value.scNode) = new TakeNode( from->getConstant(), to->getConstant() );
+			delete from;
+			delete to;
 		}
-#line 1874 "parser.tab.cc" // lalr1.cc:919
+#line 1892 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 96:
-#line 679 "parser.yy" // lalr1.cc:919
-    {
-			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
-		}
-#line 1882 "parser.tab.cc" // lalr1.cc:919
+#line 700 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1898 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 97:
-#line 687 "parser.yy" // lalr1.cc:919
-    {
-			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction, nullptr );
-		}
-#line 1890 "parser.tab.cc" // lalr1.cc:919
+#line 701 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1904 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 98:
-#line 694 "parser.yy" // lalr1.cc:919
+#line 702 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 1910 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 99:
+#line 704 "parser.yy" // lalr1.cc:919
+    {
+			(yylhs.value.scNode) = new ConstantNode( ASTNode::TrueValue, (yystack_[0].value.scToken) );
+		}
+#line 1918 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 100:
+#line 708 "parser.yy" // lalr1.cc:919
+    {
+			(yylhs.value.scNode) = new ConstantNode( ASTNode::FalseValue, (yystack_[0].value.scToken) );
+		}
+#line 1926 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 101:
+#line 716 "parser.yy" // lalr1.cc:919
+    {
+			(yylhs.value.scName) = new NameRefNode( (yystack_[0].value.scIdent), NameRefNode::BuildInFunction, nullptr );
+		}
+#line 1934 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 102:
+#line 723 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, 0 );
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scApp);
 		}
-#line 1899 "parser.tab.cc" // lalr1.cc:919
+#line 1943 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 99:
-#line 699 "parser.yy" // lalr1.cc:919
+  case 103:
+#line 728 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), 0 );
 			(yystack_[3].value.scName)->mParent = (yylhs.value.scApp);
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scApp);
 		}
-#line 1909 "parser.tab.cc" // lalr1.cc:919
+#line 1953 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 100:
-#line 705 "parser.yy" // lalr1.cc:919
+  case 104:
+#line 734 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[0].value.scName), 0, (yystack_[1].value.scList) ); 
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scApp);
 			(yystack_[1].value.scList)->mParent = (yylhs.value.scApp);
 		}
-#line 1919 "parser.tab.cc" // lalr1.cc:919
+#line 1963 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 101:
-#line 711 "parser.yy" // lalr1.cc:919
+  case 105:
+#line 740 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scApp) = new ApplicationBlock( (yystack_[3].value.scName), (yystack_[1].value.scNode), (yystack_[4].value.scList) );
 			(yystack_[3].value.scName)->mParent = (yylhs.value.scApp);
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scApp);
 			(yystack_[4].value.scList)->mParent = (yylhs.value.scApp);
 		}
-#line 1930 "parser.tab.cc" // lalr1.cc:919
+#line 1974 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 102:
-#line 721 "parser.yy" // lalr1.cc:919
+  case 106:
+#line 750 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = new ListNode( ASTNode::InputVarDefinitionList );
 			(yylhs.value.scList)->addElement( (yystack_[0].value.scDef) );
 			(yystack_[0].value.scDef)->mParent = (yylhs.value.scList);
 		}
-#line 1940 "parser.tab.cc" // lalr1.cc:919
+#line 1984 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 103:
-#line 727 "parser.yy" // lalr1.cc:919
+  case 107:
+#line 756 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scList) = (yystack_[0].value.scList)->addElement( (yystack_[1].value.scDef) );
 			(yystack_[1].value.scDef)->mParent = (yystack_[0].value.scList);
 		}
-#line 1949 "parser.tab.cc" // lalr1.cc:919
+#line 1993 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 104:
-#line 735 "parser.yy" // lalr1.cc:919
+  case 108:
+#line 764 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scDef) = new DefinitionNode( ASTNode::InputVarDefinition, (yystack_[3].value.scIdent), (yystack_[1].value.scNode) );
 			(yystack_[1].value.scNode)->mParent = (yylhs.value.scDef);
 		}
-#line 1958 "parser.tab.cc" // lalr1.cc:919
+#line 2002 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 105:
-#line 741 "parser.yy" // lalr1.cc:919
+  case 109:
+#line 770 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scIdent) = (yystack_[0].value.scIdent); }
-#line 1964 "parser.tab.cc" // lalr1.cc:919
+#line 2008 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 106:
-#line 745 "parser.yy" // lalr1.cc:919
+  case 110:
+#line 774 "parser.yy" // lalr1.cc:919
     { 
 			(yylhs.value.scName) = new NameRefNode((yystack_[0].value.scIdent), ASTNode::RunningSchemeName, nullptr );
 		}
-#line 1972 "parser.tab.cc" // lalr1.cc:919
+#line 2016 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 107:
-#line 752 "parser.yy" // lalr1.cc:919
+  case 111:
+#line 781 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = (yystack_[0].value.scNode);
 		}
-#line 1980 "parser.tab.cc" // lalr1.cc:919
+#line 2024 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 108:
-#line 756 "parser.yy" // lalr1.cc:919
+  case 112:
+#line 785 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode(ASTNode::InputVarList, (yystack_[2].value.scNode), (yystack_[0].value.scNode));
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 1990 "parser.tab.cc" // lalr1.cc:919
-    break;
-
-  case 109:
-#line 765 "parser.yy" // lalr1.cc:919
-    {
-			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName, nullptr );
-		}
-#line 1998 "parser.tab.cc" // lalr1.cc:919
-    break;
-
-  case 110:
-#line 768 "parser.yy" // lalr1.cc:919
-    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 2004 "parser.tab.cc" // lalr1.cc:919
-    break;
-
-  case 111:
-#line 773 "parser.yy" // lalr1.cc:919
-    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 2010 "parser.tab.cc" // lalr1.cc:919
-    break;
-
-  case 112:
-#line 775 "parser.yy" // lalr1.cc:919
-    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
-#line 2016 "parser.tab.cc" // lalr1.cc:919
+#line 2034 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 113:
-#line 777 "parser.yy" // lalr1.cc:919
+#line 794 "parser.yy" // lalr1.cc:919
     {
-			(yylhs.value.scNode) = (yystack_[1].value.scNode);
+			(yylhs.value.scNode) = new NameRefNode( (yystack_[0].value.scIdent), ASTNode::InputVarName, nullptr );
 		}
-#line 2024 "parser.tab.cc" // lalr1.cc:919
+#line 2042 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 114:
-#line 783 "parser.yy" // lalr1.cc:919
+#line 797 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 2030 "parser.tab.cc" // lalr1.cc:919
+#line 2048 "parser.tab.cc" // lalr1.cc:919
     break;
 
   case 115:
-#line 785 "parser.yy" // lalr1.cc:919
+#line 802 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2054 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 116:
+#line 804 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scName); }
+#line 2060 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 117:
+#line 806 "parser.yy" // lalr1.cc:919
+    {
+			(yylhs.value.scNode) = (yystack_[1].value.scNode);
+		}
+#line 2068 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 118:
+#line 812 "parser.yy" // lalr1.cc:919
+    { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
+#line 2074 "parser.tab.cc" // lalr1.cc:919
+    break;
+
+  case 119:
+#line 814 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueConstructor, (yystack_[2].value.scNode), (yystack_[0].value.scName) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scName)->mParent = (yylhs.value.scNode);
 		}
-#line 2040 "parser.tab.cc" // lalr1.cc:919
+#line 2084 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 116:
-#line 793 "parser.yy" // lalr1.cc:919
+  case 120:
+#line 822 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 2046 "parser.tab.cc" // lalr1.cc:919
+#line 2090 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 117:
-#line 795 "parser.yy" // lalr1.cc:919
+  case 121:
+#line 824 "parser.yy" // lalr1.cc:919
     {
 			(yylhs.value.scNode) = new ExpressionNode( ASTNode::ValueComposition, (yystack_[2].value.scNode), (yystack_[0].value.scNode) );
 			(yystack_[2].value.scNode)->mParent = (yylhs.value.scNode);
 			(yystack_[0].value.scNode)->mParent = (yylhs.value.scNode);
 		}
-#line 2056 "parser.tab.cc" // lalr1.cc:919
+#line 2100 "parser.tab.cc" // lalr1.cc:919
     break;
 
-  case 118:
-#line 802 "parser.yy" // lalr1.cc:919
+  case 122:
+#line 831 "parser.yy" // lalr1.cc:919
     { (yylhs.value.scNode) = (yystack_[0].value.scNode); }
-#line 2062 "parser.tab.cc" // lalr1.cc:919
+#line 2106 "parser.tab.cc" // lalr1.cc:919
     break;
 
 
-#line 2066 "parser.tab.cc" // lalr1.cc:919
+#line 2110 "parser.tab.cc" // lalr1.cc:919
             default:
               break;
             }
@@ -2328,35 +2372,36 @@ namespace FPTL { namespace Parser {
   }
 
 
-  const short BisonParser::yypact_ninf_ = -135;
+  const short BisonParser::yypact_ninf_ = -140;
 
   const signed char BisonParser::yytable_ninf_ = -80;
 
   const short
   BisonParser::yypact_[] =
   {
-      50,    22,    32,    52,    42,    48,    53,     9,  -135,  -135,
-      20,  -135,    53,  -135,    11,  -135,    14,    67,    17,    68,
-    -135,  -135,    71,    28,    78,    36,    34,  -135,    83,    55,
-      74,    14,  -135,    73,  -135,    79,    80,    85,  -135,    75,
-      87,  -135,    25,  -135,    88,    86,  -135,  -135,    84,  -135,
-      99,    93,  -135,    92,    44,  -135,  -135,    44,    96,    67,
-     137,   152,  -135,  -135,    97,    68,    93,  -135,  -135,  -135,
-    -135,  -135,  -135,    99,  -135,  -135,  -135,    91,    95,  -135,
-     100,  -135,   102,   104,  -135,   103,   107,   101,  -135,   138,
-    -135,    44,   151,   115,  -135,  -135,   113,     7,  -135,   117,
-    -135,  -135,  -135,  -135,  -135,  -135,  -135,  -135,   126,    14,
-    -135,  -135,  -135,  -135,  -135,  -135,  -135,  -135,    32,   131,
-     136,   137,   146,   139,  -135,  -135,   140,   150,   142,  -135,
-      21,  -135,   148,   149,   151,    99,  -135,  -135,    93,    14,
-      67,   105,   147,   153,  -135,  -135,    44,    44,    44,    44,
-    -135,   161,   158,   167,    25,  -135,    32,   167,   151,   152,
-    -135,   164,   165,  -135,  -135,  -135,  -135,  -135,   166,   168,
-     101,  -135,   157,   169,  -135,  -135,  -135,  -135,   -14,   113,
-    -135,  -135,   185,   170,   172,   171,   173,  -135,  -135,  -135,
-     137,  -135,  -135,   176,  -135,   105,    44,   174,   167,  -135,
-    -135,   186,   178,    14,  -135,  -135,  -135,  -135,   175,    25,
-     181,  -135,   182,  -135,  -135
+     104,    21,    59,    74,    71,    75,    98,    -5,  -140,  -140,
+      38,  -140,    98,  -140,    11,  -140,    15,    91,    30,   110,
+    -140,  -140,   120,    67,   126,    82,    84,  -140,   133,    99,
+     108,    15,  -140,   106,  -140,   109,   113,   116,  -140,   114,
+     117,  -140,    56,  -140,   118,   121,  -140,  -140,   122,  -140,
+      94,   100,  -140,   132,    31,  -140,  -140,    31,   124,    91,
+     112,   141,  -140,  -140,   135,   110,   100,  -140,  -140,  -140,
+    -140,  -140,  -140,    94,  -140,  -140,  -140,   111,   129,  -140,
+     131,  -140,   127,   134,  -140,   148,   147,   149,  -140,  -140,
+      31,   185,     8,   146,  -140,  -140,   144,    73,  -140,   142,
+    -140,  -140,  -140,  -140,  -140,  -140,  -140,  -140,   150,    15,
+    -140,  -140,  -140,  -140,  -140,  -140,  -140,  -140,    59,   152,
+     157,   112,   159,   153,  -140,  -140,   154,   163,   155,  -140,
+      39,  -140,   158,   160,   185,    94,  -140,  -140,   100,    15,
+      91,    43,   161,  -140,   -17,    16,  -140,    31,    31,    31,
+      31,  -140,   164,   162,   156,    56,  -140,    59,   156,   185,
+     141,  -140,   166,   167,  -140,  -140,  -140,  -140,  -140,   168,
+     171,   149,  -140,   173,   174,  -140,  -140,    17,  -140,   165,
+    -140,  -140,    87,   144,  -140,  -140,   197,   175,   177,   170,
+     172,  -140,  -140,  -140,   112,  -140,  -140,   182,  -140,    43,
+     169,  -140,  -140,    31,   178,   156,  -140,  -140,   199,   186,
+      15,  -140,  -140,  -140,  -140,  -140,   180,    56,   187,  -140,
+     188,  -140,  -140
   };
 
   const unsigned char
@@ -2364,46 +2409,47 @@ namespace FPTL { namespace Parser {
   {
        0,     0,     0,     0,     0,     4,     0,     0,    46,    10,
        0,     1,     0,     5,     0,     3,     0,     0,     0,     0,
-       2,   105,     0,     0,   102,     0,    98,    82,     0,     0,
+       2,   109,     0,     0,   106,     0,   102,    82,     0,     0,
        0,    50,    54,     0,    49,     0,    47,     0,    24,     0,
-       0,    20,    21,    42,     0,    11,    13,   106,   100,   103,
+       0,    20,    21,    42,     0,    11,    13,   110,   104,   107,
        0,     0,    81,    77,     0,    44,    51,     0,     0,     0,
-       0,     0,     6,    22,     0,     0,     0,    43,    92,    93,
-      94,    95,    96,     0,    86,   112,   111,   114,   116,   118,
-       0,   109,     0,   107,   110,     0,     0,    75,    97,     0,
-      59,     0,     0,     0,    66,    76,    68,    70,    73,    55,
+       0,     0,     6,    22,     0,     0,     0,    43,    96,    97,
+      98,    99,   100,     0,    86,   116,   115,   118,   120,   122,
+       0,   113,     0,   111,   114,     0,     0,    75,   101,    59,
+       0,     0,     0,     0,    66,    76,    68,    70,    73,    55,
       58,    57,    84,    85,    83,    89,    90,    88,     0,     0,
       48,    33,    34,    35,    36,    37,    38,    39,     0,    30,
        0,    14,     0,    18,    29,    32,     0,    27,     0,    26,
-       0,    12,     0,     0,     0,     0,   104,    99,     0,     0,
-       0,     0,     0,     0,    87,    52,     0,     0,     0,     0,
-      53,     0,     0,     0,     0,    15,     0,     0,     0,     0,
-      23,     0,     0,   101,   113,   115,   117,   108,     0,     0,
-      63,    65,     0,    61,    64,    91,    56,    67,    72,    69,
-      74,    45,     0,    40,     0,     0,     0,    19,    25,    28,
-       0,     7,    78,     0,    60,     0,     0,     0,     0,    31,
-       8,     0,     0,     0,    62,    71,    16,    41,     0,     0,
-       0,    17,     0,    80,     9
+       0,    12,     0,     0,     0,     0,   108,   103,     0,     0,
+       0,     0,     0,    87,     0,     0,    52,     0,     0,     0,
+       0,    53,     0,     0,     0,     0,    15,     0,     0,     0,
+       0,    23,     0,     0,   105,   117,   119,   121,   112,     0,
+       0,    63,    65,     0,    61,    64,    56,     0,    91,     0,
+      92,    67,    72,    69,    74,    45,     0,    40,     0,     0,
+       0,    19,    25,    28,     0,     7,    78,     0,    60,     0,
+       0,    93,    94,     0,     0,     0,    31,     8,     0,     0,
+       0,    62,    95,    71,    16,    41,     0,     0,     0,    17,
+       0,    80,     9
   };
 
   const short
   BisonParser::yypgoto_[] =
   {
-    -135,  -135,   204,    31,    -2,   159,  -135,  -110,  -135,   -56,
-    -120,   183,  -135,  -135,    57,  -126,  -135,    29,    -1,   -59,
-     219,  -135,   -50,  -135,   -30,  -135,   -36,    82,  -129,    35,
-    -135,    81,    89,  -134,  -135,  -135,  -135,  -135,  -135,  -135,
-    -135,  -128,   -47,  -135,  -135,  -135,   -43,  -135,   214,   207,
-    -135,    27,   209,   -60,  -135,  -135,  -135,    98,   -28
+    -140,  -140,   218,    49,    -2,   176,  -140,  -111,  -140,   -56,
+    -124,   189,  -140,  -140,    70,  -139,  -140,    27,     2,   -59,
+     229,  -140,   -50,  -140,   -30,  -140,   -32,    88,  -130,    35,
+    -140,    89,    92,  -133,  -140,  -140,  -140,  -140,  -140,  -140,
+    -140,  -128,   -47,  -140,  -140,  -140,   -43,  -140,   224,   213,
+    -140,    97,   216,   -54,  -140,  -140,  -140,   107,   -23
   };
 
   const short
   BisonParser::yydefgoto_[] =
   {
       -1,     3,     4,    38,   119,    44,    45,   120,   121,   122,
-      40,    41,    42,   127,   128,   123,   124,   184,   125,    74,
-       6,     7,    35,    36,    30,    31,    93,    94,    95,   172,
-     173,    96,    97,    98,    99,   100,    32,    85,    86,    53,
+      40,    41,    42,   127,   128,   123,   124,   188,   125,    74,
+       6,     7,    35,    36,    30,    31,    93,    94,    95,   173,
+     174,    96,    97,    98,    99,   100,    32,    85,    86,    53,
       33,   101,   102,   103,   104,   105,   106,   107,    15,    23,
       24,    81,    26,    82,    83,    77,    78,    79,    84
   };
@@ -2411,103 +2457,107 @@ namespace FPTL { namespace Parser {
   const short
   BisonParser::yytable_[] =
   {
-      10,    56,   129,    75,    75,   126,   132,    76,    76,   110,
-     162,   155,   171,   174,    21,   180,    39,    27,    46,    75,
-       9,   108,    80,    76,     9,     8,    75,   183,     9,   196,
-      76,     5,   148,   144,   185,     9,     5,    28,     2,    37,
-      39,    25,     2,   161,   147,   133,     2,    87,    16,    67,
-      17,    25,    11,   148,    88,   143,    68,    69,    70,    18,
-       1,    19,   205,    29,    46,    22,   171,   174,     1,     2,
-      34,     2,   183,    14,    47,    43,    71,    72,   167,   151,
-     202,    21,    22,    50,    51,    89,    52,   165,    75,   212,
-     169,    75,    76,    90,    91,    76,    21,    92,    67,   188,
-     129,   187,    54,   126,    67,    68,    69,    70,   170,   168,
-      67,    68,    69,    70,    55,    88,   152,    68,    69,    70,
-      57,    58,    61,    59,    60,    71,    72,    62,    39,    65,
-      64,    71,    72,   -79,    66,   109,   130,    71,    72,   134,
-       9,   135,   139,    73,    43,   136,    89,   138,   140,    73,
-     142,   141,    39,   137,   186,     9,    67,    67,    92,    43,
-     145,   146,   111,   112,   113,   114,   115,   116,   117,   149,
-       9,   150,   153,   210,    43,   118,   154,   111,   112,   113,
-     114,   115,   116,   117,   156,   157,   159,   160,   158,   175,
-     197,   208,   111,   112,   113,   114,   115,   116,   117,   163,
-     164,   181,   182,   190,   176,   191,   192,    39,   194,    13,
-     193,   200,   195,   198,   199,   203,   189,   201,   209,   206,
-     211,   213,   214,    12,   131,    63,    20,   207,   177,   179,
-     204,    49,    48,   166,     0,     0,   178
+      10,    56,   129,    75,    75,   126,   163,    76,    76,   110,
+     156,   172,   132,   175,    21,   187,    39,   184,    27,    75,
+     144,    46,   177,    76,     8,   108,    75,    80,   179,   200,
+      76,   189,   143,     9,    87,    16,    67,    17,    28,   178,
+      39,    88,     9,    68,    69,    70,   171,   145,    67,     5,
+     133,     2,    37,    88,     5,    68,    69,    70,   142,     9,
+       2,   162,     9,    71,    72,    29,   187,    46,    22,   172,
+     213,   175,   180,   201,    11,    71,    72,     2,    18,   152,
+      19,    89,    90,   209,   168,    91,    92,   166,    75,     1,
+     170,    75,    76,   220,    34,    76,     2,    91,    92,    67,
+     192,   129,   191,    21,   126,    67,    68,    69,    70,   169,
+     148,    25,    68,    69,    70,     9,   153,    43,    14,    43,
+     149,    25,     1,    47,    22,     2,    71,    72,    39,    21,
+      50,   203,    71,    72,   149,    51,    52,   111,   112,   113,
+     114,   115,   116,   117,     9,    73,    67,    54,    43,    55,
+     118,    73,    58,    39,    57,   190,    60,    59,    62,     9,
+     134,    64,    61,    43,   109,    65,   111,   112,   113,   114,
+     115,   116,   117,    66,   -79,   130,   135,   136,   138,   137,
+     218,   111,   112,   113,   114,   115,   116,   117,   139,   140,
+      67,   141,   146,   147,   154,   150,   151,   157,   155,   160,
+     158,   161,   204,   159,   216,   185,   194,   186,   195,   196,
+     164,   207,   165,   176,   197,    39,   198,   208,   199,   205,
+     206,   202,   210,    13,   214,   212,   219,   217,   221,   222,
+     193,    63,   215,    12,   211,   181,    20,    49,   183,    48,
+     182,   131,   167
   };
 
-  const short
+  const unsigned char
   BisonParser::yycheck_[] =
   {
-       2,    31,    61,    50,    51,    61,    66,    50,    51,    59,
-     130,   121,   141,   141,     3,   149,    18,     3,    19,    66,
-       3,    57,    50,    66,     3,     3,    73,   153,     3,    43,
-      73,     0,    46,    92,   154,     3,     5,    23,    21,    22,
-      42,    14,    21,    22,    37,    73,    21,     3,    39,     5,
-      41,    24,     0,    46,    10,    91,    12,    13,    14,    39,
-      18,    41,   196,    49,    65,    54,   195,   195,    18,    21,
-       3,    21,   198,    20,     3,     7,    32,    33,   138,   109,
-     190,     3,    54,    47,    50,    41,     3,   134,   135,   209,
-     140,   138,   135,    49,    50,   138,     3,    53,     5,   158,
-     159,   157,    47,   159,     5,    12,    13,    14,     3,   139,
-       5,    12,    13,    14,    40,    10,   118,    12,    13,    14,
-      47,    42,    47,    43,    39,    32,    33,    40,   130,    43,
-      42,    32,    33,    41,    50,    39,    39,    32,    33,    48,
-       3,    46,    39,    50,     7,    45,    41,    43,    41,    50,
-      12,    50,   154,    51,   156,     3,     5,     5,    53,     7,
-      45,    48,    25,    26,    27,    28,    29,    30,    31,    52,
-       3,    45,    41,   203,     7,    38,    40,    25,    26,    27,
-      28,    29,    30,    31,    38,    46,    36,    45,    48,    42,
-       5,     5,    25,    26,    27,    28,    29,    30,    31,    51,
-      51,    40,    44,    39,    51,    40,    40,   209,    51,     5,
-      42,    40,    43,    43,    42,    39,   159,    44,    40,    45,
-      45,    40,    40,     4,    65,    42,    12,   198,   146,   148,
-     195,    24,    23,   135,    -1,    -1,   147
+       2,    31,    61,    50,    51,    61,   130,    50,    51,    59,
+     121,   141,    66,   141,     3,   154,    18,   150,     3,    66,
+      12,    19,    39,    66,     3,    57,    73,    50,    12,    12,
+      73,   155,    91,     3,     3,    40,     5,    42,    23,    56,
+      42,    10,     3,    12,    13,    14,     3,    39,     5,     0,
+      73,    21,    22,    10,     5,    12,    13,    14,    90,     3,
+      21,    22,     3,    32,    33,    50,   205,    65,    57,   199,
+     203,   199,    56,    56,     0,    32,    33,    21,    40,   109,
+      42,    50,    51,   194,   138,    54,    55,   134,   135,    18,
+     140,   138,   135,   217,     3,   138,    21,    54,    55,     5,
+     159,   160,   158,     3,   160,     5,    12,    13,    14,   139,
+      37,    14,    12,    13,    14,     3,   118,     7,    20,     7,
+      47,    24,    18,     3,    57,    21,    32,    33,   130,     3,
+      48,    44,    32,    33,    47,    51,     3,    25,    26,    27,
+      28,    29,    30,    31,     3,    51,     5,    48,     7,    41,
+      38,    51,    43,   155,    48,   157,    40,    44,    41,     3,
+      49,    43,    48,     7,    40,    44,    25,    26,    27,    28,
+      29,    30,    31,    51,    42,    40,    47,    46,    44,    52,
+     210,    25,    26,    27,    28,    29,    30,    31,    40,    42,
+       5,    42,    46,    49,    42,    53,    46,    38,    41,    36,
+      47,    46,     5,    49,     5,    41,    40,    45,    41,    41,
+      52,    41,    52,    52,    43,   217,    43,    45,    44,    44,
+      43,    56,    40,     5,    46,    56,    46,    41,    41,    41,
+     160,    42,   205,     4,   199,   147,    12,    24,   149,    23,
+     148,    65,   135
   };
 
   const unsigned char
   BisonParser::yystos_[] =
   {
-       0,    18,    21,    56,    57,    58,    75,    76,     3,     3,
-      59,     0,    75,    57,    20,   103,    39,    41,    39,    41,
-     103,     3,    54,   104,   105,   106,   107,     3,    23,    49,
-      79,    80,    91,    95,     3,    77,    78,    22,    58,    59,
-      65,    66,    67,     7,    60,    61,    73,     3,   107,   104,
-      47,    50,     3,    94,    47,    40,    79,    47,    42,    43,
-      39,    47,    40,    66,    42,    43,    50,     5,    12,    13,
-      14,    32,    33,    50,    74,    97,   101,   110,   111,   112,
-     113,   106,   108,   109,   113,    92,    93,     3,    10,    41,
-      49,    50,    53,    81,    82,    83,    86,    87,    88,    89,
-      90,    96,    97,    98,    99,   100,   101,   102,    81,    39,
-      77,    25,    26,    27,    28,    29,    30,    31,    38,    59,
-      62,    63,    64,    70,    71,    73,    64,    68,    69,    74,
-      39,    60,   108,   113,    48,    46,    45,    51,    43,    39,
-      41,    50,    12,    81,    74,    45,    48,    37,    46,    52,
-      45,    79,    59,    41,    40,    62,    38,    46,    48,    36,
-      45,    22,    65,    51,    51,    97,   112,   108,    79,    77,
-       3,    83,    84,    85,    96,    42,    51,    82,    87,    86,
-      88,    40,    44,    70,    72,    65,    59,    64,    74,    69,
-      39,    40,    40,    42,    51,    43,    43,     5,    43,    42,
-      40,    44,    62,    39,    84,    88,    45,    72,     5,    40,
-      79,    45,    65,    40,    40
+       0,    18,    21,    59,    60,    61,    78,    79,     3,     3,
+      62,     0,    78,    60,    20,   106,    40,    42,    40,    42,
+     106,     3,    57,   107,   108,   109,   110,     3,    23,    50,
+      82,    83,    94,    98,     3,    80,    81,    22,    61,    62,
+      68,    69,    70,     7,    63,    64,    76,     3,   110,   107,
+      48,    51,     3,    97,    48,    41,    82,    48,    43,    44,
+      40,    48,    41,    69,    43,    44,    51,     5,    12,    13,
+      14,    32,    33,    51,    77,   100,   104,   113,   114,   115,
+     116,   109,   111,   112,   116,    95,    96,     3,    10,    50,
+      51,    54,    55,    84,    85,    86,    89,    90,    91,    92,
+      93,    99,   100,   101,   102,   103,   104,   105,    84,    40,
+      80,    25,    26,    27,    28,    29,    30,    31,    38,    62,
+      65,    66,    67,    73,    74,    76,    67,    71,    72,    77,
+      40,    63,   111,   116,    49,    47,    46,    52,    44,    40,
+      42,    42,    84,    77,    12,    39,    46,    49,    37,    47,
+      53,    46,    82,    62,    42,    41,    65,    38,    47,    49,
+      36,    46,    22,    68,    52,    52,   100,   115,   111,    82,
+      80,     3,    86,    87,    88,    99,    52,    39,    56,    12,
+      56,    85,    90,    89,    91,    41,    45,    73,    75,    68,
+      62,    67,    77,    72,    40,    41,    41,    43,    43,    44,
+      12,    56,    56,    44,     5,    44,    43,    41,    45,    65,
+      40,    87,    56,    91,    46,    75,     5,    41,    82,    46,
+      68,    41,    41
   };
 
   const unsigned char
   BisonParser::yyr1_[] =
   {
-       0,    55,    56,    56,    57,    57,    58,    58,    58,    58,
-      59,    60,    60,    61,    62,    62,    63,    63,    64,    64,
-      65,    66,    66,    67,    67,    68,    68,    69,    69,    70,
-      70,    70,    70,    71,    71,    71,    71,    71,    71,    71,
-      72,    72,    73,    74,    75,    75,    76,    77,    77,    78,
-      79,    79,    80,    80,    80,    81,    82,    82,    82,    82,
-      83,    84,    84,    85,    85,    85,    86,    86,    87,    87,
-      88,    88,    88,    89,    89,    90,    90,    92,    91,    93,
-      91,    94,    95,    96,    96,    96,    97,    98,    99,    99,
-      99,   100,   101,   101,   101,   101,   101,   102,   103,   103,
-     103,   103,   104,   104,   105,   106,   107,   108,   108,   109,
-     109,   110,   110,   110,   111,   111,   112,   112,   113
+       0,    58,    59,    59,    60,    60,    61,    61,    61,    61,
+      62,    63,    63,    64,    65,    65,    66,    66,    67,    67,
+      68,    69,    69,    70,    70,    71,    71,    72,    72,    73,
+      73,    73,    73,    74,    74,    74,    74,    74,    74,    74,
+      75,    75,    76,    77,    78,    78,    79,    80,    80,    81,
+      82,    82,    83,    83,    83,    84,    85,    85,    85,    85,
+      86,    87,    87,    88,    88,    88,    89,    89,    90,    90,
+      91,    91,    91,    92,    92,    93,    93,    95,    94,    96,
+      94,    97,    98,    99,    99,    99,   100,   101,   102,   102,
+     102,   103,   103,   103,   103,   103,   104,   104,   104,   104,
+     104,   105,   106,   106,   106,   106,   107,   107,   108,   109,
+     110,   111,   111,   112,   112,   113,   113,   113,   114,   114,
+     115,   115,   116
   };
 
   const unsigned char
@@ -2522,9 +2572,10 @@ namespace FPTL { namespace Parser {
        4,     1,     3,     1,     1,     1,     1,     3,     1,     3,
        1,     5,     3,     1,     3,     1,     1,     0,     6,     0,
        9,     1,     1,     1,     1,     1,     1,     2,     1,     1,
-       1,     3,     1,     1,     1,     1,     1,     1,     2,     5,
-       3,     6,     1,     2,     4,     1,     2,     1,     3,     1,
-       1,     1,     1,     3,     1,     3,     1,     3,     1
+       1,     3,     3,     4,     4,     5,     1,     1,     1,     1,
+       1,     1,     2,     5,     3,     6,     1,     2,     4,     1,
+       2,     1,     3,     1,     1,     1,     1,     3,     1,     3,
+       1,     3,     1
   };
 
 
@@ -2540,12 +2591,13 @@ namespace FPTL { namespace Parser {
   "T_LIBRARIES", "T_SCHEME", "T_INTERPRETATION", "T_APPLICATION", "T_DATA",
   "T_CONSTRUCTORS", "T_FUN", "T_FUNCTIONS", "T_TSTRING", "T_TINT",
   "T_TUINT", "T_TSIZE", "T_TFLOAT", "T_TDOUBLE", "T_TBOOL", "T_TRUE",
-  "T_FALSE", "T_ARGET", "T_ID", "T_UNION", "T_FARROW", "T_TARROW", "'{'",
-  "'}'", "'['", "']'", "','", "':'", "';'", "'*'", "'='", "'.'", "'@'",
-  "'('", "')'", "'+'", "'~'", "'%'", "$accept", "FunctionalProgram",
-  "DataTypeDefinitionsBlocks", "DataTypeDefinitionsBlock", "TypeName",
-  "TypeParametersList", "TypeParameterDef", "ConstructorsDefinitionList",
-  "ConstructorDef", "ConstructorParametersList", "TypesDefinitionList",
+  "T_FALSE", "T_ARGET", "T_ID", "T_UNION", "T_FARROW", "T_TARROW",
+  "T_COLON", "'{'", "'}'", "'<'", "'>'", "','", "':'", "';'", "'*'", "'='",
+  "'.'", "'@'", "'('", "')'", "'+'", "'~'", "'['", "']'", "'%'", "$accept",
+  "FunctionalProgram", "DataTypeDefinitionsBlocks",
+  "DataTypeDefinitionsBlock", "TypeName", "TypeParametersList",
+  "TypeParameterDef", "ConstructorsDefinitionList", "ConstructorDef",
+  "ConstructorParametersList", "TypesDefinitionList",
   "TypesDefinitionList2", "TypeDefinition", "TypeDefConstructor",
   "TypeExpression", "AtomType", "BaseType", "TypeExpressionsList",
   "TypeParameter", "ConstructorName", "Scheme", "SchemeBegin",
@@ -2564,18 +2616,19 @@ namespace FPTL { namespace Parser {
   const unsigned short
   BisonParser::yyrline_[] =
   {
-       0,   184,   184,   194,   206,   212,   220,   225,   231,   237,
-     247,   251,   257,   265,   272,   278,   286,   290,   297,   303,
-     312,   325,   331,   339,   344,   353,   358,   365,   366,   376,
-     380,   384,   389,   396,   397,   398,   399,   400,   401,   402,
-     406,   412,   419,   421,   426,   432,   442,   450,   456,   464,
-     471,   477,   485,   490,   495,   500,   504,   506,   507,   509,
-     516,   523,   529,   537,   541,   542,   547,   548,   557,   558,
-     567,   568,   575,   584,   585,   594,   598,   603,   602,   613,
-     612,   626,   630,   634,   635,   637,   642,   649,   656,   658,
-     659,   663,   671,   672,   673,   674,   678,   686,   693,   698,
-     704,   710,   720,   726,   734,   741,   744,   751,   755,   764,
-     768,   773,   774,   776,   783,   784,   793,   794,   802
+       0,   185,   185,   195,   207,   213,   221,   226,   232,   238,
+     248,   252,   258,   266,   273,   279,   287,   291,   298,   304,
+     313,   326,   332,   340,   345,   354,   359,   366,   367,   377,
+     381,   385,   390,   397,   398,   399,   400,   401,   402,   403,
+     407,   413,   420,   422,   427,   433,   443,   451,   457,   465,
+     472,   478,   486,   491,   496,   501,   505,   507,   508,   510,
+     517,   524,   530,   538,   542,   543,   548,   549,   558,   559,
+     568,   569,   576,   585,   586,   595,   599,   604,   603,   614,
+     613,   627,   631,   635,   636,   638,   643,   650,   657,   659,
+     660,   664,   670,   676,   683,   690,   700,   701,   702,   703,
+     707,   715,   722,   727,   733,   739,   749,   755,   763,   770,
+     773,   780,   784,   793,   797,   802,   803,   805,   812,   813,
+     822,   823,   831
   };
 
   // Print the state stack on the debug stream.
@@ -2619,16 +2672,16 @@ namespace FPTL { namespace Parser {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,    54,     2,     2,
-      50,    51,    46,    52,    43,     2,    48,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,    44,    45,
-       2,    47,     2,     2,    49,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,    57,     2,     2,
+      51,    52,    47,    53,    44,     2,    49,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,    45,    46,
+      42,    48,    43,     2,    50,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    41,     2,    42,     2,     2,     2,     2,     2,     2,
+       2,    55,     2,    56,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    39,     2,    40,    53,     2,     2,     2,
+       2,     2,     2,    40,     2,    41,    54,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -2645,9 +2698,9 @@ namespace FPTL { namespace Parser {
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38
+      35,    36,    37,    38,    39
     };
-    const unsigned user_token_number_max_ = 293;
+    const unsigned user_token_number_max_ = 294;
     const token_number_type undef_token_ = 2;
 
     if (static_cast<int> (t) <= yyeof_)
@@ -2660,4 +2713,4 @@ namespace FPTL { namespace Parser {
 
 #line 2 "parser.yy" // lalr1.cc:1242
 } } // FPTL::Parser
-#line 2664 "parser.tab.cc" // lalr1.cc:1242
+#line 2717 "parser.tab.cc" // lalr1.cc:1242

@@ -15,6 +15,7 @@ namespace FPTL
 			virtual ASTNode* getChild(ExpressionNode* aExpressionNode, size_t childIndex) = 0;
 			virtual ASTNode* getChild(ConditionNode* aConditionNode, size_t childIndex) = 0;
 			virtual ASTNode* getChild(ConstantNode* aConstantNode, size_t childIndex) = 0;
+			virtual ASTNode* getChild(TakeNode* aTakeNode, size_t childIndex) = 0;
 			virtual ASTNode* getChild(ListNode* aListNode, size_t childIndex) = 0;
 			virtual ASTNode* getChild(DefinitionNode* aDefinitionNode, size_t childIndex) = 0;
 			virtual ASTNode* getChild(NameRefNode* aNameRefNode, size_t childIndex) = 0;
@@ -27,6 +28,7 @@ namespace FPTL
 			virtual size_t getChildIndex(ExpressionNode* aExpressionNode, ASTNode* child) = 0;
 			virtual size_t getChildIndex(ConditionNode* aConditionNode, ASTNode* child) = 0;
 			virtual size_t getChildIndex(ConstantNode* aConstantNode, ASTNode* child) = 0;
+			virtual size_t getChildIndex(TakeNode* aTakeNode, ASTNode* child) = 0;
 			virtual size_t getChildIndex(ListNode* aListNode, ASTNode* child) = 0;
 			virtual size_t getChildIndex(DefinitionNode* aDefinitionNode, ASTNode* child) = 0;
 			virtual size_t getChildIndex(NameRefNode* aNameRefNode, ASTNode* child) = 0;
@@ -39,6 +41,7 @@ namespace FPTL
 			virtual void intermediateProcessing(ExpressionNode* aExpressionNode, size_t childNum) = 0;
 			virtual void intermediateProcessing(ConditionNode* aConditionNode, size_t childNum) = 0;
 			virtual void intermediateProcessing(ConstantNode* aConstantNode, size_t childNum) = 0;
+			virtual void intermediateProcessing(TakeNode* aTakeNode, size_t childNum) = 0;
 			virtual void intermediateProcessing(ListNode* aListNode, size_t childNum) = 0;
 			virtual void intermediateProcessing(DefinitionNode* aDefinitionNode, size_t childNum) = 0;
 			virtual void intermediateProcessing(NameRefNode* aNameRefNode, size_t childNum) = 0;
@@ -51,6 +54,7 @@ namespace FPTL
 			virtual void ChildHandled(ExpressionNode* aExpressionNode, size_t childNum) = 0;
 			virtual void ChildHandled(ConditionNode* aConditionNode, size_t childNum) = 0;
 			virtual void ChildHandled(ConstantNode* aConstantNode, size_t childNum) = 0;
+			virtual void ChildHandled(TakeNode* aTakeNode, size_t childNum) = 0;
 			virtual void ChildHandled(ListNode* aListNode, size_t childNum) = 0;
 			virtual void ChildHandled(DefinitionNode* aDefinitionNode, size_t childNum) = 0;
 			virtual void ChildHandled(NameRefNode* aNameRefNode, size_t childNum) = 0;

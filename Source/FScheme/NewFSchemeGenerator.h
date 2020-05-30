@@ -7,7 +7,6 @@
 #include "Parser/NodeHandler.h"
 #include "Parser/Nodes.h"
 #include "FScheme.h"
-#include "DataTypes/Ops/ADTValue.h"
 #include "ConstructorGenerator.h"
 
 namespace FPTL
@@ -26,6 +25,7 @@ namespace FPTL
 			Parser::ASTNode* getChild(Parser::ExpressionNode* aExpressionNode, size_t childNum) override;
 			Parser::ASTNode* getChild(Parser::ConditionNode* aConditionNode, size_t childNum) override;
 			Parser::ASTNode* getChild(Parser::ConstantNode* aConstantNode, size_t childNum) override;
+			Parser::ASTNode* getChild(Parser::TakeNode* aTakeNode, size_t childNum) override;
 			Parser::ASTNode* getChild(Parser::ListNode* aListNode, size_t childNum) override;
 			Parser::ASTNode* getChild(Parser::DefinitionNode* aDefinitionNode, size_t childNum) override;
 			Parser::ASTNode* getChild(Parser::NameRefNode* aNameRefNode, size_t childNum) override;
@@ -38,6 +38,7 @@ namespace FPTL
 			size_t getChildIndex(Parser::ExpressionNode* aExpressionNode, Parser::ASTNode* child) override;
 			size_t getChildIndex(Parser::ConditionNode* aConditionNode, Parser::ASTNode* child) override;
 			size_t getChildIndex(Parser::ConstantNode* aConstantNode, Parser::ASTNode* child) override;
+			size_t getChildIndex(Parser::TakeNode* aTakeNode, Parser::ASTNode* child) override;
 			size_t getChildIndex(Parser::ListNode* aListNode, Parser::ASTNode* child) override;
 			size_t getChildIndex(Parser::DefinitionNode* aDefinitionNode, Parser::ASTNode* child) override;
 			size_t getChildIndex(Parser::NameRefNode* aNameRefNode, Parser::ASTNode* child) override;
@@ -50,6 +51,7 @@ namespace FPTL
 			void intermediateProcessing(Parser::ExpressionNode* aExpressionNode, size_t childNum) override;
 			void intermediateProcessing(Parser::ConditionNode* aConditionNode, size_t childNum) override;
 			void intermediateProcessing(Parser::ConstantNode* aConstantNode, size_t childNum) override;
+			void intermediateProcessing(Parser::TakeNode* aTakeNode, size_t childNum) override;
 			void intermediateProcessing(Parser::ListNode* aListNode, size_t childNum) override;
 			void intermediateProcessing(Parser::DefinitionNode* aDefinitionNode, size_t childNum) override;
 			void intermediateProcessing(Parser::NameRefNode* aNameRefNode, size_t childNum) override;
@@ -62,6 +64,7 @@ namespace FPTL
 			void ChildHandled(Parser::ExpressionNode* aExpressionNode, size_t childNum) override;
 			void ChildHandled(Parser::ConditionNode* aConditionNode, size_t childNum) override;
 			void ChildHandled(Parser::ConstantNode* aConstantNode, size_t childNum) override;
+			void ChildHandled(Parser::TakeNode* aTakeNode, size_t childNum) override;
 			void ChildHandled(Parser::ListNode* aListNode, size_t childNum) override;
 			void ChildHandled(Parser::DefinitionNode* aDefinitionNode, size_t childNum) override;
 			void ChildHandled(Parser::NameRefNode* aNameRefNode, size_t childNum) override;

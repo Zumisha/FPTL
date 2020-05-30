@@ -5,6 +5,7 @@
 
 #include "NodeDeleter.h"
 #include "DataTypes/Ops/Ops.h"
+#include "DataTypes/Ops/ADTValue.h"
 
 namespace FPTL
 {
@@ -258,14 +259,6 @@ namespace FPTL
 				break;
 			}
 
-			// Выбор элемента из кортежа.
-			case Parser::ASTNode::TupleElemNumber:
-			{
-				const auto elemNumber = boost::lexical_cast<int64_t>(aConstantNode->getConstant().getStr().c_str());
-				node = new FTakeNode(elemNumber, name.Line, name.Col);
-				break;
-			}
-
 			// Булевы константы.
 			case Parser::ASTNode::TrueValue:
 			case Parser::ASTNode::FalseValue:
@@ -285,6 +278,33 @@ namespace FPTL
 		}
 
 		void NewFSchemeGenerator::ChildHandled(Parser::ConstantNode*, size_t)
+		{
+		}
+
+		// -------------------------------------------------------------------------------------------------------------
+
+		Parser::ASTNode* NewFSchemeGenerator::getChild(Parser::TakeNode*, size_t)
+		{
+			return nullptr;
+		}
+
+		size_t NewFSchemeGenerator::getChildIndex(Parser::TakeNode*, Parser::ASTNode*)
+		{
+			return -1;
+		}
+
+		void NewFSchemeGenerator::intermediateProcessing(Parser::TakeNode* aTakeNode, size_t)
+		{
+			const auto fromIdent = aTakeNode->getFrom();
+			const auto from = boost::lexical_cast<int64_t>(fromIdent.getStr().c_str());
+			const auto to = boost::lexical_cast<int64_t>(aTakeNode->getTo().getStr().c_str());			
+
+			FSchemeNode* node = new FTakeNode(from, to, fromIdent.Line, fromIdent.Col);
+
+			mNodeStack.push(node);
+		}
+
+		void NewFSchemeGenerator::ChildHandled(Parser::TakeNode*, size_t)
 		{
 		}
 
@@ -514,15 +534,13 @@ namespace FPTL
 					// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
 					Parser::ListNode * parameters = static_cast<Parser::FunctionNode *>(target)->getFormalParameters();
 
-					//for (auto& child : parameters->mChilds)
-					for (size_t i = parameters->mChilds.size() - 1; i--;)
+					for (auto& child : parameters->mChilds)
 					{
 						FSchemeNode* node = mNodeStack.top();
 						mNodeStack.pop();
 
 						// ToDo: сломано наследование - переделать (до этого не использовать dynamic_cast).
-						//Parser::NameRefNode * formalParamName = static_cast<Parser::NameRefNode *>(child);
-						Parser::DefinitionNode * formalParamName = static_cast<Parser::DefinitionNode *>(parameters->mChilds[i]);
+						Parser::DefinitionNode * formalParamName = static_cast<Parser::DefinitionNode *>(child);
 
 						FScheme *delegateScheme = dynamic_cast<FScheme *>(node);
 						if (!delegateScheme)
