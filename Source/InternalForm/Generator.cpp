@@ -77,7 +77,7 @@ namespace FPTL
 					elseBr = createSpan(node->falseBranch(), mTail);
 			}
 
-			auto choose = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
+			const auto choose = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
 
 			IfPtr cond = createSpan(node->condition(), choose);
 
@@ -89,11 +89,11 @@ namespace FPTL
 			// При первом заходе создаем определения в контексте.
 			if (mCtx.declareFun(scheme))
 			{
-				auto ret = std::make_shared<Ret>();
+				const auto ret = std::make_shared<Ret>();
 				mCtx.defineFun(scheme, createSpan(scheme->firstNode(), ret));
 			}
 
-			const auto rec = new RecFn(mTail, scheme->name());
+			auto* const rec = new RecFn(mTail, scheme->name());
 			mResult = IfPtr(rec);
 
 			mCtx.addRec(scheme, rec);

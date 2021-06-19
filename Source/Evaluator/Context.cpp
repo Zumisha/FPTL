@@ -85,7 +85,7 @@ namespace FPTL
 			}
 
 			argPos = aArgPosOld;
-			// Уменьшение размера вектора в c++ никогда не перевыделяет память.
+			// Уменьшение размера вектора в c++ никогда не освобождает память.
 			stack.resize(aPos + arity);
 			arity += aArity;
 		}

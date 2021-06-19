@@ -77,6 +77,7 @@ Ident			[a-zA-Z][a-zA-Z0-9_]*
 "->"							{ return BisonParser::token::T_FARROW; }
 "=>"							{ return BisonParser::token::T_TARROW; }
 ":"								{ return BisonParser::token::T_COLON; }
+";"								{ return BisonParser::token::T_SEMICOLON; }
 
 [\(\)\.\,\;\<\>\[\]\{\}\~\*\=\+\~\@\%]	{ return *YYText(); }
 

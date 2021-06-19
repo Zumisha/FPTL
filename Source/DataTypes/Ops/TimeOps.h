@@ -48,11 +48,11 @@ namespace FPTL
 			}
 		};
 
-		inline DataValue DataBuilders::createTime(int64_t aVal)
+		/*inline DataValue DataBuilders::createTime(int64_t aVal)
 		{
 			DataValue val(TimeOps::get());
 			val.mIntVal = aVal;
 			return val;
-		}
+		}*/
 	}
 }

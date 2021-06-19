@@ -131,10 +131,83 @@ namespace FPTL
 				const auto & arg = aCtx.getArg(0);
 				aCtx.push(arg.getOps()->abs(arg));
 			}
+
+			void equal(SExecutionContext & aCtx)
+			{
+				const auto & lhs = aCtx.getArg(0);
+				const auto & rhs = aCtx.getArg(1);
+
+				BaseOps::opsCheck(lhs.getOps(), rhs);
+
+				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->equal(lhs, rhs)));
+			}
+
+			void notEqual(SExecutionContext & aCtx)
+			{
+				const auto & lhs = aCtx.getArg(0);
+				const auto & rhs = aCtx.getArg(1);
+
+				BaseOps::opsCheck(lhs.getOps(), rhs);
+
+				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->equal(lhs, rhs)));
+			}
+
+			void greater(SExecutionContext & aCtx)
+			{
+				const auto & lhs = aCtx.getArg(0);
+				const auto & rhs = aCtx.getArg(1);
+
+				BaseOps::opsCheck(lhs.getOps(), rhs);
+
+				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->greater(lhs, rhs)));
+			}
+
+			void greaterOrEqual(SExecutionContext & aCtx)
+			{
+				const auto & lhs = aCtx.getArg(0);
+				const auto & rhs = aCtx.getArg(1);
+
+				BaseOps::opsCheck(lhs.getOps(), rhs);
+
+				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->less(lhs, rhs)));
+			}
+
+			void less(SExecutionContext & aCtx)
+			{
+				const auto & lhs = aCtx.getArg(0);
+				const auto & rhs = aCtx.getArg(1);
+
+				BaseOps::opsCheck(lhs.getOps(), rhs);
+
+				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->less(lhs, rhs)));
+			}
+
+			void lessOrEqual(SExecutionContext & aCtx)
+			{
+				const auto & lhs = aCtx.getArg(0);
+				const auto & rhs = aCtx.getArg(1);
+
+				BaseOps::opsCheck(lhs.getOps(), rhs);
+
+				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->greater(lhs, rhs)));
+			}
+
+			// Преобразование в строку.
+			void toString(SExecutionContext & aCtx)
+			{
+				std::stringstream strStream;
+				strStream.precision(std::numeric_limits<double>::max_digits10);
+				const auto& arg = aCtx.getArg(0);
+
+				arg.getOps()->rawPrint(arg, strStream);
+
+				aCtx.push(StringBuilder::create(aCtx, strStream.str()));
+			}
 		} // anonymous namespace
 
-		const std::map<std::string, std::pair<TFunction, bool>> functions =
+		const std::map<const std::string, const std::pair<const TFunction&, bool>> functions =
 		{
+			{ "toString", std::make_pair(&toString, true) },
 			{ "tupleLen", std::make_pair(&TupleLength, false) },
 			
 			{ "toInt", std::make_pair(&ToInteger, false) },
@@ -151,6 +224,13 @@ namespace FPTL
 			{ "div", std::make_pair(&Div, false) },
 			{ "mod", std::make_pair(&Mod, false) },
 			{ "abs", std::make_pair(&Abs, false) },
+			
+			{ "equal", std::make_pair(&equal, false) },
+			{ "nequal", std::make_pair(&notEqual, false) },
+			{ "greater", std::make_pair(&greater, false) },
+			{ "gequal", std::make_pair(&greaterOrEqual, false) },
+			{ "less", std::make_pair(&less, false) },
+			{ "lequal", std::make_pair(&lessOrEqual, false) },
 		};
 
 		void StandardLib::Register()

@@ -23,7 +23,7 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		std::map<std::string, std::pair<TFunction, bool>> FunctionLibrary::mFunctions;
+		std::map<const std::string, const TypedFunction> mFunctions;
 		
 		int Interpreter::Eval(const int argc, const char ** argv, const std::string& programText) const
 		{
@@ -101,7 +101,7 @@ namespace FPTL
 				IFExecutionContext ctx(internalForm->main().get());
 
 				const auto interpTime = timer.elapsed();
-				if (showTime) std::cout << "Interpretation time: " << boost::timer::format(interpTime, 3, "%ws\n");
+				if (showTime) std::cout << "Interpretation time: " << format(interpTime, 3, "%ws\n") << std::endl;
 				timer.resume();
 
 				const GcConfig gcConfig = CLParser.GetGcConfig();

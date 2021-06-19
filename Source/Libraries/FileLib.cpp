@@ -8,6 +8,7 @@
 #include "FileLib.h"
 #include "DataTypes/Ops/Ops.h"
 #include "DataTypes/Ops/StringOps.h"
+#include "IO/File.h"
 #include "Utils/FileStreamHelper.h"
 
 namespace FPTL
@@ -17,7 +18,7 @@ namespace FPTL
 		namespace {
 
 			// Чтение содержимого файла.
-			void openFile(SExecutionContext & aCtx)
+			File openFile(const std::string& str)
 			{
 				// Проверяем имя файла.
 				const auto& fileNameVal = aCtx.getArg(0);
@@ -86,17 +87,11 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, std::pair<TFunction, bool>> functions =
-		{
-			// Работа с массивами.
-			{ "openFile", std::make_pair(&openFile, true) },
-			{ "createFile", std::make_pair(&createFile, true) },
-			{ "appendFile", std::make_pair(&appendFile, true) },
-		};
-
 		void FileLib::Register()
 		{
-			FunctionLibrary::addFunctions(functions);
+			FunctionLibrary::addFunction("openFile", TypedFunction(&openFile, false, false));
+			FunctionLibrary::addFunction("createFile", TypedFunction(&createFile, false, false));
+			FunctionLibrary::addFunction("appendFile", TypedFunction(&appendFile, false, false));
 		}
 	}
 }

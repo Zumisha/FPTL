@@ -37,7 +37,21 @@ size_t File::getFileSize() const
 	return fileSize;
 }
 
-std::string File::getNextStringToken()
+const char* File::getNextStringToken()
 {
+	buffer.clear();
+	while (true)
+	{
+		const int ch = getNextChar();
+		position++;
+
+		if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == -1) break;
+		buffer.push_back(ch);
+	}
+
+	if (!buffer.empty())
+	{
+		return buffer.data();
+	}
 	return "";
 }

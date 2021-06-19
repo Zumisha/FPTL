@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-n 8 -a -i -t -v "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\SorokaDV-Lab4.fptl" 64 300 300 "C:\Git\_test\A3000x3000.txt" "C:\Git\_test\b3000.txt" </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-n 8 -a -i -t -v "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\_FPTL\Remake_SorokaDV-Lab4_ITOG.fptl" 64 5 5 "C:\Git\_test\A3000x3000.txt" "C:\Git\_test\b3000.txt" </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>-n 8 -a -i -t -v "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\SorokaDV-Lab4.fptl" 64 50 50 "C:\Git\_test\A3000x3000.txt" "C:\Git\_test\b3000.txt" </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-n 8 -a -i -t -v "C:\Users\User\Dropbox\FPTL\Работы студентов\А-13м-19\Сорока\Remake_SorokaDV-Lab4_ITOG.fptl" 64 50 50 "C:\Git\_test\A3000x3000.txt" "C:\Git\_test\b3000.txt" </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

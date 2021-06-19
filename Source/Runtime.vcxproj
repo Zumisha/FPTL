@@ -14,21 +14,21 @@
     <ProjectGuid>{69D57EAD-F1A4-475D-9AF6-38950E12D608}</ProjectGuid>
     <RootNamespace>Runtime</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <SpectreMitigation>false</SpectreMitigation>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -64,7 +64,7 @@
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;GC_BUILD;GC_WIN32_THREADS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -95,7 +95,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4710;4514;4711;4464;4062</DisableSpecificWarnings>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
@@ -162,15 +162,16 @@
     <ClCompile Include="Parser\Tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="atomic_shared_ptr.h" />
     <ClInclude Include="DataTypes\Ops\ADTValue.h" />
     <ClInclude Include="DataTypes\Ops\ArrayOps.h" />
     <ClInclude Include="DataTypes\Ops\Ops.h" />
     <ClInclude Include="DataTypes\Ops\StringOps.h" />
     <ClInclude Include="DataTypes\Ops\TimeOps.h" />
+    <ClInclude Include="DataTypes\TypedFunction.h" />
     <ClInclude Include="DataTypes\TypeInfo.h" />
     <ClInclude Include="DataTypes\Values\ArrayValue.h" />
     <ClInclude Include="DataTypes\Values\DataValue.h" />
-    <ClInclude Include="DataTypes\Values\UndefinedValue.h" />
     <ClInclude Include="Evaluator\Context.h" />
     <ClInclude Include="Evaluator\LockFreeWorkStealingQueue.h" />
     <ClInclude Include="Evaluator\Run.h" />

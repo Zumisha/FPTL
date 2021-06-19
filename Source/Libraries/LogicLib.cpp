@@ -1,140 +1,84 @@
 #include <regex>
-#include <string>
-
-#include "Macros.h"
-#include "DataTypes/Ops/Ops.h"
-#include "DataTypes/Ops/StringOps.h"
-#include "DataTypes/Ops/BooleanOps.h"
-#include "LogicLib.h"
 
 #include "FunctionLibrary.h"
+#include "DataTypes/TypedFunction.h"
+#include "LogicLib.h"
+
+#include "IO/File.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
 		namespace {
-
-			void Not(SExecutionContext & aCtx)
+			
+			// Преобразования типов.
+			int64_t toInt(const bool& aVal)
 			{
-				const auto & arg = aCtx.getArg(0);
-
-				BaseOps::opsCheck(BooleanOps::get(), arg);
-
-				aCtx.push(DataBuilders::createBoolean(!arg.getOps()->toInt(arg)));
+				return aVal;
 			}
 
-			void And(SExecutionContext & aCtx)
+			double toDouble(const bool& aVal)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(BooleanOps::get(), lhs);
-				BaseOps::opsCheck(BooleanOps::get(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) * rhs.getOps()->toInt(rhs))));
+				return aVal;
 			}
 
-			void Or(SExecutionContext & aCtx)
+			// Функции сравнения. Оба аргумента обязаны быть типа boolean.
+			bool equal(const bool& aLhs, const bool& aRhs)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(BooleanOps::get(), lhs);
-				BaseOps::opsCheck(BooleanOps::get(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) + rhs.getOps()->toInt(rhs))));
+				return aLhs == aRhs;
 			}
 
-			void Xor(SExecutionContext & aCtx)
+			// Вывод в поток.
+			void print(const bool& aVal, std::ostream & aStream)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(BooleanOps::get(), lhs);
-				BaseOps::opsCheck(BooleanOps::get(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean((lhs.getOps()->toInt(lhs) ^ rhs.getOps()->toInt(rhs))));
+				aStream << (aVal ? "true" : "false");
 			}
 
-			void equal(SExecutionContext & aCtx)
+			// Вывод в поток.
+			void rawPrint(const bool& aVal, std::ostream & aStream)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(lhs.getOps(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->equal(lhs, rhs)));
+				aStream << (aVal ? "1" : "0");
 			}
 
-			void notEqual(SExecutionContext & aCtx)
+			bool read(File& aFile)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(lhs.getOps(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->equal(lhs, rhs)));
+				return aFile.getNextBool();
 			}
 
-			void greater(SExecutionContext & aCtx)
+			bool Not(const bool& aVal)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(lhs.getOps(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->greater(lhs, rhs)));
+				return !aVal;
 			}
 
-			void greaterOrEqual(SExecutionContext & aCtx)
+			bool And(const bool& aLeft, const bool& aRight)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(lhs.getOps(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->less(lhs, rhs)));
+				return aLeft && aRight;
 			}
 
-			void less(SExecutionContext & aCtx)
+			bool Or(const bool& aLeft, const bool& aRight)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(lhs.getOps(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean(lhs.getOps()->less(lhs, rhs)));
+				return aLeft || aRight;
 			}
 
-			void lessOrEqual(SExecutionContext & aCtx)
+			bool Xor(const bool& aLeft, const bool& aRight)
 			{
-				const auto & lhs = aCtx.getArg(0);
-				const auto & rhs = aCtx.getArg(1);
-
-				BaseOps::opsCheck(lhs.getOps(), rhs);
-
-				aCtx.push(DataBuilders::createBoolean(!lhs.getOps()->greater(lhs, rhs)));
+				return aLeft ^ aRight;
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, std::pair<TFunction, bool>> functions =
-		{
-			{ "not", std::make_pair(&Not, false) },
-			{ "and", std::make_pair(&And, false) },
-			{ "or", std::make_pair(&Or, false) },
-			{ "xor", std::make_pair(&Xor, false) },
-			{ "equal", std::make_pair(&equal, false) },
-			{ "nequal", std::make_pair(&notEqual, false) },
-			{ "greater", std::make_pair(&greater, false) },
-			{ "gequal", std::make_pair(&greaterOrEqual, false) },
-			{ "less", std::make_pair(&less, false) },
-			{ "lequal", std::make_pair(&lessOrEqual, false) },
-		};
-
 		void LogicLib::Register()
 		{
-			FunctionLibrary::addFunctions(functions);
+			FunctionLibrary::addFunction("toInt", TypedFunction(&toInt, false, false));
+			FunctionLibrary::addFunction("toDouble", TypedFunction(&toDouble, false, false));
+			FunctionLibrary::addFunction("equal", TypedFunction(&equal, false, false));
+			FunctionLibrary::addFunction("print", TypedFunction(&print, false, false));
+			FunctionLibrary::addFunction("rawPrint", TypedFunction(&rawPrint, false, false));
+			FunctionLibrary::addFunction("read", TypedFunction(&read, false, false));
+			FunctionLibrary::addFunction("not", TypedFunction(&Not, false, false));
+			FunctionLibrary::addFunction("and", TypedFunction(&And, false, false));
+			FunctionLibrary::addFunction("or", TypedFunction(&Or, false, false));
+			FunctionLibrary::addFunction("xor", TypedFunction(&Xor, false, false));
 		}
 	}
 }

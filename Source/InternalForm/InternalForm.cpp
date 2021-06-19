@@ -11,7 +11,7 @@ namespace FPTL
 	{
 		void ParFork::exec(SExecutionContext & ctx) const
 		{
-			const auto fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
+			auto* const fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
 
 			ctx.evaluator()->addForkJob(fork);
 
@@ -197,7 +197,7 @@ namespace FPTL
 
 		void BasicFn::exec(SExecutionContext & ctx) const
 		{
-			// Поскольку при вызове базисной функции необходимо обработать исключение, проивзодим вызов
+			// Поскольку при вызове базисной функции необходимо обработать исключение, производим вызов
 			// через метод-трамплин, чтобы не повлиять на оптимизацию компилятором хвостовой рекурсии.
 #if fptlDebugBuild
 			callFn(ctx);

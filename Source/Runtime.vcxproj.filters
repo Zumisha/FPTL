@@ -348,8 +348,11 @@
     <ClInclude Include="DataTypes\Values\DataValue.h">
       <Filter>Source\Libraries\Std</Filter>
     </ClInclude>
-    <ClInclude Include="DataTypes\Values\UndefinedValue.h">
-      <Filter>Source\Libraries\Std</Filter>
+    <ClInclude Include="DataTypes\TypedFunction.h">
+      <Filter>Source\Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="atomic_shared_ptr.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

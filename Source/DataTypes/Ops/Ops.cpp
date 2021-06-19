@@ -9,7 +9,7 @@ namespace FPTL
 {
 	namespace Runtime
 	{
-		const Ops * DataValue::getOps() const
+		/*const Ops * DataValue::getOps() const
 		{
 			return mOps;
 		}
@@ -22,7 +22,7 @@ namespace FPTL
 		DataValue::DataValue(const Ops * aOps)
 			: mOps(aOps)
 		{
-		}
+		}*/
 
 		//-----------------------------------------------------------------------------
 		// Базисные функции.
@@ -160,7 +160,7 @@ namespace FPTL
 
 		//-----------------------------------------------------------------------------
 
-		DataValue DataBuilders::createVal(Ops * aOps)
+		/*DataValue DataBuilders::createVal(Ops * aOps)
 		{
 			DataValue val(aOps);
 			return val;
@@ -171,6 +171,6 @@ namespace FPTL
 			DataValue val(aOps);
 			val.mADT = aADTVal;
 			return val;
-		}
+		}*/
 	}
 }

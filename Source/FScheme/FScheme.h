@@ -55,12 +55,16 @@ namespace FPTL
 		{
 		public:
 			template <typename F>
-			explicit FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction), mLine(0), mColumn(0)
+			explicit FFunctionNode(const F & aFunction) :
+				FSchemeNode(false),
+				mFunction(aFunction),
+				mLine(0),
+				mColumn(0)
 			{
 			}
 
-			template <typename F>
-			FFunctionNode(const F & aFunction, const bool isLong, const std::string & aName, const size_t aLine, const size_t aCol) :
+			//template <typename F>
+			FFunctionNode(const std::function<void(SExecutionContext &)>& aFunction, const bool isLong, const std::string & aName, const size_t aLine, const size_t aCol) :
 				FSchemeNode(isLong),
 				mFunction(aFunction),
 				mName(aName),
@@ -77,7 +81,7 @@ namespace FPTL
 			TFunction fn() const { return mFunction; }
 
 		private:
-			std::function<void(SExecutionContext &)> mFunction;
+			const std::function<void(SExecutionContext &)>& mFunction;
 
 			// Имя функции и позиция в тексте программы.
 			std::string mName;

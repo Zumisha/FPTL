@@ -90,7 +90,7 @@ namespace FPTL
 
 			void               semanticError(ParserErrTypes::ErrType aErr, Ident aIdent);
 
-			static const char* getErrorString(ParserErrTypes::ErrType aErr);
+			static const std::string getErrorString(const ErrorMessage& aErr);
 			void getErrorList(std::ostream & aOutStream) const;
 			static void printError(std::ostream & outStream, const size_t line, const size_t col, const std::string& message);
 

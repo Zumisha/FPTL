@@ -4,29 +4,28 @@
 #include <map>
 #include <functional>
 
+
+#include "DataTypes/TypedFunction.h"
 #include "Evaluator/Context.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
-		typedef std::function<void(SExecutionContext &)> TFunction;
-
 		// Библиотека функций.
 		class FunctionLibrary
 		{
 		public:
 			FunctionLibrary() = delete;
 
-			static void addFunction(const std::string& aFunctionName, const TFunction& aFunction, const bool isLong);
-			static void addFunctions(std::map<std::string, std::pair<TFunction, bool>> functions);
+			static void addFunction(const std::string& aFunctionName, const TypedFunction& aFunction);
+			static void addFunctions(const std::map<const std::string, std::vector<const TypedFunction>>& functions);
 
-			static std::vector<std::string> getFunctionNames();
-			static std::pair<TFunction, bool> getFunction(const std::string & aFunctionName);
+			static std::vector<const std::string> getAllFunctionNames();
+			static const std::vector<const TypedFunction>* getFunctions(const std::string& aFunctionName);
 
 		private:
-			// ToDo: type to functions
-			static std::map<std::string, std::pair<TFunction, bool>> mFunctions;
+			static std::map<const std::string, std::vector<const TypedFunction>> mFunctions;
 		};
 	}
 }

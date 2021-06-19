@@ -107,7 +107,7 @@ Scheme Test
 							).add,
 							(A * B * ph * 0.0).SeqSum(fFunction);
 						
-					// Последний оператор add - оптимизация хвостовой рекурсии не работает.
+					// Последний оператор add - оптимизация хвостовой рекурсии работает, но менее эффективно.
 					/*Fun SeqSum[fFunction]
 					{
 						A = [1];
@@ -161,7 +161,7 @@ Scheme Test
 							Eps
 						).less;
 			
-			@ =	id.print."\n".print * (id * oddSumCalc).(id * SimpsonCalc).
+			@ =	(id * oddSumCalc).(id * SimpsonCalc).
 					(	RungeCalc -> 
 							Ih, 
 							(A * B * Eps * p * (h * 2.0).div * Af * Bf * (lastSum * oddSum).add * Ih).Integr

@@ -92,7 +92,7 @@ namespace FPTL
 			}
 		} // anonymous namespace
 
-		const std::map<std::string, std::pair<TFunction, bool>> functions =
+		const std::map<const std::string, const std::pair<const TFunction&, bool>> functions =
 		{
 			{ "sqrt", std::make_pair(&sqrt, false) },
 			{ "exp", std::make_pair(&exp, false) },

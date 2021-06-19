@@ -1,57 +1,31 @@
 #pragma once
 
 #include <ostream>
-#include "Ops.h"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
-
-		class UndefinedValueOps : public BaseOps
+		namespace
 		{
-			UndefinedValueOps() = default;
-
-		public:
-			static UndefinedValueOps* get()
-			{
-				static UndefinedValueOps ops;
-				return &ops;
-			}
-
-			inline static const std::string typeName = "Undefined";
-			const std::string& getTypeName() const override
+			const std::string typeName = "Undefined";
+			const std::string& getTypeName(void*)
 			{
 				return typeName;
 			}
 
-			TypeInfo getType(const DataValue &aVal) const override
-			{
-				static TypeInfo info(typeName);
-				return info;
-			}
-
-			// Функция сравнения со значением true определена.
-			bool equal(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				return false;
-			}
-
 			// Вывод в поток.
-			void print(const DataValue & aVal, std::ostream & aStream) const override
+			void print(void*, std::ostream & aStream)
 			{
-				aStream << "Undefined";
+				aStream << typeName;
 			}
 			
-			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
+			void rawPrint(void*, std::ostream & aStream)
 			{
-				print(aVal, aStream);
+				aStream << typeName;
 			}
-		};
-
-		inline UndefinedValue DataBuilders::createUndefinedValue()
-		{
-			return UndefinedValue(UndefinedValueOps::get());
 		}
+
+		
 	}
 }

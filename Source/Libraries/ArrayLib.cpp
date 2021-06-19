@@ -193,7 +193,7 @@ namespace FPTL
 			
 		} // anonymous namespace
 
-		const std::map<std::string, std::pair<TFunction, bool>> functions =
+		const std::map<const std::string, const std::pair<const TFunction&, bool>> functions =
 		{
 			// Работа с массивами.
 			{ "arrayCreate", std::make_pair(&CreateArray, true) },
