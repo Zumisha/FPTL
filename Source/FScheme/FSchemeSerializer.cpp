@@ -3,10 +3,8 @@
 #include "Utils/XmlHelper.h"
 #include "DataTypes/Ops/Ops.h"
 
-namespace FPTL
+namespace FPTL::Runtime
 {
-	namespace Runtime
-	{
 		void FSchemeSerializer::serialize(const FSchemeNode* node)
 		{
 			Utils::setPermissions(serialization_path);
@@ -190,5 +188,4 @@ namespace FPTL
 			}
 			Utils::CloseTag(mFile, "Scheme");
 		}
-	}
 }

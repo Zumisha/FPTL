@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 class File
@@ -15,7 +16,7 @@ public:
 	virtual size_t getFileSize() const;
 	//virtual int getChar(size_t position) const;
 
-	std::string getNextStringToken();
+	static std::string getNextStringToken();
 
 	int getNextChar()
 	{

@@ -3,19 +3,16 @@
 
 #include "TimeLib.h"
 #include "FunctionLibrary.h"
-#include "Macros.h"
 #include "DataTypes/Ops/Ops.h"
 #include "DataTypes/Ops/TimeOps.h"
 
-namespace FPTL
+namespace FPTL::Runtime
 {
-	namespace Runtime
-	{
 		namespace {
 			void GetCurrentTime(SExecutionContext& aCtx)
 			{
-				const auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-				aCtx.push(DataBuilders::createTime(time));
+				const auto time = std::chrono::time_point_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now());
+				aCtx.push(DataBuilders::createTime(time.time_since_epoch().count()));
 			}			
 		} // anonymous namespace
 
@@ -28,5 +25,4 @@ namespace FPTL
 		{
 			FunctionLibrary::addFunctions(functions);
 		}
-	}
 }
