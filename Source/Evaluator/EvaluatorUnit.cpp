@@ -1,8 +1,8 @@
 #include <iostream>
 #include <boost/format/format_fwd.hpp>
 
-
 #include "Run.h"
+#include "Macros.h"
 #include "InternalForm/InternalForm.h"
 #include "DataTypes/Ops/Ops.h"
 
