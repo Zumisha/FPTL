@@ -351,6 +351,12 @@
     <ClInclude Include="DataTypes\Values\UndefinedValue.h">
       <Filter>Source\Libraries\Std</Filter>
     </ClInclude>
+    <ClInclude Include="TypedFunction.h">
+      <Filter>Source\Libraries\Std</Filter>
+    </ClInclude>
+    <ClInclude Include="TraceInfo.h">
+      <Filter>Source\Evaluator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parser\parser.yy">

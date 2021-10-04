@@ -42,7 +42,6 @@ namespace FPTL
 				if (parseResult == -1) return 0;
 				if (parseResult != 0) return parseResult;
 
-				const Utils::FormattedOutput fo = CLParser.GetFormattedOutput();
 				const std::string programPath = CLParser.GetProgramPath();
 				std::vector<std::string> inputTuple = CLParser.GetInputTuple();
 
@@ -66,52 +65,42 @@ namespace FPTL
 				Parser::Support support;
 				astRoot = support.getAST(inputTuple, programStr);
 
-				support.getErrorList(std::cout);
+				support.printErrorList(std::cout);
 				if (support.WasErrors() || !astRoot) return 1;
 
-				if (CLParser.GetSaveAST())
+				if (CLParser.GetExportAST())
 				{
 					Parser::ASTSerializer serializer;
 					serializer.serialize(astRoot);
 				}
 
-				const bool showInfo = CLParser.GetShowInfo();
-				const bool showTime = CLParser.GetShowTime();
-				const size_t numCores = CLParser.GetCoresNum();
-				const bool proactive = CLParser.GetAllowProactive() && (numCores != 1);
+				auto evalConfig = CLParser.GetEvalConfig();
 
-				if (showInfo)
+				if (evalConfig.printInfo)
 				{
 					std::cout << "No syntax errors found.\n";
-					std::cout << "Running program: " << programPath << " on " << numCores << " work threads...\n\n";
-					if (!proactive) std::cout << "Proactive calculations " << fo.Underlined("disabled") << ".\n\n";
+					std::cout << "Running program: " << programPath << " on " << evalConfig.numCores << " work threads...\n\n";
+					if (!evalConfig.proactiveEnabled) std::cout << "Proactive calculations " << evalConfig.output.Underlined("disabled") << ".\n\n";
 				}
 
 				FSchemeGenerator schemeGenerator(astRoot);
 				//NewFSchemeGenerator schemeGenerator(astRoot);
 				const auto FScheme = schemeGenerator.getProgram();
 
-				if (CLParser.GetSaveScheme())
+				if (CLParser.GetExportScheme())
 				{
 					FSchemeSerializer serializer;
 					serializer.serialize(FScheme);
 				}
 
-				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(FScheme, proactive));
+				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(FScheme, evalConfig));
 				IFExecutionContext ctx(internalForm->main().get());
 
 				const auto interpTime = timer.elapsed();
-				if (showTime) std::cout << "Interpretation time: " << boost::timer::format(interpTime, 3, "%ws\n");
+				if (evalConfig.printTime) std::cout << "Interpretation time: " << format(interpTime, 3, "%ws\n") << std::endl;
 				timer.resume();
 
 				const GcConfig gcConfig = CLParser.GetGcConfig();
-
-				EvalConfig evalConfig;
-				evalConfig.SetNumCores(numCores);
-				evalConfig.SetInfo(showInfo);
-				evalConfig.SetTime(showTime);
-				evalConfig.SetProactive(proactive);
-				evalConfig.SetOutput(fo);
 
 				SchemeEvaluator evaluator;
 				evaluator.setGcConfig(gcConfig);
@@ -119,7 +108,7 @@ namespace FPTL
 
 				evaluator.run(ctx);
 				const auto evalTime = timer.elapsed();
-				if (showTime) std::cout << "\n\nEvaluation time: " << boost::timer::format(evalTime, 3, "%ws\n");
+				if (evalConfig.printTime) std::cout << "\n\nEvaluation time: " << boost::timer::format(evalTime, 3, "%ws\n");
 
 				delete astRoot;
 				if (evaluator.WasErrors()) return 1;

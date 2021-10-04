@@ -19,7 +19,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (121.2 * "fptl").div.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 34, invalidOperation("string", "toDouble"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 34, invalidOperation("string", "toDouble"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -28,7 +28,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (121 * false).div.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 20, invalidOperation("boolean", "combine with int"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 20, invalidOperation("boolean", "combine with int"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -37,7 +37,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (121).div.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 23, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 23, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

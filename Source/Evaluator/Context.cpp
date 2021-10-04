@@ -1,6 +1,5 @@
 #include <boost/timer/timer.hpp>
 
-#include "Macros.h"
 #include "Context.h"
 #include "Run.h"
 #include "InternalForm/InternalForm.h"
@@ -20,7 +19,8 @@ namespace FPTL
 			argPos(0),
 			arity(0),
 			argNum(0),
-			mEvaluatorUnit(nullptr)
+			mEvaluatorUnit(nullptr),
+			stackTrace(	8, TraceInfo{})
 		{
 			stack.reserve(10);
 			controlStack.reserve(10);
@@ -43,13 +43,6 @@ namespace FPTL
 
 		const DataValue& SExecutionContext::getArg(const size_t aIndex) const
 		{
-#if fptlDebugBuild
-			// ToDo: производить статический анализ.
-			if (aIndex >= argNum)
-			{
-				throw std::runtime_error(outOfRange(aIndex+1, argNum));
-			}
-#endif
 			return stack.at(argPos + aIndex);
 		}
 		
@@ -85,7 +78,7 @@ namespace FPTL
 			}
 
 			argPos = aArgPosOld;
-			// Уменьшение размера вектора в c++ никогда не перевыделяет память.
+			// Уменьшение размера вектора в c++ никогда не освобождает память.
 			stack.resize(aPos + arity);
 			arity += aArity;
 		}
@@ -120,6 +113,7 @@ namespace FPTL
 
 		void SExecutionContext::rawPrint(std::ostream & aStream) const
 		{
+			aStream << "(";
 			if (argNum == 0) return;
 			auto arg = getArg(0);
 			arg.getOps()->rawPrint(arg, aStream);
@@ -129,6 +123,7 @@ namespace FPTL
 				arg = getArg(i);
 				arg.getOps()->rawPrint(arg, aStream);
 			}
+			aStream << ")";
 		}
 
 		void SExecutionContext::printTypes(std::ostream& aStream) const
@@ -148,6 +143,55 @@ namespace FPTL
 				}
 			}
 			aStream << ")";
+		}
+
+		void SExecutionContext::saveTracePoint(const std::string& operationName, const std::pair<size_t, size_t>& codePos)
+		{
+			stackTrace.push_back(TraceInfo{ operationName, codePos, argPos, argNum });
+		}
+		
+		void SExecutionContext::printStackTrace(std::ostream& aStream, size_t printCount) const
+		{
+			aStream.precision(std::numeric_limits<double>::max_digits10);
+
+			std::vector<TraceInfo> trace(stackTrace.begin(), stackTrace.end());
+			
+			for (const auto& info : trace)
+			{
+				if (++printCount >= 8) return;
+				if (info.operationName == "") break;
+				printTraceInfo(aStream, info);
+			}
+			
+			if (Parent == nullptr) return;
+			if (printCount < 8) Parent->printStackTrace(aStream, printCount);
+		}
+
+		void SExecutionContext::printTraceInfo(std::ostream& aStream, const TraceInfo& info) const
+		{
+			aStream << std::endl << "Line " << info.codePos.first << ", ch " << info.codePos.second << ", function '" << info.operationName << "'";
+
+			aStream << std::endl << "Input tuple type: ";
+			aStream << "(";
+			for (size_t i = 0; i < info.argNum; ++i)
+			{
+				if (i > 0) aStream << " * ";
+				auto& arg = stack.at(info.argPos + i);
+				aStream << arg.getOps()->getType(arg);
+			}
+			aStream << ")";
+
+			aStream << std::endl << "Input tuple: ";
+			aStream << "(";
+			for (size_t i = 0; i < info.argNum; ++i)
+			{
+				if (i > 0) aStream << " * ";
+				auto& arg = stack.at(info.argPos + i);
+				arg.getOps()->print(arg, aStream);
+			}
+			aStream << ")";
+
+			aStream << std::endl;
 		}
 
 		//-----------------------------------------------------------------------------
@@ -188,14 +232,10 @@ namespace FPTL
 				fork->Parent = this;
 				fork->Proactive.store(this->Proactive.load(std::memory_order_acquire), std::memory_order_release);
 
-
-				// Копируем стек.
-				for (size_t i = argPos; i < (argPos + argNum); i++)
-				{
-					fork->stack.push_back(stack.at(i));
-				}
-
 				fork->argNum = argNum;
+				fork->stack = std::vector<DataValue>(stack.begin() + argPos, stack.begin() + argPos + argNum);
+				
+				fork->stackTrace = std::deque<TraceInfo>(fork->stackTrace);
 			}
 			else
 			{

@@ -212,6 +212,8 @@
     <ClInclude Include="Parser\NodeVisitor.h" />
     <ClInclude Include="Parser\SemanticCheck.h" />
     <ClInclude Include="Parser\Support.h" />
+    <ClInclude Include="TraceInfo.h" />
+    <ClInclude Include="TypedFunction.h" />
     <ClInclude Include="Utils\FileStreamHelper.h" />
     <ClInclude Include="Utils\FormattedOutput.h" />
     <ClInclude Include="Utils\XmlHelper.h" />

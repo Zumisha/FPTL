@@ -159,13 +159,33 @@ namespace FPTL
 				mFn(std::move(fn))
 			{}
 
-		private:
-			void callFn(SExecutionContext & ctx) const;
+		protected:
+			void virtual callFn(SExecutionContext & ctx) const;
 
 			IfPtr mNext;
 			const std::string mName;
 			std::pair<size_t, size_t> mPos;
 			const TFunction mFn;
+		};
+
+		class UnsafeBasicFn : public BasicFn
+		{
+		public:
+			UnsafeBasicFn(const IfPtr& next, const std::string& name, const std::pair<size_t, size_t>& pos, const TFunction& fn)
+			: BasicFn(next, name, pos, fn) {}
+
+		protected:
+			void callFn(SExecutionContext & ctx) const override;
+		};
+
+		class TraceErrBasicFn : public BasicFn
+		{
+		public:
+			TraceErrBasicFn(const IfPtr& next, const std::string& name, const std::pair<size_t, size_t>& pos, const TFunction& fn)
+				: BasicFn(next, name, pos, fn) {}
+
+		protected:
+			void callFn(SExecutionContext & ctx) const override;
 		};
 
 		class GetArg : public InternalForm
@@ -177,13 +197,33 @@ namespace FPTL
 			GetArg(IfPtr next, const int64_t from, const int64_t to, std::pair<size_t, size_t> pos)
 				: mNext(std::move(next)), mFrom(from), mTo(to), mPos(std::move(pos))
 			{}
-		private:
-			const void TryGetArg(SExecutionContext& ctx, const size_t from, const size_t to) const;
+		protected:
+			void virtual TryGetArg(SExecutionContext& ctx, const size_t from, const size_t to) const;
 
 			IfPtr mNext;
 			int64_t mFrom;
 			int64_t mTo;
 			std::pair<size_t, size_t> mPos;
+		};
+
+		class UnsafeGetArg : public GetArg
+		{
+		public:
+			UnsafeGetArg(const IfPtr& next, const int64_t from, const int64_t to, const std::pair<size_t, size_t>& pos)
+				: GetArg(next, from, to, pos) {}
+
+		protected:
+			void TryGetArg(SExecutionContext & ctx, const size_t from, const size_t to) const override;
+		};
+
+		class TraceErrGetArg : public GetArg
+		{
+		public:
+			TraceErrGetArg(const IfPtr& next, const int64_t from, const int64_t to, const std::pair<size_t, size_t>& pos)
+				: GetArg(next, from, to, pos) {}
+
+		protected:
+			void TryGetArg(SExecutionContext & ctx, const size_t from, const size_t to) const override;
 		};
 
 		class Constant : public InternalForm

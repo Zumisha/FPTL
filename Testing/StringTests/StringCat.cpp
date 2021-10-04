@@ -43,7 +43,7 @@ namespace UnitTests
 			const std::string innerCode = "@ =  (\"a\" * true).cat.print;";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 31, invalidOperation("boolean", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 31, invalidOperation("boolean", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

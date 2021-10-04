@@ -19,7 +19,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (23 * "fptl").mod.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 31, invalidOperation("string", "toInt"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 31, invalidOperation("string", "toInt"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -31,7 +31,7 @@ namespace UnitTests
 
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 30, invalidOperation("boolean", "combine with int"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 30, invalidOperation("boolean", "combine with int"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -41,7 +41,7 @@ namespace UnitTests
 			// Runtime error: attempt to get the [2] argument in a tuple of size 1.In function "mul".Line: 1. Column : 10.Input tuple type : (int)
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 22, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 22, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

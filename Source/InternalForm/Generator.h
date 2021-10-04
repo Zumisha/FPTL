@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <iterator>
 #include <algorithm>
+#include <Evaluator/EvalConfig.h>
+
 
 #include "FScheme/FSchemeVisitor.h"
 #include "InternalForm.h"
@@ -72,7 +74,7 @@ namespace FPTL
 			void visit(const FConstantNode * node) override;
 			void visit(const FStringConstant* node) override;
 
-			static FunctionalProgram * generate(FSchemeNode * node, const bool Proactive);
+			static FunctionalProgram * generate(FSchemeNode * node, const EvalConfig config);
 
 		private:
 			IfPtr createSpan(FSchemeNode * node, const IfPtr & tail);
@@ -82,7 +84,7 @@ namespace FPTL
 			IfPtr mTail;
 			IfPtr mResult;
 
-			bool Proactive;
+			EvalConfig Config;
 		};
 	}
 }

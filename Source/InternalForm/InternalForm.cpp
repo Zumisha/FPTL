@@ -2,7 +2,6 @@
 #include "DataTypes/Ops/StringOps.h"
 #include "Evaluator/Run.h"
 #include "Evaluator/Context.h"
-#include "Macros.h"
 #include "Parser/Support.h"
 
 namespace FPTL
@@ -11,7 +10,7 @@ namespace FPTL
 	{
 		void ParFork::exec(SExecutionContext & ctx) const
 		{
-			const auto fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
+			auto* const fork = dynamic_cast<IFExecutionContext &>(ctx).spawn(mRight.get());
 
 			ctx.evaluator()->addForkJob(fork);
 
@@ -197,24 +196,10 @@ namespace FPTL
 
 		void BasicFn::exec(SExecutionContext & ctx) const
 		{
-			// Поскольку при вызове базисной функции необходимо обработать исключение, проивзодим вызов
+			// Поскольку при вызове базисной функции необходимо обработать исключение, производим вызов
 			// через метод-трамплин, чтобы не повлиять на оптимизацию компилятором хвостовой рекурсии.
-#if fptlDebugBuild
 			callFn(ctx);
-#else
-			mFn(ctx);
-#endif
 			mNext->exec(ctx);
-		}
-
-		void printErrTuple(std::ostream& error, const SExecutionContext & ctx)
-		{
-			error.precision(std::numeric_limits<double>::max_digits10);
-			error << "Input tuple type: ";
-			ctx.printTypes(error);
-			error << std::endl << "Input tuple: ";
-			ctx.print(error);
-			error << std::endl;
 		}
 
 		void BasicFn::callFn(SExecutionContext & ctx) const
@@ -225,11 +210,31 @@ namespace FPTL
 			}
 			catch (std::exception& thrown)
 			{
-				std::stringstream error;
-				Parser::Support::printError(error, mPos.first, mPos.second, thrown.what());
-				error << "In function \"" << mName << "\"" << std::endl;
-				printErrTuple(error, ctx);
-				throw std::runtime_error(error.str());
+				std::stringstream stream;
+				stream << thrown.what() << std::endl;
+				ctx.printTraceInfo(stream, TraceInfo{ mName, mPos, ctx.argPos, ctx.argNum });
+				throw std::runtime_error(stream.str());
+			}
+		}
+
+		void UnsafeBasicFn::callFn(SExecutionContext & ctx) const
+		{
+				mFn(ctx);
+		}
+
+		void TraceErrBasicFn::callFn(SExecutionContext & ctx) const
+		{
+			ctx.saveTracePoint(mName, mPos);
+			try
+			{
+				mFn(ctx);
+			}
+			catch (std::exception& thrown)
+			{
+				std::stringstream stream;
+				stream << thrown.what() << std::endl;
+				ctx.printStackTrace(stream);
+				throw std::runtime_error(stream.str());
 			}
 		}
 
@@ -248,21 +253,23 @@ namespace FPTL
 			if (mTo < 0) to = ctx.argNum + mTo;
 			else to = mTo - 1;
 			
-#if(fptlDebugBuild)
 			TryGetArg(ctx, from, to);
-#else
-			for (size_t i = from; i <= to; ++i)
-			{
-				ctx.push(ctx.getArg(i));
-			}
-#endif
 			mNext->exec(ctx);
 		}
 
-		const void GetArg::TryGetArg(SExecutionContext& aCtx, const size_t from, const size_t to) const
+		void GetArg::TryGetArg(SExecutionContext& aCtx, const size_t from, const size_t to) const
 		{
 			try
 			{
+				// ToDo: производить статический анализ.
+				if (from >= aCtx.argNum)
+				{
+					throw std::runtime_error(SExecutionContext::outOfRange(from, aCtx.argNum));
+				}
+				if (to >= aCtx.argNum)
+				{
+					throw std::runtime_error(SExecutionContext::outOfRange(to, aCtx.argNum));
+				}
 				for (size_t i = from; i <= to; ++i)
 				{
 					aCtx.push(aCtx.getArg(i));
@@ -270,10 +277,50 @@ namespace FPTL
 			}
 			catch (std::exception & thrown)
 			{
-				std::stringstream error;
-				Parser::Support::printError(error, mPos.first, mPos.second, thrown.what());
-				printErrTuple(error, aCtx);
-				throw std::runtime_error(error.str());
+				std::stringstream stream;
+				stream << thrown.what() << std::endl;
+				std::stringstream name;
+				name << "[" << (from + 1) << ";" << (to + 1) << "]";
+				aCtx.printTraceInfo(stream, TraceInfo{ name.str(), mPos, aCtx.argPos, aCtx.argNum });
+				throw std::runtime_error(stream.str());
+			}
+		}
+
+		void UnsafeGetArg::TryGetArg(SExecutionContext& aCtx, const size_t from, const size_t to) const
+		{
+			for (size_t i = from; i <= to; ++i)
+			{
+				aCtx.push(aCtx.getArg(i));
+			}
+		}
+
+		void TraceErrGetArg::TryGetArg(SExecutionContext& aCtx, const size_t from, const size_t to) const
+		{
+			try
+			{
+				// ToDo: производить статический анализ.
+				if (from >= aCtx.argNum)
+				{
+					throw std::runtime_error(SExecutionContext::outOfRange(from, aCtx.argNum));
+				}
+				if (to >= aCtx.argNum)
+				{
+					throw std::runtime_error(SExecutionContext::outOfRange(to, aCtx.argNum));
+				}
+				for (size_t i = from; i <= to; ++i)
+				{
+					aCtx.push(aCtx.getArg(i));
+				}
+			}
+			catch (std::exception & thrown)
+			{
+				std::stringstream stream;
+				stream << thrown.what() << std::endl;
+				std::stringstream name;
+				name << "[" << (from + 1) << "; " << (to + 1) << "]";
+				aCtx.printTraceInfo(stream, TraceInfo{ name.str(), mPos, aCtx.argPos, aCtx.argNum });
+				aCtx.printStackTrace(stream);
+				throw std::runtime_error(stream.str());
 			}
 		}
 

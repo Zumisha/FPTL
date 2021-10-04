@@ -1,7 +1,11 @@
 #pragma once
 
 #include <string>
-#include <boost/timer/timer.hpp>
+#include <iostream>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 namespace FPTL
 {
@@ -15,7 +19,24 @@ namespace FPTL
 
 		public:
 			FormattedOutput() : isEnabled(false) {}
-			FormattedOutput(bool state) : isEnabled(state) {}
+			FormattedOutput(bool state) : isEnabled(state)
+			{
+#ifdef _WIN32
+				HANDLE hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+				DWORD dwMode;
+
+				if (state)
+				{
+					GetConsoleMode(hOutput, &dwMode);
+					dwMode |= ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+					if (!SetConsoleMode(hOutput, dwMode))
+					{
+						isEnabled = false;
+						std::cout << "Error when enable ansi support!" << std::endl << std::endl;
+					}
+				}
+#endif
+			}
 
 			void enable() { isEnabled = true; }
 			void disable() { isEnabled = false; }

@@ -90,9 +90,9 @@ namespace FPTL
 
 			void               semanticError(ParserErrTypes::ErrType aErr, Ident aIdent);
 
-			static const char* getErrorString(ParserErrTypes::ErrType aErr);
-			void getErrorList(std::ostream & aOutStream) const;
-			static void printError(std::ostream & outStream, const size_t line, const size_t col, const std::string& message);
+			static const std::string getErrorString(const ErrorMessage& aErr);
+			void printErrorList(std::ostream & aOutStream) const;
+			static void printPositionalMessage(std::ostream & outStream, const size_t line, const size_t col, const std::string& message);
 
 			// Методы для работы с таблицей имен.
 

@@ -1,6 +1,9 @@
 ﻿#include <cassert>
 
 #include "Generator.h"
+
+#include <Evaluator/EvalConfig.h>
+
 #include "InternalForm.h"
 #include "FScheme/FScheme.h"
 
@@ -59,7 +62,7 @@ namespace FPTL
 		{
 			IfPtr thenBr = nullptr, elseBr = nullptr, thenBrFork = nullptr, elseBrFork = nullptr;
 
-			if (!Proactive || !node->condition()->isLong())
+			if (!Config.proactiveEnabled || !node->condition()->isLong())
 			{
 				thenBr = createSpan(node->trueBranch(), mTail);
 				elseBr = createSpan(node->falseBranch(), mTail);
@@ -77,7 +80,7 @@ namespace FPTL
 					elseBr = createSpan(node->falseBranch(), mTail);
 			}
 
-			auto choose = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
+			const auto choose = std::make_shared<CondChoose>(thenBr, elseBr, mTail);
 
 			IfPtr cond = createSpan(node->condition(), choose);
 
@@ -89,11 +92,11 @@ namespace FPTL
 			// При первом заходе создаем определения в контексте.
 			if (mCtx.declareFun(scheme))
 			{
-				auto ret = std::make_shared<Ret>();
+				const auto ret = std::make_shared<Ret>();
 				mCtx.defineFun(scheme, createSpan(scheme->firstNode(), ret));
 			}
 
-			const auto rec = new RecFn(mTail, scheme->name());
+			auto* const rec = new RecFn(mTail, scheme->name());
 			mResult = IfPtr(rec);
 
 			mCtx.addRec(scheme, rec);
@@ -101,12 +104,26 @@ namespace FPTL
 
 		void Generator::visit(const FFunctionNode * node)
 		{
-			mResult = std::make_shared<BasicFn>(mTail, node->name(), node->pos(), node->fn());
+			if (Config.stackTrace) {
+				mResult = std::make_shared<TraceErrBasicFn>(mTail, node->name(), node->pos(), node->fn());
+			} else if (Config.unsafeMode) {
+				mResult = std::make_shared<UnsafeBasicFn>(mTail, node->name(), node->pos(), node->fn());
+			} else {
+				mResult = std::make_shared<BasicFn>(mTail, node->name(), node->pos(), node->fn());
+			}
 		}
 
 		void Generator::visit(const FTakeNode * node)
 		{
-			mResult = std::make_shared<GetArg>(mTail, node->from(), node->to(), node->pos());
+			if (Config.stackTrace) {
+				mResult = std::make_shared<TraceErrGetArg>(mTail, node->from(), node->to(), node->pos());
+			}
+			else if (Config.unsafeMode) {
+				mResult = std::make_shared<UnsafeGetArg>(mTail, node->from(), node->to(), node->pos());
+			}
+			else {
+				mResult = std::make_shared<GetArg>(mTail, node->from(), node->to(), node->pos());
+			}
 		}
 
 		void Generator::visit(const FConstantNode * node)
@@ -119,18 +136,19 @@ namespace FPTL
 			// Для строк создаем функцию-констурктор,
 			// т.к. строка может создаваться только при наличии контекста.
 			std::string constant = node->str();
-			mResult = std::make_shared<BasicFn>(
-				mTail,
-				"c_string",
-				std::make_pair(0, 0),
-				[constant](SExecutionContext & ctx) { Constant::pushString(ctx, constant); }
-			);
+			auto fn = [constant](SExecutionContext & ctx) { Constant::pushString(ctx, constant); };
+			if (Config.unsafeMode) {
+				mResult = std::make_shared<UnsafeBasicFn>(mTail, "c_string", std::make_pair(0, 0), fn);
+			}
+			else {
+				mResult = std::make_shared<BasicFn>(mTail, "c_string", std::make_pair(0, 0), fn);
+			}
 		}
 
-		FunctionalProgram * Generator::generate(FSchemeNode * node, const bool Proactive)
+		FunctionalProgram * Generator::generate(FSchemeNode * node, const EvalConfig config)
 		{
 			Generator generator;
-			generator.Proactive = Proactive;
+			generator.Config = config;
 			const auto main = generator.createSpan(node, std::make_shared<EndOp>());
 
 			generator.mCtx.resolveRec();

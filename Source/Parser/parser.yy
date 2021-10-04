@@ -111,6 +111,7 @@
 %token <scToken> T_FARROW
 %token <scToken> T_TARROW
 %token <scToken> T_COLON
+%token <scToken> T_SEMICOLON
 
 /* Типы порождаемых конструкций для правил. */
 
@@ -284,11 +285,11 @@ ConstructorsDefinitionList
 	;
 
 ConstructorDef
-	: T_TARROW TypeName ':' CONSNAME ';'
+    : T_TARROW TypeName T_COLON CONSNAME T_SEMICOLON
 		{
 			$$ = new ConstructorNode( $4, 0, $2 );
 		}
-	| ConstructorParametersList T_TARROW TypeName ':' CONSNAME ';'
+    | ConstructorParametersList T_TARROW TypeName T_COLON CONSNAME T_SEMICOLON
 		{
 			$$ = new ConstructorNode( $5, $1, $3 );
 			$1->mParent = $$;
@@ -337,7 +338,7 @@ TypesDefinitionList2
 	;
 
 TypeDefinition
-	: TypeName '=' TypeExpression ';'
+    : TypeName '=' TypeExpression T_SEMICOLON
 		{
 			$$ = new DefinitionNode( ASTNode::TypeDefinition, $1, $3 );
 			$3->mParent = $$;
@@ -483,12 +484,12 @@ DefinitionsList
 	;
 
 Definition
-	: '@' '=' Term ';'
+    : '@' '=' Term T_SEMICOLON
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, pSupport->getTopIdent(), $3 );
 			$3->mParent = $$;
 		}
-	| FuncVarName '=' Term ';'
+    | FuncVarName '=' Term T_SEMICOLON
 		{
 			$$ = new DefinitionNode( ASTNode::Definition, $1, $3 );
 			$3->mParent = $$;
@@ -667,27 +668,27 @@ TupleElement
 			$$ = new TakeNode( number->getConstant(), number->getConstant() );
 			delete number;
 		}
-	| '[' T_COLON ']'
+    | '[' T_SEMICOLON ']'
 		{
 			Ident from = { $2.Col, $2.Line, nullptr };
 			Ident to = { $2.Col, $2.Line, nullptr };
 			$$ = new TakeNode( from, to);
 		}
-	| '[' NUMBER T_COLON ']'
+	| '[' NUMBER T_SEMICOLON ']'
 		{
 			ConstantNode * from = static_cast<ConstantNode*>( $2 );
 			Ident to = { $3.Col, $3.Line, nullptr };
 			$$ = new TakeNode( from->getConstant(), to);
 			delete from;
 		}
-	| '[' T_COLON NUMBER ']'
+	| '[' T_SEMICOLON NUMBER ']'
 		{
 			Ident from = { $2.Col, $2.Line, nullptr };
 			ConstantNode * to = static_cast<ConstantNode*>( $3 );
 			$$ = new TakeNode( from, to->getConstant() );
 			delete to;
 		}
-	| '[' NUMBER T_COLON NUMBER ']'
+	| '[' NUMBER T_SEMICOLON NUMBER ']'
 		{
 			ConstantNode * from = static_cast<ConstantNode*>( $2 );
 			ConstantNode * to = static_cast<ConstantNode*>( $4 );
@@ -760,7 +761,7 @@ DataInit
 	;
 	
 OneDataInit
-	: DataName '=' Value ';'
+    : DataName '=' Value T_SEMICOLON
 		{
 			$$ = new DefinitionNode( ASTNode::InputVarDefinition, $1, $3 );
 			$3->mParent = $$;

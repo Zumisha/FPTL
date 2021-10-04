@@ -10,7 +10,7 @@
 #include "LockFreeWorkStealingQueue.h"
 #include "GC/CollectedHeap.h"
 #include "GC/GarbageCollector.h"
-#include "Utils/FormattedOutput.h"
+#include "EvalConfig.h"
 
 namespace FPTL
 {
@@ -20,49 +20,6 @@ namespace FPTL
 		class FSchemeNode;
 		class SchemeEvaluator;
 		class CollectedHeap;
-
-		//----------------------------------------------------------------------------
-
-		class EvalConfig
-		{
-		public:
-			EvalConfig() :
-				mOutput(Utils::FormattedOutput()),
-				mNumCores(1),
-				mInfo(false),
-				mTime(false),
-				mProactive(false)
-			{}
-
-			void SetOutput(const Utils::FormattedOutput &fo) { mOutput = fo; }
-
-			void SetInfo(const bool state) { mInfo = state; }
-
-			void SetTime(const bool state) { mTime = state; }
-
-			void SetProactive(const bool state) { mProactive = state; }
-
-			void SetNumCores(const size_t numCores) { mNumCores = numCores; }
-
-			const Utils::FormattedOutput& Output() const { return mOutput; }
-
-			bool Info() const { return mInfo; }
-			
-			bool Time() const { return mTime; }
-
-			bool Proactive() const { return mProactive; }
-
-			size_t NumCores() const { return mNumCores; }
-
-		private:
-			Utils::FormattedOutput mOutput;
-			size_t mNumCores;
-			bool mInfo;
-			bool mTime;
-			bool mProactive;
-		};
-
-		//----------------------------------------------------------------------------------
 
 		// Вычислитель схемы, привязан к конкретному потоку.
 		class EvaluatorUnit
@@ -121,13 +78,59 @@ namespace FPTL
 				return mWorkTimer.elapsed();
 			}
 
+			size_t GetCompletedJobsCount() const
+			{
+				return mJobsCompleted;
+			}
+
+			size_t GetCompletedProactiveJobsCount() const
+			{
+				return mProactiveJobsCompleted;
+			}
+
+			size_t GetCreatedJobsCount() const
+			{
+				return mJobsCreated;
+			}
+
+			size_t GetCreatedProactiveJobsCount() const
+			{
+				return mProactiveJobsCreated;
+			}
+
+			size_t GetStealedJobsCount() const
+			{
+				return mJobsStealed;
+			}
+
+			size_t GetStealedProactiveJobsCount() const
+			{
+				return mJobsCompleted;
+			}
+
+			size_t GetMovedProactiveJobsCount() const
+			{
+				return mProactiveJobsMoved;
+			}
+
+			size_t GetCanceledProactiveJobsCount() const
+			{
+				return mProactiveJobsCanceled;
+			}
+
+			boost::thread::id GetThreadId() const
+			{
+				return mThreadId;
+			}
+
 		private:
 			// Задачи, данные из которых ожидаются.
-			// Они могут как всё ещё находиться в очереди или быть на выполнении, так и быть на 
+			// Они могут как всё ещё находиться в очереди, так и быть на выполнении
 			std::vector<SExecutionContext *> pendingTasks;
 			// Выполняемые задачи, в том числе ожидающие данных. 
 			std::vector<SExecutionContext *> runningTasks;
 
+			boost::thread::id mThreadId;
 			size_t mJobsCompleted;
 			size_t mProactiveJobsCompleted;
 			size_t mJobsCreated;
@@ -183,17 +186,10 @@ namespace FPTL
 				return mWasErrors;
 			}
 
-			void StopRunTime()
-			{
-				mRunTimer.stop();
-			}
-
-			boost::timer::cpu_times GetRunTime() const
-			{
-				return mRunTimer.elapsed();
-			}
-
 		private:
+
+			void PrintStatistic() const;
+
 			std::vector<EvaluatorUnit *> mEvaluatorUnits;
 			boost::thread_group mThreadGroup;
 			boost::mutex mStopMutex;

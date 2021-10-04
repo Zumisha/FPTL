@@ -17,11 +17,13 @@ namespace FPTL
 
 				("help,h", "Provides information about startup options.")
 				("version,v", "Displays the date and time of the interpreter build.")
-				("time,t", po::bool_switch(), "Displays interpretation and evaluation times.")
-				("info,i", po::bool_switch(), "Displays information about the interpretation and evaluation processes.")
+				("print-time,t", po::bool_switch(), "Displays interpretation and evaluation times.")
+				("print-info,i", po::bool_switch(), "Displays information about the interpretation and evaluation processes.")
 				("ansi,a", po::bool_switch(), "Allow ANSI text formatting.")
-				("ast-save", po::bool_switch(),"Serialize AST to the file.")
-				("scheme-save", po::bool_switch(), "Serialize functional schemes to the file.")
+				("export-ast", po::bool_switch(),"Serialize AST to the file.")
+				("export-scheme", po::bool_switch(), "Serialize functional schemes to the file.")
+				("trace", po::bool_switch(), "Print runtime error stack trace (Slow down execution about 5 times).")
+				("unsafe,u", po::bool_switch(), "Disable all runtime checks (Speed up execution about 10%).")
 
 				("disable-gc", po::bool_switch(), "Disable garbage collector.")
 				("verbose-gc", po::bool_switch(), "Displays information about the work of the garbage collector.")
@@ -53,10 +55,10 @@ namespace FPTL
 
 				if (!optionsVerification(mVM, fo)) return 1;
 				if (mVM.count("version"))
-					std::cout << "Version of the interpreter from " << fo.Bold(fo.Green(BUILD_DATE)) << ".\n\n";
+					std::cout << "Version of the interpreter from " << fo.Bold(fo.Green(BUILD_DATE)) << "." << std::endl << std::endl;
 				if (mVM.count("help"))
 				{
-					std::cout << mDesc << "\n\n";
+					std::cout << mDesc << std::endl << std::endl;
 					return -1;
 				}
 				po::notify(mVM);
@@ -76,22 +78,22 @@ namespace FPTL
 			bool noErrors = true;
 			if (vm["num-cores"].as<long long>() <= 0)
 			{
-				std::cout << "Number of work threads " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
+				std::cout << "Number of work threads " << fo.Bold(fo.Red("must be positive integer!")) << std::endl << std::endl;
 				noErrors = false;
 			}
 			if (vm["young-gen"].as<long long>() <= 0)
 			{
-				std::cout << "Young generation size " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
+				std::cout << "Young generation size " << fo.Bold(fo.Red("must be positive integer!")) << std::endl << std::endl;
 				noErrors = false;
 			}
 			if (vm["old-gen"].as<long long>() <= 0)
 			{
-				std::cout << "Old generation size " << fo.Bold(fo.Red("must be positive integer!")) << "\n\n";
+				std::cout << "Old generation size " << fo.Bold(fo.Red("must be positive integer!")) << std::endl << std::endl;
 				noErrors = false;
 			}
 			if (vm["old-gen-ratio"].as<double>() <= 0 || vm["old-gen-ratio"].as<double>() > 1)
 			{
-				std::cout << "Old gen usage ratio " << fo.Bold(fo.Red("must be in the interval (0, 1]!")) << "\n\n";
+				std::cout << "Old gen usage ratio " << fo.Bold(fo.Red("must be in the interval (0, 1]!")) << std::endl << std::endl;
 				noErrors = false;
 			}
 			return noErrors;

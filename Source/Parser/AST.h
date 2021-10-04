@@ -9,6 +9,7 @@ namespace FPTL
 		class NodeVisitor;
 		class NodeHandler;
 		class TTuple;
+		struct TypeInfo;
 
 		//
 		// Объекты данного класса и его потомков нельзя создавать только в динамической памяти.

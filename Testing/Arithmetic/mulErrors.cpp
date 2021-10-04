@@ -12,7 +12,7 @@ namespace UnitTests
 			// Runtime error: invalid operation on type double.In function "mul".Line: 1. Column : 21. Input tuple type : (string * double)
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 32, invalidOperation("double", "combine with string"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 32, invalidOperation("double", "combine with string"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -21,7 +21,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (4 * true).mul.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 28, invalidOperation("boolean", "combine with int"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 28, invalidOperation("boolean", "combine with int"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -30,7 +30,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (4).mul.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 21, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 21, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

@@ -1,6 +1,7 @@
 ﻿#include <memory>
 #include <string>
 #include <sstream>
+#include <regex>
 
 #include "Generated/parser.tab.hh"
 
@@ -119,88 +120,103 @@ namespace FPTL {
 		}
 
 		//-------------------------------------------------------------------------------------------
-		const char* Support::getErrorString(const ParserErrTypes::ErrType aErr)
+		const std::string Support::getErrorString(const ErrorMessage& aErr)
 		{
-			const char * msg = nullptr;
-			switch (aErr)
+			std::stringstream ss;
+			switch (aErr.mErr)
 			{
-			case ParserErrTypes::GeneralSyntaxError:             
-				msg = ""; 
+			case ParserErrTypes::GeneralSyntaxError:
 				break;
 			case ParserErrTypes::EOFInComment:                   
-				msg = "end of file was reached in comment block. ";
+				ss << "end of file was reached in comment block";
 				break;
 			case ParserErrTypes::IntConstOverflow:               
-				msg = "integer constant overflow. ";
+				ss << "integer constant overflow";
 				break;
 			case ParserErrTypes::IllegalCharacter:               
-				msg = "illegal character. ";
+				ss << "illegal character";
 				break;
 			case ParserErrTypes::MissingMainTypeDef:             
-				msg = "missing main type definition. ";
+				ss << "missing main type definition";
 				break;
 			case ParserErrTypes::DuplicateDefinition:            
-				msg = "identifier was defined before. ";
+				ss << "identifier was defined before";
 				break;
 			case ParserErrTypes::UndefinedIdentifier:            
-				msg = "undefined identifier. ";
+				ss << "undefined identifier";
 				break;
 			case ParserErrTypes::InvalidNumberOfParameters:      
-				msg = "invalid number of parameters. "; 
+				ss << "invalid number of parameters";
 				break;
 			case ParserErrTypes::UndefinedSchemeName:            
-				msg = "undefined scheme name. ";
+				ss << "undefined scheme name";
 				break;
 			case ParserErrTypes::IncorrectIdentifierUsage:       
-				msg = "incorrect use of identifier. ";
+				ss << "incorrect use of identifier";
 				break;
 			case ParserErrTypes::NotATemplateType:               
-				msg = "not a template type. ";
+				ss << "not a template type";
 				break;
 			case ParserErrTypes::InvalidTemplateArgumentsNumber: 
-				msg = "invalid type parameters number. ";
+				ss << "invalid type parameters number";
 				break;
 			case ParserErrTypes::InvalidConstructorUsage:        
-				msg = "invalid constructor usage. ";
+				ss << "invalid constructor usage";
 				break;
 			case ParserErrTypes::NestedDataDefinition:           
-				msg = "nested data definitions are not allowed. ";
+				ss << "nested data definitions are not allowed";
 				break;
 			case ParserErrTypes::MultipleTypeExpression:         
-				msg = "only one type expression is allowed. ";
+				ss << "only one type expression is allowed";
 				break;
 			case ParserErrTypes::InvalidFunCallParameters: 
-				msg = "function parameters cannot be used as another function parameters. "; 
+				ss << "function parameters cannot be used as another function parameters";
 				break;
 			case ParserErrTypes::InvalidConstant:                
-				msg = "constant is invalid or out of range. "; 
+				ss << "constant is invalid or out of range";
 				break;
 			case ParserErrTypes::MissingMainDefinition:          
-				msg = "missing main definition in function. "; 
+				ss << "missing main definition in function";
 				break;
 			case ParserErrTypes::InvalidTupleIndex:              
-				msg = "invalid tuple element index. "; 
+				ss << "invalid tuple element index";
 				break;
 			default:                                       
-				msg = "unknown error. ";
+				ss << "unknown error";
 			}
-			return msg;
+
+			if (aErr.mErr == ParserErrTypes::GeneralSyntaxError)
+			{
+				std::string str = aErr.mIdent.getStr();
+				str = std::regex_replace(str, std::regex("T_UNION"), "'++'");
+				str = std::regex_replace(str, std::regex("T_FARROW"), "'->'");
+				str = std::regex_replace(str, std::regex("T_TARROW"), "'=>'");
+				str = std::regex_replace(str, std::regex("T_COLON"), "':'");
+				str = std::regex_replace(str, std::regex("T_SEMICOLON"), "';'");
+				ss << str;
+			}
+			else
+			{
+				ss << ". " << aErr.mIdent.getStr();
+			}
+			
+			return ss.str();
 		}
 
 		//-------------------------------------------------------------------------------------------
-		void Support::getErrorList(std::ostream & aOutStream) const
+		void Support::printErrorList(std::ostream & aOutStream) const
 		{
 			std::vector<ErrorMessage> processed;
 			for (auto& errMsg : mErrorList)
 			{
 				if (std::find(processed.begin(), processed.end(), errMsg) == processed.end()) {
-					printError(aOutStream, errMsg.mIdent.Line, errMsg.mIdent.Col, getErrorString(errMsg.mErr) + *errMsg.mIdent.Ptr);
+					printPositionalMessage(aOutStream, errMsg.mIdent.Line, errMsg.mIdent.Col, getErrorString(errMsg));
 					processed.push_back(errMsg);
 				}
 			}
 		}
 
-		void Support::printError(std::ostream& outStream, const size_t line, const size_t col,	const std::string& message)
+		void Support::printPositionalMessage(std::ostream& outStream, const size_t line, const size_t col, const std::string& message)
 		{
 			outStream << "Line " << line << ", ch " << col << ": " << message << std::endl;
 		}

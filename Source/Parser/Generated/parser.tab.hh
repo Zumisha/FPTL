@@ -264,7 +264,8 @@ namespace FPTL { namespace Parser {
         T_UNION = 291,
         T_FARROW = 292,
         T_TARROW = 293,
-        T_COLON = 294
+        T_COLON = 294,
+        T_SEMICOLON = 295
       };
     };
 
@@ -471,7 +472,7 @@ namespace FPTL { namespace Parser {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const short yytable_[];
 
-  static const unsigned char yycheck_[];
+  static const short yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -721,12 +722,12 @@ namespace FPTL { namespace Parser {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 242,     ///< Last index in yytable_.
+      yylast_ = 243,     ///< Last index in yytable_.
       yynnts_ = 59,  ///< Number of nonterminal symbols.
       yyfinal_ = 11, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 58  ///< Number of tokens.
+      yyntokens_ = 57  ///< Number of tokens.
     };
 
 
@@ -739,7 +740,7 @@ namespace FPTL { namespace Parser {
 
 #line 2 "parser.yy" // lalr1.cc:401
 } } // FPTL::Parser
-#line 743 "parser.tab.hh" // lalr1.cc:401
+#line 744 "parser.tab.hh" // lalr1.cc:401
 
 
 

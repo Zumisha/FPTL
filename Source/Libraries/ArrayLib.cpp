@@ -4,7 +4,6 @@
 
 #include "ArrayLib.h"
 
-#include "Macros.h"
 #include "DataTypes/Ops/Ops.h"
 #include "DataTypes/Ops/ArrayOps.h"
 #include "DataTypes/Ops/IntegerOps.h"
@@ -82,13 +81,11 @@ namespace FPTL
 			{
 				const DataValue& first = aCtx.getArg(0);				
 				
-#if fptlDebugBuild
 				BaseOps::opsCheck(ArrayOps::get(), first);
 				for (size_t i = 1; i < aCtx.argNum; ++i)
 				{
 					BaseOps::typeCheck(first, aCtx.getArg(i));
 				}
-#endif
 
 				const ArrayValue* firstArr = first.mArray;
 				

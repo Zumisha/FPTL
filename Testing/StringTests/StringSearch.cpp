@@ -33,7 +33,7 @@ namespace UnitTests
 			const std::string innerCode = "@ = (\"abc\" * true).search.print;";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 32, invalidOperation("boolean", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 32, invalidOperation("boolean", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -53,7 +53,7 @@ Input tuple type: ()
 			const std::string innerCode = "@ =  (1 * \"([\\\\w] + )\").search.print;";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 37, invalidOperation("int", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 37, invalidOperation("int", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

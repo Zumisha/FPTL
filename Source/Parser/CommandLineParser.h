@@ -27,12 +27,23 @@ namespace FPTL
 			Utils::FormattedOutput GetFormattedOutput() const { return Utils::FormattedOutput(mVM["ansi"].as<bool>());	}
 			std::string GetProgramPath() const { return mProgramPath; }
 			std::vector<std::string> GetInputTuple() const { return mInputTuple; }
-			bool GetShowInfo() const { return mVM["info"].as<bool>(); }
-			bool GetShowTime() const { return mVM["time"].as<bool>(); }
-			size_t GetCoresNum() const { return static_cast<size_t>(mVM["num-cores"].as<long long>()); }
-			bool GetAllowProactive() const { return mVM["proactive"].as<bool>(); }
-			bool GetSaveAST() const { return mVM["ast-save"].as<bool>(); }
-			bool GetSaveScheme() const { return mVM["scheme-save"].as<bool>(); }
+			bool GetExportAST() const { return mVM["export-ast"].as<bool>(); }
+			bool GetExportScheme() const { return mVM["export-scheme"].as<bool>(); }
+
+			Runtime::EvalConfig GetEvalConfig() const
+			{
+				const size_t numCores = GetCoresNum();
+				const bool proactive = GetAllowProactive() && (numCores != 1);
+				return Runtime::EvalConfig{
+					GetFormattedOutput(),
+					numCores,
+					GetPrintInfo(),
+					GetPrintTime(),
+					proactive,
+					GetTraceError(),
+					GetUnsafeMode()
+				};
+			}
 
 			Runtime::GcConfig GetGcConfig() const 
 			{
@@ -47,6 +58,12 @@ namespace FPTL
 
 		private:
 			static bool optionsVerification(po::variables_map& vm, Utils::FormattedOutput& fo);
+			size_t GetCoresNum() const { return static_cast<size_t>(mVM["num-cores"].as<long long>()); }
+			bool GetAllowProactive() const { return mVM["proactive"].as<bool>(); }
+			bool GetTraceError() const { return mVM["trace"].as<bool>(); }
+			bool GetPrintInfo() const { return mVM["print-info"].as<bool>(); }
+			bool GetPrintTime() const { return mVM["print-time"].as<bool>(); }
+			bool GetUnsafeMode() const { return mVM["unsafe"].as<bool>(); }
 		};
 	}
 }

@@ -9,7 +9,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = ("fptl" * 2.3).add.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 21, invalidOperation("double", "combine with string"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 21, invalidOperation("double", "combine with string"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -19,7 +19,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (4 * true).add.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 28, invalidOperation("boolean", "combine with int"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 28, invalidOperation("boolean", "combine with int"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -29,7 +29,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (4).add.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 21, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 21, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -41,7 +41,7 @@ namespace UnitTests
 
 			std::stringstream expected;
 			expected << "OOR";
-			//FPTL::Parser::Support::printError(expected, 1, 10, FPTL::Runtime:::SExecutionContext::outOfRange(2, 1));
+			//FPTL::Parser::Support::printPositionalMessage(expected, 1, 10, FPTL::Runtime:::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -54,7 +54,7 @@ namespace UnitTests
 
 			std::stringstream expected;
 			expected << "OOR";
-			//FPTL::Parser::Support::printError(expected, 1, 10, FPTL::Runtime:::SExecutionContext::outOfRange(2, 1));
+			//FPTL::Parser::Support::printPositionalMessage(expected, 1, 10, FPTL::Runtime:::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

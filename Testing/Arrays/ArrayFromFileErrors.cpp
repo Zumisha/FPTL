@@ -9,7 +9,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (0 * "Tests").arrayFromFile.print;)";
 			
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 31, invalidOperation("int", "toArray"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 31, invalidOperation("int", "toArray"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -19,7 +19,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (1.0 * "Tests").arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 33, invalidOperation("double", "toArray"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 33, invalidOperation("double", "toArray"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -29,7 +29,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = (true * "Tests").arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 34, invalidOperation("boolean", "toArray"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 34, invalidOperation("boolean", "toArray"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -39,7 +39,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = ("Array[int]" * "Tests").arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 42, invalidOperation("string", "toArray"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 42, invalidOperation("string", "toArray"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -50,7 +50,7 @@ namespace UnitTests
 			innerCode = ListDefinition + MakeTestProgram(innerCode);
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 100, invalidOperation("List['t['t]]", "toArray"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 100, invalidOperation("List['t['t]]", "toArray"));
 
 			GeneralizedTest(standardInput, expected.str(), innerCode, 1);
 		}
@@ -60,7 +60,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = ((100 * 0.0).arrayCreate * 1).arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 47, invalidOperation("int", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 47, invalidOperation("int", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -70,7 +70,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = ((100 * 0.0).arrayCreate * 1.0).arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 49, invalidOperation("double", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 49, invalidOperation("double", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -80,7 +80,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = ((100 * 0.0).arrayCreate * true).arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 50, invalidOperation("boolean", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 50, invalidOperation("boolean", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -90,7 +90,7 @@ namespace UnitTests
 			const std::string innerCode = R"(@ = ((100 * 0.0).arrayCreate * (100 * 0.0).arrayCreate).arrayFromFile.print;)";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 69, invalidOperation("array[double]", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 69, invalidOperation("array[double]", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -101,7 +101,7 @@ namespace UnitTests
 			innerCode = ListDefinition + MakeTestProgram(innerCode);
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 116, invalidOperation("List['t['t]]", "toString"));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 116, invalidOperation("List['t['t]]", "toString"));
 
 			GeneralizedTest(standardInput, expected.str(), innerCode, 1);
 		}
@@ -111,7 +111,7 @@ namespace UnitTests
 			const std::string innerCode = "@ = (100 * 0.0).arrayCreate.arrayFromFile.print;";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 41, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 41, FPTL::Runtime::SExecutionContext::outOfRange(2, 1));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}
@@ -121,7 +121,7 @@ namespace UnitTests
 			const std::string innerCode = "@ = arrayFromFile.print;";
 
 			std::stringstream expected;
-			FPTL::Parser::Support::printError(expected, 1, 17, FPTL::Runtime::SExecutionContext::outOfRange(1, 0));
+			FPTL::Parser::Support::printPositionalMessage(expected, 1, 17, FPTL::Runtime::SExecutionContext::outOfRange(1, 0));
 
 			GeneralizedTest(standardInput, expected.str(), MakeTestProgram(innerCode), 1);
 		}

@@ -75,12 +75,10 @@ namespace FPTL
 				const auto& first = aCtx.getArg(0);
 				const auto* const firstOps = first.getOps();
 
-#if fptlDebugBuild
 				for (size_t i = 1; i < aCtx.argNum; ++i)
 				{
 					BaseOps::opsCheck(firstOps, aCtx.getArg(i));
 				}
-#endif
 
 				aCtx.push(firstOps->add(aCtx, aCtx.firstArg(), aCtx.lastArg()));
 			}

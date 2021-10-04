@@ -14,6 +14,7 @@ namespace FPTL
 		class FSchemeNode;
 		class FSchemeVisitor;
 		struct SExecutionContext;
+		struct TypeInfo;
 
 		//---------------------------------------------------------------------------------------------
 		// Абстрактный узел функциональный схемы.
@@ -55,7 +56,11 @@ namespace FPTL
 		{
 		public:
 			template <typename F>
-			explicit FFunctionNode(const F & aFunction) : FSchemeNode(false), mFunction(aFunction), mLine(0), mColumn(0)
+			explicit FFunctionNode(const F & aFunction) :
+				FSchemeNode(false),
+				mFunction(aFunction),
+				mLine(0),
+				mColumn(0)
 			{
 			}
 

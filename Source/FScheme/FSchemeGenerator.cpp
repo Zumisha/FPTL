@@ -135,7 +135,7 @@ namespace FPTL
 			case Parser::ASTNode::ConstructorName:
 			{
 				auto* const ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
-				auto name = aNameRefNode->getName();
+				const auto name = aNameRefNode->getName();
 				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), false, name.getStr(), name.Line, name.Col);
 				mNodeStack.push(node);
 				break;
@@ -144,7 +144,7 @@ namespace FPTL
 			case Parser::ASTNode::DestructorName:
 			{
 				const auto ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
-				auto name = aNameRefNode->getName();
+				const auto name = aNameRefNode->getName();
 				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), false, "~" + name.getStr(), name.Line, name.Col);
 				mNodeStack.push(node);
 				break;

@@ -50,6 +50,7 @@ namespace FPTL
 
 		void EvaluatorUnit::evaluateScheme()
 		{
+			mThreadId = boost::this_thread::get_id();
 			while (true)
 			{
 				try
@@ -59,7 +60,6 @@ namespace FPTL
 				}
 				catch (boost::thread_interrupted)
 				{
-					mEvaluator->StopRunTime();
 					break;
 				}
 #if !disableExceptionHandling
@@ -77,32 +77,6 @@ namespace FPTL
 					mEvaluator->abort();
 				}
 #endif
-			}
-
-			// Выводим статистику.
-			auto evalConf = mEvaluator->getEvalConfig();
-			if (evalConf.Info())
-			{
-				std::stringstream ss;
-				ss << std::fixed << std::setprecision(3);
-				const auto fo = evalConf.Output();
-				ss << "\n" << fo.Underlined("Thread ID") << " = " << boost::this_thread::get_id() << ". Jobs " << fo.Bold(fo.Cyan("created: ")) << mJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mJobsStealed << ".";
-
-				if (evalConf.Proactive())
-				{
-					ss << "\nProactive jobs " << fo.Bold(fo.Cyan("created: ")) << mProactiveJobsCreated << ", " << fo.Bold(fo.Green("completed: ")) << mProactiveJobsCompleted << ", " << fo.Bold(fo.Magenta("stolen: ")) << mProactiveJobsStealed << ", " << fo.Bold(fo.Yellow("moved: ")) << mProactiveJobsMoved << ", " << fo.Bold(fo.Red("canceled: ")) << mProactiveJobsCanceled << ".";
-				}
-
-				const auto workTime = static_cast<double>(GetWorkTime().wall) / 1000000000;
-				const auto runTime = static_cast<double>(mEvaluator->GetRunTime().wall) / 1000000000;
-				const auto idleTime  = runTime - workTime;
-				ss << fo.Bold(fo.Green("\nUseful work time: ")) << workTime << "s. " <<
-					fo.Bold(fo.Red("Idle time: ")) << idleTime << "s. " <<
-					fo.Bold(fo.Cyan(" Utilization: ")) << workTime / runTime * 100 << "%\n";
-				
-				static boost::mutex outputMutex;
-				boost::lock_guard<boost::mutex> guard(outputMutex);
-				std::cout << ss.str();
 			}
 		}
 
@@ -244,7 +218,7 @@ namespace FPTL
 				return;
 			}
 
-			if (mEvaluator->getEvalConfig().Proactive())
+			if (mEvaluator->getEvalConfig().proactiveEnabled)
 			{
 				// Если не нашли, берём задание из своей упреждающей очереди и выполняем, если оно не отменено.
 				if (mProactiveJobQueue.pop(context) && !context->Canceled.load(std::memory_order_acquire) && context->Proactive.load(std::memory_order_acquire))

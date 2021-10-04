@@ -12,7 +12,7 @@ namespace UnitTests
 			const std::string expected = R"(Line 1, ch 64: type mismatch. Actual: boolean. Expected: int.
 In function "c_pair"
 Input tuple type: (boolean * int))";
-			//FPTL::Parser::Support::printError(expected, 1, 28, invalidOperation("boolean", "toInt"));
+			//FPTL::Parser::Support::printPositionalMessage(expected, 1, 28, invalidOperation("boolean", "toInt"));
 
 			GeneralizedTest(standardInput, expected, innerCode, 1);
 		}
@@ -25,7 +25,7 @@ Input tuple type: (boolean * int))";
 			const std::string expected = R"(Line 1, ch 63: type mismatch. Actual: double. Expected: int.
 In function "c_pair"
 Input tuple type: (double * int))";
-			//FPTL::Parser::Support::printError(expected, 1, 28, invalidOperation("boolean", "toInt"));
+			//FPTL::Parser::Support::printPositionalMessage(expected, 1, 28, invalidOperation("boolean", "toInt"));
 
 			GeneralizedTest(standardInput, expected, innerCode, 1);
 		}
@@ -38,7 +38,7 @@ Input tuple type: (double * int))";
 			const std::string expected = R"(Line 1, ch 65: type mismatch. Actual: string. Expected: int.
 In function "c_pair"
 Input tuple type: (string * int))";
-			//FPTL::Parser::Support::printError(expected, 1, 28, invalidOperation("boolean", "toInt"));
+			//FPTL::Parser::Support::printPositionalMessage(expected, 1, 28, invalidOperation("boolean", "toInt"));
 
 			GeneralizedTest(standardInput, expected, innerCode, 1);
 		}
@@ -49,7 +49,7 @@ Input tuple type: (string * int))";
 			innerCode = PairDefinition + "Data TPair2{TPair2 = int * int.c_pair;}" + MakeTestProgram(innerCode);
 
 			const std::string expected = R"(Line 1, ch 76: identifier was defined before. c_pair)";
-			//FPTL::Parser::Support::printError(expected, 1, 27, invalidOperation("double", "toInt"));
+			//FPTL::Parser::Support::printPositionalMessage(expected, 1, 27, invalidOperation("double", "toInt"));
 
 			GeneralizedTest(standardInput, expected, innerCode, 1);
 		}
