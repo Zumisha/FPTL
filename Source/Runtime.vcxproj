@@ -190,6 +190,7 @@
     <ClInclude Include="InternalForm\InternalForm.h" />
     <ClInclude Include="Interpreter\Interpreter.h" />
     <ClInclude Include="IO\File.h" />
+    <ClInclude Include="JsonHelper.h" />
     <ClInclude Include="Libraries\ArithmeticLib.h" />
     <ClInclude Include="Libraries\ArrayLib.h" />
     <ClInclude Include="Libraries\FileLib.h" />

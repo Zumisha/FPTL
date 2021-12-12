@@ -70,6 +70,7 @@ namespace FPTL
 
 				if (CLParser.GetExportAST())
 				{
+					std::cout << "AST exporting.\n\n";
 					Parser::ASTSerializer serializer;
 					serializer.serialize(astRoot);
 				}
@@ -85,15 +86,16 @@ namespace FPTL
 
 				FSchemeGenerator schemeGenerator(astRoot);
 				//NewFSchemeGenerator schemeGenerator(astRoot);
-				const auto FScheme = schemeGenerator.getProgram();
+				auto* const fScheme = schemeGenerator.getProgram();
 
 				if (CLParser.GetExportScheme())
 				{
+					std::cout << "Scheme exporting.\n\n";
 					FSchemeSerializer serializer;
-					serializer.serialize(FScheme);
+					serializer.serialize(programPath+"_scheme.json", fScheme);
 				}
 
-				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(FScheme, evalConfig));
+				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(fScheme, evalConfig));
 				IFExecutionContext ctx(internalForm->main().get());
 
 				const auto interpTime = timer.elapsed();

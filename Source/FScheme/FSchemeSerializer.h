@@ -13,17 +13,14 @@ namespace FPTL
 		class FSchemeSerializer : public FSchemeVisitor
 		{
 		public:
-			inline static const std::string serialization_path = "FScheme.xml";
-			inline static const std::string CHILDS = "Childs";
-
-			void serialize(const FSchemeNode* node);
+			void serialize(const std::string& fName, const FSchemeNode* node);
 
 		private:
 			std::fstream mFile;
 			std::unordered_map<const FSchemeNode*, int> visited;
 			int id = 0;
 
-			void tryVisit(const FSchemeNode* node);
+			int tryVisit(const FSchemeNode* node);
 
 			void visit(const FFunctionNode* node) override;
 			void visit(const FParallelNode* node) override;

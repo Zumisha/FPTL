@@ -357,6 +357,9 @@
     <ClInclude Include="TraceInfo.h">
       <Filter>Source\Evaluator</Filter>
     </ClInclude>
+    <ClInclude Include="JsonHelper.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Parser\parser.yy">

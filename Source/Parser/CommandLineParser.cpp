@@ -3,10 +3,8 @@
 #include "Macros.h"
 #include "CommandLineParser.h"
 
-namespace FPTL 
+namespace FPTL::Parser
 {
-	namespace Parser 
-	{
 		CommandLineParser::CommandLineParser() : mDesc("Available options:")
 		{
 			mDesc.add_options()
@@ -98,5 +96,4 @@ namespace FPTL
 			}
 			return noErrors;
 		}
-	}
 }
