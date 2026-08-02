@@ -20,6 +20,7 @@ namespace FPTL
 			std::unordered_map<const FSchemeNode*, int> visited;
 			int id = 0;
 
+			int getId();
 			int tryVisit(const FSchemeNode* node);
 
 			void visit(const FFunctionNode* node) override;

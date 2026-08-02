@@ -1,4 +1,7 @@
 #include "FSchemeSerializer.h"
+
+#include <iostream>
+
 #include "Utils/FileStreamHelper.h"
 #include "DataTypes/Ops/Ops.h"
 
@@ -13,7 +16,7 @@ namespace FPTL::Runtime
 			{
 				mFile.open(fName, std::ios::out);
 				mFile << '[';
-				tryVisit(node);
+				node->accept(this);
 				mFile.seekp(-1, std::ios::end);
 				mFile << ']';
 				mFile.close();
@@ -24,6 +27,11 @@ namespace FPTL::Runtime
 			}
 		}
 
+		int FSchemeSerializer::getId()
+		{
+			return id++;
+		}
+
 		int FSchemeSerializer::tryVisit(const FSchemeNode* node)
 		{
 			const auto res = visited.insert(std::make_pair(node, id));
@@ -32,7 +40,7 @@ namespace FPTL::Runtime
 				return res.first->second;
 			}
 
-			const auto nodeId = id++;
+			const auto nodeId = id;
 			node->accept(this);
 			return nodeId;
 		}
@@ -40,7 +48,7 @@ namespace FPTL::Runtime
 		void FSchemeSerializer::visit(const FFunctionNode* node)
 		{
 			mFile << '{';
-			mFile << "\"id\":" << id << ',';
+			mFile << "\"id\":" << getId() << ',';
 			mFile << "\"type\":\"" << "Function" << "\",";
 			mFile << "\"line\":" << node->line() << ',';
 			mFile << "\"column\":" << node->col() << ',';
@@ -51,7 +59,7 @@ namespace FPTL::Runtime
 
 		void FSchemeSerializer::visit(const FParallelNode* node)
 		{
-			const auto nodeId = id;
+			const auto nodeId = getId();
 			const auto leftId = tryVisit(node->left());
 			const auto rightId = tryVisit(node->right());
 
@@ -65,7 +73,7 @@ namespace FPTL::Runtime
 
 		void FSchemeSerializer::visit(const FSequentialNode* node)
 		{
-			const auto nodeId = id;
+			const auto nodeId = getId();
 			const auto firstId = tryVisit(node->first());
 			const auto secondId = tryVisit(node->second());
 
@@ -79,7 +87,7 @@ namespace FPTL::Runtime
 
 		void FSchemeSerializer::visit(const FConditionNode* node)
 		{
-			const auto nodeId = id;
+			const auto nodeId = getId();
 			const auto condId = tryVisit(node->condition());
 			const auto thenId = tryVisit(node->trueBranch());
 			const auto elseId = tryVisit(node->falseBranch());
@@ -95,7 +103,7 @@ namespace FPTL::Runtime
 		void FSchemeSerializer::visit(const FTakeNode* node)
 		{
 			mFile << '{';
-			mFile << "\"id\":" << id << ',';
+			mFile << "\"id\":" << getId() << ',';
 			mFile << "\"type\":\"" << "Take" << "\",";
 			mFile << "\"line\":" << node->line() << ',';
 			mFile << "\"column\":" << node->col() << ',';
@@ -107,7 +115,7 @@ namespace FPTL::Runtime
 		void FSchemeSerializer::visit(const FConstantNode* node)
 		{
 			mFile << '{';
-			mFile << "\"id\":" << id << ',';
+			mFile << "\"id\":" << getId() << ',';
 			mFile << "\"type\":\"" << "Constant" << "\",";
 			mFile << "\"line\":" << node->line() << ',';
 			mFile << "\"column\":" << node->col() << ',';
@@ -121,7 +129,7 @@ namespace FPTL::Runtime
 		void FSchemeSerializer::visit(const FStringConstant* node)
 		{
 			mFile << '{';
-			mFile << "\"id\":" << id << ',';
+			mFile << "\"id\":" << getId() << ',';
 			mFile << "\"type\":\"" << "String" << "\",";
 			mFile << "\"line\":" << node->line() << ',';
 			mFile << "\"column\":" << node->col() << ',';
@@ -131,7 +139,7 @@ namespace FPTL::Runtime
 
 		void FSchemeSerializer::visit(const FScheme* scheme)
 		{
-			const auto nodeId = id;
+			const auto nodeId = getId();
 			std::vector<int> defIds;
 			for (const auto& element : scheme->mDefinitions)
 			{
