@@ -1,23 +1,22 @@
 #pragma once
 
-#include <boost/intrusive/slist.hpp>
 #include <functional>
 
 #include "Evaluator/Context.h"
 #include "GcAwarePtr.h"
+#include "Utils/IntrusiveSList.hpp"
 
 namespace FPTL
 {
 	namespace Runtime
 	{
-
 		class GarbageCollector;
 
 		//-------------------------------------------------------------------------------
 
-		// Интерфейс объектов с автоматическим управлением памятью.
-		// Все наследника этого класса обязаны иметь тривиальный деструктор.
-		class Collectable : public boost::intrusive::slist_base_hook<>
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+		// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+		class Collectable : public NodeHook
 		{
 			friend class CollectedHeap;
 			friend class ObjectMarker;
@@ -54,7 +53,7 @@ namespace FPTL
 		class CollectedHeap
 		{
 		public:
-			typedef boost::intrusive::slist<Collectable> MemList;
+			typedef IntrusiveSList<Collectable> MemList;
 
 			explicit CollectedHeap(GarbageCollector * collector);
 			~CollectedHeap();
@@ -71,7 +70,7 @@ namespace FPTL
 			void registerObject(Collectable * object, size_t size);
 
 		private:
-			void checkFreeSpace(size_t size);
+			void checkFreeSpace(size_t size) const;
 
 		private:
 			MemList mAllocated;

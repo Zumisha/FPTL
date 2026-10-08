@@ -2,7 +2,6 @@
 
 #include <string>
 #include <fstream>
-#include <experimental/filesystem>
 
 namespace FPTL
 {
@@ -10,10 +9,13 @@ namespace FPTL
 	{
 		static void setPermissions(const std::string& fName)
 		{
-			if (std::experimental::filesystem::exists(std::experimental::filesystem::status(fName)))
+			if (std::filesystem::exists(fName))
 			{
-				std::experimental::filesystem::permissions(fName,
-					std::experimental::filesystem::perms::add_perms | std::experimental::filesystem::perms::owner_all | std::experimental::filesystem::perms::group_all);
+				std::filesystem::permissions(
+					fName,
+					std::filesystem::perms::owner_all | std::filesystem::perms::group_all,
+					std::filesystem::perm_options::add
+				);
 			}
 		}
 
@@ -22,10 +24,7 @@ namespace FPTL
 			std::string errMsg;
 			if (!input.is_open())
 			{
-				const size_t error_len = 1024;
-				char error_buf[error_len];
-				strerror_s(error_buf, error_len, errno);
-				errMsg = error_buf;
+				errMsg = std::system_category().message(errno);
 			}
 			else
 			{

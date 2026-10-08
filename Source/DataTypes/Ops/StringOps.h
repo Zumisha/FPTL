@@ -1,10 +1,11 @@
 #pragma once
 
-#include <boost/lexical_cast.hpp>
+#include <charconv>
 
 #include "Evaluator/Context.h"
 #include "GC/CollectedHeap.h"
 #include "DataTypes/Ops/Ops.h"
+#include "Utils/StringUtils.hpp"
 
 namespace FPTL {
 	namespace Runtime {
@@ -60,15 +61,14 @@ namespace FPTL {
 				return info;
 			}
 
-			// Преобразование типов.
 			int64_t toInt(const DataValue& aVal) const override
 			{
-				return boost::lexical_cast<int64_t>(aVal.mString->str());
+				return StringUtils::toInt(aVal.mString->str(), true);
 			}
 
 			double toDouble(const DataValue& aVal) const override
 			{
-				return boost::lexical_cast<double>(aVal.mString->str());
+				return StringUtils::toDouble(aVal.mString->str(), true);
 			}
 
 			// Арифметические функции.

@@ -19,7 +19,7 @@ namespace FPTL
 
 			ConstructorGenerator();
 
-			void work(Parser::FunctionalProgram * aFuncProgram);
+			void work(const Parser::FunctionalProgram * aFuncProgram);
 
 			void handle(Parser::DataNode * aData) override;
 			void handle(Parser::NameRefNode * aNameReference) override;

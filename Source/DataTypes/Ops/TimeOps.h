@@ -1,74 +1,70 @@
 #pragma once
 
+#include <iomanip>
+
 #include "Ops.h"
 #include "Evaluator/Context.h"
 
-namespace FPTL
-{
-	namespace Runtime
-	{
-		class TimeOps : public BaseOps
-		{
-			TimeOps() = default;
+namespace FPTL {
+    namespace Runtime {
+        class TimeOps : public BaseOps {
+            TimeOps() = default;
 
-		public:
-			static TimeOps* get()
-			{
-				static TimeOps ops;
-				return &ops;
-			}
+        public:
+            static TimeOps *get() {
+                static TimeOps ops;
+                return &ops;
+            }
 
-			inline static const std::string typeName = "Time";
-			const std::string& getTypeName() const override
-			{
-				return typeName;
-			}
+            inline static const std::string typeName = "Time";
 
-			TypeInfo getType(const DataValue &aVal) const override
-			{
-				static TypeInfo info(typeName);
-				return info;
-			}
+            const std::string &getTypeName() const override {
+                return typeName;
+            }
 
-			// Преобразования типов.
-			int64_t toInt(const DataValue & aVal) const override
-			{
-				return aVal.mIntVal;
-			}
+            TypeInfo getType(const DataValue &aVal) const override {
+                static TypeInfo info(typeName);
+                return info;
+            }
 
-			double toDouble(const DataValue & aVal) const override
-			{
-				return static_cast<double>(aVal.mIntVal);
-			}
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
+            int64_t toInt(const DataValue &aVal) const override {
+                return aVal.mIntVal;
+            }
 
-			DataValue add(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				return DataBuilders::createInt(aLhs.mIntVal + aRhs.mIntVal);
-			}
+            double toDouble(const DataValue &aVal) const override {
+                return static_cast<double>(aVal.mIntVal);
+            }
 
-			DataValue sub(const DataValue & aLhs, const DataValue & aRhs) const override
-			{
-				return DataBuilders::createInt(aLhs.mIntVal - aRhs.mIntVal);
-			}
-			
-			void print(const DataValue & aVal, std::ostream & aStream) const override
-			{
-				const std::chrono::system_clock::time_point dt{ std::chrono::system_clock::duration{aVal.mIntVal} };
-				auto t = std::chrono::system_clock::to_time_t(dt);
-				aStream << _ctime64(&t);
-			}
+            DataValue add(const DataValue &aLhs, const DataValue &aRhs) const override {
+                return DataBuilders::createInt(aLhs.mIntVal + aRhs.mIntVal);
+            }
 
-			void rawPrint(const DataValue & aVal, std::ostream & aStream) const override
-			{
-				aStream << aVal.mIntVal;
-			}
-		};
+            DataValue sub(const DataValue &aLhs, const DataValue &aRhs) const override {
+                return DataBuilders::createInt(aLhs.mIntVal - aRhs.mIntVal);
+            }
 
-		inline DataValue DataBuilders::createTime(int64_t aVal)
-		{
-			DataValue val(TimeOps::get());
-			val.mIntVal = aVal;
-			return val;
-		}
-	}
+            void print(const DataValue &aVal, std::ostream &aStream) const override {
+                const std::chrono::system_clock::time_point dt{std::chrono::system_clock::duration{aVal.mIntVal}};
+                auto t = std::chrono::system_clock::to_time_t(dt);
+                std::tm timeBuf{};
+#if defined(_WIN32) || defined(_WIN64)
+                localtime_s(&timeBuf, &t);
+#else
+                localtime_r(&t, &timeBuf);
+#endif
+                aStream << std::put_time(&timeBuf, "%a %b %e %T %Y\n");
+            }
+
+            void rawPrint(const DataValue &aVal, std::ostream &aStream) const override {
+                aStream << aVal.mIntVal;
+            }
+        };
+
+        inline DataValue DataBuilders::createTime(int64_t aVal) {
+            DataValue val(TimeOps::get());
+            val.mIntVal = aVal;
+            return val;
+        }
+    }
 }

@@ -1,59 +1,54 @@
 #include <functional>
-#include <iterator>
 
 #include "CollectedHeap.h"
 #include "GarbageCollector.h"
 
-namespace FPTL {
-	namespace Runtime {
-		CollectedHeap::CollectedHeap(GarbageCollector * collector)
-			: mAllocatedSize(0),
-			mMaxHeapSize(std::numeric_limits<size_t>::max()),
-			mCollector(collector)
-		{
-			mCollector->registerHeap(this);
+namespace FPTL::Runtime {
+	CollectedHeap::CollectedHeap(GarbageCollector * collector)
+		: mAllocatedSize(0),
+		  mMaxHeapSize(std::numeric_limits<size_t>::max()),
+		  mCollector(collector)
+	{
+		mCollector->registerHeap(this);
 
-			disposer = [](Collectable * obj) {
-				delete obj;
-			};
-		}
+		disposer = [](const Collectable * obj) {
+			delete obj;
+		};
+	}
 
-		CollectedHeap::~CollectedHeap()
-		{
-			// Очищаем всю выделенную память.
-			mAllocated.clear_and_dispose(disposer);
-		}
+	CollectedHeap::~CollectedHeap()
+	{
+		mAllocated.clear_and_dispose(disposer);
+	}
 
-		size_t CollectedHeap::heapSize() const
-		{
-			return mAllocatedSize;
-		}
+	size_t CollectedHeap::heapSize() const
+	{
+		return mAllocatedSize;
+	}
 
-		CollectedHeap::MemList CollectedHeap::reset()
-		{
-			MemList allocated;
-			allocated.swap(mAllocated);
-			mAllocatedSize = 0;
-			return allocated;
-		}
+	CollectedHeap::MemList CollectedHeap::reset()
+	{
+		MemList allocated;
+		allocated.swap(mAllocated);
+		mAllocatedSize = 0;
+		return allocated;
+	}
 
-		void CollectedHeap::setLimit(size_t size)
-		{
-			mMaxHeapSize = size;
-		}
+	void CollectedHeap::setLimit(const size_t size)
+	{
+		mMaxHeapSize = size;
+	}
 
-		void CollectedHeap::checkFreeSpace(size_t size)
+	void CollectedHeap::checkFreeSpace(const size_t size) const {
+		if (mAllocatedSize + size > mMaxHeapSize)
 		{
-			if (mAllocatedSize + size > mMaxHeapSize)
-			{
-				mCollector->runGc();
-			}
+			mCollector->runGc();
 		}
+	}
 
-		void CollectedHeap::registerObject(Collectable * object, size_t size)
-		{
-			mAllocated.push_front(*object);
-			mAllocatedSize += size;
-		}
+	void CollectedHeap::registerObject(Collectable * object, const size_t size)
+	{
+		mAllocated.push_front(*object);
+		mAllocatedSize += size;
 	}
 }

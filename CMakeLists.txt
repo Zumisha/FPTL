@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 # Vars
 set(PROJECT_NAME FPTL)
@@ -24,11 +24,10 @@ if(NOT MSVC)
   endif()
 endif(NOT MSVC)
 
-# Include directories 
-include_directories($ENV{BOOST_ROOT})
+# Include directories
 include_directories(./Thirdparty/lib/)
-include_directories(./Thirdparty/jemalloc-5.0.1/lib/)
-include_directories(./Thirdparty/jemalloc-5.0.1/include/)
+#include_directories(./Thirdparty/jemalloc-5.0.1/lib/)
+#include_directories(./Thirdparty/jemalloc-5.0.1/include/)
 include_directories(./Source/)
 include_directories(./Source/Parser/Generated/Flex/)
 include_directories(./)
@@ -109,22 +108,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 endif()
 
-########### Link & Dependencies ############################
-# Add project dependencies and Link to project             #
-############################################################
-
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-# export BOOST_ROOT=/mnt/c/Libraries/boost_1_69_0/
-FIND_PACKAGE(Boost 1.58 COMPONENTS program_options timer thread chrono date_time atomic REQUIRED)
-#message(STATUS "Found boost incl: ${Boost_INCLUDE_DIR}")
-#message(STATUS "Found boost lib: ${Boost_LIBRARY_DIRS}")
-#message(STATUS "Boost libs to link: ${Boost_LIBRARIES}")
-include_directories(${Boost_INCLUDE_DIR})
-
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} )
-target_link_libraries(${PROJECT_NAME} libjemalloc.so )
+#target_link_libraries(${PROJECT_NAME} libjemalloc.so )
 add_subdirectory(Source)
 target_link_libraries(${PROJECT_NAME} Source)
 

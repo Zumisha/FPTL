@@ -15,10 +15,10 @@ namespace FPTL
 			while (true)
 			{
 				ASTNode* nextNode = nullptr;
-				// останавливаемся только если нет ни зарезервированных узлов, ни динамически генерируемых
-				// в конце постобработка узла, поэтому до размера включительно
+				// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+				// пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				while (childIndex <= node->mChilds.size() && nextNode == nullptr ||
-					firstAttempt == true) // случай, когда динамические есть
+					firstAttempt == true) // пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 				{
 					firstAttempt = false;
 					node->intermediateProcessing(this, childIndex);
@@ -37,7 +37,7 @@ namespace FPTL
 					if (node == astRoot) return;
 					ASTNode* parent = getParent(node);
 					childIndex = parent->getChildIndex(this, node);
-					if (childIndex == static_cast<size_t>(-1)) throw std::exception("Critical error in AST handling");
+					if (childIndex == static_cast<size_t>(-1)) throw std::runtime_error("Critical error in AST handling");
 					node = parent;
 					node->ChildHandled(this, childIndex);
 					childIndex++;

@@ -1,6 +1,5 @@
 #include "ArrayOps.h"
 
-#include <boost/format.hpp>
 #include <algorithm>
 
 #include "DataTypes/TypeInfo.h"
@@ -45,7 +44,7 @@ namespace FPTL
 
 			size_t i = 0;
 			aStream << "[";
-			for (; i < std::min(arr->length, 5llu); ++i)
+			for (; i < std::min(arr->length, static_cast<size_t>(5)); ++i)
 			{
 				if (i > 0)
 				{

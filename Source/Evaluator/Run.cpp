@@ -8,33 +8,37 @@
 namespace FPTL::Runtime
 {
 
-	SchemeEvaluator::SchemeEvaluator()
-	{
+	SchemeEvaluator::SchemeEvaluator() : mEvalConfig() {
 		mRunTimer.stop();
+	}
+
+	void SchemeEvaluator::interruptAll() const {
+		// Проходим по всем вычислительным юнитам и взводим у них атомарный флаг прерывания,
+		// который они проверят в своей точке `interruption_point()`
+		for (auto& unit : mEvaluatorUnits) {
+			unit->interrupt(); // Метод, который выставляет mIsInterrupted = true
+		}
 	}
 
 	void SchemeEvaluator::abort()
 	{
-		boost::lock_guard<boost::mutex> guard(mStopMutex);
+		std::lock_guard guard(mStopMutex);
 		mWasErrors = true;
-		mThreadGroup.interrupt_all();
+		interruptAll();
 	}
 
 	void SchemeEvaluator::stop()
 	{
-		boost::lock_guard<boost::mutex> guard(mStopMutex);
-
-		mThreadGroup.interrupt_all();
+		std::lock_guard guard(mStopMutex);
+		interruptAll();
 	}
 
-	SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit)
-	{
+	SExecutionContext * SchemeEvaluator::findJob(const EvaluatorUnit * aUnit) const {
 		for (auto& mEvaluatorUnit : mEvaluatorUnits)
 		{
 			if (mEvaluatorUnit != aUnit)
 			{
-				SExecutionContext * job = mEvaluatorUnit->stealJob();
-				if (job)
+				if (SExecutionContext * job = mEvaluatorUnit->stealJob())
 				{
 					return job;
 				}
@@ -43,14 +47,12 @@ namespace FPTL::Runtime
 		return nullptr;
 	}
 
-	SExecutionContext * SchemeEvaluator::findProactiveJob(const EvaluatorUnit * aUnit)
-	{
+	SExecutionContext * SchemeEvaluator::findProactiveJob(const EvaluatorUnit * aUnit) const {
 		for (auto& mEvaluatorUnit : mEvaluatorUnits)
 		{
 			if (mEvaluatorUnit != aUnit)
 			{
-				SExecutionContext * job = mEvaluatorUnit->stealProactiveJob();
-				if (job)
+				if (SExecutionContext * job = mEvaluatorUnit->stealProactiveJob())
 				{
 					return job;
 				}
@@ -106,22 +108,29 @@ namespace FPTL::Runtime
 		// Добавляем задание в очередь к первому потоку.
 		mEvaluatorUnits[0]->addJob(&controlContext);
 
-		mRunTimer.start();
+		mRunTimer.reset();
+		mRunTimer.resume();
 		// Защита от случая, когда поток завершит вычисления раньше, чем другие будут созданы.
 		mStopMutex.lock();
 		// Создаем потоки.
 		for (size_t i = 0; i < mEvalConfig.numCores; ++i)
 		{
-			mThreadGroup.create_thread(boost::bind(&EvaluatorUnit::evaluateScheme, mEvaluatorUnits[i]));
+			mThreadGroup.emplace_back([this, i] {
+				mEvaluatorUnits[i]->evaluateScheme();
+			});
 		}
 		mStopMutex.unlock();
 
-		mThreadGroup.join_all();
+		for (auto& thread : mThreadGroup) {
+			if (thread.joinable()) {
+				thread.join();
+			}
+		}
 		mRunTimer.stop();
 
 		PrintStatistic();
 
-		for (auto* unit : mEvaluatorUnits) { delete unit; }
+		for (const auto* unit : mEvaluatorUnits) { delete unit; }
 		mEvaluatorUnits.clear();
 	}
 
@@ -133,9 +142,9 @@ namespace FPTL::Runtime
 			std::stringstream ss;
 			ss << std::fixed << std::setprecision(3) << std::endl;
 			const auto fo = mEvalConfig.output;
-			const auto runTime = fromNano(mRunTimer.elapsed().wall);
+			const auto runTime = GetWorkTimeNano();
 
-			for (auto* unit : mEvaluatorUnits)
+			for (const auto* unit : mEvaluatorUnits)
 			{
 				if (mEvalConfig.printInfo)
 				{
@@ -156,7 +165,7 @@ namespace FPTL::Runtime
 
 				if (mEvalConfig.printTime)
 				{
-					const auto workTime = fromNano(unit->GetWorkTime().wall);
+					const auto workTime = unit->GetWorkTimeNano();
 					const auto idleTime = runTime - workTime;
 					ss << fo.Bold(fo.Green("Useful work time: ")) << workTime << "s. " <<
 						fo.Bold(fo.Red("Idle time: ")) << idleTime << "s. " <<
@@ -168,7 +177,7 @@ namespace FPTL::Runtime
 			{
 				size_t totalCreated = 0;
 				size_t totalStolen = 0;
-				for (auto* unit : mEvaluatorUnits)
+				for (const auto* unit : mEvaluatorUnits)
 				{
 					totalCreated += unit->GetCreatedJobsCount();
 					totalStolen += unit->GetStealedJobsCount();
@@ -183,7 +192,7 @@ namespace FPTL::Runtime
 					size_t totalProactiveStolen = 0;
 					size_t totalProactiveMoved = 0;
 					size_t totalProactiveCanceled = 0;
-					for (auto* unit : mEvaluatorUnits)
+					for (const auto* unit : mEvaluatorUnits)
 					{
 						totalProactiveCreated += unit->GetCreatedProactiveJobsCount();
 						totalProactiveStolen += unit->GetStealedProactiveJobsCount();
@@ -201,10 +210,10 @@ namespace FPTL::Runtime
 			if (mEvalConfig.printTime)
 			{
 				const auto totalWallTime = runTime * mEvaluatorUnits.size();
-				double totalWorkTime = 0;
-				for (auto* unit : mEvaluatorUnits)
+				int64_t totalWorkTime = 0;
+				for (const auto* unit : mEvaluatorUnits)
 				{
-					totalWorkTime += unit->GetWorkTime().wall;
+					totalWorkTime += unit->GetWorkTimeNano();
 				}
 				totalWorkTime = fromNano(totalWorkTime);
 

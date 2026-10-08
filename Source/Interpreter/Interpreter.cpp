@@ -3,8 +3,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <boost/timer/timer.hpp>
-
 #include "Interpreter.h"
 #include "Parser/CommandLineParser.h"
 #include "Parser/AST.h"
@@ -34,7 +32,8 @@ namespace FPTL
 			try
 			{
 #endif
-				boost::timer::cpu_timer timer;
+				Stopwatch timer;
+				timer.resume();
 
 				auto CLParser = Parser::CommandLineParser();
 
@@ -98,8 +97,7 @@ namespace FPTL
 				const std::unique_ptr<FunctionalProgram> internalForm(Generator::generate(fScheme, evalConfig));
 				IFExecutionContext ctx(internalForm->main().get());
 
-				const auto interpTime = timer.elapsed();
-				if (evalConfig.printTime) std::cout << "Interpretation time: " << format(interpTime, 3, "%ws\n") << std::endl;
+				if (evalConfig.printTime) std::cout << "Interpretation time: " << timer.elapsed_nano() << " ns" << std::endl;
 				timer.resume();
 
 				const GcConfig gcConfig = CLParser.GetGcConfig();
@@ -109,8 +107,7 @@ namespace FPTL
 				evaluator.setEvalConfig(evalConfig);
 
 				evaluator.run(ctx);
-				const auto evalTime = timer.elapsed();
-				if (evalConfig.printTime) std::cout << "\n\nEvaluation time: " << boost::timer::format(evalTime, 3, "%ws\n");
+				if (evalConfig.printTime) std::cout << "\n\nEvaluation time: " << timer.elapsed_nano() << " ns" << std::endl;
 
 				delete astRoot;
 				if (evaluator.WasErrors()) return 1;

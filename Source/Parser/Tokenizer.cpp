@@ -1,11 +1,10 @@
 ﻿#include <string>
 #include <regex>
 
-#include <boost/lexical_cast.hpp>
-
 #include "Tokenizer.h"
 #include "Support.h"
 #include "Nodes.h"
+#include "Utils/StringUtils.hpp"
 
 namespace FPTL {
 	namespace Parser {
@@ -29,7 +28,7 @@ namespace FPTL {
 			// Проверяем диапазон.
 			try
 			{
-				boost::lexical_cast<long long>(YYText());
+				StringUtils::toInt(YYText(), true);
 			}
 			catch (const std::exception &)
 			{
@@ -50,7 +49,7 @@ namespace FPTL {
 			// Проверяем диапазон.
 			try
 			{
-				boost::lexical_cast<double>(match[1]);
+				StringUtils::toDouble(match[1], true);
 			}
 			catch (const std::exception &)
 			{
@@ -68,7 +67,7 @@ namespace FPTL {
 			// Проверяем константу.
 			try
 			{
-				boost::lexical_cast<double>(str);
+				StringUtils::toDouble(str, true);
 			}
 			catch (std::exception &)
 			{

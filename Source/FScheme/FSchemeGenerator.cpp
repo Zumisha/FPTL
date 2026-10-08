@@ -1,14 +1,15 @@
 ﻿#include <cassert>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
-
 #include "FSchemeGenerator.h"
+
+#include <charconv>
+
 #include "ConstructorGenerator.h"
 #include "NodeDeleter.h"
 #include "Parser/Nodes.h"
 #include "DataTypes/Ops/DoubleOps.h"
 #include "DataTypes/Ops/ADTValue.h"
+#include "Utils/StringUtils.hpp"
 
 namespace FPTL
 {
@@ -45,7 +46,7 @@ namespace FPTL
 				// Целочисленная константа.
 			case Parser::ASTNode::IntConstant:
 			{
-				const auto constant = boost::lexical_cast<int64_t>(aNode->getConstant().getStr().c_str());
+				const int64_t constant = StringUtils::toInt(aNode->getConstant().getStr(), true);
 				node = new FConstantNode(TypeInfo("integer"), DataBuilders::createInt(constant), name.Line, name.Col);
 				break;
 			}
@@ -55,7 +56,7 @@ namespace FPTL
 			case Parser::ASTNode::FloatConstant:
 			case Parser::ASTNode::DoubleConstant:
 			{
-				const auto constant = boost::lexical_cast<double>(aNode->getConstant().getStr().c_str());
+				const double constant = StringUtils::toDouble(aNode->getConstant().getStr(), true);
 				node = new FConstantNode(TypeInfo("double"), DataBuilders::createDouble(constant), name.Line, name.Col);
 				break;
 			}
@@ -86,16 +87,16 @@ namespace FPTL
 		{
 			const auto fromIdent = aTakeNode->getFrom();
 			const auto toIdent = aTakeNode->getTo();
-			
+
 			int64_t from;
 			if (fromIdent.Ptr != nullptr) {
-				from = boost::lexical_cast<int64_t>(fromIdent.getStr().c_str());
+				from = StringUtils::toInt(fromIdent.getStr(), true);
 			}
 			else from = 1;
-			
+
 			int64_t to;
 			if (toIdent.Ptr != nullptr) {
-				to = boost::lexical_cast<int64_t>(toIdent.getStr().c_str());
+				to = StringUtils::toInt(toIdent.getStr(), true);
 			}
 			else to = -1;
 
@@ -136,8 +137,10 @@ namespace FPTL
 			{
 				auto* const ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 				const auto name = aNameRefNode->getName();
-				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execConstructor, ctor, _1), false, name.getStr(), name.Line, name.Col);
-				mNodeStack.push(node);
+				FSchemeNode* node = new FFunctionNode([ctor](auto&& arg) {
+					return ctor->execConstructor(std::forward<decltype(arg)>(arg));
+				}, false, name.getStr(), name.Line, name.Col);
+				mNodeStack.emplace(node);
 				break;
 			}
 
@@ -145,8 +148,10 @@ namespace FPTL
 			{
 				const auto ctor = mConstructorGenerator.getConstructor(aNameRefNode->getName().getStr());
 				const auto name = aNameRefNode->getName();
-				FSchemeNode * node = new FFunctionNode(boost::bind(&Constructor::execDestructor, ctor, _1), false, "~" + name.getStr(), name.Line, name.Col);
-				mNodeStack.push(node);
+				FSchemeNode* node = new FFunctionNode([ctor](auto&& arg) {
+					return ctor->execDestructor(std::forward<decltype(arg)>(arg));
+				}, false, name.getStr(), name.Line, name.Col);
+				mNodeStack.emplace(node);
 				break;
 			}
 
@@ -200,7 +205,7 @@ namespace FPTL
 				const auto first = mNodeStack.top();
 				mNodeStack.pop();
 
-				// Трансформируем дерево, чтобы оно ветвилось только в левую сторону, 
+				// Трансформируем дерево, чтобы оно ветвилось только в левую сторону,
 				// чтобы при выполнении за каждым advance шел unwind.
 				const auto seqNode = dynamic_cast<FSequentialNode*>(second);
 
@@ -385,7 +390,7 @@ namespace FPTL
 		//-----------------------------------------------------------------------------
 		void FSchemeGenerator::handle(Parser::FunctionalProgram * aFuncProgram)
 		{
-			// Обрабатываем блоки данных.	
+			// Обрабатываем блоки данных.
 			mConstructorGenerator.work(aFuncProgram);
 
 			// Обрабатываем только схему.

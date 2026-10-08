@@ -1,7 +1,3 @@
-#include <cassert>
-
-#include <boost/lexical_cast.hpp>
-
 #include "Ops.h"
 #include "StringOps.h"
 #include "BooleanOps.h"
@@ -36,7 +32,7 @@ namespace FPTL
 			marker->markAlive(aVal.mString->data, aVal.mString->data->size() * sizeof(aVal.mString->data[0]));
 		}
 
-		// Арифметические функции.
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 		DataValue StringOps::add(const SExecutionContext & aCtx, const DataValue* const first, const DataValue* const last) const
 		{
 			size_t len = 0;

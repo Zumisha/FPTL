@@ -1,5 +1,3 @@
-#include <boost/timer/timer.hpp>
-
 #include "Context.h"
 #include "Run.h"
 #include "InternalForm/InternalForm.h"

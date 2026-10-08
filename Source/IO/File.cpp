@@ -2,7 +2,7 @@
 
 File::File(const char* path)
 {
-	fopen_s(&file, path, "r");
+	file = fopen(path, "r");
 
 	if (file == nullptr) {
 		fprintf(stderr, "Error: %s: file not found\n", path);
@@ -28,13 +28,21 @@ File& File::operator=(File&& other)
 	return *this;
 }
 
+#if defined(_WIN32) || defined(_WIN64)
+#define portable_fseek _fseeki64
+#define portable_ftell _ftelli64
+#else
+#define portable_fseek fseeko
+#define portable_ftell ftello
+#endif
+
 size_t File::getFileSize() const
 {
-	const int fileDescriptor = _fileno(file);
-	_fseeki64(file, 0, SEEK_END);
-	const auto fileSize = _ftelli64(file);
-	_fseeki64(file, position, SEEK_SET);
-	return fileSize;
+	const auto currentPos = portable_ftell(file);
+	portable_fseek(file, 0, SEEK_END);
+	const auto fileSize = portable_ftell(file);
+	portable_fseek(file, currentPos, SEEK_SET);
+	return static_cast<size_t>(fileSize);
 }
 
 const char* File::getNextStringToken()
@@ -53,4 +61,5 @@ const char* File::getNextStringToken()
 	{
 		return buffer.data();
 	}
+	return nullptr;
 }

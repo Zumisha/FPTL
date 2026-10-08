@@ -33,24 +33,24 @@ public:
 	double getNextDouble() const
 	{
 		double val;
-		fscanf_s(file, "%lf", &val);
+		fscanf(file, "%lf", &val);
 		return val;
 	}
 
 	int64_t getNextInt64() const
 	{
 		int64_t val;
-		fscanf_s(file, "%lli", &val);
+		fscanf(file, "%lli", &val);
 		return val;
 	}
 
 	bool getNextBool()
 	{
 		const auto str = getNextStringToken();
-		if (strcmp(str, "1") || strcmp(str, "true") || strcmp(str, "True")) return true;
-		if (strcmp(str, "0") || strcmp(str, "false") || strcmp(str, "False")) return false;
+		if (strcmp(str, "1") != 0 || strcmp(str, "true") != 0 || strcmp(str, "True") != 0) return true;
+		if (strcmp(str, "0") != 0 || strcmp(str, "false") != 0 || strcmp(str, "False") != 0) return false;
 		const std::string err = "Can't convert to boolean: " + std::string(str);
-		throw std::exception(err.c_str());
+		throw std::runtime_error(err);
 	}
 
 protected:

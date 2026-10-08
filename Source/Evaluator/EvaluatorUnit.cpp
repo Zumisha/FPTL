@@ -1,5 +1,4 @@
 #include <iostream>
-#include <boost/format/format_fwd.hpp>
 
 #include "Run.h"
 #include "Macros.h"
@@ -20,7 +19,6 @@ namespace FPTL
 			mProactiveJobsStealed(0),
 			mProactiveJobsMoved(0),
 			mProactiveJobsCanceled(0),
-			mProactiveJobQueue(32),
 			mEvaluator(aSchemeEvaluator),
 			mHeap(aSchemeEvaluator->garbageCollector()),
 			mCollector(aSchemeEvaluator->garbageCollector())
@@ -50,15 +48,15 @@ namespace FPTL
 
 		void EvaluatorUnit::evaluateScheme()
 		{
-			mThreadId = boost::this_thread::get_id();
+			mThreadId = std::this_thread::get_id();
 			while (true)
 			{
 				try
 				{
-					boost::this_thread::interruption_point();
+					interruption_point();
 					schedule();
 				}
-				catch (boost::thread_interrupted)
+        catch (const thread_interrupted&)
 				{
 					break;
 				}
@@ -245,7 +243,7 @@ namespace FPTL
 
 			// Если заданий нет - приостанавливаем поток.
 			mWorkTimer.stop();
-			boost::this_thread::sleep_for(boost::chrono::milliseconds(1));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
 		CollectedHeap & EvaluatorUnit::heap() const

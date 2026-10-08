@@ -1,17 +1,16 @@
 ﻿#include <atomic>
+#include <memory>
 #include <mutex>
 #include <condition_variable>
 #include <vector>
-#include <functional>
 #include <iostream>
 #include <thread>
-
-#include <boost/timer/timer.hpp>
 
 #include "GarbageCollector.h"
 #include "CollectedHeap.h"
 #include "BlockingQueue.h"
 #include "DataTypes/Ops/Ops.h"
+#include "Utils/Stopwatch.hpp"
 
 namespace FPTL
 {
@@ -31,7 +30,7 @@ namespace FPTL
 
 			bool markAlive(Collectable * object, size_t size) override
 			{
-				if (ObjectMarker::checkAge(object, mMaxAge))
+				if (checkAge(object, mMaxAge))
 				{
 					// Т.к. корни помечаются из потоков мутатора, то в этом методе
 					// мы не маркируем объекты, а лишь заносим их в список для
@@ -71,9 +70,9 @@ namespace FPTL
 
 			bool markAlive(Collectable * object, const size_t size) override
 			{
-				if (!object->isMarked() && ObjectMarker::checkAge(object, mMaxAge))
+				if (!object->isMarked() && checkAge(object, mMaxAge))
 				{
-					ObjectMarker::setMarked(object, 1);
+					setMarked(object, 1);
 					mAliveSize += size;
 					return true;
 				}
@@ -116,7 +115,6 @@ namespace FPTL
 		//-------------------------------------------------------------------------------
 		class GarbageCollectorImpl : public GarbageCollector
 		{
-		private:
 			struct GcJob
 			{
 				RootMarker marker;
@@ -148,15 +146,15 @@ namespace FPTL
 				mQuit(false),
 				mCollectOld(false)
 			{
-				mCollectorThread = std::thread(std::bind(&GarbageCollectorImpl::collectorThreadLoop, this));
+				mCollectorThread = std::thread([this] { collectorThreadLoop(); });
 			}
 
-			virtual ~GarbageCollectorImpl()
+			~GarbageCollectorImpl() override
 			{
 				mQuit = true;
 				mQueue.quit();
 				mCollectorThread.join();
-				mAllocated.clear_and_dispose([](Collectable * obj) { delete obj; });
+				mAllocated.clear_and_dispose([](const Collectable * obj) { delete obj; });
 			}
 
 			void runGc() override
@@ -172,10 +170,11 @@ namespace FPTL
 					if (needGC()) safePoint();
 				}
 
-				boost::timer::cpu_timer pauseTimer;
+				Stopwatch pauseTimer;
+				pauseTimer.resume();
 
 				{
-					std::unique_lock<std::mutex> lock(mRunMutex);
+					std::unique_lock lock(mRunMutex);
 
 					// Посылаем команду на остановку других потоков.
 					mStop.store(true, std::memory_order_release);
@@ -186,16 +185,15 @@ namespace FPTL
 					mStopped--;
 				}
 
-				std::unique_ptr<GcJob> job(new GcJob(mCollectOld));
+				auto job = std::make_unique<GcJob>(mCollectOld);
 
 				// Сканируем корни.
 				mRootExplorer->markRoots(&job->marker);
 
-				// Сбрасываем списке выделенной памяти во всех кучах.
-				for (auto heap : mHeaps)
+				// Сбрасываем списки выделенной памяти во всех кучах.
+				for (const auto heap : mHeaps)
 				{
 					job->allocatedSize += heap->heapSize();
-					//XXX buf added because temporary lvalue can't be passed to non const refference
 					auto buf = heap->reset();
 					job->allocated.splice(job->allocated.end(), buf);
 				}
@@ -204,7 +202,7 @@ namespace FPTL
 				mQueue.push(std::move(job));
 
 				{
-					std::unique_lock<std::mutex> lock(mRunMutex);
+					std::unique_lock lock(mRunMutex);
 
 					// Возобновляем работу других потоков.
 					mStop.store(false, std::memory_order_relaxed);
@@ -213,8 +211,7 @@ namespace FPTL
 
 				if (mConfig.verbose())
 				{
-					std::cout
-						<< "GC Pause. Time: " << boost::timer::format(pauseTimer.elapsed());
+					std::cout << "GC Pause. Time: " << pauseTimer.elapsed_nano();
 				}
 
 				mGcMutex.unlock();
@@ -229,7 +226,7 @@ namespace FPTL
 			// Этот метод выполняется другими потоками для ожидании сканирования корней.
 			void safePoint() override
 			{
-				std::unique_lock<std::mutex> lock(mRunMutex);
+				std::unique_lock lock(mRunMutex);
 
 				mStopped++;
 				mRunCond.notify_all();
@@ -251,31 +248,30 @@ namespace FPTL
 				{
 					auto deqJob = mQueue.pop();
 
-					if (!deqJob.is_initialized())
+					if (!deqJob.has_value())
 					{
 						break;
 					}
 
-					auto job = std::move(deqJob.get());
+					const auto job = std::move(deqJob.value());
 
-					boost::timer::cpu_timer gcTimer;
+					Stopwatch gcTimer;
+					gcTimer.resume();
 
 					// Маркируем корневые объекты.
 					size_t aliveSize = 0;
-					for (const auto object : job->marker.mRoots)
+					for (const auto [fst, snd] : job->marker.mRoots)
 					{
-						const auto root = object.first;
-						if (!root->isMarked())
+						if (const auto root = fst; !root->isMarked())
 						{
 							ObjectMarker::setMarked(root, 1);
-							aliveSize += object.second;
+							aliveSize += snd;
 						}
 					}
 
 					HeapMarker marker(job->marker, aliveSize);
 
-					// Помечаем доступные вершины.
-					auto count = marker.traceDataRecursively();
+					const auto count = marker.traceDataRecursively();
 
 					if (job->fullGc)
 					{
@@ -285,11 +281,9 @@ namespace FPTL
 						mCollectOld = false;
 					}
 
-					// Очищаем память.
 					job->allocated.remove_and_dispose_if([](const Collectable & obj) { return !obj.isMarked(); },
-						[](Collectable * obj) {	delete obj;	});
+						[](const Collectable * obj) {	delete obj;	});
 
-					// Сбрасываем флаги.
 					for (auto & object : job->allocated)
 					{
 						ObjectMarker::setObjectAge(&object, Collectable::OLD);
@@ -302,9 +296,10 @@ namespace FPTL
 					if (mConfig.verbose())
 					{
 						std::cout
-							<< "GC time : " << boost::timer::format(gcTimer.elapsed())
-							<< "Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024) << " MiB. OldGen: "
-							<< mOldGenSize / (1024 * 1024) << " MiB \n";
+							<< "GC time : " << gcTimer.elapsed_nano() << " ns"
+							<< ". Alive data count: " << count
+							<< ". Reclaimed: " << (job->allocatedSize - marker.aliveSize()) / (1024 * 1024)
+							<< " MiB. OldGen: " << mOldGenSize / (1024 * 1024) << " MiB \n";
 					}
 
 					/*if (mOldGenSize > mConfig.oldGenSize())
@@ -320,7 +315,6 @@ namespace FPTL
 				}
 			}
 
-		private:
 			GcConfig mConfig;
 
 			// Количество остановившихся потоков.
